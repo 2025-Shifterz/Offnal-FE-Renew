@@ -5,11 +5,8 @@
  * @format
  */
 
-import { StyleSheet, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import MyPage from './src/presentation/MyPage/screen/MyPage';
 
 function App() {
