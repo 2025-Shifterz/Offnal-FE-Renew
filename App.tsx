@@ -4,21 +4,24 @@
  *
  * @format
  */
-
-import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import MyPage from './src/presentation/MyPage/screen/MyPage';
+import './global.css'
+import { StyleSheet, Text, View } from 'react-native'
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context'
+import MyPage from './src/presentation/MyPage/screen/MyPage'
 
 function App() {
   return (
     <SafeAreaProvider>
       <AppContent />
     </SafeAreaProvider>
-  );
+  )
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+  const safeAreaInsets = useSafeAreaInsets()
 
   return (
     <View
@@ -34,13 +37,13 @@ function AppContent() {
     >
       <MyPage />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})
 
-export default App;
+export default App
