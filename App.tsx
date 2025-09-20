@@ -11,6 +11,8 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context'
 import MyPage from './src/presentation/MyPage/screen/MyPage'
+import TodoScreen from './src/presentation/Note/screens/TodoScreen'
+import MemoScreen from './src/presentation/Note/screens/MemoScreen'
 
 function App() {
   return (
@@ -35,7 +37,10 @@ function AppContent() {
         },
       ]}
     >
-      <MyPage />
+      {/* <MyPage /> */}
+      {/* <TodoScreen /> */}
+      {/* <PlusIcon /> */}
+      <MemoScreen />
     </View>
   )
 }
