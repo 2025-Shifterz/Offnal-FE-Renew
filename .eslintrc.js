@@ -18,11 +18,11 @@ module.exports = {
     'react-native/no-unused-styles': 'warn',
     'react-native/no-inline-styles': 'off',
     'react-native/no-color-literals': 'off',
-    'react-native/no-raw-text': 'warn',
+    'react-native/no-raw-text': 'off',
   },
   settings: {
     react: {
       version: 'detect',
     },
   },
-};
+}
