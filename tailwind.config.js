@@ -397,17 +397,17 @@ module.exports = {
 
         'shadow-y-5': 'var(--box-shadow-y-5)',
 
-        // 유틸리티
-        'shadow-1': `0 var(--box-shadow-y-1) var(--box-shadow-blur-1) 0 var(--color-alpha-shadow1, rgba(0, 0, 0, 0.05)),
-                 0 0 var(--box-shadow-blur-1) 0 var(--color-alpha-shadow1, rgba(0, 0, 0, 0.05))`,
+        shadow1:
+          '0 1px 2px 0 var(--color-alpha-shadow1), 0 0 2px 0 var(--color-alpha-shadow1)',
 
-        'shadow-2': `0 0 var(--box-shadow-blur-1) 0 var(--color-alpha-shadow2, rgba(0, 0, 0, 0.08)),
-                 0 var(--box-shadow-y-2) var(--box-shadow-blur-2) 0 var(--color-alpha-shadow2, rgba(0, 0, 0, 0.08))`,
+        shadow2:
+          '0 0 2px 0 var(--color-alpha-shadow2), 0 4px 8px 0 var(--color-alpha-shadow2)',
 
-        'shadow-3': `0 0 var(--box-shadow-blur-1) 0 var(--color-alpha-shadow3, rgba(0, 0, 0, 0.12)) ,
-                 0 var(--box-shadow-y-3) var(--box-shadow-blur-3) 0 var(--color-alpha-shadow3, rgba(0, 0, 0, 0.12))`,
-        'shadow-4': `0 var(--box-shadow-y-5) var(--box-shadow-blur-1) 0 var(--color-alpha-shadow2, rgba(0, 0, 0, 0.08)),
-                 0 var(--box-shadow-y-4) var(--box-shadow-blur-4) 0 var(--color-alpha-shadow3, rgba(0, 0, 0, 0.12))`,
+        shadow3:
+          '0 0 2px 0 var(--color-alpha-shadow3), 0 var(--box-shadow-y-3) var(--box-shadow-blur-3) 0 var(--color-alpha-shadow3)',
+
+        shadow4:
+          '0 -5px 2px 0 var(--color-alpha-shadow2), 0 var(--box-shadow-y-4) var(--box-shadow-blur-4) 0 var(--color-alpha-shadow3)',
       },
 
       // 간격 정의
@@ -693,20 +693,6 @@ module.exports = {
           lineHeight: theme('lineHeight.h-label-l'),
           fontFamily: theme('fontFamily.pretRegular'),
           letterSpacing: theme('letterSpacing.letter-spacing-0'),
-        },
-
-        // 그림자 유틸리티 클래스
-        '.shadow-1': {
-          boxShadow: theme('boxShadow.shadow-1'),
-        },
-        '.shadow-2': {
-          boxShadow: theme('boxShadow.shadow-2'),
-        },
-        '.shadow-3': {
-          boxShadow: theme('boxShadow.shadow-3'),
-        },
-        '.shadow-4': {
-          boxShadow: theme('boxShadow.shadow-4'),
         },
       })
     },
