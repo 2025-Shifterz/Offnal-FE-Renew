@@ -37,10 +37,10 @@ function AppContent() {
         },
       ]}
     >
-      {/* <MyPage /> */}
+      <MyPage />
       {/* <TodoScreen /> */}
       {/* <PlusIcon /> */}
-      <MemoScreen />
+      {/* <MemoScreen /> */}
     </View>
   )
 }
