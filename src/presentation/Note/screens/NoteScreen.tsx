@@ -12,6 +12,7 @@ import {
   getTodosUseCase,
   todoCompletionUseCase,
 } from '../../../infrastructure/di/Dependencies'
+import { createTodoTable } from '../../../infrastructure/local/tables/TodoTable'
 
 interface NoteScreenProps {
   type: TodoType
@@ -35,7 +36,7 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
 
     const initializeTodos = async () => {
       try {
-        // await createTodoTable(); // 데이터베이스 초기화는 App.tsx에서.
+        await createTodoTable() // 데이터베이스 초기화는 App.tsx에서.
         const loadedTodos = await getTodosUseCase.execute(type) // UseCase 호출
         setTodos(loadedTodos)
       } catch (error) {
