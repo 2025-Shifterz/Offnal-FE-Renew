@@ -36,7 +36,7 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
 
     const initializeTodos = async () => {
       try {
-        await createTodoTable() // 데이터베이스 초기화는 App.tsx에서.
+        // await createTodoTable() // 데이터베이스 초기화는 App.tsx에서.
         const loadedTodos = await getTodosUseCase.execute(type) // UseCase 호출
         setTodos(loadedTodos)
       } catch (error) {
@@ -93,7 +93,7 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
   }, [todos])
 
   return (
-    <View className="bg-background-gray-subtle1 w-full flex-1 px-[16px]">
+    <View className="w-full flex-1 bg-background-gray-subtle1 px-[16px]">
       {isEmpty && <EmptyPage text={text} handleAdd={handleAdd} />}
       {!isEmpty && (
         <View>
