@@ -46,10 +46,10 @@ const NoteDayBox = ({
   )
 
   return (
-    <View className="rounded-radius-xl w-full">
+    <View className="w-full rounded-radius-xl">
       <DayBoxHeader currentDate={currentDate} setCurrentDate={setCurrentDate} />
 
-      <View className="bg-surface-white w-full items-center">
+      <View className="w-full items-center bg-surface-white">
         {filteredTodos.length === 0 && !showInput ? (
           <View className="py-[27px]">
             <EmptyMessage text={text} iconSize={48} />
@@ -59,10 +59,11 @@ const NoteDayBox = ({
             // 할 일 리스트
             <View
               key={item.id}
-              className="border-b-divider-gray-light py-p-3 w-full flex-row items-center justify-between border-b-[0.3px] px-[16px]"
+              className="w-full flex-row items-center justify-between border-b-[0.3px] border-b-divider-gray-light px-[16px] py-p-3"
             >
               {type === 'todo' && (
                 <TouchableOpacity
+                  testID={`todo-checkbox-${item.id}`}
                   onPress={() =>
                     handleCompleted(item.id, item.completed, item.type)
                   }
@@ -89,7 +90,7 @@ const NoteDayBox = ({
         )}
 
         {showInput && (
-          <View className="py-p-3 w-full gap-[5px] px-[16px]">
+          <View className="w-full gap-[5px] px-[16px] py-p-3">
             <View className="h-[40px] flex-row items-center justify-between">
               <TextInput
                 value={newTodoText}
@@ -101,7 +102,7 @@ const NoteDayBox = ({
                 <Text className="text-sm">확인</Text>
               </TouchableOpacity>
             </View>
-            <View className="bg-border-gray-light h-[1px]" />
+            <View className="h-[1px] bg-border-gray-light" />
           </View>
         )}
       </View>
