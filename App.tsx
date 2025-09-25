@@ -5,12 +5,7 @@
  * @format
  */
 import './global.css'
-import { StyleSheet, Text, View } from 'react-native'
-import {
-  SafeAreaProvider,
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import MyPage from './src/presentation/MyPage/screen/MyPage'
 import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
@@ -36,7 +31,6 @@ function App() {
       <SafeAreaView style={{ flex: 1 }}>
         {/* <MyPage /> */}
         <TodoScreen />
-        {/* <PlusIcon /> */}
         {/* <MemoScreen /> */}
       </SafeAreaView>
     </SafeAreaProvider>
