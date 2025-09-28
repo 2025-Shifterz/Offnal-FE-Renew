@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { TextInput, TouchableOpacity, View } from 'react-native'
 import DayBoxHeader from './DayBoxHeader'
 import EmptyMessage from './EmptyMessage'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import dayjs, { Dayjs } from 'dayjs'
 import { Todo } from '../../../domain/entities/Todo'
 import utc from 'dayjs/plugin/utc'
+import GlobalText from '../../../shared/GlobalText'
 dayjs.extend(utc)
 
 // 하루의 할 일 박스
@@ -77,13 +78,13 @@ const NoteDayBox = ({
               )}
 
               <View className="ml-[10px] flex-1">
-                <Text>{item.text}</Text>
+                <GlobalText>{item.text}</GlobalText>
               </View>
 
               <TouchableOpacity
                 onPress={() => handleDeleteTodo(item.id, item.type)}
               >
-                <Text className="text-sm text-red-500">삭제</Text>
+                <GlobalText className="text-sm text-red-500">삭제</GlobalText>
               </TouchableOpacity>
             </View>
           ))
@@ -99,7 +100,7 @@ const NoteDayBox = ({
                 className=""
               />
               <TouchableOpacity onPress={() => handleAddTodo(currentDate)}>
-                <Text className="text-sm">확인</Text>
+                <GlobalText className="text-sm">확인</GlobalText>
               </TouchableOpacity>
             </View>
             <View className="h-[1px] bg-border-gray-light" />

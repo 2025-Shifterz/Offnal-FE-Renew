@@ -1,6 +1,7 @@
 import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import AddIcon from '../../../assets/icons/todo-add.svg'
+import GlobalText from '../../../shared/GlobalText'
 
 interface AddButtonProps {
   text: string
@@ -12,10 +13,10 @@ const OneAddButton = ({ text, addOneTodo }: AddButtonProps) => {
     <View className="mt-[8px] items-center">
       <TouchableOpacity
         onPress={addOneTodo}
-        className="rounded-radius-max bg-surface-white w-[93px] flex-row items-center justify-center gap-[5px] py-[8px]"
+        className="w-[93px] flex-row items-center justify-center gap-[5px] rounded-radius-max bg-surface-white py-[8px]"
       >
         <AddIcon />
-        <Text className="text-text-disabled-on body-xs">{`${text} 추가`}</Text>
+        <GlobalText className="text-text-disabled-on body-xs">{`${text} 추가`}</GlobalText>
       </TouchableOpacity>
     </View>
   )
