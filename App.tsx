@@ -5,50 +5,36 @@
  * @format
  */
 import './global.css'
-import { StyleSheet, Text, View } from 'react-native'
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import MyPage from './src/presentation/MyPage/screen/MyPage'
 import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
+import { useEffect } from 'react'
+import { createTodoTable } from './src/infrastructure/local/tables/TodoTable'
 
 function App() {
+  useEffect(() => {
+    const initializeDB = async () => {
+      try {
+        await createTodoTable() // 앱 시작 시 테이블 생성
+        console.log('Todo table created!')
+      } catch (error) {
+        console.error('Error creating todo table:', error)
+      }
+    }
+
+    initializeDB()
+  }, [])
+
   return (
     <SafeAreaProvider>
-      <AppContent />
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* <MyPage /> */}
+        <TodoScreen />
+        {/* <MemoScreen /> */}
+      </SafeAreaView>
     </SafeAreaProvider>
   )
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets()
-
-  return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: safeAreaInsets.top, // 상단 노치 만큼 padding
-          paddingBottom: safeAreaInsets.bottom, // 하단 홈 인디케이터 만큼 padding
-          paddingLeft: safeAreaInsets.left,
-          paddingRight: safeAreaInsets.right,
-        },
-      ]}
-    >
-      <MyPage />
-      {/* <TodoScreen /> */}
-      {/* <PlusIcon /> */}
-      {/* <MemoScreen /> */}
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})
 
 export default App

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { TextInput, TouchableOpacity, View } from 'react-native'
 import DayBoxHeader from './DayBoxHeader'
 import EmptyMessage from './EmptyMessage'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import dayjs, { Dayjs } from 'dayjs'
 import { Todo } from '../../../domain/entities/Todo'
 import utc from 'dayjs/plugin/utc'
+import GlobalText from '../../../shared/GlobalText'
 dayjs.extend(utc)
 
 // 하루의 할 일 박스
@@ -46,10 +47,10 @@ const NoteDayBox = ({
   )
 
   return (
-    <View className="rounded-radius-xl w-full">
+    <View className="w-full rounded-radius-xl">
       <DayBoxHeader currentDate={currentDate} setCurrentDate={setCurrentDate} />
 
-      <View className="bg-surface-white w-full items-center">
+      <View className="w-full items-center bg-surface-white">
         {filteredTodos.length === 0 && !showInput ? (
           <View className="py-[27px]">
             <EmptyMessage text={text} iconSize={48} />
@@ -59,10 +60,11 @@ const NoteDayBox = ({
             // 할 일 리스트
             <View
               key={item.id}
-              className="border-b-divider-gray-light py-p-3 w-full flex-row items-center justify-between border-b-[0.3px] px-[16px]"
+              className="w-full flex-row items-center justify-between border-b-[0.3px] border-b-divider-gray-light px-[16px] py-p-3"
             >
               {type === 'todo' && (
                 <TouchableOpacity
+                  testID={`todo-checkbox-${item.id}`}
                   onPress={() =>
                     handleCompleted(item.id, item.completed, item.type)
                   }
@@ -76,20 +78,20 @@ const NoteDayBox = ({
               )}
 
               <View className="ml-[10px] flex-1">
-                <Text>{item.text}</Text>
+                <GlobalText>{item.text}</GlobalText>
               </View>
 
               <TouchableOpacity
                 onPress={() => handleDeleteTodo(item.id, item.type)}
               >
-                <Text className="text-sm text-red-500">삭제</Text>
+                <GlobalText className="text-sm text-red-500">삭제</GlobalText>
               </TouchableOpacity>
             </View>
           ))
         )}
 
         {showInput && (
-          <View className="py-p-3 w-full gap-[5px] px-[16px]">
+          <View className="w-full gap-[5px] px-[16px] py-p-3">
             <View className="h-[40px] flex-row items-center justify-between">
               <TextInput
                 value={newTodoText}
@@ -98,10 +100,10 @@ const NoteDayBox = ({
                 className=""
               />
               <TouchableOpacity onPress={() => handleAddTodo(currentDate)}>
-                <Text className="text-sm">확인</Text>
+                <GlobalText className="text-sm">확인</GlobalText>
               </TouchableOpacity>
             </View>
-            <View className="bg-border-gray-light h-[1px]" />
+            <View className="h-[1px] bg-border-gray-light" />
           </View>
         )}
       </View>
