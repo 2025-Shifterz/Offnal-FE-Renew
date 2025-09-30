@@ -11,6 +11,7 @@ import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
 import { useEffect } from 'react'
 import { createTodoTable } from './src/infrastructure/local/tables/TodoTable'
+import { View } from 'react-native'
 
 function App() {
   useEffect(() => {
@@ -28,11 +29,11 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         {/* <MyPage /> */}
         <TodoScreen />
         {/* <MemoScreen /> */}
-      </SafeAreaView>
+      </View>
     </SafeAreaProvider>
   )
 }
