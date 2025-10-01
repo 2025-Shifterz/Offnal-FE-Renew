@@ -1,211 +1,237 @@
-import { openShifterzDB } from "../ShifterzDB";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import { Todo } from "../../../domain/entities/Todo";
+import { openShifterzDB } from '../ShifterzDB'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import { Memo } from '../entities/MemoEntity'
 
-dayjs.extend(utc);
+dayjs.extend(utc)
 
 export class MemoDao {
   /**
-   * 모든 'memo' 타입의 Todo 항목을 가져옵니다 (Read All).
-   * @returns 모든 'memo' 항목 배열
+   * ### async createMemo(content: string, targetDate: dayjs.Dayjs)
+   *
+   * memo를 생성합니다 (Create).
+   *
+   * @param content 생성할 메모의 내용
+   * @param targetDate 메모의 목표 날짜 (dayjs 객체)
+   *
+   * @return void
    */
-  async getAllMemos(): Promise<Todo[]> {
-    const db = await openShifterzDB();
+  async createMemo(content: string, targetDate: dayjs.Dayjs): Promise<void> {
+    const db = await openShifterzDB()
+
     try {
-      const [result] = await db.executeSql(
-        "SELECT * FROM todos WHERE type = ?;",
-        ["memo"]
-      );
-      const memos: Todo[] = [];
-      for (let i = 0; i < result.rows.length; i++) {
-        const item = result.rows.item(i);
-        item.completed = item.completed === 1;
-        memos.push(item);
-      }
-      console.log("All memos fetched:", memos);
-      return memos;
-    } catch (error) {
-      console.error("Error getting all memos:", error);
-      throw error;
-    }
-  }
+      const formattedTargetDate = targetDate.valueOf() // 밀리초 단위 타임스탬프로 변환
 
-  /**
-   * 새로운 'memo' 타입의 Todo 항목을 생성합니다 (Create).
-   * @param memoText 생성할 메모의 텍스트
-   * @param targetDate (선택 사항) 메모가 생성될 날짜 (dayjs 객체). 지정하지 않으면 현재 시점.
-   * @returns 생성된 Memo 항목 (ID 포함)
-   */
-  async createMemo(memoText: string, targetDate?: dayjs.Dayjs): Promise<Todo> {
-    const db = await openShifterzDB();
-    try {
-      let query: string;
-      let params: any[];
+      const query = `INSERT INTO memos (content, targetDate) VALUES (?, ?);`
+      const params = [content, formattedTargetDate]
 
-      if (targetDate) {
-        const formattedCreatedAt = targetDate.format("YYYY-MM-DD HH:mm:ss");
-        query = `
-          INSERT INTO todos (text, completed, type, createdAt)
-          VALUES (?, ?, ?, ?);
-        `;
-        params = [memoText, 0, "memo", formattedCreatedAt];
-      } else {
-        query = `
-          INSERT INTO todos (text, completed, type)
-          VALUES (?, ?, ?);
-        `;
-        params = [memoText, 0, "memo"];
-      }
-
-      const [result] = await db.executeSql(query, params);
-
-      const newId = result?.insertId || null;
+      const [result] = await db.executeSql(query, params)
+      const newId = result?.insertId || null
 
       if (!newId) {
-        throw new Error("Failed to retrieve new memo ID after creation.");
+        throw new Error('Failed to retrieve new memo ID after creation.')
       }
 
-      const [insertedRowResult] = await db.executeSql(
-        "SELECT * FROM todos WHERE id = ?",
-        [newId]
-      );
-      const createdMemo = insertedRowResult.rows.item(0);
-
-      createdMemo.completed = createdMemo.completed === 1;
-
-      console.log("Memo created:", createdMemo);
-      return createdMemo;
+      console.log('Memo created with ID:', newId)
+      return
     } catch (error) {
-      console.error("Error creating memo:", error);
-      throw error;
+      throw error
     }
   }
 
   /**
-   * 특정 날짜에 생성된 'memo' 타입의 Todo 항목을 가져옵니다 (Read by Date).
-   * @param targetDate 조회할 날짜 (dayjs 객체)
-   * @returns 해당 날짜에 생성된 'memo' 항목 배열
+   * ### async getAllMemos()
+   *
+   * 모든 메모를 가져옵니다 (Read All).
+   * 메모는 `memos` 테이블에서 조회됩니다.
+   *
+   * @returns 모든 메모를 반환합니다.
    */
-  async getMemosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]> {
-    const db = await openShifterzDB();
+  async getAllMemos(): Promise<Memo[]> {
+    const db = await openShifterzDB()
+
     try {
-      const startOfDayLocal = targetDate.startOf("day");
-      const endOfDayLocal = targetDate.endOf("day");
+      const [result] = await db.executeSql('SELECT * FROM memos;')
+      const memos: Memo[] = []
 
-      const startOfDayUTC = startOfDayLocal.utc().format("YYYY-MM-DD HH:mm:ss");
-      const endOfDayUTC = endOfDayLocal.utc().format("YYYY-MM-DD HH:mm:ss");
-
-      let query =
-        "SELECT * FROM todos WHERE type = ? AND createdAt BETWEEN ? AND ?";
-      const params: any[] = ["memo", startOfDayUTC, endOfDayUTC];
-
-      const [result] = await db.executeSql(query, params);
-      const memos: Todo[] = [];
       for (let i = 0; i < result.rows.length; i++) {
-        const item = result.rows.item(i);
-        // DB의 0/1을 boolean으로 변환
-        item.completed = item.completed === 1;
-        memos.push(item);
+        const item = result.rows.item(i)
+
+        memos.push(item)
       }
-      console.log(
-        `Memos for date '${targetDate.format("YYYY-MM-DD")}':`,
-        memos
-      );
-      return memos;
+
+      return memos
     } catch (error) {
-      console.error(
-        `Error getting memos by date '${targetDate.format("YYYY-MM-DD")}':`,
-        error
-      );
-      throw error;
+      throw error
     }
   }
 
   /**
-   * 'memo' 항목을 ID로 업데이트합니다 (Update).
-   * 'text'와 'completed'만 업데이트 가능하며, 'type'은 'memo'로 고정됩니다.
-   * @param id 업데이트할 'memo'의 ID
-   * @param updates 업데이트할 필드 객체 (text?: string, completed?: boolean)
-   * @returns 업데이트 성공 여부 (boolean)
+   * ### async getMemoById(id: number)
+   *
+   * 특정 ID의 메모를 가져옵니다 (Read by ID).
+   *
+   * @param id 조회할 메모의 ID
+   *
+   * @returns 해당 ID의 메모를 반환합니다. 없으면 null 반환.
+   */
+  async getMemoById(id: number): Promise<Memo | null> {
+    const db = await openShifterzDB()
+
+    try {
+      const query = `SELECT * FROM memos WHERE id = ?;`
+      const params = [id]
+
+      const [result] = await db.executeSql(query, params)
+
+      if (result.rows.length > 0) {
+        return result.rows.item(0)
+      } else {
+        console.warn(`No memo found with ID ${id}.`)
+        return null
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * ### async getMemosByDate(targetDate: dayjs.Dayjs)
+   *
+   * 특정 일자의 메모들을 가져옵니다 (Read by Date).
+   *
+   * @param targetDate 조회할 날짜 (dayjs 객체)
+   *
+   * @returns 해당 날짜에 생성된 메모 배열
+   */
+  async getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]> {
+    const db = await openShifterzDB()
+
+    try {
+      const startOf = targetDate.startOf('day').valueOf() // 밀리초 단위 타임스탬프로 변환 (시작)
+      const endOf = targetDate.endOf('day').valueOf() // 밀리초 단위 타임스탬프로 변환 (끝)
+
+      const query = `SELECT * FROM memos WHERE targetDate BETWEEN ? AND ?;`
+      const params = [startOf, endOf]
+
+      const [result] = await db.executeSql(query, params)
+      const memos: Memo[] = []
+
+      for (let i = 0; i < result.rows.length; i++) {
+        const item = result.rows.item(i)
+        memos.push(item)
+      }
+
+      return memos
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * ### async updateMemo(id: number, content?: string, targetDate?: dayjs.Dayjs)
+   *
+   * 특정 ID의 메모를 업데이트합니다 (Update).
+   * content와 targetDate 중 하나 또는 둘 다 업데이트할 수 있습니다.
+   *
+   * @param id 업데이트할 메모의 ID
+   * @param content (선택) 업데이트할 새로운 내용
+   * @param targetDate (선택) 업데이트할 새로운 목표 날짜 (dayjs 객체)
+   *
+   * @returns void
    */
   async updateMemo(
     id: number,
-    updates: { text?: string; completed?: boolean }
-  ): Promise<boolean> {
-    const db = await openShifterzDB();
-    try {
-      const setParts: string[] = [];
-      const params: any[] = [];
+    content?: string,
+    targetDate?: dayjs.Dayjs
+  ): Promise<void> {
+    const db = await openShifterzDB()
 
-      if (updates.text !== undefined) {
-        setParts.push("text = ?");
-        params.push(updates.text);
+    try {
+      const setParts: string[] = []
+      const params: (string | number)[] = []
+
+      if (content !== undefined) {
+        setParts.push('content = ?')
+        params.push(content)
       }
-      if (updates.completed !== undefined) {
-        setParts.push("completed = ?");
-        params.push(updates.completed ? 1 : 0);
+
+      if (targetDate !== undefined) {
+        setParts.push('targetDate = ?')
+        params.push(targetDate.valueOf()) // 밀리초 단위 타임스탬프로 변환
       }
 
       if (setParts.length === 0) {
-        console.warn("No valid fields provided for update.");
-        return false;
+        console.warn('No valid fields provided for update.')
+        return
       }
 
-      const query = `UPDATE todos SET ${setParts.join(
-        ", "
-      )} WHERE id = ? AND type = ?;`;
-      params.push(id, "memo");
+      const query = `UPDATE memos SET ${setParts.join(', ')} WHERE id = ?;`
+      params.push(id)
 
-      const [result] = await db.executeSql(query, params);
+      const [result] = await db.executeSql(query, params)
+      const rowsAffected = result?.rowsAffected || 0
 
-      const success = (result?.rowsAffected || 0) > 0;
-      console.log(`Memo with ID ${id} updated:`, success);
-      return success;
+      if (rowsAffected === 0) {
+        console.warn(`No memo found with ID ${id} to update.`)
+      } else {
+        console.log(`Memo with ID ${id} updated.`)
+      }
+
+      return
     } catch (error) {
-      console.error(`Error updating memo with ID ${id}:`, error);
-      throw error;
+      throw error
     }
   }
 
   /**
-   * 'memo' 항목을 ID로 삭제합니다 (Delete).
-   * @param id 삭제할 'memo'의 ID
-   * @returns 삭제 성공 여부 (boolean)
+   * ### async deleteMemo(id: number)
+   *
+   * 특정 ID의 메모를 삭제합니다 (Delete).
+   *
+   * @param id 삭제할 메모의 ID
+   *
+   * @returns void
    */
-  async deleteMemo(id: number): Promise<boolean> {
-    const db = await openShifterzDB();
-    try {
-      const [result] = await db.executeSql(
-        "DELETE FROM todos WHERE id = ? AND type = ?;",
-        [id, "memo"]
-      );
+  async deleteMemo(id: number): Promise<void> {
+    const db = await openShifterzDB()
 
-      const success = (result?.rowsAffected || 0) > 0;
-      console.log(`Memo with ID ${id} deleted:`, success);
-      return success;
+    try {
+      const query = `DELETE FROM memos WHERE id = ?;`
+      const params = [id]
+
+      const [result] = await db.executeSql(query, params)
+      const rowsAffected = result?.rowsAffected || 0
+
+      if (rowsAffected === 0) {
+        console.warn(`No memo found with ID ${id} to delete.`)
+      } else {
+        console.log(`Memo with ID ${id} deleted.`)
+      }
+
+      return
     } catch (error) {
-      console.error(`Error deleting memo with ID ${id}:`, error);
-      throw error;
+      throw error
     }
   }
 
   /**
-   * 모든 'memo' 항목을 삭제합니다 (Danger Zone!).
-   * @returns 삭제 성공 여부 (void로 변경, Promise<boolean> 대신)
+   * ### async deleteAllMemos()
+   *
+   * 모든 메모를 삭제합니다 (Danger Zone!).
+   *
+   * @returns void
    */
   async deleteAllMemos(): Promise<void> {
-    const db = await openShifterzDB();
+    const db = await openShifterzDB()
     try {
-      const [result] = await db.executeSql(
-        "DELETE FROM todos WHERE type = ?;",
-        ["memo"]
-      );
-      const success = (result?.rowsAffected || 0) >= 0;
-      console.log("All memos deleted:", success);
+      await db.executeSql('DELETE FROM memos;')
+
+      console.log('All memos deleted.')
     } catch (error) {
-      console.error("Error deleting all memos:", error);
-      throw error;
+      console.error('Error deleting all memos:', error)
+
+      throw error
     }
   }
 }
