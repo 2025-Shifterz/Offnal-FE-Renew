@@ -1,39 +1,36 @@
 // 의존성 관리
 
-import { MemoRepositoryImpl } from "../../data/impl/MemoRepositoryImpl";
-import { TodoRepositoryImpl } from "../../data/impl/TodoRepositoryImpl";
-import { AddTodoUseCase } from "../../domain/useCases/AddTodo";
-import { DeleteTodoUseCase } from "../../domain/useCases/DeleteTodo";
-import { GetMemosByDateUseCase } from "../../domain/useCases/GetMemosByDate";
-import { GetTodosUseCase } from "../../domain/useCases/GetTodos";
-import { GetTodosByDateUseCase } from "../../domain/useCases/GetTodosByDate";
-import { TodoCompletionUseCase } from "../../domain/useCases/TodoCompletion";
-import { MemoDao } from "../local/dao/MemoDao";
-import { TodoDao } from "../local/dao/TodoDao";
+import { MemoRepositoryImpl } from '../../data/impl/MemoRepositoryImpl'
+import { TodoRepositoryImpl } from '../../data/impl/TodoRepositoryImpl'
+import { CreateTodoUseCase } from '../../domain/usecases/todos/CreateTodoUseCase'
+import { DeleteTodoUseCase } from '../../domain/usecases/todos/DeleteTodoByIdUseCase'
+import { GetMemosByDateUseCase } from '../../domain/usecases/memos/GetMemosByDate'
+import { GetTodosUseCase } from '../../domain/usecases/todos/GetAllTodosUseCase'
+import { GetTodosByDateUseCase } from '../../domain/usecases/todos/GetTodosByDateUseCase'
+import { UpdateTodoStateCompleteUseCase } from '../../domain/usecases/todos/UpdateTodoStateCompleteUseCase'
+import { MemoDao } from '../local/dao/MemoDao'
+import { TodoDao } from '../local/dao/TodoDao'
+import { CreateMemoUseCase } from '../../domain/usecases/memos/CreateMemoUseCase'
+import { DeleteMemoUseCase } from '../../domain/usecases/memos/DeleteMemoUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
-const todoDao = new TodoDao();
-const memoDao = new MemoDao();
-
-// const calendarService = new CalendarService();
-// export const homeService = new HomeService();
-// export const fastAPIService = new FastAPIService();
+const todoDao = new TodoDao()
+const memoDao = new MemoDao()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
-export const todoRepository = new TodoRepositoryImpl(todoDao);
-export const memoRepository = new MemoRepositoryImpl(memoDao);
-// export const workCalendarRepository = new WorkCalendarRepositoryImpl(
-//   calendarService,
-// );
-// export const homeRepository = new HomeRepositoryImpl(homeService);
-// export const userRepository = new UserRepositoryImpl();
+export const todoRepository = new TodoRepositoryImpl(todoDao)
+export const memoRepository = new MemoRepositoryImpl(memoDao)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
-// --> 이제 addTodoUseCase 사용가능!
-export const addTodoUseCase = new AddTodoUseCase(todoRepository);
-export const getTodosUseCase = new GetTodosUseCase(todoRepository);
-export const todoCompletionUseCase = new TodoCompletionUseCase(todoRepository);
-export const deleteTodoUseCase = new DeleteTodoUseCase(todoRepository);
-// export const getHomeDataUseCase = new GetHomeDataUseCase(homeRepository);
-export const getToDosByDate = new GetTodosByDateUseCase(todoRepository);
-export const getMemosByDate = new GetMemosByDateUseCase(memoRepository);
+export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
+export const getTodosUseCase = new GetTodosUseCase(todoRepository)
+export const todoCompletionUseCase = new UpdateTodoStateCompleteUseCase(
+  todoRepository
+)
+export const deleteTodoUseCase = new DeleteTodoUseCase(todoRepository)
+
+export const addMemoUseCase = new CreateMemoUseCase(memoRepository)
+export const deleteMemoUseCase = new DeleteMemoUseCase(memoRepository)
+
+export const getToDosByDate = new GetTodosByDateUseCase(todoRepository)
+export const getMemosByDate = new GetMemosByDateUseCase(memoRepository)

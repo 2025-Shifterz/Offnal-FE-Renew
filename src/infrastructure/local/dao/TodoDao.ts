@@ -1,137 +1,226 @@
-import { openShifterzDB } from "../ShifterzDB";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import { Todo, TodoType } from "../../../domain/entities/Todo";
+import { openShifterzDB } from '../ShifterzDB'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import { Todo } from '../entities/TodoEntity'
 
-dayjs.extend(utc);
+dayjs.extend(utc)
 
 export class TodoDao {
-  // todo 추가하기
-  async addTodo(todo: Omit<Todo, "id">): Promise<number> {
-    const db = await openShifterzDB(); // 데이터베이스 초기화 및 가져오기
-    try {
-      const createdAtStr = dayjs(todo.createdAt)
-        .utc()
-        .format("YYYY-MM-DD HH:mm:ss");
+  /**
+   * ### async createTodo(content: string, targetDate: dayjs.Dayjs, type: string)
+   *
+   * 투두를 생성합니다 (Create).
+   *
+   * @param content 생성할 투두의 내용
+   * @param targetDate 투두의 목표 날짜 (dayjs 객체)
+   *
+   * @return void
+   */
+  async createTodo(content: string, targetDate: dayjs.Dayjs): Promise<void> {
+    const db = await openShifterzDB()
 
-      const [result] = await db.executeSql(
-        "INSERT INTO todos (text, completed, type, createdAt) VALUES (?, ?, ?, ?)",
-        [todo.text, todo.completed, todo.type, createdAtStr] // 새로운 할 일은 기본적으로 미완료 상태 (0)
-      );
-      console.log(`Todo "${todo.text}" added with ID: ${result.insertId}`);
-      return result.insertId;
+    try {
+      const formattedTargetDate = targetDate.valueOf() // 밀리초 단위 타임스탬프로 변환
+
+      const query = `INSERT INTO todos (content, targetDate) VALUES (?, ?);`
+      const params = [content, formattedTargetDate]
+
+      const [result] = await db.executeSql(query, params)
+      const newId = result?.insertId || null
+
+      if (!newId) {
+        throw new Error('Failed to retrieve new todo ID after creation.')
+      }
+
+      console.log('Todo created with ID:', newId)
+      return
     } catch (error) {
-      console.error("Error adding todo:", error);
-      throw error;
+      throw error
     }
   }
 
   /**
-   * 특정 날짜에 생성된 'todo' 타입의 Todo 항목을 가져옵니다 (Read by Date).
-   * @param targetDate 조회할 날짜 (dayjs 객체)
-   * @returns 해당 날짜에 생성된 'memo' 항목 배열
+   * ### async getTodoById(id: number)
+   *
+   * 특정 ID의 투두를 가져옵니다 (Read by ID).
+   * 투두는 `todos` 테이블에서 조회됩니다.
+   *
+   * @param id 조회할 투두의 ID
+   * @returns 해당 ID의 투두를 반환합니다.
+   */
+  async getTodoById(id: number): Promise<Todo | null> {
+    const db = await openShifterzDB()
+
+    try {
+      const query = `SELECT * FROM todos WHERE id = ?;`
+      const params = [id]
+
+      const [result] = await db.executeSql(query, params)
+
+      if (result.rows.length > 0) {
+        return result.rows.item(0)
+      } else {
+        return null // 해당 ID의 투두가 없는 경우
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * ### async getAllTodos()
+   *
+   * 모든 투두를 가져옵니다 (Read All).
+   * 투두는 `todos` 테이블에서 조회됩니다.
+   *
+   * @returns 모든 투두를 반환합니다.
+   */
+  async getAllTodos(): Promise<Todo[]> {
+    const db = await openShifterzDB()
+
+    try {
+      const [result] = await db.executeSql('SELECT * FROM todos;')
+      const todos: Todo[] = []
+
+      for (let i = 0; i < result.rows.length; i++) {
+        const item = result.rows.item(i)
+        todos.push(item)
+      }
+
+      return todos
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * ### async getTodosByDate(targetDate: dayjs.Dayjs)
+   *
+   * 특정 날짜에 해당하는 투두를 가져옵니다 (Read by Date).
+   * 투두는 `todos` 테이블에서 조회됩니다.
+   *
+   * @param targetDate 조회할 투두의 목표 날짜 (dayjs 객체)
+   * @returns 해당 날짜의 모든 투두를 반환합니다.
    */
   async getTodosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]> {
-    const db = await openShifterzDB();
+    const db = await openShifterzDB()
+
     try {
-      const startOfDayLocal = targetDate.startOf("day");
-      const endOfDayLocal = targetDate.endOf("day");
+      const startOf = targetDate.startOf('day').valueOf() // 밀리초 단위 타임스탬프로 변환
+      const endOf = targetDate.endOf('day').valueOf() // 밀리초 단위 타임스탬프로 변환
 
-      const startOfDayUTC = startOfDayLocal.utc().format("YYYY-MM-DD HH:mm:ss");
-      const endOfDayUTC = endOfDayLocal.utc().format("YYYY-MM-DD HH:mm:ss");
+      const query = `SELECT * FROM todos WHERE targetDate BETWEEN ? AND ?;`
+      const params = [startOf, endOf]
 
-      let query =
-        "SELECT * FROM todos WHERE type = ? AND createdAt BETWEEN ? AND ?";
-      const params: any[] = ["todo", startOfDayUTC, endOfDayUTC];
+      const [result] = await db.executeSql(query, params)
+      const todos: Todo[] = []
 
-      const [result] = await db.executeSql(query, params);
-      const memos: Todo[] = [];
       for (let i = 0; i < result.rows.length; i++) {
-        const item = result.rows.item(i);
-        // DB의 0/1을 boolean으로 변환
-        item.completed = item.completed === 1;
-        memos.push(item);
+        const item = result.rows.item(i)
+        todos.push(item)
       }
-      console.log(
-        `Memos for date '${targetDate.format("YYYY-MM-DD")}':`,
-        memos
-      );
-      return memos;
+
+      return todos
     } catch (error) {
-      console.error(
-        `Error getting memos by date '${targetDate.format("YYYY-MM-DD")}':`,
-        error
-      );
-      return [];
+      throw error
     }
   }
 
-  // 모든 todos 가져오기
-  async getTodos(type: TodoType): Promise<Todo[]> {
-    const db = await openShifterzDB();
-    try {
-      const [res] = await db.executeSql("SELECT * FROM todos");
-      for (let i = 0; i < res.rows.length; i++) {
-        const row = res.rows.item(i);
-        console.log(
-          `row.type = ${row.type}, input type = ${type}, match: ${
-            row.type === type
-          }`
-        );
-      }
-
-      const [result] = await db.executeSql(
-        "SELECT * FROM todos WHERE type = ?",
-        [type]
-      );
-      const todos: Todo[] = [];
-      for (let i = 0; i < result.rows.length; i++) {
-        todos.push(result.rows.item(i));
-      }
-      console.log("getTodos called with type:", type);
-
-      console.log("All todos:", todos);
-      return todos;
-    } catch (error) {
-      console.error("Error getting todos:", error);
-      throw error;
-    }
-  }
-
-  // todo 완료 상태 바꾸기
-  async todoCompleted(
+  /**
+   * ### async updateTodo(id: number, content?: string, completed?: boolean, targetDate?: dayjs.Dayjs)
+   *
+   * 특정 ID의 투두를 업데이트합니다 (Update).
+   * content, completed, targetDate 중 하나 또는 그 이상을 업데이트할 수 있습니다.
+   *
+   * @param id 업데이트할 투두의 ID
+   * @param content (선택) 업데이트할 새로운 내용
+   * @param completed (선택) 업데이트할 완료 상태
+   * @param targetDate (선택) 업데이트할 새로운 목표 날짜 (dayjs 객체)
+   *
+   * @returns void
+   */
+  async updateTodo(
     id: number,
-    completed: boolean,
-    type: TodoType
+    content?: string,
+    completed?: boolean,
+    targetDate?: dayjs.Dayjs
   ): Promise<void> {
-    const db = await openShifterzDB();
+    const db = await openShifterzDB()
+
     try {
-      await db.executeSql(
-        "UPDATE todos SET completed = ? WHERE id = ? AND type = ?",
-        [completed ? 1 : 0, id, type] // true면 1, false면 0으로 저장
-      );
-      console.log(
-        `Todo with ID ${id} updated to completed: ${completed}, type: ${type}`
-      );
+      const fieldsToUpdate: string[] = []
+      const params: (string | number)[] = []
+
+      if (content !== undefined) {
+        fieldsToUpdate.push('content = ?')
+        params.push(content)
+      }
+
+      if (completed !== undefined) {
+        fieldsToUpdate.push('completed = ?')
+        params.push(completed ? 1 : 0) // boolean을 INTEGER로 변환
+      }
+
+      if (targetDate !== undefined) {
+        fieldsToUpdate.push('targetDate = ?')
+        params.push(targetDate.valueOf()) // 밀리초 단위 타임스탬프로 변환
+      }
+
+      if (fieldsToUpdate.length === 0) {
+        throw new Error('No fields provided to update.')
+      }
+
+      const query = `UPDATE todos SET ${fieldsToUpdate.join(', ')} WHERE id = ?;`
+      params.push(id)
+
+      await db.executeSql(query, params)
+      console.log(`Todo with ID ${id} updated successfully.`)
+      return
     } catch (error) {
-      console.error("Error toggling todo completion:", error);
-      throw error;
+      throw error
     }
   }
 
-  // todo 삭제하기
-  async deleteTodo(id: number, type: TodoType): Promise<void> {
-    const db = await openShifterzDB();
+  /**
+   * ### async deleteTodoById(id: number)
+   *
+   * 특정 ID의 투두를 삭제합니다 (Delete).
+   *
+   * @param id 삭제할 Todo의 ID
+   * @returns void
+   */
+  async deleteTodoById(id: number): Promise<void> {
+    const db = await openShifterzDB()
 
     try {
-      await db.executeSql("DELETE FROM todos WHERE id = ? AND type = ?", [
-        id,
-        type,
-      ]);
-      console.log(`Todo with ID ${id} and type ${type} deleted.`);
+      const query = `DELETE FROM todos WHERE id = ?;`
+      const params = [id]
+
+      await db.executeSql(query, params)
+      console.log(`Todo with ID ${id} deleted successfully.`)
+      return
     } catch (error) {
-      console.error("Error deleting todo:", error);
-      throw error;
+      throw error
+    }
+  }
+
+  /**
+   * ### async deleteAllTodos()
+   *
+   * 모든 투두를 삭제합니다 (Delete All).
+   *
+   * @returns void
+   */
+  async deleteAllTodos(): Promise<void> {
+    const db = await openShifterzDB()
+
+    try {
+      const query = `DELETE FROM todos;`
+      await db.executeSql(query)
+      console.log('All todos deleted successfully.')
+      return
+    } catch (error) {
+      throw error
     }
   }
 }

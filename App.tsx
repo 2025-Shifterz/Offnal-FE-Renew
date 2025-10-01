@@ -9,30 +9,31 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import MyPage from './src/presentation/MyPage/screen/MyPage'
 import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
-import { useEffect } from 'react'
-import { createTodoTable } from './src/infrastructure/local/tables/TodoTable'
+import { useEffect, useState } from 'react'
+import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
+import { ActivityIndicator, View } from 'react-native'
 
 function App() {
   useEffect(() => {
-    const initializeDB = async () => {
+    const init = async () => {
       try {
-        await createTodoTable() // 앱 시작 시 테이블 생성
-        console.log('Todo table created!')
+        await initializeDataBaseTables() // 앱 시작 시 테이블 생성
+        console.log('DB tables created!')
       } catch (error) {
-        console.error('Error creating todo table:', error)
+        console.error('Error creating DB tables:', error)
       }
     }
 
-    initializeDB()
+    init()
   }, [])
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         {/* <MyPage /> */}
         <TodoScreen />
         {/* <MemoScreen /> */}
-      </SafeAreaView>
+      </View>
     </SafeAreaProvider>
   )
 }

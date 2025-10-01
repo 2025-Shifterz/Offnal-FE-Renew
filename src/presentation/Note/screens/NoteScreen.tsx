@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Alert, View } from 'react-native'
 import OneAddButton from '../components/OneAddButton'
 import EmptyPage from '../components/EmptyPage'
-import { Todo, TodoType } from '../../../domain/entities/Todo'
-
 import NoteDayBox from '../components/NoteDayBox'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import {
   addTodoUseCase,
   deleteTodoUseCase,
   getTodosUseCase,
   todoCompletionUseCase,
 } from '../../../infrastructure/di/Dependencies'
-import { createTodoTable } from '../../../infrastructure/local/tables/TodoTable'
+import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+
+export type TodoType = 'todo' | 'memo'
 
 interface NoteScreenProps {
   type: TodoType
@@ -37,7 +37,7 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
     const initializeTodos = async () => {
       try {
         // await createTodoTable() // 데이터베이스 초기화는 App.tsx에서.
-        const loadedTodos = await getTodosUseCase.execute(type) // UseCase 호출
+        const loadedTodos = await getTodosUseCase.execute() // UseCase 호출
         setTodos(loadedTodos)
       } catch (error) {
         console.error('Failed to load todos:', error)
@@ -54,11 +54,9 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
       return
     }
     try {
-      const isoDate = date.toISOString() // 혹은 `format('YYYY-MM-DD')`도 가능
-
-      await addTodoUseCase.execute(newTodoText, type, isoDate)
+      await addTodoUseCase.execute(newTodoText, date)
       setNewTodoText('') // 초기화
-      const updatedTodos = await getTodosUseCase.execute(type)
+      const updatedTodos = await getTodosUseCase.execute()
       setTodos(updatedTodos)
     } catch (error) {
       console.error('Error adding todo: ', error)
@@ -68,8 +66,8 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
   // 할 일 완료
   const handleCompleted = async (id: number, currentCompleted: boolean) => {
     try {
-      await todoCompletionUseCase.execute(id, !currentCompleted, type)
-      const updatedTodos = await getTodosUseCase.execute(type)
+      await todoCompletionUseCase.execute(id, !currentCompleted)
+      const updatedTodos = await getTodosUseCase.execute()
       setTodos(updatedTodos)
     } catch (error) {
       console.error('Error completing todo: ', error)
@@ -79,8 +77,8 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
   // 할 일 삭제
   const handleDeleteTodo = async (id: number) => {
     try {
-      await deleteTodoUseCase.execute(id, type)
-      const updatedTodos = await getTodosUseCase.execute(type)
+      await deleteTodoUseCase.execute(id)
+      const updatedTodos = await getTodosUseCase.execute()
       setTodos(updatedTodos)
     } catch (error) {
       console.error('Error deleting todo:', error)
@@ -107,6 +105,8 @@ const NoteScreen = ({ type, text }: NoteScreenProps) => {
             handleCompleted={handleCompleted}
             handleDeleteTodo={handleDeleteTodo}
             showInput={showInput}
+            currentDate={dayjs()} // 임시로 현재 날짜 사용
+            setCurrentDate={() => {}} // 빈 함수 전달
           />
           <OneAddButton addOneTodo={() => setShowInput(true)} text={text} />
         </View>

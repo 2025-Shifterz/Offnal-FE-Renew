@@ -1,35 +1,41 @@
-// domain 레이어의 TodoRepository 인터페이스를 구현한다.
-// 이 구현체는 DAO (Data Access Object)를 사용하여 실제 데이터베이스 작업을 수행.
-// 데이터 저장 및 조회 로직이 이곳에서 이루어진다.
-
-import { Dayjs } from "dayjs";
-import { Todo, TodoType } from "../../domain/entities/Todo";
-import { TodoRepository } from "../../domain/repositories/TodoRepository";
-import { TodoDao } from "../../infrastructure/local/dao/TodoDao";
+import { Dayjs } from 'dayjs'
+import { Todo } from '../../infrastructure/local/entities/TodoEntity'
+import { TodoRepository } from '../../domain/repositories/TodoRepository'
+import { TodoDao } from '../../infrastructure/local/dao/TodoDao'
 
 export class TodoRepositoryImpl implements TodoRepository {
   constructor(private todoDao: TodoDao) {}
-  async getToDosByDate(targetDate: Dayjs): Promise<Todo[]> {
-    return await this.todoDao.getTodosByDate(targetDate);
+
+  async createTodo(content: string, targetDate: Dayjs): Promise<void> {
+    return await this.todoDao.createTodo(content, targetDate)
   }
 
-  async addTodo(todo: Omit<Todo, "id">): Promise<number> {
-    return await this.todoDao.addTodo(todo);
+  async getAllTodos(): Promise<Todo[]> {
+    return await this.todoDao.getAllTodos()
   }
 
-  async getTodos(type: TodoType): Promise<Todo[]> {
-    return await this.todoDao.getTodos(type);
+  async getTodoById(id: number): Promise<Todo | null> {
+    return await this.todoDao.getTodoById(id)
   }
 
-  async todoCompleted(
+  async getTodosByDate(targetDate: Dayjs): Promise<Todo[]> {
+    return await this.todoDao.getTodosByDate(targetDate)
+  }
+
+  async updateTodo(
     id: number,
-    completed: boolean,
-    type: TodoType
+    content?: string,
+    targetDate?: Dayjs,
+    completed?: boolean
   ): Promise<void> {
-    return await this.todoDao.todoCompleted(id, completed, type);
+    return await this.todoDao.updateTodo(id, content, completed, targetDate)
   }
 
-  async deleteTodo(id: number, type: TodoType): Promise<void> {
-    return await this.todoDao.deleteTodo(id, type);
+  async deleteTodoById(id: number): Promise<void> {
+    return await this.todoDao.deleteTodoById(id)
+  }
+
+  async deleteAllTodos(): Promise<void> {
+    return await this.todoDao.deleteAllTodos()
   }
 }
