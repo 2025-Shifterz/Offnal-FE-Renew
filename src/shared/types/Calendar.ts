@@ -6,4 +6,4 @@ export interface DateAndWorkType {
 }
 
 // 날짜별로 매핑
-export type CalendarDataState = Map<string, DateAndWorkType>
+export type CalendarData = Map<string, DateAndWorkType>

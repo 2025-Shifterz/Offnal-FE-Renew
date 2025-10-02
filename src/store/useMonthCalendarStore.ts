@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import {
   WorkType,
   DateAndWorkType,
-  CalendarDataState,
+  CalendarData,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
 
@@ -19,7 +19,7 @@ const calendarData: CalendarState = new Map([
 */
 
 interface CalendarState {
-  calendarData: CalendarDataState
+  calendarData: CalendarData
   selectedDate: dayjs.Dayjs | null
   isLoading: boolean
 
