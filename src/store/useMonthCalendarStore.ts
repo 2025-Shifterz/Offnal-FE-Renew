@@ -1,8 +1,9 @@
+// 어떤 한 달의 근무 일정 상태
 import { create } from 'zustand'
 import {
   WorkType,
   DateAndWorkType,
-  CalendarState,
+  CalendarDataState,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
 
@@ -17,8 +18,8 @@ const calendarData: CalendarState = new Map([
 
 */
 
-interface CalendarStore {
-  calendarData: CalendarState
+interface CalendarState {
+  calendarData: CalendarDataState
   selectedDate: dayjs.Dayjs | null
   isLoading: boolean
 
@@ -28,7 +29,8 @@ interface CalendarStore {
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   setLoading: (loading: boolean) => void
 }
-export const useCalendarStore = create<CalendarStore>(set => ({
+
+export const useCalendarStore = create<CalendarState>(set => ({
   calendarData: new Map(),
   selectedDate: null,
   isLoading: false,
