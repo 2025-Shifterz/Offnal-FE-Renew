@@ -6,7 +6,7 @@ import CheckedIcon from '../../../assets/icons/checked.svg'
 import dayjs, { Dayjs } from 'dayjs'
 import { Todo } from '../../../domain/entities/Todo'
 import utc from 'dayjs/plugin/utc'
-import GlobalText from '../../../shared/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 dayjs.extend(utc)
 
 // 하루의 할 일 박스

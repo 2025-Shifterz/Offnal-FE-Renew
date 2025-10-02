@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import AddIcon from '../../../assets/icons/todo-add.svg'
-import GlobalText from '../../../shared/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 interface AddButtonProps {
   text: string
