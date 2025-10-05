@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { User, useUserStore } from './useUserStore'
+import { useCalendarStore } from './useCalendarStore'
 
 interface AuthState {
   accessToken: string | null
@@ -21,6 +22,7 @@ export const useAuthStore = create<AuthState>(set => ({
   login: (user, accessToken, refreshToken) => {
     const { updateProfile } = useUserStore.getState()
     updateProfile(user)
+
     set({
       accessToken,
       refreshToken,
@@ -30,7 +32,10 @@ export const useAuthStore = create<AuthState>(set => ({
   // 로그아웃 시
   logout: () => {
     const { updateProfile } = useUserStore.getState()
+    const { clearCalendarData } = useCalendarStore.getState()
+
     updateProfile({ nickname: '', newMember: false, profileUrl: undefined })
+    clearCalendarData() // 캘린더 데이터 초기화
 
     set({
       accessToken: null,

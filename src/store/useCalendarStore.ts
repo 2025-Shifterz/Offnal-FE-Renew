@@ -6,6 +6,7 @@ import {
   DateAndWorkType,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
+import api from '../infrastructure/remote/api/axiosInstance'
 
 /*
 <---- calendarData 형태 ----> 
@@ -23,12 +24,20 @@ interface CalendarState {
   currentYearMonth: { year: number; month: number }
   isLoading: boolean
 
+  // setter
   setCalendarData: (data: DateAndWorkType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   setCurrentYearMonth: (year: number, month: number) => void
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
+
+  // fetch from server
+  fetchCalendarData: (
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ) => Promise<void>
 }
 
 export const useCalendarStore = create<CalendarState>(set => ({
@@ -69,4 +78,19 @@ export const useCalendarStore = create<CalendarState>(set => ({
   clearCalendarData: () => set({ calendarData: {} }),
 
   setLoading: loading => set({ isLoading: loading }),
+
+  // 서버에서 캘린더 데이터 불러오기
+  fetchCalendarData: async (organizationId, startDate, endDate) => {
+    set({ isLoading: true })
+    try {
+      const response = await api.get(
+        `/works/calendar?organizationId=${organizationId}&startDate=${startDate}&endDate=${endDate}`
+      )
+      useCalendarStore.getState().setCalendarData(response.data)
+    } catch (error) {
+      console.error('Error fetching calendar data:', error)
+    } finally {
+      set({ isLoading: false })
+    }
+  },
 }))
