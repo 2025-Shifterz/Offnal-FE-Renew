@@ -1,14 +1,15 @@
 import { create } from 'zustand'
-import { User, useUserStore } from './useUserStore'
+import { useUserStore } from './useUserStore'
 import { useCalendarStore } from './useCalendarStore'
 import { persist } from 'zustand/middleware'
 
 interface AuthState {
+  newMember: boolean
   accessToken: string | null
   refreshToken: string | null
 
   isLoggedIn: () => boolean
-  login: (user: User, accessToken: string, refreshToken: string) => void
+  login: (nickName: string, accessToken: string, refreshToken: string) => void
   logout: () => void
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
@@ -17,6 +18,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
+      newMember: true,
       accessToken: null,
       refreshToken: null,
 
@@ -24,17 +26,25 @@ export const useAuthStore = create<AuthState>()(
       isLoggedIn: () => !!get().refreshToken,
 
       // 로그인 시
-      login: (user, accessToken, refreshToken) => {
+      login: (nickName, accessToken, refreshToken) => {
+        // api 호출 코드 추가 예정..
         const { setUser } = useUserStore.getState()
-        setUser(user)
+        setUser({
+          name: nickName,
+          email: '',
+          phoneNumber: '',
+          profileImageUrl: '',
+        }) // 유저 정보 설정
 
         set({
+          newMember: false,
           accessToken,
           refreshToken,
         })
       },
       // 로그아웃 시
       logout: () => {
+        // api 호출 코드 추가 예정..
         const { clearUser } = useUserStore.getState()
         const { clearCalendarData } = useCalendarStore.getState()
 
@@ -55,6 +65,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage',
       partialize: state => ({
+        newMember: state.newMember,
         refreshToken: state.refreshToken,
       }),
     }

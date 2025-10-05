@@ -6,7 +6,7 @@ import {
   DateAndWorkType,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
-import api from '../infrastructure/remote/api/axiosInstance'
+import { calendarService } from '../infrastructure/di/Dependencies'
 
 /*
 <---- calendarData 형태 ----> 
@@ -32,7 +32,7 @@ interface CalendarState {
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
 
-  // fetch from server
+  // fetch
   fetchCalendarData: (
     organizationId: number,
     startDate: string,
@@ -83,10 +83,12 @@ export const useCalendarStore = create<CalendarState>(set => ({
   fetchCalendarData: async (organizationId, startDate, endDate) => {
     set({ isLoading: true })
     try {
-      const response = await api.get(
-        `/works/calendar?organizationId=${organizationId}&startDate=${startDate}&endDate=${endDate}`
+      const data = await calendarService.getWorkCalendar(
+        organizationId,
+        startDate,
+        endDate
       )
-      useCalendarStore.getState().setCalendarData(response.data)
+      useCalendarStore.getState().setCalendarData(data)
     } catch (error) {
       console.error('Error fetching calendar data:', error)
     } finally {

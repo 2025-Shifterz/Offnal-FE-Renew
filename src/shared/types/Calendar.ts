@@ -1,4 +1,4 @@
-export type WorkType = '주간' | '야간' | '오후' | '휴일'
+export type WorkType = '주간' | '야간' | '오후' | '휴일' | string
 
 export interface WorkTypeInfo {
   workTypeName: WorkType

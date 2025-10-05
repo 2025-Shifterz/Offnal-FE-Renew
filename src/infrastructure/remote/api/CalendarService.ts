@@ -5,14 +5,19 @@ import axios from 'axios'
 import { GetWorkCalendarResponse } from '../response/GetWorkCalendarResponse'
 
 export class CalendarService {
-  getWorkCalendar = async (year: number, month: number) => {
+  getWorkCalendar = async (
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ) => {
     try {
       const response = await api.get<GetWorkCalendarResponse>(
         '/works/calendar',
         {
           params: {
-            year,
-            month,
+            organizationId,
+            startDate,
+            endDate,
           },
         }
       )

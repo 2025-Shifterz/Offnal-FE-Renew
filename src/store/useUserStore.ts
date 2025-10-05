@@ -1,18 +1,24 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { profileService } from '../infrastructure/di/Dependencies'
 
 export interface User {
-  nickname: string
-  newMember: boolean
-  profileUrl?: string
+  name: string
+  email: string
+  phoneNumber: string
+  profileImageUrl: string
 }
 
 export interface UserState {
   user: User | null
 
+  // setter
   setUser: (user: User) => void
   clearUser: () => void
-  updateProfile: (profile: Partial<User>) => void
+
+  // fetch
+  fetchProfile: () => void
+  updateProfile: (profile: User) => void
 }
 
 export const useUserStore = create<UserState>()(
@@ -24,12 +30,19 @@ export const useUserStore = create<UserState>()(
 
       clearUser: () => set({ user: null }),
 
-      // 프로필 업데이트 - nickName 또는 porfileUrl 필요한 필드만 업데이트
-      // useAuthStore.getState().updateProfile({ profileUrl: 'https://example.com/image.png' }); 로 사용가능
-      updateProfile: profile =>
-        set(state => ({
-          user: state.user ? { ...state.user, ...profile } : state.user,
-        })),
+      fetchProfile: async () => {
+        const data = await profileService.getProfile()
+        set(() => ({
+          user: data,
+        }))
+      },
+
+      updateProfile: async (profile: User) => {
+        const data = await profileService.updateProfile(profile)
+        set(() => ({
+          user: data,
+        }))
+      },
     }),
     { name: 'user-storage' }
   )
