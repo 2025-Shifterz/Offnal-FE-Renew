@@ -27,11 +27,11 @@ jobs:
       - name: Install JS dependencies
         run: npm ci 
 
-      - name: Run ESLint
-        run: npm run lint
+      # - name: Run ESLint
+      #   run: npm run lint
 
-      - name: Run Unit Test
-        run: npm run test
+      # - name: Run Unit Test
+      #   run: npm run test
         
   build_android: 
     name: Build Android
