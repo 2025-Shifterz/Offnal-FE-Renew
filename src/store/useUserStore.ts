@@ -1,13 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { profileService } from '../infrastructure/di/Dependencies'
-
-export interface User {
-  name: string
-  email: string
-  phoneNumber: string
-  profileImageUrl: string
-}
+import { User } from '../shared/types/User'
 
 export interface UserState {
   user: User | null

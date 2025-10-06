@@ -1,6 +1,6 @@
-import { Memo } from '../../../store/useMemoStore'
-import { GetMemosResponse } from '../response/GetMemosResponse'
 import api from './axiosInstance'
+import { Memo } from '../../../shared/types/Memo'
+import { GetMemosResponse } from '../response/GetMemosResponse'
 
 export class MemoService {
   async getMemos(filter: string, organizationId: number) {

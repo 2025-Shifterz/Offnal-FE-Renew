@@ -1,12 +1,6 @@
 import { create } from 'zustand'
 import { memoService } from '../infrastructure/di/Dependencies'
-
-export interface Memo {
-  id: number
-  content: string
-  targetDate: string
-  organizationId: number
-}
+import { Memo } from '../shared/types/Memo'
 
 export interface MemoState {
   memos: Memo[]

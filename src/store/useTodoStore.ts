@@ -1,13 +1,6 @@
 import { create } from 'zustand'
 import { todoService } from '../infrastructure/di/Dependencies'
-
-export interface Todo {
-  id: number
-  content: string
-  completed: boolean
-  targetDate: string
-  organizationId: number
-}
+import { Todo } from '../shared/types/Todo'
 
 export interface TodoState {
   todos: Todo[]

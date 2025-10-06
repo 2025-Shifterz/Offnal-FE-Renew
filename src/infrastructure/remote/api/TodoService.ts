@@ -1,6 +1,6 @@
-import { Todo } from '../../../store/useTodoStore'
-import { GetTodosResponse } from '../response/GetTodosResponse'
 import api from './axiosInstance'
+import { Todo } from '../../../shared/types/Todo'
+import { GetTodosResponse } from '../response/GetTodosResponse'
 
 export class TodoService {
   async getTodos(filter: string, organizationId: number) {

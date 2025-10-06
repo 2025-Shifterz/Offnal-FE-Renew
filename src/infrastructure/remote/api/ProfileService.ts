@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { GetProfileResponse } from '../response/GetProfileResponse'
 import api from './axiosInstance'
+import { GetProfileResponse } from '../response/GetProfileResponse'
 import { PatchProfileRequest } from '../request/PatchProfileRequest'
 
 export class ProfileService {

@@ -1,7 +1,7 @@
+import axios from 'axios'
+import api from './axiosInstance'
 import { CreateCalendarRequest } from '../request/CreateWorkCalendarRequest'
 import { UpdateShiftsRequest } from '../request/PatchWorkCalendarReqeust'
-import api from './axiosInstance'
-import axios from 'axios'
 import { GetWorkCalendarResponse } from '../response/GetWorkCalendarResponse'
 
 export class CalendarService {
