@@ -29,14 +29,29 @@ jobs:
 
       - name: Run ESLint
         continue-on-error: true
-        run: npm run lint
+        run: npm run lint -- --format html --output-file eslint-report.html
+
+      - name: Upload ESLint Report 
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with: 
+          name: ESLint Report
+          path: eslint-report.html
 
       - name: Run Unit Test
         continue-on-error: true
         run: npm run test
-        
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-report
+          path: html-report/
+
   build_android: 
     name: Build Android
+    needs: validate
     runs-on: ubuntu-latest
 
     steps:
@@ -63,6 +78,7 @@ jobs:
 
   build_ios:
     name: Build iOS
+    needs: validate
     runs-on: macos-latest
 
     steps:
