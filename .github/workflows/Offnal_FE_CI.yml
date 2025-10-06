@@ -76,6 +76,7 @@ jobs:
       - name: Set up Ruby (with cache)
         uses: ruby/setup-ruby@v1
         with: 
+          ruby-version: '2.7.6'
           bundler-cache: true
 
       - name: Install JS dependencies
