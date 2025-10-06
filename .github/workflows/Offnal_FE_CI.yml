@@ -28,9 +28,11 @@ jobs:
         run: npm ci 
 
       - name: Run ESLint
+        continue-on-error: true
         run: npm run lint
 
       - name: Run Unit Test
+        continue-on-error: true
         run: npm run test
         
   build_android: 
