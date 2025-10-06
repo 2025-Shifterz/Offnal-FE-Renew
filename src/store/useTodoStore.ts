@@ -14,9 +14,9 @@ export interface TodoState {
 
   // fetch
   fetchTodos: (filter: string, organizationId: number) => Promise<void>
-  createTodo: (todo: Todo) => void
-  updateTodo: (todo: Todo) => void
-  deleteTodo: (id: number) => void
+  createTodo: (todo: Todo) => Promise<void>
+  updateTodo: (todo: Todo) => Promise<void>
+  deleteTodo: (id: number) => Promise<void>
 }
 
 export const useTodoStore = create<TodoState>(set => ({

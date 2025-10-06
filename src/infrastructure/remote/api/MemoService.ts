@@ -20,7 +20,7 @@ export class MemoService {
       const response = await api.post('/memos', memo)
       return response.data
     } catch (error) {
-      console.error('Error adding todo:', error)
+      console.error('Error adding memo:', error)
     }
   }
 

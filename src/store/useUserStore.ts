@@ -17,8 +17,8 @@ export interface UserState {
   clearUser: () => void
 
   // fetch
-  fetchProfile: () => void
-  updateProfile: (profile: User) => void
+  fetchProfile: () => Promise<void>
+  updateProfile: (profile: User) => Promise<void>
 }
 
 export const useUserStore = create<UserState>()(

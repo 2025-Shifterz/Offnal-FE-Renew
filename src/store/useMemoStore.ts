@@ -13,9 +13,9 @@ export interface MemoState {
 
   // fetch
   fetchMemos: (filter: string, organizationId: number) => Promise<void>
-  createMemo: (memo: Memo) => void
-  updateMemo: (memo: Memo) => void
-  deleteMemo: (id: number) => void
+  createMemo: (memo: Memo) => Promise<void>
+  updateMemo: (memo: Memo) => Promise<void>
+  deleteMemo: (id: number) => Promise<void>
 }
 
 export const useMemoStore = create<MemoState>(set => ({
