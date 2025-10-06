@@ -79,11 +79,19 @@ jobs:
           ruby-version: '2.7.6'
           bundler-cache: true
 
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
       - name: Install JS dependencies
         run: npm ci
-
+      
       - name: Install iOS dependencies (with CocoaPods)
-        run: cd ios && pod install
+        run: cd ios && bundle exec pod install
 
       - name: Build Offnal iOS (Debug)
         run: |
