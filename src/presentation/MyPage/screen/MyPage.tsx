@@ -1,5 +1,5 @@
 import { ScrollView, Text, View } from 'react-native'
-import GlobalText from '../../../shared/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 const MyPage = () => {
   return (
