@@ -6,7 +6,7 @@ import ArrowLeft from '../../../assets/icons/black-arrow-l.svg'
 import ArrowRight from '../../../assets/icons/black-arrow-r.svg'
 
 import dayjs, { Dayjs } from 'dayjs'
-import GlobalText from '../../../shared/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 const arrowStyle =
   'size-[24px] items-center justify-center rounded-radius-max bg-surface-white'
