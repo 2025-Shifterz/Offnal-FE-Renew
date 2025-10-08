@@ -1,26 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TextInput, TouchableOpacity, View } from 'react-native'
 import DayBoxHeader from './DayBoxHeader'
 import EmptyMessage from './EmptyMessage'
 import CheckedIcon from '../../../assets/icons/checked.svg'
-import dayjs, { Dayjs } from 'dayjs'
-import { Todo } from '../../../domain/entities/Todo'
-import utc from 'dayjs/plugin/utc'
+import { Dayjs } from 'dayjs'
+import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import { Memo } from '../../../infrastructure/local/entities/MemoEntity'
 import GlobalText from '../../../shared/components/GlobalText'
-dayjs.extend(utc)
 
 // 하루의 할 일 박스
 
 interface EmptyDayBoxProps {
   text: string
   type: string
-  todos: Todo[]
+  todos: (Todo | Memo)[]
   newTodoText: string
   setNewTodoText: (text: string) => void
-  handleAddTodo: (date: dayjs.Dayjs) => void
-  handleCompleted: (id: number, completed: boolean, type: string) => void
-  handleDeleteTodo: (id: number, type: string) => void
+  handleAddTodo: (date: Dayjs) => void
+  handleCompleted: (id: number, completed: boolean) => void
+  handleDeleteTodo: (id: number) => void
   showInput: boolean
+  currentDate: Dayjs
+  setCurrentDate: (date: Dayjs) => void
 }
 
 const NoteDayBox = ({
@@ -33,30 +34,20 @@ const NoteDayBox = ({
   handleCompleted,
   handleDeleteTodo,
   showInput,
+  currentDate,
+  setCurrentDate,
 }: EmptyDayBoxProps) => {
-  const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs())
-
-  // 날짜 일치 여부 체크 - utc를 해석해서 로컬로 변환.
-  const isSameDate = (createdAt: string | undefined, current: Dayjs) => {
-    return createdAt && dayjs.utc(createdAt).local().isSame(current, 'day')
-  }
-
-  // 오늘 날짜에 해당하는 todo만 필터링
-  const filteredTodos = todos.filter(todo =>
-    isSameDate(todo.createdAt, currentDate)
-  )
-
   return (
     <View className="w-full rounded-radius-xl">
       <DayBoxHeader currentDate={currentDate} setCurrentDate={setCurrentDate} />
 
       <View className="w-full items-center bg-surface-white">
-        {filteredTodos.length === 0 && !showInput ? (
+        {todos.length === 0 && !showInput ? (
           <View className="py-[27px]">
             <EmptyMessage text={text} iconSize={48} />
           </View>
         ) : (
-          filteredTodos.map(item => (
+          todos.map(item => (
             // 할 일 리스트
             <View
               key={item.id}
@@ -66,10 +57,10 @@ const NoteDayBox = ({
                 <TouchableOpacity
                   testID={`todo-checkbox-${item.id}`}
                   onPress={() =>
-                    handleCompleted(item.id, item.completed, item.type)
+                    handleCompleted(item.id, (item as Todo).completed)
                   }
                 >
-                  {item.completed ? (
+                  {(item as Todo).completed ? (
                     <CheckedIcon />
                   ) : (
                     <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
@@ -78,12 +69,10 @@ const NoteDayBox = ({
               )}
 
               <View className="ml-[10px] flex-1">
-                <GlobalText>{item.text}</GlobalText>
+                <GlobalText>{item.content}</GlobalText>
               </View>
 
-              <TouchableOpacity
-                onPress={() => handleDeleteTodo(item.id, item.type)}
-              >
+              <TouchableOpacity onPress={() => handleDeleteTodo(item.id)}>
                 <GlobalText className="text-sm text-red-500">삭제</GlobalText>
               </TouchableOpacity>
             </View>
