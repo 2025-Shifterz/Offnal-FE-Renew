@@ -4,16 +4,16 @@ export interface WorkTimeDetail {
 }
 
 export interface MonthlyShift {
-  year: string
-  month: string
+  startDate: string
+  endDate: string
   shifts: {
-    [day: string]: string
+    [date: string]: string
   }
 }
 
 export interface CreateCalendarRequest {
   calendarName: string
-  workGroup: string
+  organizationId: number
   workTimes: { [workType: string]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }

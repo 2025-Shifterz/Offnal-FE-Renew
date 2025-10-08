@@ -1,56 +1,73 @@
 import { create } from 'zustand'
-
-interface User {
-  nickname: string
-  newMember: boolean
-  profileUrl?: string
-}
+import { useUserStore } from './useUserStore'
+import { useCalendarStore } from './useCalendarStore'
+import { persist } from 'zustand/middleware'
 
 interface AuthState {
-  user: User | null
+  newMember: boolean
   accessToken: string | null
   refreshToken: string | null
-  isLoggedIn: boolean
 
-  login: (user: User, accessToken: string, refreshToken: string) => void
+  isLoggedIn: () => boolean
+  login: (nickName: string, accessToken: string, refreshToken: string) => void
   logout: () => void
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
-  updateProfile: (profile: Partial<User>) => void
 }
 
-export const useAuthStore = create<AuthState>(set => ({
-  user: null,
-  accessToken: null,
-  refreshToken: null,
-  isLoggedIn: false,
-
-  // 로그인 시
-  login: (user, accessToken, refreshToken) =>
-    set({
-      user,
-      accessToken,
-      refreshToken,
-      isLoggedIn: true,
-    }),
-
-  // 로그아웃 시
-  logout: () =>
-    set({
-      user: null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      newMember: true,
       accessToken: null,
       refreshToken: null,
-      isLoggedIn: false,
+
+      // 로그인 여부
+      isLoggedIn: () => !!get().refreshToken,
+
+      // 로그인 시
+      login: (nickName, accessToken, refreshToken) => {
+        // api 호출 코드 추가 예정..
+        const { setUser } = useUserStore.getState()
+        setUser({
+          name: nickName,
+          email: '',
+          phoneNumber: '',
+          profileImageUrl: '',
+        }) // 유저 정보 설정
+
+        set({
+          newMember: false,
+          accessToken,
+          refreshToken,
+        })
+      },
+      // 로그아웃 시
+      logout: () => {
+        // api 호출 코드 추가 예정..
+        const { clearUser } = useUserStore.getState()
+        const { clearCalendarData } = useCalendarStore.getState()
+
+        clearUser() // 유저 정보 초기화
+        clearCalendarData() // 캘린더 데이터 초기화
+
+        set({
+          accessToken: null,
+          refreshToken: null,
+        })
+      },
+
+      // 토큰만 업데이트
+      setAccessToken: token => set(state => ({ ...state, accessToken: token })),
+      setRefreshToken: token =>
+        set(state => ({ ...state, refreshToken: token })),
     }),
-
-  // 토큰만 업데이트
-  setAccessToken: token => set(state => ({ ...state, accessToken: token })),
-  setRefreshToken: token => set(state => ({ ...state, refreshToken: token })),
-
-  // 프로필 업데이트 - nickName 또는 porfileUrl 필요한 필드만 업데이트
-  // useAuthStore.getState().updateProfile({ profileUrl: 'https://example.com/image.png' }); 로 사용가능
-  updateProfile: profile =>
-    set(state => ({
-      user: state.user ? { ...state.user, ...profile } : state.user,
-    })),
-}))
+    {
+      name: 'auth-storage',
+      partialize: state => ({
+        newMember: state.newMember,
+        refreshToken: state.refreshToken,
+      }),
+    }
+  )
+)

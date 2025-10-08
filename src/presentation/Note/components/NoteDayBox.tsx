@@ -4,9 +4,9 @@ import DayBoxHeader from './DayBoxHeader'
 import EmptyMessage from './EmptyMessage'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import { Dayjs } from 'dayjs'
-import GlobalText from '../../../shared/GlobalText'
 import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 import { Memo } from '../../../infrastructure/local/entities/MemoEntity'
+import GlobalText from '../../../shared/components/GlobalText'
 
 // 하루의 할 일 박스
 
