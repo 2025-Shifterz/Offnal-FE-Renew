@@ -4,7 +4,7 @@ import DayBoxHeader from './DayBoxHeader'
 import EmptyMessage from './EmptyMessage'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import { Dayjs } from 'dayjs'
-import GlobalText from '../../../shared/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 import { Memo } from '../../../infrastructure/local/entities/MemoEntity'
 

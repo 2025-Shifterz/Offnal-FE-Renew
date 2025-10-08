@@ -1,0 +1,122 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Offnal FE CI (Develop)
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  validate: 
+    name: Lint & Test
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout 
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install JS dependencies
+        run: npm ci 
+
+      - name: Run ESLint
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Upload ESLint Report 
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with: 
+          name: eslint-report
+          path: eslint-report.html
+
+      - name: Run Unit Test
+        continue-on-error: true
+        run: npm run test
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-report
+          path: html-report/
+
+  build_android: 
+    name: Build Android
+    needs: validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Set up JDK Version 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install JS dependencies
+        run: npm ci 
+
+      - name: Build Offnal Android (Debug)
+        run: cd android && ./gradlew assembleDebug
+
+  build_ios:
+    name: Build iOS
+    needs: validate
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: '24'
+          cache: npm 
+
+      - name: Set up Ruby (with cache)
+        uses: ruby/setup-ruby@v1
+        with: 
+          ruby-version: '3.4.4'
+          bundler-cache: true
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install JS dependencies
+        run: npm ci
+      
+      - name: Install iOS dependencies (with CocoaPods)
+        run: cd ios && bundle exec pod install
+
+      - name: Build Offnal iOS (Debug)
+        run: |
+          cd ios
+          xcodebuild -workspace ShifterzNew.xcworkspace \
+                     -scheme ShifterzNew \
+                     -sdk iphonesimulator \
+                     -configuration Debug \
+                     clean build
+
