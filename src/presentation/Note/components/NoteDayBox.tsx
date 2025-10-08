@@ -5,8 +5,8 @@ import EmptyMessage from './EmptyMessage'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import { Dayjs } from 'dayjs'
 import GlobalText from '../../../shared/components/GlobalText'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
-import { Memo } from '../../../infrastructure/local/entities/MemoEntity'
+import { Todo } from '../../../domain/models/Todo'
+import { Memo } from '../../../domain/models/Memo'
 
 // 하루의 할 일 박스
 
@@ -57,10 +57,10 @@ const NoteDayBox = ({
                 <TouchableOpacity
                   testID={`todo-checkbox-${item.id}`}
                   onPress={() =>
-                    handleCompleted(item.id, (item as Todo).completed)
+                    handleCompleted(item.id, (item as Todo).isCompleted)
                   }
                 >
-                  {(item as Todo).completed ? (
+                  {(item as Todo).isCompleted ? (
                     <CheckedIcon />
                   ) : (
                     <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
