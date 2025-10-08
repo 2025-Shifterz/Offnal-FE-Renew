@@ -10,4 +10,16 @@ module.exports = {
     '^react-native-sqlite-storage$':
       '<rootDir>/__mocks__/react-native-sqlite-storage.js',
   },
+
+  reporters: [
+    'default',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './html-report',
+        filename: 'test-report.html',
+        expand: true,
+      },
+    ],
+  ],
 }
