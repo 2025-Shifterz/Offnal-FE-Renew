@@ -10,9 +10,17 @@ export class CalendarRepositoryImpl implements CalendarRepository {
     // TODO("Method not implemented.")
   }
 
-  async getCalendar(year: number, month: number): Promise<CalendarEntity[]> {
+  async getCalendar(
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ): Promise<CalendarEntity[]> {
     try {
-      const response = await this.calendarService.getWorkCalendar(year, month)
+      const response = await this.calendarService.getWorkCalendar(
+        organizationId,
+        startDate,
+        endDate
+      )
       const result = toCalendarDataModel(response)
 
       return result

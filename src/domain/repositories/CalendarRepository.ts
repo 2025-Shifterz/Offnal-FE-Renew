@@ -3,7 +3,11 @@ import { CalendarEntity } from '../../data/models/CalendarEntity'
 export interface CalendarRepository {
   createCalendar(): Promise<void>
 
-  getCalendar(year: number, month: number): Promise<CalendarEntity[]>
+  getCalendar(
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ): Promise<CalendarEntity[]>
 
   updateWorkCalendar(
     year: number,
