@@ -1,12 +1,11 @@
-import { Memo } from '../../domain/models/Memo'
+import { Memo } from '../../infrastructure/local/entities/MemoEntity'
 import { MemoEntity } from '../models/MemoEntity'
 
-export const toMemoDomain = (entity: MemoEntity): Memo => ({
+export const toMemoDataModel = (entity: Memo): MemoEntity => ({
   id: entity.id,
   content: entity.content,
 })
 
-export const fromMemoDomain = (domain: Memo): MemoEntity => ({
-  id: domain.id,
-  content: domain.content,
-})
+export const toMemoDataModelArray = (entities: Memo[]): MemoEntity[] => {
+  return entities.map(entity => toMemoDataModel(entity))
+}

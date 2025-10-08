@@ -2,6 +2,8 @@ import { Dayjs } from 'dayjs'
 import { Todo } from '../../infrastructure/local/entities/TodoEntity'
 import { TodoRepository } from '../../domain/repositories/TodoRepository'
 import { TodoDao } from '../../infrastructure/local/dao/TodoDao'
+import { TodoEntity } from '../models/TodoEntity'
+import { toTodoDataModel, toTodoDataModelArray } from '../mappers/TodoMapper'
 
 export class TodoRepositoryImpl implements TodoRepository {
   constructor(private todoDao: TodoDao) {}
@@ -10,16 +12,45 @@ export class TodoRepositoryImpl implements TodoRepository {
     return await this.todoDao.createTodo(content, targetDate)
   }
 
-  async getAllTodos(): Promise<Todo[]> {
-    return await this.todoDao.getAllTodos()
+  async getAllTodos(): Promise<TodoEntity[]> {
+    try {
+      const todos = await this.todoDao.getAllTodos()
+      const result = toTodoDataModelArray(todos)
+
+      return result
+    } catch (error) {
+      throw error
+    }
   }
 
-  async getTodoById(id: number): Promise<Todo | null> {
-    return await this.todoDao.getTodoById(id)
+  async getTodoById(id: number): Promise<TodoEntity | null> {
+    try {
+      const todo = await this.todoDao.getTodoById(id)
+      if (!todo) {
+        return null
+      }
+      const result = toTodoDataModel(todo)
+
+      return result
+    } catch (error) {
+      throw error
+    }
   }
 
-  async getTodosByDate(targetDate: Dayjs): Promise<Todo[]> {
-    return await this.todoDao.getTodosByDate(targetDate)
+  async getTodosByDate(targetDate: Dayjs): Promise<TodoEntity[]> {
+    try {
+      const todos = await this.todoDao.getTodosByDate(targetDate)
+
+      if (!todos) {
+        return []
+      }
+
+      const result = toTodoDataModelArray(todos)
+
+      return result
+    } catch (error) {
+      throw error
+    }
   }
 
   async updateTodo(

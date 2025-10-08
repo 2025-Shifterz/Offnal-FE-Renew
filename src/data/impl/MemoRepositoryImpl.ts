@@ -1,24 +1,36 @@
 import dayjs from 'dayjs'
 import { MemoRepository } from '../../domain/repositories/MemoRepository'
 import { MemoDao } from '../../infrastructure/local/dao/MemoDao'
-import { Memo } from '../../infrastructure/local/entities/MemoEntity'
+import { MemoEntity } from '../models/MemoEntity'
+import { toMemoDataModelArray } from '../mappers/MemoMapper'
 
 export class MemoRepositoryImpl implements MemoRepository {
   constructor(private memoDao: MemoDao) {}
 
-  async getAllMemos(): Promise<Memo[]> {
-    return this.memoDao.getAllMemos()
+  async getAllMemos(): Promise<MemoEntity[]> {
+    try {
+      const memos = await this.memoDao.getAllMemos()
+      const result = toMemoDataModelArray(memos)
+
+      return result
+    } catch (error) {
+      throw error
+    }
   }
 
-  async getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]> {
-    return this.memoDao.getMemosByDate(targetDate)
+  async getMemosByDate(targetDate: dayjs.Dayjs): Promise<MemoEntity[]> {
+    try {
+      const memos = await this.memoDao.getMemosByDate(targetDate)
+      const result = toMemoDataModelArray(memos)
+
+      return result
+    } catch (error) {
+      throw error
+    }
   }
 
-  async addMemo(
-    memo: Omit<Memo, 'id'>,
-    targetDate: dayjs.Dayjs
-  ): Promise<void> {
-    return this.memoDao.createMemo(memo.content, targetDate)
+  async addMemo(content: string, targetDate: dayjs.Dayjs): Promise<void> {
+    return this.memoDao.createMemo(content, targetDate)
   }
 
   async updateMemo(
