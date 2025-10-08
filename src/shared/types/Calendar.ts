@@ -1,9 +1,13 @@
-export type WorkType = '주간' | '야간' | '오후' | '휴일'
+export type WorkType = '주간' | '야간' | '오후' | '휴일' | string
 
-export interface DateAndWorkType {
-  date: string // 'YYYY-MM-DD'
+export interface WorkTypeInfo {
   workTypeName: WorkType
 }
 
-// 날짜별로 매핑
-export type CalendarData = Map<string, DateAndWorkType>
+// "YYYY-MM-DD" → WorkTypeInfo 형태의 매핑
+export type CalendarData = Record<string, WorkTypeInfo>
+
+export interface DateAndWorkType {
+  date: string // "YYYY-MM-DD"
+  workTypeName: WorkType
+}

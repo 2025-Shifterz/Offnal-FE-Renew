@@ -3,15 +3,12 @@ module.exports = {
   plugins: [
     'react-native-worklets/plugin',
     [
-      'module:react-native-dotenv',
+      'babel-plugin-dotenv-import',
       {
         moduleName: '@env',
         path: '.env',
-        blocklist: null,
-        allowlist: null,
         safe: false,
         allowUndefined: true,
-        verbose: false,
       },
     ],
   ],

@@ -1,3 +1,5 @@
+import { WorkType } from '../../../shared/types/Calendar'
+
 export interface GetWorkCalendarResponse {
   code: string
   message: string
@@ -5,6 +7,6 @@ export interface GetWorkCalendarResponse {
 }
 
 export interface GetWorkCalendarResponseData {
-  day: string
-  workTypeName: '주간' | '오후' | '야간' | '휴일' | string
+  date: string
+  workTypeName: WorkType
 }
