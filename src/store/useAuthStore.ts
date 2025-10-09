@@ -27,14 +27,14 @@ export const useAuthStore = create<AuthState>()(
 
       // 로그인 시
       login: (nickName, accessToken, refreshToken) => {
-        // api 호출 코드 추가 예정..
+        // 유저 정보 설정
         const { setUser } = useUserStore.getState()
         setUser({
           name: nickName,
           email: '',
           phoneNumber: '',
           profileImageUrl: '',
-        }) // 유저 정보 설정
+        })
 
         set({
           newMember: false,
@@ -44,7 +44,6 @@ export const useAuthStore = create<AuthState>()(
       },
       // 로그아웃 시
       logout: () => {
-        // api 호출 코드 추가 예정..
         const { clearUser } = useUserStore.getState()
         const { clearCalendarData } = useCalendarStore.getState()
 
