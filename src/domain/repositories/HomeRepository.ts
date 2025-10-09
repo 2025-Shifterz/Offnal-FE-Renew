@@ -1,5 +1,5 @@
-import { HomeEntity } from '../../data/models/HomeEntity'
+import { Home } from '../models/Home'
 
 export interface HomeRepository {
-  getHomeData(): Promise<HomeEntity>
+  getHomeData(): Promise<Home>
 }

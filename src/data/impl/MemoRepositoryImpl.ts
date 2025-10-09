@@ -1,22 +1,22 @@
 import dayjs from 'dayjs'
 import { MemoRepository } from '../../domain/repositories/MemoRepository'
 import { MemoDao } from '../../infrastructure/local/dao/MemoDao'
-import { MemoEntity } from '../models/MemoEntity'
-import { toMemoDataModelArray } from '../mappers/MemoMapper'
+import { toMemoDomainArray } from '../mappers/MemoMapper'
+import { Memo } from '../../domain/models/Memo'
 
 export class MemoRepositoryImpl implements MemoRepository {
   constructor(private memoDao: MemoDao) {}
 
-  async getAllMemos(): Promise<MemoEntity[]> {
+  async getAllMemos(): Promise<Memo[]> {
     const memos = await this.memoDao.getAllMemos()
-    const result = toMemoDataModelArray(memos)
+    const result = toMemoDomainArray(memos)
 
     return result
   }
 
-  async getMemosByDate(targetDate: dayjs.Dayjs): Promise<MemoEntity[]> {
+  async getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]> {
     const memos = await this.memoDao.getMemosByDate(targetDate)
-    const result = toMemoDataModelArray(memos)
+    const result = toMemoDomainArray(memos)
 
     return result
   }

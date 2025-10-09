@@ -1,12 +1,12 @@
+import { Todo as TodoDomain } from '../../domain/models/Todo'
 import { Todo } from '../../infrastructure/local/entities/TodoEntity'
-import { TodoEntity } from '../models/TodoEntity'
 
-export const toTodoDataModel = (entity: Todo): TodoEntity => ({
+export const toTodoDomain = (entity: Todo): TodoDomain => ({
   id: entity.id,
   content: entity.content,
   isCompleted: entity.completed,
 })
 
-export const toTodoDataModelArray = (entities: Todo[]): TodoEntity[] => {
-  return entities.map(entity => toTodoDataModel(entity))
+export const toTodosDomain = (entities: Todo[]): TodoDomain[] => {
+  return entities.map(entity => toTodoDomain(entity))
 }

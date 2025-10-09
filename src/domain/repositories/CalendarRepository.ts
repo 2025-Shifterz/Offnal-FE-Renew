@@ -1,4 +1,4 @@
-import { CalendarEntity } from '../../data/models/CalendarEntity'
+import { Calendar } from '../models/Calendar'
 
 export interface CalendarRepository {
   createCalendar(): Promise<void>
@@ -7,7 +7,7 @@ export interface CalendarRepository {
     organizationId: number,
     startDate: string,
     endDate: string
-  ): Promise<CalendarEntity[]>
+  ): Promise<Calendar[]>
 
   updateWorkCalendar(
     year: number,

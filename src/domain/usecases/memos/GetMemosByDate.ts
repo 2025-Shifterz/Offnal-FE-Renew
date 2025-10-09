@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { MemoRepository } from '../../repositories/MemoRepository'
-import { Memo } from '../../../infrastructure/local/entities/MemoEntity'
+import { Memo } from '../../models/Memo'
 
 export class GetMemosByDateUseCase {
   constructor(private memoRepository: MemoRepository) {}

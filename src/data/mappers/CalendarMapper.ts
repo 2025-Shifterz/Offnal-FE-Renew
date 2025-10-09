@@ -1,9 +1,9 @@
+import { Calendar } from '../../domain/models/Calendar'
 import { GetWorkCalendarResponseData } from '../../infrastructure/remote/response/GetWorkCalendarResponse'
-import { CalendarEntity } from '../models/CalendarEntity'
 
-export const toCalendarDataModel = (
+export const toCalendarDomain = (
   response: GetWorkCalendarResponseData[]
-): CalendarEntity[] => {
+): Calendar[] => {
   return response.map(data => ({
     day: data.day,
     shiftType: data.workTypeName,

@@ -1,13 +1,10 @@
-import {
-  OCRResultEntity,
-  OCRResultItemEntity,
-} from '../models/OCRResultItemEntity'
+import { OcrResult, OcrResultItem } from '../../domain/models/OcrResult'
 
-export const toOCRResultDataModel = (
+export const toOcrResultDomain = (
   data: [string, { [day: string]: string }][]
-): OCRResultEntity => {
+): OcrResult => {
   return data.map(
-    ([category, schedule]): OCRResultItemEntity => ({
+    ([category, schedule]): OcrResultItem => ({
       category,
       schedule,
     })

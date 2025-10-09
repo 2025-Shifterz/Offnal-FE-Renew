@@ -1,14 +1,14 @@
 import dayjs from 'dayjs'
-import { TodoEntity } from '../../data/models/TodoEntity'
+import { Todo } from '../models/Todo'
 
 export interface TodoRepository {
   createTodo(content: string, targetDate: dayjs.Dayjs): Promise<void>
 
-  getAllTodos(): Promise<TodoEntity[]>
+  getAllTodos(): Promise<Todo[]>
 
-  getTodoById(id: number): Promise<TodoEntity | null>
+  getTodoById(id: number): Promise<Todo | null>
 
-  getTodosByDate(targetDate: dayjs.Dayjs): Promise<TodoEntity[]>
+  getTodosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]>
 
   updateTodo(
     id: number,

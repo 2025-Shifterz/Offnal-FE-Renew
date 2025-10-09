@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
-import { MemoEntity } from '../../data/models/MemoEntity'
+import { Memo } from '../models/Memo'
 
 export interface MemoRepository {
-  getAllMemos(): Promise<MemoEntity[]>
+  getAllMemos(): Promise<Memo[]>
 
-  getMemosByDate(targetDate: dayjs.Dayjs): Promise<MemoEntity[]>
+  getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]>
 
   addMemo(content: string, targetDate: dayjs.Dayjs): Promise<void>
 

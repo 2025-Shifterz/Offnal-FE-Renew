@@ -1,7 +1,7 @@
+import { Calendar } from '../../domain/models/Calendar'
 import { CalendarRepository } from '../../domain/repositories/CalendarRepository'
 import { CalendarService } from '../../infrastructure/remote/api/CalendarService'
-import { toCalendarDataModel } from '../mappers/CalendarMapper'
-import { CalendarEntity } from '../models/CalendarEntity'
+import { toCalendarDomain } from '../mappers/CalendarMapper'
 
 export class CalendarRepositoryImpl implements CalendarRepository {
   constructor(private calendarService: CalendarService) {}
@@ -14,14 +14,14 @@ export class CalendarRepositoryImpl implements CalendarRepository {
     organizationId: number,
     startDate: string,
     endDate: string
-  ): Promise<CalendarEntity[]> {
+  ): Promise<Calendar[]> {
     try {
       const response = await this.calendarService.getWorkCalendar(
         organizationId,
         startDate,
         endDate
       )
-      const result = toCalendarDataModel(response)
+      const result = toCalendarDomain(response)
 
       return result
     } catch (error) {

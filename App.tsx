@@ -5,13 +5,13 @@
  * @format
  */
 import './global.css'
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import MyPage from './src/presentation/MyPage/screen/MyPage'
 import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
-import { useEffect, useState } from 'react'
-import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
-import { ActivityIndicator, View } from 'react-native'
+import { useEffect } from 'react'
+import { initializeDataBaseTables } from './src/infrastructure/local/Initialization'
+import { View } from 'react-native'
 
 function App() {
   useEffect(() => {

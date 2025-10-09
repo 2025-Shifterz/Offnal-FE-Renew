@@ -1,15 +1,11 @@
 import dayjs from 'dayjs'
 import { TodoRepository } from '../../repositories/TodoRepository'
-import { toTodoDomain } from '../../mappers/TodoMapper'
 import { Todo } from '../../models/Todo'
 
 export class GetTodosByDateUseCase {
   constructor(private todoRepository: TodoRepository) {}
 
   async execute(targetDate: dayjs.Dayjs): Promise<Todo[]> {
-    const todos = await this.todoRepository.getTodosByDate(targetDate)
-    const result = todos.map(toTodoDomain)
-
-    return result
+    return await this.todoRepository.getTodosByDate(targetDate)
   }
 }

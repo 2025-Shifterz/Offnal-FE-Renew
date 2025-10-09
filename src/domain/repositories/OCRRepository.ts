@@ -1,6 +1,6 @@
 import { Asset } from 'react-native-image-picker'
-import { OCRResultEntity } from '../../data/models/OCRResultItemEntity'
+import { OcrResult } from '../models/OcrResult'
 
 export interface OCRRepository {
-  getOcrResult(asset: Asset): Promise<OCRResultEntity | undefined>
+  getOcrResult(asset: Asset): Promise<OcrResult | undefined>
 }
