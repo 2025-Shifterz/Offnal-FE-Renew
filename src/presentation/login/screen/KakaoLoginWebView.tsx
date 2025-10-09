@@ -20,8 +20,8 @@ const KakaoLoginWebView = () => {
   useEffect(() => {
     const fetchLoginUrl = async () => {
       try {
-        const res = await authService.getLoginUrl()
-        setLoginUrl(res.data.location)
+        const data = await authService.getLoginUrl()
+        setLoginUrl(data)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')
         console.error('Failed to fetch login URL:', err)
