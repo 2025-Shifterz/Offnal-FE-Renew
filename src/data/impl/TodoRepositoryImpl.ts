@@ -13,44 +13,27 @@ export class TodoRepositoryImpl implements TodoRepository {
   }
 
   async getAllTodos(): Promise<TodoEntity[]> {
-    try {
-      const todos = await this.todoDao.getAllTodos()
-      const result = toTodoDataModelArray(todos)
+    const todos = await this.todoDao.getAllTodos()
+    const result = toTodoDataModelArray(todos)
 
-      return result
-    } catch (error) {
-      throw error
-    }
+    return result
   }
 
   async getTodoById(id: number): Promise<TodoEntity | null> {
-    try {
-      const todo = await this.todoDao.getTodoById(id)
-      if (!todo) {
-        return null
-      }
-      const result = toTodoDataModel(todo)
-
-      return result
-    } catch (error) {
-      throw error
+    const todo = await this.todoDao.getTodoById(id)
+    if (!todo) {
+      return null
     }
+    const result = toTodoDataModel(todo)
+
+    return result
   }
 
   async getTodosByDate(targetDate: Dayjs): Promise<TodoEntity[]> {
-    try {
-      const todos = await this.todoDao.getTodosByDate(targetDate)
+    const todos = await this.todoDao.getTodosByDate(targetDate)
+    const result = toTodoDataModelArray(todos)
 
-      if (!todos) {
-        return []
-      }
-
-      const result = toTodoDataModelArray(todos)
-
-      return result
-    } catch (error) {
-      throw error
-    }
+    return result
   }
 
   async updateTodo(

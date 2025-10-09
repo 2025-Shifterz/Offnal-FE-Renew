@@ -8,25 +8,17 @@ export class MemoRepositoryImpl implements MemoRepository {
   constructor(private memoDao: MemoDao) {}
 
   async getAllMemos(): Promise<MemoEntity[]> {
-    try {
-      const memos = await this.memoDao.getAllMemos()
-      const result = toMemoDataModelArray(memos)
+    const memos = await this.memoDao.getAllMemos()
+    const result = toMemoDataModelArray(memos)
 
-      return result
-    } catch (error) {
-      throw error
-    }
+    return result
   }
 
   async getMemosByDate(targetDate: dayjs.Dayjs): Promise<MemoEntity[]> {
-    try {
-      const memos = await this.memoDao.getMemosByDate(targetDate)
-      const result = toMemoDataModelArray(memos)
+    const memos = await this.memoDao.getMemosByDate(targetDate)
+    const result = toMemoDataModelArray(memos)
 
-      return result
-    } catch (error) {
-      throw error
-    }
+    return result
   }
 
   async addMemo(content: string, targetDate: dayjs.Dayjs): Promise<void> {

@@ -7,13 +7,9 @@ export class GetMemosByDateUseCase {
   constructor(private memoRepository: MemoRepository) {}
 
   async execute(targetDate: dayjs.Dayjs): Promise<Memo[]> {
-    try {
-      const memos = await this.memoRepository.getMemosByDate(targetDate)
-      const result = memos.map(toMemoDomain)
+    const memos = await this.memoRepository.getMemosByDate(targetDate)
+    const result = memos.map(toMemoDomain)
 
-      return result
-    } catch (error) {
-      throw error
-    }
+    return result
   }
 }

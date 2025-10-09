@@ -8,7 +8,7 @@ import { HomeRepositoryImpl } from '../../data/impl/HomeRepositoryImpl'
 import { CreateTodoUseCase } from '../../domain/usecases/todos/CreateTodoUseCase'
 import { DeleteTodoUseCase } from '../../domain/usecases/todos/DeleteTodoByIdUseCase'
 import { GetMemosByDateUseCase } from '../../domain/usecases/memos/GetMemosByDateUseCase'
-import { GetTodosUseCase } from '../../domain/usecases/todos/GetAllTodosUseCase'
+import { GetAllTodosUseCase } from '../../domain/usecases/todos/GetAllTodosUseCase'
 import { GetTodosByDateUseCase } from '../../domain/usecases/todos/GetTodosByDateUseCase'
 import { UpdateTodoStateCompleteUseCase } from '../../domain/usecases/todos/UpdateTodoStateCompleteUseCase'
 
@@ -18,7 +18,7 @@ import { MemoDao } from '../local/dao/MemoDao'
 import { TodoDao } from '../local/dao/TodoDao'
 
 import { HomeService } from '../remote/api/HomeService'
-import { FastAPIService } from '../remote/api/FastAPIService'
+import { OcrService } from '../remote/api/OcrService'
 import { CalendarService } from '../remote/api/CalendarService'
 import { MemoService } from '../remote/api/MemoService'
 import { ProfileService } from '../remote/api/ProfileService'
@@ -27,7 +27,7 @@ import { TodoService } from '../remote/api/TodoService'
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
 const memoDao = new MemoDao()
-const ocrService = new FastAPIService()
+const ocrService = new OcrService()
 export const calendarService = new CalendarService()
 const homeService = new HomeService()
 export const profileService = new ProfileService()
@@ -43,7 +43,7 @@ export const homeRepository = new HomeRepositoryImpl(homeService)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
-export const getTodosUseCase = new GetTodosUseCase(todoRepository)
+export const getTodosUseCase = new GetAllTodosUseCase(todoRepository)
 export const todoCompletionUseCase = new UpdateTodoStateCompleteUseCase(
   todoRepository
 )

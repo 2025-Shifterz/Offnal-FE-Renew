@@ -1,5 +1,5 @@
 export interface TodoEntity {
-  id: number;
-  content: string;
-  isCompleted: boolean;
+  id: number
+  content: string
+  isCompleted: boolean
 }

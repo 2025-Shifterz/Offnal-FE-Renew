@@ -1,8 +1,8 @@
 import { Routine } from './Routine'
 
 export interface Home {
-  yesterdayTuype: string
+  yesterdayType: string
   todayType: string
   tomorrowType: string
-  toadyRoutine: Routine
+  todayRoutine: Routine
 }

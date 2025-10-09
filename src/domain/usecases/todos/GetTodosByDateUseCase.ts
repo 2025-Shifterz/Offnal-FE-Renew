@@ -7,13 +7,9 @@ export class GetTodosByDateUseCase {
   constructor(private todoRepository: TodoRepository) {}
 
   async execute(targetDate: dayjs.Dayjs): Promise<Todo[]> {
-    try {
-      const todos = await this.todoRepository.getTodosByDate(targetDate)
-      const result = todos.map(toTodoDomain)
+    const todos = await this.todoRepository.getTodosByDate(targetDate)
+    const result = todos.map(toTodoDomain)
 
-      return result
-    } catch (error) {
-      throw error
-    }
+    return result
   }
 }
