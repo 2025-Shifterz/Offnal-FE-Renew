@@ -1,5 +1,5 @@
 import React from 'react'
-import NoTodoIcon from '../../../assets/icons/noTodo.svg'
+import NoTodoIcon from '../../../assets/icons/NoTodo.svg'
 
 import { View } from 'react-native'
 import { twMerge } from 'tailwind-merge'

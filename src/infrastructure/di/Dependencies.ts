@@ -16,6 +16,11 @@ import { CalendarService } from '../remote/api/CalendarService'
 import { MemoService } from '../remote/api/MemoService'
 import { ProfileService } from '../remote/api/ProfileService'
 import { TodoService } from '../remote/api/TodoService'
+import { AuthService } from '../remote/api/AuthService'
+import { UserRepositoryImpl } from '../../data/impl/UserRepositoryImpl'
+import { HomeService } from '../remote/api/HomeService'
+import { WorkCalendarRepositoryImpl } from '../../data/impl/CalendarRepositoryImpl'
+import { FastAPIService } from '../remote/api/FastAPIService'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -24,11 +29,19 @@ const memoDao = new MemoDao()
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
 export const todoRepository = new TodoRepositoryImpl(todoDao)
 export const memoRepository = new MemoRepositoryImpl(memoDao)
+export const userRepository = new UserRepositoryImpl()
+export const homeService = new HomeService()
+export const fastAPIService = new FastAPIService()
 
 export const calendarService = new CalendarService()
 export const profileService = new ProfileService()
+export const workCalendarRepository = new WorkCalendarRepositoryImpl(
+  calendarService
+)
+
 export const todoService = new TodoService()
 export const memoService = new MemoService()
+export const authService = new AuthService()
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
