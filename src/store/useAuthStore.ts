@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { useUserStore } from './useUserStore'
 import { useCalendarStore } from './useCalendarStore'
 import { persist } from 'zustand/middleware'
+import { User } from '../shared/types/User'
 
 interface AuthState {
   newMember: boolean
@@ -9,7 +10,7 @@ interface AuthState {
   refreshToken: string | null
 
   isLoggedIn: () => boolean
-  login: (nickName: string, accessToken: string, refreshToken: string) => void
+  login: (user: User, accessToken: string, refreshToken: string) => void
   logout: () => void
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
@@ -26,14 +27,14 @@ export const useAuthStore = create<AuthState>()(
       isLoggedIn: () => !!get().refreshToken,
 
       // 로그인 시
-      login: (nickName, accessToken, refreshToken) => {
+      login: (user, accessToken, refreshToken) => {
         // 유저 정보 설정
         const { setUser } = useUserStore.getState()
         setUser({
-          name: nickName,
-          email: '',
-          phoneNumber: '',
-          profileImageUrl: '',
+          memberName: user.memberName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          profileImageUrl: user.profileImageUrl,
         })
 
         set({
@@ -66,6 +67,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: state => ({
         newMember: state.newMember,
         refreshToken: state.refreshToken,
+        accessToken: state.accessToken,
       }),
     }
   )

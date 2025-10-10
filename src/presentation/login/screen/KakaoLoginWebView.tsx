@@ -2,11 +2,13 @@ import React, { useEffect, useState, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { View, ActivityIndicator, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
-import EncryptedStorage from 'react-native-encrypted-storage'
 import { API_URL } from '@env'
 import { useNavigation } from '@react-navigation/native'
 import { loginNavigation } from '../../../navigation/types'
 import { authService } from '../../../infrastructure/di/Dependencies'
+import { useAuthStore } from '../../../store/useAuthStore'
+import { useUserStore } from '../../../store/useUserStore'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const REDIRECT_URI = `${API_URL}/callback`
 
@@ -45,32 +47,56 @@ const KakaoLoginWebView = () => {
       setShouldHideWebView(true)
 
       const data = JSON.parse(event.nativeEvent.data)
-      Alert.alert('KakaoLoginWebView - handleMessage data:', data)
       console.log('KakaoLoginWebView - handleMessage data:', data)
 
       const accessToken = data.data?.accessToken
       const refreshToken = data.data?.refreshToken
-      const nickname = data.data?.nickname
-      const newMember = data.data?.newMember
+      const memberName = data.data?.memberName
+      const email = data.data?.email
+      const profileImageUrl = data.data?.profileImageUrl
 
       if (!accessToken || !refreshToken) {
         Alert.alert('토큰 없음', '다시 로그인해주세요.')
         return
       }
 
-      await EncryptedStorage.setItem('accessToken', accessToken)
-      await EncryptedStorage.setItem('refreshToken', refreshToken)
-      await EncryptedStorage.setItem('nickname', nickname)
-      console.log('🟢 accessToken:', accessToken)
-      console.log('🟢 refreshToken:', refreshToken)
-      console.log('🟢 nickname:', nickname)
+      // Zustand 상태에 로그인 정보 저장 (AsyncStorage에 persist됨)
+      const { login } = useAuthStore.getState()
+      login(
+        {
+          memberName: memberName,
+          email: email,
+          phoneNumber: '',
+          profileImageUrl: profileImageUrl,
+        },
+        accessToken,
+        refreshToken
+      )
+
+      // store에 저장되는지 확인
+      const { user } = useUserStore.getState()
+      console.log('Stored user in Zustand:', user)
+      const {
+        accessToken: storedAccessToken,
+        refreshToken: storedRefreshToken,
+      } = useAuthStore.getState()
+      console.log('Stored auth in Zustand:', {
+        accessToken: storedAccessToken,
+        refreshToken: storedRefreshToken,
+      })
+
+      // persist로 AsyncStorage에 저장되었는지 확인
+      setTimeout(async () => {
+        const stored = await AsyncStorage.getItem('auth-storage')
+        console.log('🧩 Stored Zustand data after login:', stored)
+      }, 50)
 
       // TODO: 처음 로그인 아닐 때 홈 화면으로 이동한느거 필요함
-      if (newMember == false) {
-        Alert.alert('로그인 성공', `${nickname}님 환영합니다!`)
+      if (memberName == false) {
+        Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
         console.log('🟢 accessToken:', accessToken)
         console.log('🟢 refreshToken:', refreshToken)
-        console.log('🟢 nickname:', nickname)
+        console.log('🟢 memberName:', memberName)
         navigation.replace('Tabs')
       }
 

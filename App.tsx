@@ -23,12 +23,9 @@ function App() {
     const init = async () => {
       try {
         await initializeDataBaseTables() // 앱 시작 시 테이블 생성
-        console.log('DB tables created | Auth store rehydrated')
+        console.log('DB tables created')
       } catch (error) {
-        console.error(
-          'Error creating DB tables | Auth store rehydration:',
-          error
-        )
+        console.error('Error creating DB tables', error)
       } finally {
         setIsReady(true)
       }
