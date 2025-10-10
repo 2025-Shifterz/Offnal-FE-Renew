@@ -9,7 +9,7 @@ interface MenuProps {
 const InformationMenuContainer = ({ menuTitle, menuItems }: MenuProps) => {
   return (
     <View className="rounded-3xl bg-white py-number-3">
-      <InformationMenuTitle title={menuTitle} />d
+      <InformationMenuTitle title={menuTitle} />
       {menuItems.map(item => (
         <InformationMenuItem
           id={item.id}
