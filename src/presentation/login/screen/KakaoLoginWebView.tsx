@@ -46,6 +46,7 @@ const KakaoLoginWebView = () => {
 
       const data = JSON.parse(event.nativeEvent.data)
       Alert.alert('KakaoLoginWebView - handleMessage data:', data)
+      console.log('KakaoLoginWebView - handleMessage data:', data)
 
       const accessToken = data.data?.accessToken
       const refreshToken = data.data?.refreshToken
