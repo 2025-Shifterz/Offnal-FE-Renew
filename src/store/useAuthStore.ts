@@ -3,6 +3,7 @@ import { useUserStore } from './useUserStore'
 import { useCalendarStore } from './useCalendarStore'
 import { persist } from 'zustand/middleware'
 import { User } from '../shared/types/User'
+import { AsyncStorageAdapter } from '../shared/types/Storage'
 
 interface AuthState {
   newMember: boolean
@@ -64,6 +65,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      storage: AsyncStorageAdapter,
       partialize: state => ({
         newMember: state.newMember,
         refreshToken: state.refreshToken,

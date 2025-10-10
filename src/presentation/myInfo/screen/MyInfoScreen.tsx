@@ -3,9 +3,36 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../components/TopAppBar'
 import ProfileCard from '../components/ProfileCard'
 import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useEffect } from 'react'
 
 const MyInfoScreen = () => {
   const navigation = useNavigation()
+
+  // <----- persist로 AsyncStorage에 저장되었는지 확인
+  // webView에서는 AsyncStorage 접근 불가
+  // (디버깅용, 나중에 지울 것)
+  useEffect(() => {
+    const checkStoredData = async () => {
+      const storedAuth = await AsyncStorage.getItem('auth-storage')
+      const storedUser = await AsyncStorage.getItem('user-storage')
+
+      if (storedAuth) {
+        console.log('Stored Zustand data after login:', JSON.parse(storedAuth))
+      } else {
+        console.log('No auth data found.')
+      }
+
+      if (storedUser) {
+        console.log('Stored User data after login:', JSON.parse(storedUser))
+      } else {
+        console.log('No user data found.')
+      }
+    }
+
+    checkStoredData()
+  }, [])
+  // -------->
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
