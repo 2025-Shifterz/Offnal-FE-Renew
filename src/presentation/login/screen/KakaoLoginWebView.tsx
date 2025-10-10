@@ -8,7 +8,6 @@ import { loginNavigation } from '../../../navigation/types'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { useUserStore } from '../../../store/useUserStore'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const REDIRECT_URI = `${API_URL}/callback`
 
@@ -41,6 +40,9 @@ const KakaoLoginWebView = () => {
     }
     true;
   `
+  useEffect(() => {
+    console.log('🟢 shouldHideWebView changed:', shouldHideWebView)
+  }, [shouldHideWebView])
 
   const handleMessage = async (event: any) => {
     try {
@@ -88,9 +90,9 @@ const KakaoLoginWebView = () => {
       // TODO: 처음 로그인 아닐 때 홈 화면으로 이동한느거 필요함
       if (memberName == false) {
         Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
-        console.log('🟢 accessToken:', accessToken)
-        console.log('🟢 refreshToken:', refreshToken)
-        console.log('🟢 memberName:', memberName)
+        console.log('accessToken:', accessToken)
+        console.log('refreshToken:', refreshToken)
+        console.log('memberName:', memberName)
         navigation.replace('Tabs')
       }
 

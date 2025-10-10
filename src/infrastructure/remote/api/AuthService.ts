@@ -4,7 +4,6 @@ export class AuthService {
   getLoginUrl = async () => {
     try {
       const response = await api.get('/login/page')
-      console.log('login/page 응답:', response.data)
       return response.data.location
     } catch (error) {
       console.error('login/page API 요청 실패:', error)
