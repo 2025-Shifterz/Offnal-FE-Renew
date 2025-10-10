@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Asset } from 'react-native-image-picker'
 
-export class FastAPIService {
+export class OcrService {
   getOcrResult = async (asset: Asset) => {
     const formData = new FormData()
 
