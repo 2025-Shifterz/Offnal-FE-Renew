@@ -13,6 +13,7 @@ export class AuthService {
   tokenReissue = async (refreshToken: string) => {
     try {
       const response = await api.post('/tokens/reissue', { refreshToken })
+      console.log('/tokens/reissue 응답:', response)
       return response.data.data
     } catch (error) {
       console.error('/tokens/reissue API 요청 실패:', error)

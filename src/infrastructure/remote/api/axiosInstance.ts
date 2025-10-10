@@ -1,5 +1,4 @@
 import axios from 'axios'
-import EncryptedStorage from 'react-native-encrypted-storage'
 import { API_URL } from '@env'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { authService } from '../../di/Dependencies'
@@ -67,15 +66,12 @@ api.interceptors.response.use(
 
       isRefreshing = true
       try {
-        //const refreshToken = await EncryptedStorage.getItem('refreshToken')
         const refreshToken = useAuthStore.getState().refreshToken
         const data = await authService.tokenReissue(refreshToken!)
         console.log('/tokens/reissue 응답:', data)
         const { accessToken: newToken, refreshToken: newRefreshToken } = data
 
         // 새 토큰 저장
-        //await EncryptedStorage.setItem('accessToken', newToken)
-        //await EncryptedStorage.setItem('refreshToken', newRefreshToken)
         useAuthStore.getState().setAccessToken(newToken)
         useAuthStore.getState().setRefreshToken(newRefreshToken)
 

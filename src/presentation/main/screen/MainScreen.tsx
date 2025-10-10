@@ -1,5 +1,5 @@
 import '../../../../global.css'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -12,12 +12,14 @@ import HealthCardSection from '../ui/HealthCardSection'
 import TopCard from '../components/TopCard'
 import dayjs from 'dayjs'
 
-import { homeRepository, todoRepository } from '../../../di/Dependencies'
-import { HomeResponse } from '../../../remote/response/homeResponse'
-
-import { memoRepository } from '../../../di/Dependencies'
-import { Todo } from '../../../domain/entities/Todo'
 import { useFocusEffect } from '@react-navigation/native'
+import {
+  memoRepository,
+  todoRepository,
+  homeRepository,
+} from '../../../infrastructure/di/Dependencies'
+import { HomeResponse } from '../../../infrastructure/remote/response/homeResponse'
+import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 
 export default function MainScreen() {
   const [loading, setLoading] = useState(true)
@@ -30,7 +32,7 @@ export default function MainScreen() {
     try {
       const data = await homeRepository.getHome()
       const memos = await memoRepository.getMemosByDate(dayjs())
-      const todos = await todoRepository.getToDosByDate(dayjs())
+      const todos = await todoRepository.getTodosByDate(dayjs())
 
       setHomeData(data)
       setMemo(memos)

@@ -3,9 +3,9 @@ import { View, Text } from 'react-native'
 import TitleSection from './TitleSection'
 import NoteIcon from '../../../assets/icons/ic_note_24.svg'
 import { useNavigation } from '@react-navigation/native'
-import { Todo } from '../../../domain/entities/Todo'
 import { mainNavigation, RootStackParamList } from '../../../navigation/types'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 
 interface MemoCardProps {
   memos: Todo[]

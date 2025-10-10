@@ -4,10 +4,10 @@ import TitleSection from './TitleSection'
 import CheckListIcon from '../../../assets/icons/ic_checklist_24.svg'
 import CheckIcon from '../../../assets/icons/checked.svg'
 import { useNavigation } from '@react-navigation/native'
-import { Todo } from '../../../domain/entities/Todo'
 import React from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../navigation/types'
+import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 
 interface TodoCardProps {
   todos: Todo[]
