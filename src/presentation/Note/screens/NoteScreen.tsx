@@ -10,7 +10,7 @@ import {
   getTodosUseCase,
   todoCompletionUseCase,
 } from '../../../infrastructure/di/Dependencies'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import { Todo } from '../../../domain/models/Todo'
 
 export type TodoType = 'todo' | 'memo'
 

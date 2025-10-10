@@ -1,7 +1,7 @@
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import { Todo } from '../../models/Todo'
 import { TodoRepository } from '../../repositories/TodoRepository'
 
-export class GetTodosUseCase {
+export class GetAllTodosUseCase {
   constructor(private todoRepository: TodoRepository) {}
 
   async execute(): Promise<Todo[]> {

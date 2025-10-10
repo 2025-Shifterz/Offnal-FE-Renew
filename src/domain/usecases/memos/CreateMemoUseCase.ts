@@ -5,6 +5,6 @@ export class CreateMemoUseCase {
   constructor(private memoRepository: MemoRepository) {}
 
   async execute(content: string, targetDate: dayjs.Dayjs): Promise<void> {
-    return await this.memoRepository.addMemo({ content }, targetDate)
+    return await this.memoRepository.addMemo(content, targetDate)
   }
 }

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { TodoRepository } from '../../repositories/TodoRepository'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import { Todo } from '../../models/Todo'
 
 export class GetTodosByDateUseCase {
   constructor(private todoRepository: TodoRepository) {}
