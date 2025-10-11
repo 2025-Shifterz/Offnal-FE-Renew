@@ -1,4 +1,4 @@
-import { Image, Text, TouchableOpacity, View } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
 import GlobalText from '../../../shared/components/GlobalText'
 
 type MyInformationCardProps = {

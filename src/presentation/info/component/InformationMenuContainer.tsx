@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import GlobalText from '../../../shared/components/GlobalText'
 
 interface MenuProps {

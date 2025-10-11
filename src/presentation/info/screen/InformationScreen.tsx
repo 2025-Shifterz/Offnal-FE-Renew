@@ -1,7 +1,7 @@
 import TopAppBar from '../../../shared/components/TopAppBar'
 import { ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MyInformationCard from '../component/MyInfomationCard'
+import MyInformationCard from '../component/MyInformationCard'
 import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
