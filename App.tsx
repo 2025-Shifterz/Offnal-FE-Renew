@@ -9,9 +9,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import MyPage from './src/presentation/MyPage/screen/MyPage'
 import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
-import { useEffect } from 'react'
-import { initializeDataBaseTables } from './src/infrastructure/local/Initialization'
-import { View } from 'react-native'
+import InformationScreen from './src/presentation/info/screen/InformationScreen'
+import { useEffect, useState } from 'react'
+import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
+import { ActivityIndicator, View } from 'react-native'
 
 function App() {
   useEffect(() => {
@@ -29,11 +30,10 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <View style={{ flex: 1 }}>
-        {/* <MyPage /> */}
-        <TodoScreen />
-        {/* <MemoScreen /> */}
-      </View>
+      {/* <MyPage /> */}
+      {/* <TodoScreen /> */}
+      {/* <MemoScreen /> */}
+      <InformationScreen />
     </SafeAreaProvider>
   )
 }
