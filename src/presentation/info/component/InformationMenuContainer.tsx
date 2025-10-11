@@ -12,6 +12,7 @@ const InformationMenuContainer = ({ menuTitle, menuItems }: MenuProps) => {
       <InformationMenuTitle title={menuTitle} />
       {menuItems.map(item => (
         <InformationMenuItem
+          key={item.id}
           id={item.id}
           title={item.title}
           caption={item.caption}

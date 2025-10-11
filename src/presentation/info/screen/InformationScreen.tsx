@@ -10,7 +10,7 @@ const informationMenus: MenuItemProps[] = [
   {
     id: 'notice',
     title: '공지사항',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
@@ -18,14 +18,14 @@ const informationMenus: MenuItemProps[] = [
     id: 'version',
     title: '현재 버전',
     caption: '0.0.1',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
   {
     id: 'feedback',
     title: '평가 및 피드백',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
@@ -34,14 +34,14 @@ const termsOfUseMenus: MenuItemProps[] = [
   {
     id: 'termsOfUse',
     title: '이용 약관',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
   {
     id: 'privacyPolicy',
     title: '개인정보 처리방침',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
@@ -50,14 +50,14 @@ const otherMenus: MenuItemProps[] = [
   {
     id: 'withdraw',
     title: '회원 탈퇴',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
   {
     id: 'logout',
     title: '로그아웃',
-    onPress: () => {
+    onPress: id => {
       /* TODO("Not yet Implemeted") */
     },
   },
