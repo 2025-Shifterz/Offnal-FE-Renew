@@ -28,7 +28,11 @@ const MyInformationCard = ({
   )
 }
 
-const MyInformationImage = ({ profileImgUrl }: { profileImgUrl?: string }) => {
+type MyInformationImageProps = {
+  profileImgUrl?: string
+}
+
+const MyInformationImage = ({ profileImgUrl }: MyInformationImageProps) => {
   return (
     <View className="mr-3 h-number-12 w-number-12 items-center justify-center rounded-full bg-surface-gray-subtle2">
       <Image
