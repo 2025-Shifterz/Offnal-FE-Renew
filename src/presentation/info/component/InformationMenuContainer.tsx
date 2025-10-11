@@ -22,7 +22,11 @@ const InformationMenuContainer = ({ menuTitle, menuItems }: MenuProps) => {
   )
 }
 
-const InformationMenuTitle = ({ title }: { title?: string }) => {
+type InformationMenuTitleProps = {
+  title?: string
+}
+
+const InformationMenuTitle = ({ title }: InformationMenuTitleProps) => {
   return (
     title && (
       <GlobalText className="w-full px-number-8 py-[9px] font-pretMedium text-body-xxs">
