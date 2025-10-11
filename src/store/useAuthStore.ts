@@ -1,12 +1,11 @@
 import { create } from 'zustand'
 import { useUserStore } from './useUserStore'
 import { useCalendarStore } from './useCalendarStore'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { User } from '../shared/types/User'
-import { AsyncStorageAdapter } from '../shared/types/Storage'
+import EncryptedStorage from 'react-native-encrypted-storage'
 
 interface AuthState {
-  newMember: boolean
   accessToken: string | null
   refreshToken: string | null
 
@@ -20,7 +19,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      newMember: true,
       accessToken: null,
       refreshToken: null,
 
@@ -39,7 +37,6 @@ export const useAuthStore = create<AuthState>()(
         })
 
         set({
-          newMember: false,
           accessToken,
           refreshToken,
         })
@@ -65,9 +62,8 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      storage: AsyncStorageAdapter,
+      storage: createJSONStorage(() => EncryptedStorage),
       partialize: state => ({
-        newMember: state.newMember,
         refreshToken: state.refreshToken,
         accessToken: state.accessToken,
       }),
