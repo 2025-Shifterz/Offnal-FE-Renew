@@ -1,5 +1,5 @@
 import React from 'react'
-import NoTodoIcon from '../../../assets/icons/NoTodo.svg'
+import TodoEmptyIcon from '../../../assets/icons/todo-empty.svg'
 
 import { View } from 'react-native'
 import { twMerge } from 'tailwind-merge'
@@ -20,7 +20,7 @@ const EmptyMessage = ({
 }: EmptyTodoContentProps) => {
   return (
     <View className={twMerge('items-center gap-[19px]', divStyle)}>
-      <NoTodoIcon width={iconSize} />
+      <TodoEmptyIcon width={iconSize} />
       <View>
         <GlobalText
           style={{ color: '#B1B8BE' }}

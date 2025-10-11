@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { Todo } from '../../infrastructure/local/entities/TodoEntity'
+import { Todo } from '../models/Todo'
 
 export interface TodoRepository {
   createTodo(content: string, targetDate: dayjs.Dayjs): Promise<void>
