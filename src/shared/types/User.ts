@@ -1,5 +1,5 @@
 export interface User {
-  name: string
+  memberName: string
   email: string
   phoneNumber: string
   profileImageUrl: string

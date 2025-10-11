@@ -1,4 +1,4 @@
 export interface Memo {
-  id: number;
-  content: string;
+  id: number
+  content: string
 }

@@ -1,15 +1,16 @@
 import { create } from 'zustand'
 import { useUserStore } from './useUserStore'
 import { useCalendarStore } from './useCalendarStore'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import { User } from '../shared/types/User'
+import EncryptedStorage from 'react-native-encrypted-storage'
 
 interface AuthState {
-  newMember: boolean
   accessToken: string | null
   refreshToken: string | null
 
   isLoggedIn: () => boolean
-  login: (nickName: string, accessToken: string, refreshToken: string) => void
+  login: (user: User, accessToken: string, refreshToken: string) => void
   logout: () => void
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
@@ -18,7 +19,6 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      newMember: true,
       accessToken: null,
       refreshToken: null,
 
@@ -26,25 +26,23 @@ export const useAuthStore = create<AuthState>()(
       isLoggedIn: () => !!get().refreshToken,
 
       // 로그인 시
-      login: (nickName, accessToken, refreshToken) => {
-        // api 호출 코드 추가 예정..
+      login: (user, accessToken, refreshToken) => {
+        // 유저 정보 설정
         const { setUser } = useUserStore.getState()
         setUser({
-          name: nickName,
-          email: '',
-          phoneNumber: '',
-          profileImageUrl: '',
-        }) // 유저 정보 설정
+          memberName: user.memberName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          profileImageUrl: user.profileImageUrl,
+        })
 
         set({
-          newMember: false,
           accessToken,
           refreshToken,
         })
       },
       // 로그아웃 시
       logout: () => {
-        // api 호출 코드 추가 예정..
         const { clearUser } = useUserStore.getState()
         const { clearCalendarData } = useCalendarStore.getState()
 
@@ -64,9 +62,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      storage: createJSONStorage(() => EncryptedStorage),
       partialize: state => ({
-        newMember: state.newMember,
         refreshToken: state.refreshToken,
+        accessToken: state.accessToken,
       }),
     }
   )

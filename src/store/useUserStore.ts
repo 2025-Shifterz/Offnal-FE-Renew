@@ -1,7 +1,8 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { profileService } from '../infrastructure/di/Dependencies'
 import { User } from '../shared/types/User'
+import EncryptedStorage from 'react-native-encrypted-storage'
 
 export interface UserState {
   user: User | null
@@ -38,6 +39,6 @@ export const useUserStore = create<UserState>()(
         }))
       },
     }),
-    { name: 'user-storage' }
+    { name: 'user-storage', storage: createJSONStorage(() => EncryptedStorage) }
   )
 )

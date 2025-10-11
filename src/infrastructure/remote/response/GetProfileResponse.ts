@@ -2,7 +2,7 @@ export interface GetProfileResponse {
   code: string
   message: string
   data: {
-    name: string
+    memberName: string
     email: string
     phoneNumber: string
     profileImageUrl: string
