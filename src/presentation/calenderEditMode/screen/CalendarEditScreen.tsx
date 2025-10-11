@@ -7,10 +7,10 @@ import EditBottomSheet from '../components/EditBottomSheet'
 import CalendarInteractive from '../components/CalendarInteractive'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { workCalendarRepository } from '../../../di/Dependencies'
 import { ShiftType, ShiftsMap } from '../../../data/model/Calendar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarStackParamList } from '../../../navigation/types'
+import { calendarRepository } from '../../../infrastructure/di/Dependencies'
 
 type CalendarEditScreenRouteProp = RouteProp<
   calendarStackParamList,
@@ -98,7 +98,7 @@ const CalendarEditScreen = () => {
     const month = currentDate.month() + 1
 
     try {
-      await workCalendarRepository.updateWorkCalendar(year, month, calendarData)
+      await calendarRepository.updateWorkCalendar(year, month, calendarData)
       console.log('근무표 수정 성공')
       navigation.goBack() // 저장 성공 후 이전 화면으로 이동
     } catch (error) {

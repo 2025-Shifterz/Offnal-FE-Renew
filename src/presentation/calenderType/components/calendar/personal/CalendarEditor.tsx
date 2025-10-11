@@ -13,8 +13,8 @@ import {
   NewCalendar,
   ShiftType,
 } from '../../../../../data/model/Calendar'
-import { workCalendarRepository } from '../../../../../di/Dependencies'
-import { toShiftType } from '../../../../../data/mapper/Mapper'
+import { toShiftType } from '../../../../../data/mappers/ShiftTypeMapper'
+import { calendarRepository } from '../../../../../infrastructure/di/Dependencies'
 
 interface CalendarEditorProps {
   calendarName: string
@@ -150,7 +150,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         console.log('요청하는 데이터:', newCalendar)
 
         // API 호출
-        const res = await workCalendarRepository.createWorkCalendar(newCalendar)
+        const res = await calendarRepository.createWorkCalendar(newCalendar)
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)

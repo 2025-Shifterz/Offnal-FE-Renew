@@ -8,10 +8,9 @@ import {
   OnboardingStackParamList,
 } from '../../../../navigation/types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { toShiftType } from '../../../../data/mapper/Mapper'
+import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import BottomButton from '../../../common/component/BottomButton'
 
-import { workCalendarRepository } from '../../../../di/Dependencies'
 import {
   MonthlySchedule,
   NewCalendar,
@@ -19,6 +18,7 @@ import {
 } from '../../../../data/model/Calendar'
 import TCalendarEditor from '../../../calenderType/components/calendar/team/TCalendarEditor'
 import { convertOCRResultToPersonalSchduleData } from '../../mapper/calendarDataMapper'
+import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -102,7 +102,7 @@ const EditCompleteCreateScheduleOCRScreen = () => {
         schedules: monthlySchedules,
       }
 
-      workCalendarRepository.createWorkCalendar(newCalendar)
+      calendarRepository.createWorkCalendar(newCalendar)
 
       navigation.navigate('CompleteCreate')
     } catch (error) {

@@ -4,9 +4,9 @@ import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import CalendarBase from '../../calenderType/components/calendar/personal/CalendarBase'
 import dayjs from 'dayjs'
-import { workCalendarRepository } from '../../../di/Dependencies'
 import { ShiftType } from '../../../data/model/Calendar'
 import { workDaysToMap } from '../../common/utils/calendar/workDaysToMap'
+import { calendarRepository } from '../../../infrastructure/di/Dependencies'
 
 interface CalendarInteractiveProps {
   isEditScreen: boolean
@@ -34,10 +34,7 @@ const CalendarInteractive = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await workCalendarRepository.getWorkCalendar(
-          year,
-          month
-        )
+        const response = await calendarRepository.getWorkCalendar(year, month)
         // workDaysToMap 유틸리티를 사용하여 'YYYY-MM-DD'를 키로 하는 Map을 생성
         const formattedMap = workDaysToMap(response, year, month)
         setCalendarData(formattedMap)

@@ -1,4 +1,4 @@
-import { toShiftType } from '../../../data/mapper/Mapper'
+import { toShiftType } from '../../../data/mappers/ShiftTypeMapper'
 import { ShiftType } from '../../../data/model/Calendar'
 import dayjs from 'dayjs'
 
