@@ -13,7 +13,7 @@ const MyInformationCard = ({
   onPressEditProfile,
 }: MyInformationCardProps) => {
   return (
-    <View className="flex-row items-center justify-between rounded-3xl bg-white px-number-6 py-number-4">
+    <View className="flex-row items-center justify-between rounded-3xl bg-white px-number-6 py-number-6">
       <MyInformationImage profileImgUrl={profileImgUrl} />
       <GlobalText className="flex-1 font-pretMedium text-body-s">
         {profileName}
