@@ -60,7 +60,7 @@ const KakaoLoginWebView = () => {
         return
       }
 
-      // Zustand 상태에 로그인 정보 저장 (AsyncStorage에 persist됨)
+      // Zustand 상태에 로그인 정보 저장
       const { login } = useAuthStore.getState()
       login(
         {
