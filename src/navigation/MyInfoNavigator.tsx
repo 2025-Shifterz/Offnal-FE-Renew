@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import UpdateMyInfoScreen from '../presentation/myInfo/screen/UpdateMyInfoScreen'
-import MyInfoScreen from '../presentation/myInfo/screen/MyInfoScreen'
+import InformationScreen from '../presentation/info/screen/InformationScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -10,8 +10,8 @@ const MyInfoNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="MyInfoScreen"
-        component={MyInfoScreen}
+        name="InformationScreen"
+        component={InformationScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

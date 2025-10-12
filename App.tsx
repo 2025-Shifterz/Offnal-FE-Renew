@@ -4,7 +4,6 @@
  *
  * @format
  */
-import 'react-native-reanimated'
 import './global.css'
 import { useEffect, useState } from 'react'
 import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
