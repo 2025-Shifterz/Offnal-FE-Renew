@@ -1,4 +1,4 @@
 export interface MemoEntity {
-  id: number;
-  content: string;
+  id: number
+  content: string
 }
