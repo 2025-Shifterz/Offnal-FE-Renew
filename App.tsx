@@ -5,36 +5,50 @@
  * @format
  */
 import './global.css'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-import MyPage from './src/presentation/MyPage/screen/MyPage'
-import TodoScreen from './src/presentation/Note/screens/TodoScreen'
-import MemoScreen from './src/presentation/Note/screens/MemoScreen'
-import InformationScreen from './src/presentation/info/screen/InformationScreen'
 import { useEffect, useState } from 'react'
 import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
 import { ActivityIndicator, View } from 'react-native'
+import RootNavigator from './src/navigation/RootNavigator'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
+import { enableScreens } from 'react-native-screens'
+enableScreens()
 
 function App() {
+  const [isReady, setIsReady] = useState(false)
+
   useEffect(() => {
     const init = async () => {
       try {
         await initializeDataBaseTables() // 앱 시작 시 테이블 생성
-        console.log('DB tables created!')
+        console.log('DB tables created')
       } catch (error) {
-        console.error('Error creating DB tables:', error)
+        console.error('Error creating DB tables', error)
+      } finally {
+        setIsReady(true)
       }
     }
 
     init()
   }, [])
 
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    )
+  }
+
   return (
-    <SafeAreaProvider>
-      {/* <MyPage /> */}
-      {/* <TodoScreen /> */}
-      {/* <MemoScreen /> */}
-      <InformationScreen />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <WorkTimeProvider>
+          <RootNavigator />
+        </WorkTimeProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   )
 }
 
