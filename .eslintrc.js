@@ -12,7 +12,7 @@ module.exports = {
     // 타입스크립트 관련 룰
     '@typescript-eslint/no-unused-vars': 'warn',
     '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/no-require-imports': 'warn',
+    '@typescript-eslint/no-require-imports': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
 
     // react-native 관련 룰

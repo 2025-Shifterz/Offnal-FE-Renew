@@ -1,7 +1,6 @@
 module.exports = {
   presets: ['module:@react-native/babel-preset', 'nativewind/babel'],
   plugins: [
-    'react-native-worklets/plugin',
     [
       'babel-plugin-dotenv-import',
       {
@@ -11,5 +10,6 @@ module.exports = {
         allowUndefined: true,
       },
     ],
+    'react-native-worklets/plugin',
   ],
 }
