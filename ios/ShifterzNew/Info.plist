@@ -71,5 +71,9 @@
 		<string>Pretendard-SemiBold.ttf</string>
 		<string>Pretendard-Thin.ttf</string>
 	</array>
+
+	<key>NSCameraUsageDescription</key>
+	<string>근무표 등록을 위해 카메라 접근이 필요합니다.</string>
+
 </dict>
 </plist>
