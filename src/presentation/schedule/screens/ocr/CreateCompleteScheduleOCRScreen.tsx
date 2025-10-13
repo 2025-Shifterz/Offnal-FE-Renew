@@ -1,9 +1,9 @@
 import React from 'react'
 import { SafeAreaView, View } from 'react-native'
-import BottomButton from '../../../common/component/BottomButton'
-import TitleMessage from '../../../common/component/TitleMessage'
 import { useNavigation } from '@react-navigation/native'
 import { onboardingNavigation } from '../../../../navigation/types'
+import TitleMessage from '../../../../shared/components/TitleMessage'
+import BottomButton from '../../../../shared/components/BottomButton'
 
 const CompleteCreateScheduleOCRScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()

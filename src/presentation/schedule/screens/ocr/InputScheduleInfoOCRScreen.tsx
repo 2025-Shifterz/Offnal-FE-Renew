@@ -45,30 +45,31 @@ const ScheduleInfoInputOCR = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
+    <SafeAreaView
+      edges={['left', 'right', 'bottom']}
+      className="w-full flex-1 bg-background-gray-subtle1 px-p-7"
+    >
       <View className="flex-1">
-        <View className="w-full flex-1">
-          <TitleMessage title="근무표의 기본 정보를 입력해주세요." />
+        <TitleMessage title="근무표의 기본 정보를 입력해주세요." />
 
-          <View className="flex gap-[26px]">
-            <ScheduleNameInput
-              calendarName={calendarName}
-              setCalendarName={setCalendarName}
-            />
-            <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
-              <TimeInput />
-            </WorkTimeContext.Provider>
-            <TeamInput
-              workGroup={workGroup}
-              setWorkGroup={setWorkGroup}
-              isDirect={isDirect}
-              setIsDirect={setIsDirect}
-            />
-          </View>
+        <View className="flex gap-[26px]">
+          <ScheduleNameInput
+            calendarName={calendarName}
+            setCalendarName={setCalendarName}
+          />
+          <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
+            <TimeInput />
+          </WorkTimeContext.Provider>
+          <TeamInput
+            workGroup={workGroup}
+            setWorkGroup={setWorkGroup}
+            isDirect={isDirect}
+            setIsDirect={setIsDirect}
+          />
         </View>
         <BottomButton text="다음" onPress={handleNext} />
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 

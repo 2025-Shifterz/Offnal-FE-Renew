@@ -24,6 +24,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from '../../../../navigation/types'
 import { fastAPIService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
+import BottomButton from '../../../../shared/components/BottomButton'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
@@ -201,28 +203,51 @@ const SelectInputScheduleWithOCRTypeScreen = () => {
     }
   }
 
+  const [localSelectedBoxId, setLocalSelectedBoxId] = useState<number>(1)
+
+  // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
+  const handleBoxClick = (id: number) => {
+    setLocalSelectedBoxId(id)
+    console.log(`Selected Box ID: ${id}`)
+  }
+
   return (
-    <View className="flex-1 bg-background-gray-subtle1">
-      <View className="flex-1 px-number-8">
+    <SafeAreaView
+      edges={['bottom', 'left', 'right']}
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
+    >
+      <View className="flex-1">
         <Text className="mb-4 mt-[9px] text-start heading-m">
           인식할 근무표를 등록해주세요.
         </Text>
 
         <RegMethod
+          id={1}
+          isSelected={localSelectedBoxId === 1}
+          onPress={handleBoxClick}
           Icon={TakePicture}
           title="카메라로 촬영하기"
           subtitle="지금 바로 사진을 찍어서 업로드 할 수 있어요."
-          onPress={openCameraImage}
+          // onPress={openCameraImage}
         />
         <RegMethod
+          id={2}
+          isSelected={localSelectedBoxId === 2}
+          onPress={handleBoxClick}
           Icon={OpenGallery}
           title="갤러리에서 사진 선택"
           subtitle="이미 저장된 근무표 이미지를 불러올 수 있어요."
-          onPress={analyzeScheduleImage}
+          // onPress={analyzeScheduleImage}
+        />
+        <BottomButton
+          text="다음"
+          onPress={
+            localSelectedBoxId === 1 ? openCameraImage : analyzeScheduleImage
+          }
         />
       </View>
       <ProgressModal isVisible={isAnalyzing} />
-    </View>
+    </SafeAreaView>
   )
 }
 
