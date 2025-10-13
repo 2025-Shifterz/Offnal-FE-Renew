@@ -8,6 +8,8 @@ export interface OnboardingItem {
   title: string
   subtitle: string
   image: React.FC<SvgProps>
+  width?: number
+  height?: number
 }
 
 export const onboardingList: OnboardingItem[] = [
@@ -22,6 +24,8 @@ export const onboardingList: OnboardingItem[] = [
     title: '사진 찍으면 AI가\n복잡한 근무표 자동 등록',
     subtitle: '교대근무 일정과 메모, 할 일을 한 눈에 보이게',
     image: CalendarIcon,
+    width: 190,
+    height: 190,
   },
   {
     keyword: '자동 알람',
