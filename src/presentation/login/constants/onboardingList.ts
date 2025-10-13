@@ -1,7 +1,7 @@
 import type { SvgProps } from 'react-native-svg'
-import ShoesIcon from '../../../assets/icons/ic_shoes.svg'
-import CalendarIcon from '../../../assets/icons/ic_chalendar.svg'
-import ClockIcon from '../../../assets/icons/ic_clock-lottie.svg'
+import ShoesIcon from '../../../assets/lottie/ic_shoes.svg'
+import CalendarIcon from '../../../assets/lottie/ic_chalendar.svg'
+import ClockIcon from '../../../assets/lottie/ic_clock-lottie.svg'
 
 export interface OnboardingItem {
   keyword: string
