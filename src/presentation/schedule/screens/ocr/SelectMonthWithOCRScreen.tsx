@@ -7,7 +7,7 @@ import {
   onboardingNavigation,
   OnboardingStackParamList,
 } from '../../../../navigation/types'
-import TitleMessage from '../../../common/component/TitleMessage'
+import TitleMessage from '../../../../shared/components/TitleMessage'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,

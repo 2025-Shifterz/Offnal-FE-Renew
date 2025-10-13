@@ -18,12 +18,12 @@ import RegMethod from '../../../schedule/component/RegMethod'
 
 import TakePicture from '../../../../assets/icons/ic_camera_32.svg'
 import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
-import ProgressModal from '../../../common/component/ProgressModal'
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from '../../../../navigation/types'
 import { fastAPIService } from '../../../../infrastructure/di/Dependencies'
+import ProgressModal from '../../../../shared/components/ProgressModal'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules

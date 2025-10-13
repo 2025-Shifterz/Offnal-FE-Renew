@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { Alert, SafeAreaView, View } from 'react-native'
+import React, { useState } from 'react'
+import { View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
-import BottomButton from '../../common/component/BottomButton'
 import ScheduleNameInput from '../component/ScheduleNameInput'
-import TitleMessage from '../../common/component/TitleMessage'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
   onboardingNavigation,
   OnboardingStackParamList,
 } from '../../../navigation/types'
 import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
+import TitleMessage from '../../../shared/components/TitleMessage'
+import BottomButton from '../../../shared/components/BottomButton'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -45,7 +46,7 @@ const ScheduleInfoInput = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
-      <SafeAreaView className="flex-1">
+      <View className="flex-1">
         <View className="w-full flex-1">
           <TitleMessage title="근무표의 기본 정보를 입력해주세요." />
 
@@ -67,7 +68,7 @@ const ScheduleInfoInput = () => {
 
           <BottomButton text="다음" onPress={handleNext} />
         </View>
-      </SafeAreaView>
+      </View>
     </View>
   )
 }

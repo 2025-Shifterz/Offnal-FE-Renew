@@ -1,11 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
-import BottomSheetWrapper from '../../common/component/BottomSheetWrapper'
 import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import { ShiftType } from '../../../data/model/Calendar'
+import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 dayjs.locale('ko') // 한글 locale 적용
 
 // 근무형태 선택 박스 map 데이터
@@ -101,13 +101,13 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
             <View className="h-[46px] w-full flex-row items-center gap-[10px]">
               <TouchableOpacity
                 onPress={handleCancel}
-                className="h-full flex-[3] items-center justify-center rounded-radius-m2 bg-surface-gray-subtle1"
+                className="rounded-radius-m2 h-full flex-[3] items-center justify-center bg-surface-gray-subtle1"
               >
                 <Text className="text-text-basic body-m">취소</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSave} // 저장 버튼에 handleSave 연결
-                className="h-full flex-[7] items-center justify-center rounded-radius-m2 bg-surface-inverse"
+                className="rounded-radius-m2 h-full flex-[7] items-center justify-center bg-surface-inverse"
               >
                 <Text className="text-text-bolder-inverse body-m">저장</Text>
               </TouchableOpacity>

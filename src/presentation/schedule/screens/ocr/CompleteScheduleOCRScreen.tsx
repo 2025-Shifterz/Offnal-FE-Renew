@@ -9,7 +9,6 @@ import {
 } from '../../../../navigation/types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
-import BottomButton from '../../../common/component/BottomButton'
 
 import {
   MonthlySchedule,
@@ -19,6 +18,7 @@ import {
 import TCalendarEditor from '../../../calenderType/components/calendar/team/TCalendarEditor'
 import { convertOCRResultToPersonalSchduleData } from '../../mapper/calendarDataMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import BottomButton from '../../../../shared/components/BottomButton'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,

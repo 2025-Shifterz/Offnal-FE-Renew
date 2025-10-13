@@ -1,8 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import CustomBackButton from '../presentation/common/component/CustomBackButton'
 
 import CompleteCreateScheduleScreen from '../presentation/schedule/screens/CreateCompleteScheduleScreen'
-import StepBar from '../presentation/common/component/StepBar'
 
 import SelectMonthWithOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthWithOCRScreen'
 import SelectInputScheduleWithOCRTypeScreen from '../presentation/schedule/screens/ocr/SelectInputScheduleWithOCRTypeScreen'
@@ -10,6 +8,8 @@ import EditCompleteCreateScheduleOCRScreen from '../presentation/schedule/screen
 import { OnboardingStackParamList } from './types'
 import ScheduleRegTypeOCR from '../presentation/schedule/screens/ocr/RegTypeByScheduleOCRScreen'
 import ScheduleInfoInputOCR from '../presentation/schedule/screens/ocr/InputScheduleInfoOCRScreen'
+import CustomBackButton from '../shared/components/CustomBackButton'
+import StepBar from '../shared/components/StepBar'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 

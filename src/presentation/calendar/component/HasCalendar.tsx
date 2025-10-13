@@ -1,4 +1,3 @@
- 
 import { useNavigation } from '@react-navigation/native'
 import { Button, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { calendarNavigation } from '../../../navigation/types'
@@ -6,7 +5,6 @@ import CalendarViewer from '../../calenderType/components/calendar/personal/Cale
 import TCalendarViewer from '../../calenderType/components/calendar/team/TCalendarViewer'
 import { useEffect, useRef, useState } from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
-import BottomSheetWrapper from '../../common/component/BottomSheetWrapper'
 import BottomSheet from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
 import TimeFrame from '../../calenderType/components/TimeFrame'
@@ -18,6 +16,7 @@ import {
   getMemosByDate,
   getToDosByDate,
 } from '../../../infrastructure/di/Dependencies'
+import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void

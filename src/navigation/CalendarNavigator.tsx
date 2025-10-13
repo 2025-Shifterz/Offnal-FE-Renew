@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CalendarScreen from '../presentation/calendar/screen/CalendarScreen'
 import CalendarEditScreen from '../presentation/calenderEditMode/screen/CalendarEditScreen'
 import { CalendarScreenStackParamList } from './types'
-import CustomBackButton from '../presentation/common/component/CustomBackButton'
+import CustomBackButton from '../shared/components/CustomBackButton'
 
 // 탭2. 캘린더 탭에 사용되는 스택 네비게이터
 const Stack = createNativeStackNavigator<CalendarScreenStackParamList>()

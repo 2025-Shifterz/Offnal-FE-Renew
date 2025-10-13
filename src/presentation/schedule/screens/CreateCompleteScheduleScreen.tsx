@@ -1,10 +1,11 @@
 import React from 'react'
-import { SafeAreaView, View } from 'react-native'
-import BottomButton from '../../common/component/BottomButton'
-import TitleMessage from '../../common/component/TitleMessage'
+import { View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../../navigation/types'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import TitleMessage from '../../../shared/components/TitleMessage'
+import BottomButton from '../../../shared/components/BottomButton'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const CompleteCreateScheduleScreen = () => {
   // const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();

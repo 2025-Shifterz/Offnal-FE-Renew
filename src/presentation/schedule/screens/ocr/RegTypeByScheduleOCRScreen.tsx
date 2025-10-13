@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { SafeAreaView, View } from 'react-native'
 import SelectScheduleBox from '../../component/SelectScheduleBox'
-import BottomButton from '../../../common/component/BottomButton'
-import TitleMessage from '../../../common/component/TitleMessage'
 import { useNavigation } from '@react-navigation/native'
 import { onboardingNavigation } from '../../../../navigation/types'
+import TitleMessage from '../../../../shared/components/TitleMessage'
+import BottomButton from '../../../../shared/components/BottomButton'
 
 const ScheduleRegTypeOCR = () => {
   const navigation = useNavigation<onboardingNavigation>()

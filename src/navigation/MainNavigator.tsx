@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import CustomBackButton from '../presentation/common/component/CustomBackButton'
 import MainScreen from '../presentation/main/screen/MainScreen'
 import TodoScreen from '../presentation/Note/screens/TodoScreen'
 import MemoScreen from '../presentation/Note/screens/MemoScreen'
 import AutoAlarm from '../presentation/alarm/screen/AutoAlarm'
 import { MainStackParamList } from './types'
+import CustomBackButton from '../shared/components/CustomBackButton'
 
 // 탭1. 메인 탭에 사용되는 스택 네비게이터
 const Stack = createNativeStackNavigator<MainStackParamList>()

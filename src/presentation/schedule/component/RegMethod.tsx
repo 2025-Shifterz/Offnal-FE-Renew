@@ -1,27 +1,39 @@
 import React from 'react'
-import { Text, View, TouchableOpacity } from 'react-native'
+import { Text, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
+import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
 
 type RegMethodProps = {
+  id: number
+  isSelected: boolean
   Icon: React.FC<SvgProps>
   title: string
   subtitle: string
-  onPress: () => void
+  onPress: (id: number) => void
 }
 
-const RegMethod = ({ Icon, title, subtitle, onPress }: RegMethodProps) => {
+const RegMethod = ({
+  id,
+  isSelected,
+  Icon,
+  title,
+  subtitle,
+  onPress,
+}: RegMethodProps) => {
   return (
-    <TouchableOpacity
-      className="w-fill h-h-9 mb-number-7 flex-row items-center gap-number-6 rounded-radius-m2 bg-surface-white p-p-5"
+    <ToggleBoxWrapper
+      id={id}
+      isSelected={isSelected}
+      boxStyle="w-full h-[66px] rounded-radius-m mb-number-7 flex-row items-center gap-number-6  p-p-5"
       onPress={onPress}
     >
       <Icon width={32} height={32} className="mr-number-7" />
 
-      <View className="flex-col">
+      <View className="flex-col ">
         <Text className="mb-number-4 text-text-basic heading-xxs">{title}</Text>
         <Text className="text-text-subtle label-xxs">{subtitle}</Text>
       </View>
-    </TouchableOpacity>
+    </ToggleBoxWrapper>
   )
 }
 
