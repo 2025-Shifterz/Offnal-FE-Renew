@@ -3,7 +3,7 @@ import { Text, View, ScrollView } from 'react-native'
 const PrivacyPolicyText = () => {
   return (
     <View className="flex-1">
-      <ScrollView>
+      <ScrollView className="flex-1">
         <Text className="px-number-8 pb-number-13 pt-number-3 text-black label-xxs">
           서비스 개인정보처리방침 회사는 정보통신망 이용촉진 및 정보보호 등에
           관한 법률, 개인정보보호법 등 관련 법령상의 개인정보보호 규정을

@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import Swiper from 'react-native-swiper'
-import { Text, View, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Dimensions, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import KaKaoLoginBtn from '../components/KakaoLoginBtn'
 import { onboardingList } from '../constants/onboardingList'
 import { loginNavigation } from '../../../navigation/types'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import GlobalText from '../../../shared/components/GlobalText'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
@@ -31,15 +32,15 @@ const Login = () => {
                 className="flex-1 items-center  pt-[70px]"
                 style={{ width: SCREEN_WIDTH }}
               >
-                <Text className="mb-number-8 h-fit w-fit gap-number-6 rounded-radius-m border-border-width-static-regular border-border-gray-light bg-surface-white p-p-3 text-center text-text-subtle body-xxs">
+                <GlobalText className="mb-number-8 h-fit w-fit gap-number-6 rounded-radius-m border-border-width-static-regular border-border-gray-light bg-surface-white p-p-3 text-center text-text-subtle body-xxs">
                   {onboarding.keyword}
-                </Text>
-                <Text className="mb-number-4 h-fit w-fit text-center heading-s">
+                </GlobalText>
+                <GlobalText className="mb-number-4 h-fit w-fit text-center heading-s">
                   {onboarding.title}
-                </Text>
-                <Text className=" h-fit w-fit text-center text-text-subtle body-xs">
+                </GlobalText>
+                <GlobalText className=" h-fit w-fit text-center text-text-subtle body-xs">
                   {onboarding.subtitle}
-                </Text>
+                </GlobalText>
 
                 <View className="flex-1 items-center justify-center rounded-radius-l  ">
                   <Icon />
@@ -53,14 +54,14 @@ const Login = () => {
       <View className="h-[170px] items-center ">
         <KaKaoLoginBtn />
         <TouchableOpacity onPress={() => navigation.navigate('ServiceTerm')}>
-          <Text className="mb-number-3 text-text-subtle label-xs">
+          <GlobalText className="mb-number-3 text-text-subtle label-xs">
             이용약관 확인하기
-          </Text>
+          </GlobalText>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('PrivacyPolicy')}>
-          <Text className="mb-number-21 text-text-subtle label-xs">
+          <GlobalText className="text-text-subtle label-xs">
             개인정보처리방침 확인하기
-          </Text>
+          </GlobalText>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
