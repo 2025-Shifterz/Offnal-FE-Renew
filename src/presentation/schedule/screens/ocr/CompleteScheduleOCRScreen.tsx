@@ -19,6 +19,7 @@ import TCalendarEditor from '../../../calenderType/components/calendar/team/TCal
 import { convertOCRResultToPersonalSchduleData } from '../../mapper/calendarDataMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import BottomButton from '../../../../shared/components/BottomButton'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -122,7 +123,10 @@ const EditCompleteCreateScheduleOCRScreen = () => {
   )
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-number-8">
+    <SafeAreaView
+      edges={['left', 'right', 'bottom']}
+      className="flex-1 bg-background-gray-subtle1 px-number-8"
+    >
       <ScrollView>
         <Text className="mt-[5px] text-text-subtle heading-m">
           AI 근무표 인식이 완료되었어요
@@ -154,7 +158,7 @@ const EditCompleteCreateScheduleOCRScreen = () => {
       <View>
         <BottomButton text="다음" onPress={handleNext} />
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 

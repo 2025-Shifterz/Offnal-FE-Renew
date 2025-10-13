@@ -105,7 +105,7 @@ const CalendarBase = ({
   }
 
   return (
-    <View className="rounded-t-radius-m2 bg-surface-white">
+    <View className="rounded-t-radius-xl bg-surface-white">
       {/* 헤더 */}
       {!isEditScreen &&
         (isViewer ? (

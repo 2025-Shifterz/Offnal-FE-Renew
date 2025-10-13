@@ -29,7 +29,7 @@ const stylesMap: Record<
     textColor: 'text-text-information',
   },
   휴일: {
-    backgroundColor: '',
+    backgroundColor: 'bg-surface-danger-subtle',
     textColor: 'text-text-danger',
   },
 } as const
@@ -44,7 +44,7 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`flex h-[23px] w-[30px] items-center justify-center ${currentStyle.backgroundColor}`}
+      className={`flex h-[26px] w-[30px] items-center justify-center rounded-radius-xs ${currentStyle.backgroundColor}`}
     >
       <Text className={`heading-xxxxs ${currentStyle.textColor}`}>{text}</Text>
     </TouchableOpacity>

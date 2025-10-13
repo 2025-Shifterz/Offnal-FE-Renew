@@ -15,7 +15,7 @@ const TypeSelect = ({ onPress }: TypeSelectProps) => {
   return (
     <>
       <CustomDashedLine />
-      <TouchableOpacity className="flex-col gap-[9px] rounded-b-radius-m2 bg-surface-white p-[11px]">
+      <TouchableOpacity className="flex-col gap-[9px] rounded-b-radius-xl bg-surface-white p-[11px]">
         <Text className="text-text-subtle body-xs">근무 형태 입력</Text>
         <View className="flex-row gap-[6px]">
           {shiftTypes.map(type => (
