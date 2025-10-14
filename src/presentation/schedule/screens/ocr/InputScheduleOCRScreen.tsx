@@ -1,26 +1,26 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
-import TimeInput from '../component/TimeInput'
-import TeamInput from '../component/TeamInput'
-import ScheduleNameInput from '../component/ScheduleNameInput'
+import TimeInput from '../../component/TimeInput'
+import TeamInput from '../../component/TeamInput'
+import ScheduleNameInput from '../../component/ScheduleNameInput'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
   onboardingNavigation,
   OnboardingStackParamList,
-} from '../../../navigation/types'
-import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
-import TitleMessage from '../../../shared/components/TitleMessage'
-import BottomButton from '../../../shared/components/BottomButton'
+} from '../../../../navigation/types'
+import { WorkTimeContext } from '../../../../shared/context/WorkTimeContext'
+import TitleMessage from '../../../../shared/components/TitleMessage'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import BottomButton from '../../../../shared/components/BottomButton'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
   'ScheduleInfoInput'
 >
 
-const ScheduleInfoInput = () => {
+const InputScheduleOCRScreen = () => {
   const route = useRoute<ScheduleInfoInputRouteProp>()
-  const { selectedBoxId } = route.params
+  const { selectedScheduleType } = route.params
 
   const navigation = useNavigation<onboardingNavigation>()
 
@@ -36,8 +36,8 @@ const ScheduleInfoInput = () => {
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = () => {
-    navigation.navigate('CalendarType', {
-      selectedBoxId,
+    navigation.navigate('SelectMonthWithOCR', {
+      selectedScheduleType,
       calendarName,
       workGroup,
       workTimes,
@@ -47,9 +47,9 @@ const ScheduleInfoInput = () => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="w-full flex-1 bg-background-gray-subtle1 px-p-7"
     >
-      <View className="w-full flex-1">
+      <View className="flex-1">
         <TitleMessage title="근무표의 기본 정보를 입력해주세요." />
 
         <View className="flex gap-[26px]">
@@ -67,11 +67,10 @@ const ScheduleInfoInput = () => {
             setIsDirect={setIsDirect}
           />
         </View>
-
         <BottomButton text="다음" onPress={handleNext} />
       </View>
     </SafeAreaView>
   )
 }
 
-export default ScheduleInfoInput
+export default InputScheduleOCRScreen

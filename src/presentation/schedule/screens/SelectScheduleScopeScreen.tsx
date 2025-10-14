@@ -6,15 +6,17 @@ import { onboardingNavigation } from '../../../navigation/types'
 import BottomButton from '../../../shared/components/BottomButton'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { ScheduleScopeType } from '../../../shared/types/ScheduleScopeType'
 
-const ScheduleRegType = () => {
+const SelectScheduleScopeScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
-  const [selectedBoxId, setSelectedBoxId] = useState<number>(1)
+  const [selectedScheduleType, setSelectedScheduleType] =
+    useState<ScheduleScopeType>('ALL')
 
   // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
-  const handleBoxClick = (id: number) => {
-    setSelectedBoxId(id)
-    console.log(`Selected Box ID: ${id}`)
+  const handleBoxClick = (type: ScheduleScopeType) => {
+    setSelectedScheduleType(type)
+    console.log(`선택된 전체 | 개인 근무표 방식: ${type}`)
   }
 
   return (
@@ -29,16 +31,16 @@ const ScheduleRegType = () => {
         />
         <View className="mt-[26px] flex flex-row gap-3">
           <SelectScheduleBox
-            id={1}
+            type="ALL"
             onPress={handleBoxClick}
-            isSelected={selectedBoxId === 1}
+            isSelected={selectedScheduleType === 'ALL'}
             title="전체 근무표 등록"
             subTitle={`여러 조의 스케줄이 담긴\n근무표를 등록할 수 있어요`}
           />
           <SelectScheduleBox
-            id={2}
+            type="MY"
             onPress={handleBoxClick}
-            isSelected={selectedBoxId === 2}
+            isSelected={selectedScheduleType === 'MY'}
             title="내 근무표만 등록"
             subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
           />
@@ -46,7 +48,7 @@ const ScheduleRegType = () => {
         <BottomButton
           text="다음"
           onPress={() => {
-            navigation.navigate('ScheduleInfoInput', { selectedBoxId })
+            navigation.navigate('ScheduleInfoInput', { selectedScheduleType })
           }}
         />
       </View>
@@ -54,4 +56,4 @@ const ScheduleRegType = () => {
   )
 }
 
-export default ScheduleRegType
+export default SelectScheduleScopeScreen

@@ -1,15 +1,14 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import CompleteCreateScheduleScreen from '../presentation/schedule/screens/CreateCompleteScheduleScreen'
-
 import SelectMonthWithOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthWithOCRScreen'
-import SelectInputScheduleWithOCRTypeScreen from '../presentation/schedule/screens/ocr/SelectInputScheduleWithOCRTypeScreen'
-import EditCompleteCreateScheduleOCRScreen from '../presentation/schedule/screens/ocr/CompleteScheduleOCRScreen'
+import EditScheduleOCRScreen from '../presentation/schedule/screens/ocr/EditScheduleOCRScreen'
 import { OnboardingStackParamList } from './types'
-import ScheduleRegTypeOCR from '../presentation/schedule/screens/ocr/RegTypeByScheduleOCRScreen'
-import ScheduleInfoInputOCR from '../presentation/schedule/screens/ocr/InputScheduleInfoOCRScreen'
+import ScheduleRegTypeOCR from '../presentation/schedule/screens/ocr/SelectScheduleScopeOCRScreen'
+import ScheduleInfoInputOCR from '../presentation/schedule/screens/ocr/InputScheduleOCRScreen'
 import CustomBackButton from '../shared/components/CustomBackButton'
 import StepBar from '../shared/components/StepBar'
+import CompleteScheduleOCRScreen from '../presentation/schedule/screens/ocr/CompleteScheduleOCRScreen'
+import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
@@ -47,24 +46,24 @@ const OnBoardingScheduleWithOCRNavigator = () => {
       />
 
       <Stack.Screen
-        name="SelectInputScheduleWithOCRType"
-        component={SelectInputScheduleWithOCRTypeScreen}
+        name="SelectPhotoOCR"
+        component={SelectPhotoOCRScreen}
         options={{
           headerTitle: () => <StepBar currentStep={3} totalSteps={6} />,
         }}
       />
 
       <Stack.Screen
-        name="EditCompleteCreateScheduleOCR"
-        component={EditCompleteCreateScheduleOCRScreen}
+        name="EditScheduleOCR"
+        component={EditScheduleOCRScreen}
         options={{
           headerTitle: () => <StepBar currentStep={4} totalSteps={6} />,
         }}
       />
 
       <Stack.Screen
-        name="CompleteCreate"
-        component={CompleteCreateScheduleScreen}
+        name="CompleteScheduleOCR"
+        component={CompleteScheduleOCRScreen}
         options={{
           headerTitle: () => <StepBar currentStep={5} totalSteps={6} />,
         }}

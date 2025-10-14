@@ -14,7 +14,7 @@ import {
   RESULTS,
 } from 'react-native-permissions'
 
-import RegMethod from '../../../schedule/component/RegMethod'
+import RegMethod from '../../component/RegMethod'
 
 import TakePicture from '../../../../assets/icons/ic_camera_32.svg'
 import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
@@ -29,22 +29,29 @@ import {
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { PhotoType } from '../../../../shared/types/PhotoType'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
-  'SelectInputScheduleWithOCRType'
+  'SelectPhotoOCR'
 >
 
-const SelectInputScheduleWithOCRTypeScreen = () => {
+const SelectPhotoOCRScreen = () => {
   const route = useRoute<ScheduleInfoInputRouteProp>()
   const navigation =
     useNavigation<NativeStackNavigationProp<OnboardingStackParamList>>()
 
-  const { selectedBoxId, calendarName, workGroup, workTimes, year, month } =
-    route.params
+  const {
+    selectedScheduleType,
+    calendarName,
+    workGroup,
+    workTimes,
+    year,
+    month,
+  } = route.params
 
   const [imageUri, setImageUri] = useState<string | null | undefined>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -189,8 +196,8 @@ const SelectInputScheduleWithOCRTypeScreen = () => {
         console.log(`첫 번째 근무조의 15일자 근무: ${day15Shift}`) // 예: "N"
       }
 
-      navigation.navigate('EditCompleteCreateScheduleOCR', {
-        selectedBoxId,
+      navigation.navigate('EditScheduleOCR', {
+        selectedScheduleType,
         calendarName,
         workGroup,
         workTimes,
@@ -206,12 +213,13 @@ const SelectInputScheduleWithOCRTypeScreen = () => {
     }
   }
 
-  const [localSelectedBoxId, setLocalSelectedBoxId] = useState<number>(1)
+  const [localSelectedPhotoBoxType, setLocalSelectedPhotoBoxType] =
+    useState<PhotoType>('Gallery')
 
   // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
-  const handleBoxClick = (id: number) => {
-    setLocalSelectedBoxId(id)
-    console.log(`Selected Box ID: ${id}`)
+  const handleBoxClick = (type: PhotoType) => {
+    setLocalSelectedPhotoBoxType(type)
+    console.log(`선택된 사진 선택 방식 타입: ${type}`)
   }
 
   return (
@@ -224,17 +232,17 @@ const SelectInputScheduleWithOCRTypeScreen = () => {
           인식할 근무표를 등록해주세요.
         </Text>
 
-        <RegMethod
-          id={1}
-          isSelected={localSelectedBoxId === 1}
+        <RegMethod<PhotoType>
+          type="Gallery"
+          isSelected={localSelectedPhotoBoxType === 'Gallery'}
           onPress={handleBoxClick}
           Icon={OpenGallery}
           title="갤러리에서 사진 선택"
           subtitle="이미 저장된 근무표 이미지를 불러올 수 있어요."
         />
-        <RegMethod
-          id={2}
-          isSelected={localSelectedBoxId === 2}
+        <RegMethod<PhotoType>
+          type="Camera"
+          isSelected={localSelectedPhotoBoxType === 'Camera'}
           onPress={handleBoxClick}
           Icon={TakePicture}
           title="카메라로 촬영하기"
@@ -244,7 +252,9 @@ const SelectInputScheduleWithOCRTypeScreen = () => {
         <BottomButton
           text="다음"
           onPress={
-            localSelectedBoxId === 1 ? analyzeScheduleImage : openCameraImage
+            localSelectedPhotoBoxType === 'Gallery'
+              ? analyzeScheduleImage
+              : openCameraImage
           }
         />
       </View>
@@ -253,4 +263,4 @@ const SelectInputScheduleWithOCRTypeScreen = () => {
   )
 }
 
-export default SelectInputScheduleWithOCRTypeScreen
+export default SelectPhotoOCRScreen

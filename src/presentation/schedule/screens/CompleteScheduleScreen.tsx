@@ -8,7 +8,7 @@ import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CompleteCalendarLottie from '../../../assets/lottie/complete-calendar.svg'
 
-const CompleteCreateScheduleScreen = () => {
+const CompleteScheduleScreen = () => {
   // const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
 
   const navigation =
@@ -34,4 +34,4 @@ const CompleteCreateScheduleScreen = () => {
   )
 }
 
-export default CompleteCreateScheduleScreen
+export default CompleteScheduleScreen

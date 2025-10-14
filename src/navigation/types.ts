@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { ScheduleScopeType } from '../shared/types/ScheduleScopeType'
 
 export type onboardingNavigation =
   NativeStackNavigationProp<OnboardingStackParamList>
@@ -12,7 +13,7 @@ export type tabNavigation = NativeStackNavigationProp<TabParamList>
 // 로그인
 export type LoginStackParamList = {
   Login: undefined
-  SelectRegMethod: undefined
+  SelectScheduleReg: undefined
   KakaoWebView: undefined
   PrivacyPolicy: undefined
   ServiceTerm: undefined
@@ -24,9 +25,9 @@ export type LoginStackParamList = {
 // 온보딩 캘린더
 export type OnboardingStackParamList = {
   ScheduleRegType: undefined
-  ScheduleInfoInput: { selectedBoxId: number } | undefined
+  ScheduleInfoInput: { selectedScheduleType: ScheduleScopeType }
   CalendarType: {
-    selectedBoxId: number
+    selectedScheduleType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {
@@ -36,7 +37,7 @@ export type OnboardingStackParamList = {
     }
   }
   SelectMonthWithOCR: {
-    selectedBoxId: number
+    selectedScheduleType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {
@@ -45,21 +46,8 @@ export type OnboardingStackParamList = {
       N: { startTime: string; endTime: string }
     }
   }
-  SelectInputScheduleWithOCRType: {
-    selectedBoxId: number
-    calendarName: string
-    workGroup: string
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
-    year: number
-    month: number
-    ocrResult?: unknown
-  }
-  EditCompleteCreateScheduleOCR: {
-    selectedBoxId: number
+  SelectPhotoOCR: {
+    selectedScheduleType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {
@@ -71,7 +59,21 @@ export type OnboardingStackParamList = {
     month: number
     ocrResult?: unknown
   }
-  CompleteCreate: undefined
+  EditScheduleOCR: {
+    selectedScheduleType: ScheduleScopeType
+    calendarName: string
+    workGroup: string
+    workTimes: {
+      D: { startTime: string; endTime: string }
+      E: { startTime: string; endTime: string }
+      N: { startTime: string; endTime: string }
+    }
+    year: number
+    month: number
+    ocrResult?: unknown
+  }
+  CompleteSchedule: undefined
+  CompleteScheduleOCR: undefined
   InfoEdit: undefined // 온보딩은 아님
 }
 

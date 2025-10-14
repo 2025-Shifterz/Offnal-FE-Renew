@@ -1,24 +1,30 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View } from 'react-native'
+import { View } from 'react-native'
 import SelectScheduleBox from '../../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
 import { onboardingNavigation } from '../../../../navigation/types'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
+import { ScheduleType } from '../../../../shared/types/ScheduleScopeType'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-const ScheduleRegTypeOCR = () => {
+const SelectScheduleScopeOCRScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
-  const [selectedBoxId, setSelectedBoxId] = useState<number>(1)
+  const [selectedScheduleType, setSelectedScheduleType] =
+    useState<ScheduleType>('ALL')
 
-  // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
-  const handleBoxClick = (id: number) => {
-    setSelectedBoxId(id)
-    console.log(`Selected Box ID: ${id}`)
+  // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
+  const handleBoxClick = (type: ScheduleType) => {
+    setSelectedScheduleType(type)
+    console.log(`Selected Box Type: ${type}`)
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
-      <SafeAreaView className="flex-1">
+    <SafeAreaView
+      edges={['left', 'right', 'bottom']}
+      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+    >
+      <View className="flex-1">
         <View className="w-full flex-1">
           <TitleMessage
             title="근무표 등록 방식을 선택해주세요."
@@ -26,16 +32,16 @@ const ScheduleRegTypeOCR = () => {
           />
           <View className="mt-[26px] flex flex-row gap-3">
             <SelectScheduleBox
-              id={1}
+              type="ALL"
               onPress={handleBoxClick}
-              isSelected={selectedBoxId === 1}
+              isSelected={selectedScheduleType === 'ALL'}
               title="전체 근무표 등록"
               subTitle={`여러 조의 스케줄이 담긴\n근무표를 등록할 수 있어요`}
             />
             <SelectScheduleBox
-              id={2}
+              type="MY"
               onPress={handleBoxClick}
-              isSelected={selectedBoxId === 2}
+              isSelected={selectedScheduleType === 'MY'}
               title="내 근무표만 등록"
               subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
             />
@@ -43,13 +49,13 @@ const ScheduleRegTypeOCR = () => {
           <BottomButton
             text="다음"
             onPress={() => {
-              navigation.navigate('ScheduleInfoInput', { selectedBoxId })
+              navigation.navigate('ScheduleInfoInput', { selectedScheduleType })
             }}
           />
         </View>
-      </SafeAreaView>
-    </View>
+      </View>
+    </SafeAreaView>
   )
 }
 
-export default ScheduleRegTypeOCR
+export default SelectScheduleScopeOCRScreen

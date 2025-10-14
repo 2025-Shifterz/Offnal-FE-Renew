@@ -1,13 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import ScheduleRegType from '../presentation/schedule/screens/RegTypeByScheduleScreen'
-import ScheduleInfoInput from '../presentation/schedule/screens/InputScheduleInfoScheduleScreen'
+import ScheduleRegType from '../presentation/schedule/screens/SelectScheduleScopeScreen'
+import ScheduleInfoInput from '../presentation/schedule/screens/InputScheduleScreen'
 import CalendarType from '../presentation/calenderType/screen/CalendarType'
-import CompleteCreateScheduleScreen from '../presentation/schedule/screens/CreateCompleteScheduleScreen'
 
 import { OnboardingStackParamList } from './types'
 import InfoEditScreen from '../presentation/calInfoEdit/screen/InfoEditScreen'
 import StepBar from '../shared/components/StepBar'
 import CustomBackButton from '../shared/components/CustomBackButton'
+import CompleteScheduleScreen from '../presentation/schedule/screens/CompleteScheduleScreen'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
@@ -44,8 +44,8 @@ const OnBoardingScheduleNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="CompleteCreate"
-        component={CompleteCreateScheduleScreen}
+        name="CompleteSchedule"
+        component={CompleteScheduleScreen}
         options={{
           headerTitle: () => <StepBar currentStep={3} totalSteps={4} />,
         }}

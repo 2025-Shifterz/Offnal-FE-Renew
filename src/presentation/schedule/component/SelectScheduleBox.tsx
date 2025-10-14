@@ -3,17 +3,18 @@ import { Text, View } from 'react-native'
 import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
 import EntirePerson from '../../../assets/icons/entire-p.svg'
 import OnePerson from '../../../assets/icons/one-p.svg'
+import { ScheduleType } from '../../../shared/types/ScheduleScopeType'
 
 interface SelectBoxProps {
-  id: number
+  type: ScheduleType
   title: string
   subTitle: string
   isSelected: boolean
-  onPress: (id: number) => void // 부모로부터 id를 인자로 받음
+  onPress: (type: ScheduleType) => void
 }
 
 const SelectScheduleBox = ({
-  id,
+  type,
   title,
   subTitle,
   isSelected,
@@ -21,7 +22,7 @@ const SelectScheduleBox = ({
 }: SelectBoxProps) => {
   return (
     <ToggleBoxWrapper
-      id={id}
+      type={type}
       isSelected={isSelected}
       onPress={onPress}
       boxStyle={
@@ -29,7 +30,7 @@ const SelectScheduleBox = ({
       }
     >
       <View className="flex items-center gap-[18px]">
-        {id === 1 ? <EntirePerson /> : <OnePerson />}
+        {type === 'ALL' ? <EntirePerson /> : <OnePerson />}
         <View className="flex items-center gap-[10px]">
           <Text className="text-text-basic heading-xxs">{title}</Text>
           <Text className="text-center text-text-subtle label-xxs">

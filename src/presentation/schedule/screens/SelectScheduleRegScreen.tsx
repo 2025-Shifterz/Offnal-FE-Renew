@@ -10,16 +10,18 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
 import { useState } from 'react'
 import BottomButton from '../../../shared/components/BottomButton'
+import { ScheduleRegMethod } from '../../../shared/types/ScheduleRegMethod'
 
-const ScheduleRegRegisterMethod = () => {
+const SelectScheduleRegScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
-  const [selectedBoxId, setSelectedBoxId] = useState<number>(1)
+  const [selectedScheduleRegMethod, setSelectedScheduleRegMethod] =
+    useState<ScheduleRegMethod>('OCR')
 
   // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
-  const handleBoxClick = (id: number) => {
-    setSelectedBoxId(id)
-    console.log(`Selected Box ID: ${id}`)
+  const handleBoxClick = (type: ScheduleRegMethod) => {
+    setSelectedScheduleRegMethod(type)
+    console.log(`선택된 근무표 등록 방법: ${type}`)
   }
   return (
     <SafeAreaView className="h-full w-full flex-1 bg-background-gray-subtle1 px-p-7">
@@ -33,8 +35,8 @@ const ScheduleRegRegisterMethod = () => {
         </GlobalText>
 
         <RegMethod
-          id={1}
-          isSelected={selectedBoxId === 1}
+          type="OCR"
+          isSelected={selectedScheduleRegMethod === 'OCR'}
           Icon={Camera}
           title="근무표 사진 찍어서 자동 등록하기"
           subtitle="AI로 근무표를 자동 등록해요"
@@ -43,8 +45,8 @@ const ScheduleRegRegisterMethod = () => {
         />
 
         <RegMethod
-          id={2}
-          isSelected={selectedBoxId === 2}
+          type="NEW"
+          isSelected={selectedScheduleRegMethod === 'NEW'}
           Icon={CalendarYellow}
           title="근무표 새로 만들기"
           subtitle="지금 바로 직접 근무표를 만들고 시작해요"
@@ -53,8 +55,8 @@ const ScheduleRegRegisterMethod = () => {
         />
 
         <RegMethod
-          id={3}
-          isSelected={selectedBoxId === 3}
+          type="DIRECT"
+          isSelected={selectedScheduleRegMethod === 'DIRECT'}
           Icon={CalendarBlue}
           title="근무표 없이 시작하기"
           subtitle="지금은 근무표 없이 시작하고, 나중에 등록할 수 있어요"
@@ -64,9 +66,9 @@ const ScheduleRegRegisterMethod = () => {
         <BottomButton
           text="다음"
           onPress={
-            selectedBoxId === 1
+            selectedScheduleRegMethod === 'OCR'
               ? () => navigation.navigate('OnboardingSchedulesWithOCR')
-              : selectedBoxId === 2
+              : selectedScheduleRegMethod === 'NEW'
                 ? () => navigation.navigate('OnboardingSchedules')
                 : () => navigation.navigate('Tabs')
           }
@@ -76,4 +78,4 @@ const ScheduleRegRegisterMethod = () => {
   )
 }
 
-export default ScheduleRegRegisterMethod
+export default SelectScheduleRegScreen
