@@ -22,10 +22,7 @@ import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from '../../../../navigation/types'
-import {
-  fastAPIService,
-  ocrService,
-} from '../../../../infrastructure/di/Dependencies'
+import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'

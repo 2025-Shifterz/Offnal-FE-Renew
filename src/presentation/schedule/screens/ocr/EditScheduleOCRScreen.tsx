@@ -30,7 +30,7 @@ const EditScheduleOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
   const navigation = useNavigation<onboardingNavigation>()
   const {
-    selectedBoxId,
+    selectedScheduleScopeType,
     calendarName,
     workGroup,
     workTimes,
@@ -40,7 +40,11 @@ const EditScheduleOCRScreen = () => {
   } = route.params
 
   const myWorkSheet = (() => {
-    if (selectedBoxId === 2 && ocrResult && Array.isArray(ocrResult)) {
+    if (
+      selectedScheduleScopeType === 'MY' &&
+      ocrResult &&
+      Array.isArray(ocrResult)
+    ) {
       const foundSheet = ocrResult.find(([workGroupNumber]) => {
         const cleanWorkGroup = workGroup.replace('조', '')
         return workGroupNumber === cleanWorkGroup
@@ -67,7 +71,7 @@ const EditScheduleOCRScreen = () => {
       const monthlySchedules: MonthlySchedule[] = []
 
       if (ocrResult && Array.isArray(ocrResult)) {
-        if (selectedBoxId === 2) {
+        if (selectedScheduleScopeType === 'MY') {
           if (myWorkSheet && myWorkSheet.length === 2) {
             const [, shiftsByDay]: [string, Record<string, string>] =
               myWorkSheet
@@ -105,7 +109,7 @@ const EditScheduleOCRScreen = () => {
 
       calendarRepository.createWorkCalendar(newCalendar)
 
-      navigation.navigate('CompleteCreate')
+      navigation.navigate('CompleteScheduleOCR')
     } catch (error) {
       Alert.alert(
         '오류',
@@ -135,7 +139,7 @@ const EditScheduleOCRScreen = () => {
           정확히 인식되지 않은 부분을 수정해 주세요
         </Text>
         <View className="mt-[20px]">
-          {selectedBoxId === 1 ? (
+          {selectedScheduleScopeType === 'ALL' ? (
             <TCalendarEditor
               calendarName={calendarName}
               workGroup={workGroup}

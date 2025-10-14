@@ -3,14 +3,14 @@ import { Text, View } from 'react-native'
 import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
 import EntirePerson from '../../../assets/icons/entire-p.svg'
 import OnePerson from '../../../assets/icons/one-p.svg'
-import { ScheduleType } from '../../../shared/types/ScheduleScopeType'
+import { ScheduleScopeType } from '../../../shared/types/ScheduleScopeType'
 
 interface SelectBoxProps {
-  type: ScheduleType
+  type: ScheduleScopeType
   title: string
   subTitle: string
   isSelected: boolean
-  onPress: (type: ScheduleType) => void
+  onPress: (type: ScheduleScopeType) => void
 }
 
 const SelectScheduleBox = ({
