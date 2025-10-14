@@ -3,9 +3,9 @@ import { Text, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
 import { ScheduleRegMethod } from '../../../shared/types/ScheduleRegMethod'
-import { PhotoType } from '../../../shared/types/PhotoType'
+import { SchedulePhotoType } from '../../../shared/types/SchedulePhotoType'
 
-type RegMethodProps<T extends ScheduleRegMethod | PhotoType> = {
+type RegMethodProps<T extends ScheduleRegMethod | SchedulePhotoType> = {
   type: T
   isSelected: boolean
   Icon: React.FC<SvgProps>
@@ -14,7 +14,7 @@ type RegMethodProps<T extends ScheduleRegMethod | PhotoType> = {
   onPress: (type: T) => void
 }
 
-const RegMethod = <T extends ScheduleRegMethod | PhotoType>({
+const RegMethod = <T extends ScheduleRegMethod | SchedulePhotoType>({
   type,
   isSelected,
   Icon,

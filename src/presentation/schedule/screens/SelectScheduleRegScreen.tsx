@@ -34,7 +34,7 @@ const SelectScheduleRegScreen = () => {
           회사 근무표 검색 기능은 추후 추가될 예정이에요.
         </GlobalText>
 
-        <RegMethod
+        <RegMethod<ScheduleRegMethod>
           type="OCR"
           isSelected={selectedScheduleRegMethod === 'OCR'}
           Icon={Camera}
@@ -44,7 +44,7 @@ const SelectScheduleRegScreen = () => {
           // onPress={() => navigation.navigate('OnboardingSchedulesWithOCR')}
         />
 
-        <RegMethod
+        <RegMethod<ScheduleRegMethod>
           type="NEW"
           isSelected={selectedScheduleRegMethod === 'NEW'}
           Icon={CalendarYellow}
@@ -54,7 +54,7 @@ const SelectScheduleRegScreen = () => {
           // onPress={() => navigation.navigate('OnboardingSchedules')}
         />
 
-        <RegMethod
+        <RegMethod<ScheduleRegMethod>
           type="DIRECT"
           isSelected={selectedScheduleRegMethod === 'DIRECT'}
           Icon={CalendarBlue}

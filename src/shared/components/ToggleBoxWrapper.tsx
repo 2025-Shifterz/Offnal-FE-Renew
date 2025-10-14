@@ -1,13 +1,13 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { twMerge } from 'tailwind-merge'
-import { ScheduleType } from '../types/ScheduleScopeType'
 import { ScheduleRegMethod } from '../types/ScheduleRegMethod'
-import { PhotoType } from '../types/PhotoType'
+import { ScheduleScopeType } from '../types/ScheduleScopeType'
+import { SchedulePhotoType } from '../types/SchedulePhotoType'
 
 // 토글 시 스타일 변경되는 박스 래퍼 컴포넌트
 interface ToggleBoxWrapperProps<
-  T extends ScheduleRegMethod | ScheduleType | PhotoType,
+  T extends ScheduleRegMethod | ScheduleScopeType | SchedulePhotoType,
 > {
   type: T
   isSelected: boolean
@@ -17,7 +17,7 @@ interface ToggleBoxWrapperProps<
 }
 
 const ToggleBoxWrapper = <
-  T extends ScheduleRegMethod | ScheduleType | PhotoType,
+  T extends ScheduleRegMethod | ScheduleScopeType | SchedulePhotoType,
 >({
   type,
   isSelected,

@@ -26,7 +26,7 @@ import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { PhotoType } from '../../../../shared/types/PhotoType'
+import { SchedulePhotoType } from '../../../../shared/types/SchedulePhotoType'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
@@ -211,10 +211,10 @@ const SelectPhotoOCRScreen = () => {
   }
 
   const [localSelectedPhotoBoxType, setLocalSelectedPhotoBoxType] =
-    useState<PhotoType>('Gallery')
+    useState<SchedulePhotoType>('Gallery')
 
   // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
-  const handleBoxClick = (type: PhotoType) => {
+  const handleBoxClick = (type: SchedulePhotoType) => {
     setLocalSelectedPhotoBoxType(type)
     console.log(`선택된 사진 선택 방식 타입: ${type}`)
   }
@@ -229,7 +229,7 @@ const SelectPhotoOCRScreen = () => {
           인식할 근무표를 등록해주세요.
         </Text>
 
-        <RegMethod<PhotoType>
+        <RegMethod<SchedulePhotoType>
           type="Gallery"
           isSelected={localSelectedPhotoBoxType === 'Gallery'}
           onPress={handleBoxClick}
@@ -237,7 +237,7 @@ const SelectPhotoOCRScreen = () => {
           title="갤러리에서 사진 선택"
           subtitle="이미 저장된 근무표 이미지를 불러올 수 있어요."
         />
-        <RegMethod<PhotoType>
+        <RegMethod<SchedulePhotoType>
           type="Camera"
           isSelected={localSelectedPhotoBoxType === 'Camera'}
           onPress={handleBoxClick}
