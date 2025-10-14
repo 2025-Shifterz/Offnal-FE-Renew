@@ -5,17 +5,17 @@ import { useNavigation } from '@react-navigation/native'
 import { onboardingNavigation } from '../../../../navigation/types'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
-import { ScheduleType } from '../../../../shared/types/ScheduleScopeType'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { ScheduleScopeType } from '../../../../shared/types/ScheduleScopeType'
 
 const SelectScheduleScopeOCRScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
-  const [selectedScheduleType, setSelectedScheduleType] =
-    useState<ScheduleType>('ALL')
+  const [selectedScheduleScopeType, setSelectedScheduleScopeType] =
+    useState<ScheduleScopeType>('ALL')
 
   // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
-  const handleBoxClick = (type: ScheduleType) => {
-    setSelectedScheduleType(type)
+  const handleBoxClick = (type: ScheduleScopeType) => {
+    setSelectedScheduleScopeType(type)
     console.log(`Selected Box Type: ${type}`)
   }
 
@@ -34,14 +34,14 @@ const SelectScheduleScopeOCRScreen = () => {
             <SelectScheduleBox
               type="ALL"
               onPress={handleBoxClick}
-              isSelected={selectedScheduleType === 'ALL'}
+              isSelected={selectedScheduleScopeType === 'ALL'}
               title="전체 근무표 등록"
               subTitle={`여러 조의 스케줄이 담긴\n근무표를 등록할 수 있어요`}
             />
             <SelectScheduleBox
               type="MY"
               onPress={handleBoxClick}
-              isSelected={selectedScheduleType === 'MY'}
+              isSelected={selectedScheduleScopeType === 'MY'}
               title="내 근무표만 등록"
               subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
             />
@@ -49,7 +49,9 @@ const SelectScheduleScopeOCRScreen = () => {
           <BottomButton
             text="다음"
             onPress={() => {
-              navigation.navigate('ScheduleInfoInput', { selectedScheduleType })
+              navigation.navigate('ScheduleInfoInput', {
+                selectedScheduleScopeType,
+              })
             }}
           />
         </View>

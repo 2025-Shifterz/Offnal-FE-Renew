@@ -18,8 +18,9 @@ type ScheduleTypeRouteProp = RouteProp<OnboardingStackParamList, 'CalendarType'>
 
 const CalendarType = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const { selectedBoxId, calendarName, workGroup, workTimes } = route.params
-  console.log(selectedBoxId)
+  const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
+    route.params
+  console.log(selectedScheduleScopeType)
   console.log(calendarName)
   console.log(workGroup)
   console.log(workTimes)
@@ -40,7 +41,7 @@ const CalendarType = () => {
     if (calendarEditorRef.current) {
       calendarEditorRef.current.postData() // 근무표 저장 요청
     }
-    navigation.navigate('CompleteCreate')
+    navigation.navigate('CompleteSchedule', { selectedScheduleScopeType })
   }
 
   return (
@@ -54,7 +55,7 @@ const CalendarType = () => {
           subTitle="각 날짜에 해당하는 근무 유형을 선택해주세요."
         />
         <View className="mt-[20px]">
-          {selectedBoxId === 1 ? (
+          {selectedScheduleScopeType === 'ALL' ? (
             <TCalendarEditor
               calendarName={calendarName}
               workGroup={workGroup}

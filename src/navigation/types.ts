@@ -25,9 +25,9 @@ export type LoginStackParamList = {
 // 온보딩 캘린더
 export type OnboardingStackParamList = {
   ScheduleRegType: undefined
-  ScheduleInfoInput: { selectedScheduleType: ScheduleScopeType }
+  ScheduleInfoInput: { selectedScheduleScopeType: ScheduleScopeType }
   CalendarType: {
-    selectedScheduleType: ScheduleScopeType
+    selectedScheduleScopeType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {
@@ -37,7 +37,7 @@ export type OnboardingStackParamList = {
     }
   }
   SelectMonthWithOCR: {
-    selectedScheduleType: ScheduleScopeType
+    selectedScheduleScopeType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {
@@ -47,7 +47,7 @@ export type OnboardingStackParamList = {
     }
   }
   SelectPhotoOCR: {
-    selectedScheduleType: ScheduleScopeType
+    selectedScheduleScopeType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {
@@ -60,7 +60,7 @@ export type OnboardingStackParamList = {
     ocrResult?: unknown
   }
   EditScheduleOCR: {
-    selectedScheduleType: ScheduleScopeType
+    selectedScheduleScopeType: ScheduleScopeType
     calendarName: string
     workGroup: string
     workTimes: {

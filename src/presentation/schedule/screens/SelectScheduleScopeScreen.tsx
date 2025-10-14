@@ -10,12 +10,12 @@ import { ScheduleScopeType } from '../../../shared/types/ScheduleScopeType'
 
 const SelectScheduleScopeScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
-  const [selectedScheduleType, setSelectedScheduleType] =
+  const [selectedScheduleScopeType, setSelectedScheduleScopeType] =
     useState<ScheduleScopeType>('ALL')
 
   // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
   const handleBoxClick = (type: ScheduleScopeType) => {
-    setSelectedScheduleType(type)
+    setSelectedScheduleScopeType(type)
     console.log(`선택된 전체 | 개인 근무표 방식: ${type}`)
   }
 
@@ -33,14 +33,14 @@ const SelectScheduleScopeScreen = () => {
           <SelectScheduleBox
             type="ALL"
             onPress={handleBoxClick}
-            isSelected={selectedScheduleType === 'ALL'}
+            isSelected={selectedScheduleScopeType === 'ALL'}
             title="전체 근무표 등록"
             subTitle={`여러 조의 스케줄이 담긴\n근무표를 등록할 수 있어요`}
           />
           <SelectScheduleBox
             type="MY"
             onPress={handleBoxClick}
-            isSelected={selectedScheduleType === 'MY'}
+            isSelected={selectedScheduleScopeType === 'MY'}
             title="내 근무표만 등록"
             subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
           />
@@ -48,7 +48,9 @@ const SelectScheduleScopeScreen = () => {
         <BottomButton
           text="다음"
           onPress={() => {
-            navigation.navigate('ScheduleInfoInput', { selectedScheduleType })
+            navigation.navigate('ScheduleInfoInput', {
+              selectedScheduleScopeType,
+            })
           }}
         />
       </View>

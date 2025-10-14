@@ -19,7 +19,7 @@ const SelectMonthWithOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
   const navigation = useNavigation<onboardingNavigation>()
 
-  const { selectedScheduleType, calendarName, workGroup, workTimes } =
+  const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
     route.params
   console.log('SelectMonthWithOCRScreen params:', route.params)
 
@@ -37,7 +37,7 @@ const SelectMonthWithOCRScreen = () => {
       navigation.navigate('SelectPhotoOCR', {
         year: date.year,
         month: date.month,
-        selectedScheduleType,
+        selectedScheduleScopeType,
         calendarName,
         workGroup,
         workTimes,

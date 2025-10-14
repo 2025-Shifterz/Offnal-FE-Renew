@@ -45,7 +45,7 @@ const SelectPhotoOCRScreen = () => {
     useNavigation<NativeStackNavigationProp<OnboardingStackParamList>>()
 
   const {
-    selectedScheduleType,
+    selectedScheduleScopeType,
     calendarName,
     workGroup,
     workTimes,
@@ -197,7 +197,7 @@ const SelectPhotoOCRScreen = () => {
       }
 
       navigation.navigate('EditScheduleOCR', {
-        selectedScheduleType,
+        selectedScheduleScopeType,
         calendarName,
         workGroup,
         workTimes,

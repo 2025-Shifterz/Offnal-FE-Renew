@@ -18,7 +18,7 @@ const NoCalendar = () => {
         <NewCalButton
           onCreateSchedule={() =>
             navigation.navigate('LoginScreens', {
-              screen: 'SelectRegMethod',
+              screen: 'SelectScheduleReg',
             })
           }
         />

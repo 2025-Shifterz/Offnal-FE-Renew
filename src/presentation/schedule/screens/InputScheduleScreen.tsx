@@ -20,7 +20,7 @@ type ScheduleInfoInputRouteProp = RouteProp<
 
 const InputScheduleScreen = () => {
   const route = useRoute<ScheduleInfoInputRouteProp>()
-  const { selectedScheduleType } = route.params
+  const { selectedScheduleScopeType } = route.params
 
   const navigation = useNavigation<onboardingNavigation>()
 
@@ -37,7 +37,7 @@ const InputScheduleScreen = () => {
 
   const handleNext = () => {
     navigation.navigate('CalendarType', {
-      selectedScheduleType,
+      selectedScheduleScopeType,
       calendarName,
       workGroup,
       workTimes,
