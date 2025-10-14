@@ -213,7 +213,7 @@ const SelectPhotoOCRScreen = () => {
   const [localSelectedPhotoBoxType, setLocalSelectedPhotoBoxType] =
     useState<SchedulePhotoType>('Gallery')
 
-  // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
+  // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
   const handleBoxClick = (type: SchedulePhotoType) => {
     setLocalSelectedPhotoBoxType(type)
     console.log(`선택된 사진 선택 방식 타입: ${type}`)

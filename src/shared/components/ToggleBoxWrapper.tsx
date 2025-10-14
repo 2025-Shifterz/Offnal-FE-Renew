@@ -12,7 +12,7 @@ interface ToggleBoxWrapperProps<
   type: T
   isSelected: boolean
   boxStyle: string
-  onPress: (type: T) => void // 부모로부터 id를 인자로 받음
+  onPress: (type: T) => void // 부모로부터 type를 인자로 받음
   children?: React.ReactNode
 }
 

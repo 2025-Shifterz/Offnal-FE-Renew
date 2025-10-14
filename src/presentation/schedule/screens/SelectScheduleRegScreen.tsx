@@ -18,7 +18,7 @@ const SelectScheduleRegScreen = () => {
   const [selectedScheduleRegMethod, setSelectedScheduleRegMethod] =
     useState<ScheduleRegMethod>('OCR')
 
-  // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
+  // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
   const handleBoxClick = (type: ScheduleRegMethod) => {
     setSelectedScheduleRegMethod(type)
     console.log(`선택된 근무표 등록 방법: ${type}`)

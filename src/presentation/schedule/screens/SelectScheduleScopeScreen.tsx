@@ -13,7 +13,7 @@ const SelectScheduleScopeScreen = () => {
   const [selectedScheduleScopeType, setSelectedScheduleScopeType] =
     useState<ScheduleScopeType>('ALL')
 
-  // 이 함수는 클릭된 박스의 id를 받아서 상태를 업데이트.
+  // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
   const handleBoxClick = (type: ScheduleScopeType) => {
     setSelectedScheduleScopeType(type)
     console.log(`선택된 전체 | 개인 근무표 방식: ${type}`)
