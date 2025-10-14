@@ -85,16 +85,16 @@ const KakaoLoginWebView = () => {
         refreshToken: storedRefreshToken,
       })
 
-      // TODO: 처음 로그인 아닐 때 홈 화면으로 이동한느거 필요함
-      if (!newMember) {
-        Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
-        console.log('accessToken:', accessToken)
-        console.log('refreshToken:', refreshToken)
-        console.log('memberName:', memberName)
-        navigation.replace('Tabs')
-      }
+      console.log('accessToken:', accessToken)
+      console.log('refreshToken:', refreshToken)
+      console.log('memberName:', memberName)
 
-      navigation.replace('SelectRegMethod')
+      if (newMember) {
+        Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
+        navigation.replace('SelectScheduleReg')
+      } else {
+        navigation.replace('Tabs') // 로그인 한 적이 있으면 홈 화면으로 이동
+      }
     } catch (err) {
       Alert.alert('에러', '로그인 응답 처리 중 오류 발생')
       console.error('postMessage parse error:', err)
