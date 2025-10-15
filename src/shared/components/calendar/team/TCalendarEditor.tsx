@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { TimeFrameChildren } from '../../TimeFrame'
 import TCalendarBase from './TCalendarBase'
 import TeamTypeSelect from './TeamTypeSelect'
+import { TimeFrameChildren } from '../TimeFrame'
 
 interface TCalendarEditorProps {
   calendarName: string

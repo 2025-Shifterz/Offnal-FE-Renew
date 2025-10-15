@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import CustomDashedLine from '../../DashedLine'
-import TimeFrame, { TimeFrameChildren } from '../../TimeFrame'
+import CustomDashedLine from '../DashedLine'
+import TimeFrame, { TimeFrameChildren } from '../TimeFrame'
 
 interface TypeSelectProps {
   onPressSelect: (team: string, type: TimeFrameChildren) => void

@@ -1,7 +1,4 @@
 import { View, Text, Alert, ScrollView } from 'react-native'
-import CalendarEditor, {
-  CalendarEditorRef,
-} from '../../../calenderType/components/calendar/personal/CalendarEditor'
 import { useRef } from 'react'
 import {
   onboardingOCRNavigation,
@@ -15,11 +12,14 @@ import {
   NewCalendar,
   ShiftType,
 } from '../../../../data/model/Calendar'
-import TCalendarEditor from '../../../calenderType/components/calendar/team/TCalendarEditor'
 import { convertOCRResultToPersonalSchduleData } from '../../mapper/calendarDataMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import CalendarEditor, {
+  CalendarEditorRef,
+} from '../../../../shared/components/calendar/personal/CalendarEditor'
+import TCalendarEditor from '../../../../shared/components/calendar/team/TCalendarEditor'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingOCRStackParamList,

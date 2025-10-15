@@ -5,8 +5,8 @@ import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { ShiftType } from '../../../../../data/model/Calendar'
-import { workDaysToMap } from '../../../../common/utils/calendar/workDaysToMap'
-import { calendarRepository } from '../../../../../infrastructure/di/Dependencies'
+import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import { workDaysToMap } from '../../../utils/calendar/workDaysToMap'
 
 interface CalendarViewerProps {
   onPressTeamIcon?: () => void

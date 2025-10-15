@@ -1,8 +1,9 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import CustomDashedLine from '../../DashedLine'
-import TimeFrame from '../../TimeFrame'
+
 import { ShiftType } from '../../../../../data/model/Calendar'
+import CustomDashedLine from '../DashedLine'
+import TimeFrame from '../TimeFrame'
 
 const shiftTypes: ShiftType[] = ['주간', '야간', '오후', '휴일']
 

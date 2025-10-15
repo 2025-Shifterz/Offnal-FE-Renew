@@ -2,10 +2,11 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import TimeFrame from '../../TimeFrame'
+
 import CalendarEditorHeader from '../header/CalendarEditorHeader'
 import CalendarViewerHeader from '../header/CalendarViewerHeader'
 import { ShiftType } from '../../../../../data/model/Calendar'
+import TimeFrame from '../TimeFrame'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'

@@ -13,8 +13,8 @@ import {
   NewCalendar,
   ShiftType,
 } from '../../../../../data/model/Calendar'
-import { toShiftType } from '../../../../../data/mappers/ShiftTypeMapper'
-import { calendarRepository } from '../../../../../infrastructure/di/Dependencies'
+import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
+import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 
 interface CalendarEditorProps {
   calendarName: string
