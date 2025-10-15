@@ -3,11 +3,11 @@ import { Text, View } from 'react-native'
 import NoCalendarIcon from '../../../assets/icons/noCalendar.svg'
 
 import { useNavigation } from '@react-navigation/native'
-import { calendarNavigation, loginNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import NewCalButton from './NewCalButton'
 
 const NoCalendar = () => {
-  const navigation = useNavigation<calendarNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   return (
     <View className="b-0 absolute z-10 h-full w-full flex-1 items-center justify-center bg-background-dim">
       <View className="flex-col items-center gap-[41px]">
@@ -17,7 +17,7 @@ const NoCalendar = () => {
         </Text>
         <NewCalButton
           onCreateSchedule={() =>
-            navigation.navigate('LoginScreens', {
+            navigation.navigate('OnboardingSchedules', {
               screen: 'SelectScheduleReg',
             })
           }

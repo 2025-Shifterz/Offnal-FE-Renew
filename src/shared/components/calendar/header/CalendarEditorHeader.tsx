@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import ArrowLeft from '../../../../../assets/icons/arrow-l-d.svg'
-import ArrowRight from '../../../../../assets/icons/arrow-r-d.svg'
+import ArrowLeft from '../../../../assets/icons/arrow-l-d.svg'
+import ArrowRight from '../../../../assets/icons/arrow-r-d.svg'
 import dayjs from 'dayjs'
 
 interface CalendarHeaderProps {

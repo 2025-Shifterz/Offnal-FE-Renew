@@ -8,6 +8,7 @@ import CustomBackButton from '../shared/components/CustomBackButton'
 import CompleteScheduleScreen from '../presentation/schedule/screens/CompleteScheduleScreen'
 import InputScheduleScreen from '../presentation/schedule/screens/InputScheduleScreen'
 import InputCalendarTypeScreen from '../presentation/schedule/screens/InputCalendarTypeScreen'
+import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
@@ -22,6 +23,11 @@ const OnBoardingScheduleNavigator = () => {
         headerTitleAlign: 'center',
       }}
     >
+      <Stack.Screen
+        name="SelectScheduleReg"
+        component={SelectScheduleRegScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         // 근무표 범위 선택 - 전체 / 개인
         name="SelectScheduleScope"

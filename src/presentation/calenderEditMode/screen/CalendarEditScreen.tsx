@@ -9,11 +9,11 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { ShiftType, ShiftsMap } from '../../../data/model/Calendar'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { calendarStackParamList } from '../../../navigation/types'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
+import { CalendarScreenStackParamList } from '../../../navigation/types'
 
 type CalendarEditScreenRouteProp = RouteProp<
-  calendarStackParamList,
+  CalendarScreenStackParamList,
   'EditCalendar'
 >
 

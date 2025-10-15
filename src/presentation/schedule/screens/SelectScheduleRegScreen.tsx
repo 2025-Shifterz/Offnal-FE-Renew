@@ -4,8 +4,7 @@ import CalendarYellow from '../../../assets/icons/calendar_yellow.svg'
 import CalendarBlue from '../../../assets/icons/calendar_blue.svg'
 import RegMethod from '../component/RegMethod'
 import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
 import { useState } from 'react'
@@ -13,8 +12,7 @@ import BottomButton from '../../../shared/components/BottomButton'
 import { ScheduleRegMethod } from '../../../shared/types/ScheduleRegMethod'
 
 const SelectScheduleRegScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+  const navigation = useNavigation<rootNavigation>()
   const [selectedScheduleRegMethod, setSelectedScheduleRegMethod] =
     useState<ScheduleRegMethod>('OCR')
 
@@ -27,10 +25,14 @@ const SelectScheduleRegScreen = () => {
   const handleNext = () => {
     switch (selectedScheduleRegMethod) {
       case 'OCR':
-        navigation.navigate('OnboardingSchedulesWithOCR')
+        navigation.navigate('OnboardingSchedulesOCR', {
+          screen: 'SelectScheduleScopeOCR', // 첫 화면으로 이동
+        })
         break
       case 'NEW':
-        navigation.navigate('OnboardingSchedules')
+        navigation.navigate('OnboardingSchedules', {
+          screen: 'SelectScheduleScope', // 첫 화면으로 이동
+        })
         break
       case 'DIRECT':
         navigation.navigate('Tabs')

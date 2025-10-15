@@ -9,6 +9,7 @@ import CustomBackButton from '../shared/components/CustomBackButton'
 import StepBar from '../shared/components/StepBar'
 import CompleteScheduleOCRScreen from '../presentation/schedule/screens/ocr/CompleteScheduleOCRScreen'
 import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
+import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
 
 const Stack = createNativeStackNavigator<OnboardingOCRStackParamList>()
 
@@ -23,6 +24,10 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         headerTitleAlign: 'center',
       }}
     >
+      <Stack.Screen
+        name="SelectScheduleReg"
+        component={SelectScheduleRegScreen}
+      />
       <Stack.Screen
         // 근무표 범위 선택 - 전체 / 개인
         name="SelectScheduleScopeOCR"

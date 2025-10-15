@@ -17,10 +17,6 @@ const LoginNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen
-        name="SelectScheduleReg"
-        component={SelectScheduleRegScreen}
-      />
       <Stack.Screen name="KakaoWebView" component={KakaoLoginWebView} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
       <Stack.Screen name="ServiceTerm" component={ServiceTerm} />

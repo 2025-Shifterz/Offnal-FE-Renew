@@ -18,9 +18,13 @@ export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
 export type RootStackParamList = {
   SplashScreen: undefined
   Tabs: NavigatorScreenParams<TabParamList> | undefined
-  LoginScreens: undefined
-  OnboardingSchedules: undefined
-  OnboardingSchedulesWithOCR: undefined
+  LoginScreens: NavigatorScreenParams<LoginStackParamList> | undefined
+  OnboardingSchedules:
+    | NavigatorScreenParams<OnboardingStackParamList>
+    | undefined
+  OnboardingSchedulesOCR:
+    | NavigatorScreenParams<OnboardingOCRStackParamList>
+    | undefined
 }
 
 // 탭 네비게이터
@@ -41,17 +45,14 @@ export type MainStackParamList = {
 // 로그인
 export type LoginStackParamList = {
   Login: undefined
-  SelectScheduleReg: undefined
   KakaoWebView: undefined
   PrivacyPolicy: undefined
   ServiceTerm: undefined
-  OnboardingSchedules: undefined
-  OnboardingSchedulesWithOCR: undefined
-  Tabs: undefined
 }
 
 // 온보딩 캘린더
 export type OnboardingStackParamList = {
+  SelectScheduleReg: undefined
   SelectScheduleScope: undefined
   InputSchedule: { selectedScheduleScopeType: ScheduleScopeType }
   InputCalendarType: {
@@ -69,6 +70,7 @@ export type OnboardingStackParamList = {
 
 // 온보딩 OCR 캘린더
 export type OnboardingOCRStackParamList = {
+  SelectScheduleReg: undefined
   SelectScheduleScopeOCR: undefined
   InputScheduleOCR: { selectedScheduleScopeType: ScheduleScopeType }
   InputCalendarTypeOCR: {

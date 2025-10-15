@@ -2,11 +2,11 @@
 // 근무표 조회 & 저장 동시에 되는 캘린더
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import CalendarBase from '../../calenderType/components/calendar/personal/CalendarBase'
 import dayjs from 'dayjs'
 import { ShiftType } from '../../../data/model/Calendar'
-import { workDaysToMap } from '../../common/utils/calendar/workDaysToMap'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
+import { workDaysToMap } from '../../../shared/utils/calendar/workDaysToMap'
+import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
 
 interface CalendarInteractiveProps {
   isEditScreen: boolean
