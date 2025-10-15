@@ -23,10 +23,9 @@ const CompleteScheduleOCRScreen = () => {
           <View className="mb-[50px] flex-1 items-center justify-center ">
             <CompleteCalendarLottie />
           </View>
-          {/* 추후에 '완료'시 네비게이션 수정할 예정입니다. */}
           <BottomButton
             text="완료"
-            onPress={() => navigation.navigate('ScheduleRegType')}
+            onPress={() => navigation.navigate('Tabs')}
           />
         </View>
       </View>

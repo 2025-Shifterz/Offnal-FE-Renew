@@ -75,6 +75,7 @@ export type OnboardingStackParamList = {
   CompleteSchedule: undefined
   CompleteScheduleOCR: undefined
   InfoEdit: undefined // 온보딩은 아님
+  Tabs: undefined
 }
 
 // 캘린더 탭의 스크린

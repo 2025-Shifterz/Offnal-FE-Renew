@@ -98,6 +98,10 @@ const EditScheduleOCRScreen = () => {
             return
           }
         }
+
+        if (selectedScheduleScopeType === 'ALL') {
+          // 전체 근무조인 경우 로직 추가 예정
+        }
       }
 
       const newCalendar: NewCalendar = {

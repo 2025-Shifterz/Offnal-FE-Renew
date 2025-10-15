@@ -218,6 +218,16 @@ const SelectPhotoOCRScreen = () => {
     setLocalSelectedPhotoBoxType(type)
     console.log(`선택된 사진 선택 방식 타입: ${type}`)
   }
+  const handleNext = () => {
+    switch (localSelectedPhotoBoxType) {
+      case 'Gallery':
+        analyzeScheduleImage()
+        break
+      case 'Camera':
+        openCameraImage()
+        break
+    }
+  }
 
   return (
     <SafeAreaView
@@ -246,14 +256,7 @@ const SelectPhotoOCRScreen = () => {
           subtitle="지금 바로 사진을 찍어서 업로드 할 수 있어요."
         />
 
-        <BottomButton
-          text="다음"
-          onPress={
-            localSelectedPhotoBoxType === 'Gallery'
-              ? analyzeScheduleImage
-              : openCameraImage
-          }
-        />
+        <BottomButton text="다음" onPress={handleNext} />
       </View>
       <ProgressModal isVisible={isAnalyzing} />
     </SafeAreaView>
