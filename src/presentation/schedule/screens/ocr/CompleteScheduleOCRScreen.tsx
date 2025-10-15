@@ -1,14 +1,14 @@
 import React from 'react'
 import { View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../../navigation/types'
+import { rootNavigation } from '../../../../navigation/types'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 import CompleteCalendarLottie from '../../../../assets/lottie/complete-calendar.svg'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const CompleteScheduleOCRScreen = () => {
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}

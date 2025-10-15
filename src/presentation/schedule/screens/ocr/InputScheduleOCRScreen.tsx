@@ -5,8 +5,8 @@ import TeamInput from '../../component/TeamInput'
 import ScheduleNameInput from '../../component/ScheduleNameInput'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
-  onboardingNavigation,
-  OnboardingStackParamList,
+  onboardingOCRNavigation,
+  OnboardingOCRStackParamList,
 } from '../../../../navigation/types'
 import { WorkTimeContext } from '../../../../shared/context/WorkTimeContext'
 import TitleMessage from '../../../../shared/components/TitleMessage'
@@ -14,15 +14,15 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomButton from '../../../../shared/components/BottomButton'
 
 type ScheduleInfoInputRouteProp = RouteProp<
-  OnboardingStackParamList,
-  'ScheduleInfoInput'
+  OnboardingOCRStackParamList,
+  'InputScheduleOCR'
 >
 
 const InputScheduleOCRScreen = () => {
   const route = useRoute<ScheduleInfoInputRouteProp>()
   const { selectedScheduleScopeType } = route.params
 
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<onboardingOCRNavigation>()
 
   // 필수 입력 값을 작성해야 넘어가도록
   const [calendarName, setCalendarName] = useState('') // 근무표 이름
@@ -36,7 +36,7 @@ const InputScheduleOCRScreen = () => {
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = () => {
-    navigation.navigate('SelectMonthWithOCR', {
+    navigation.navigate('SelectMonthOCR', {
       selectedScheduleScopeType,
       calendarName,
       workGroup,

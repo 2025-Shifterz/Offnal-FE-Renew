@@ -4,20 +4,20 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
-  onboardingNavigation,
-  OnboardingStackParamList,
+  onboardingOCRNavigation,
+  OnboardingOCRStackParamList,
 } from '../../../../navigation/types'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 
 type ScheduleTypeRouteProp = RouteProp<
-  OnboardingStackParamList,
-  'SelectMonthWithOCR'
+  OnboardingOCRStackParamList,
+  'SelectMonthOCR'
 >
 
-const SelectMonthWithOCRScreen = () => {
+const SelectMonthOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<onboardingOCRNavigation>()
 
   const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
     route.params
@@ -69,4 +69,4 @@ const SelectMonthWithOCRScreen = () => {
   )
 }
 
-export default SelectMonthWithOCRScreen
+export default SelectMonthOCRScreen

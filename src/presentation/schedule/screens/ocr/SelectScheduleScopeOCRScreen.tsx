@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import SelectScheduleBox from '../../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../../navigation/types'
+import { onboardingOCRNavigation } from '../../../../navigation/types'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScheduleScopeType } from '../../../../shared/types/ScheduleScopeType'
 
 const SelectScheduleScopeOCRScreen = () => {
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<onboardingOCRNavigation>()
   const [selectedScheduleScopeType, setSelectedScheduleScopeType] =
     useState<ScheduleScopeType>('ALL')
 
@@ -49,7 +49,7 @@ const SelectScheduleScopeOCRScreen = () => {
           <BottomButton
             text="다음"
             onPress={() => {
-              navigation.navigate('ScheduleInfoInput', {
+              navigation.navigate('InputScheduleOCR', {
                 selectedScheduleScopeType,
               })
             }}

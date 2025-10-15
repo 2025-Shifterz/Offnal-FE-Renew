@@ -21,7 +21,7 @@ import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { OnboardingStackParamList } from '../../../../navigation/types'
+import { OnboardingOCRStackParamList } from '../../../../navigation/types'
 import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
@@ -32,14 +32,14 @@ const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
 
 type ScheduleInfoInputRouteProp = RouteProp<
-  OnboardingStackParamList,
+  OnboardingOCRStackParamList,
   'SelectPhotoOCR'
 >
 
 const SelectPhotoOCRScreen = () => {
   const route = useRoute<ScheduleInfoInputRouteProp>()
   const navigation =
-    useNavigation<NativeStackNavigationProp<OnboardingStackParamList>>()
+    useNavigation<NativeStackNavigationProp<OnboardingOCRStackParamList>>()
 
   const {
     selectedScheduleScopeType,

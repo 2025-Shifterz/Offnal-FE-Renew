@@ -7,7 +7,7 @@ import ScheduleNameInput from '../../schedule/component/ScheduleNameInput'
 import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
 import BottomButton from '../../../shared/components/BottomButton'
 
-const InfoEditScreen = () => {
+const CalendarInfoEditScreen = () => {
   const [calendarName, setCalendarName] = useState('') // 근무표 이름
   const [workGroup, setWorkGroup] = useState('1조')
 
@@ -39,4 +39,4 @@ const InfoEditScreen = () => {
   )
 }
 
-export default InfoEditScreen
+export default CalendarInfoEditScreen

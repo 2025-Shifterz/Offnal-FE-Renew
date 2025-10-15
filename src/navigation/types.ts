@@ -2,13 +2,41 @@ import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScheduleScopeType } from '../shared/types/ScheduleScopeType'
 
+// 네비게이션
 export type onboardingNavigation =
   NativeStackNavigationProp<OnboardingStackParamList>
+export type onboardingOCRNavigation =
+  NativeStackNavigationProp<OnboardingOCRStackParamList>
 export type loginNavigation = NativeStackNavigationProp<LoginStackParamList>
 export type calendarNavigation =
   NativeStackNavigationProp<CalendarScreenStackParamList>
 export type mainNavigation = NativeStackNavigationProp<MainStackParamList>
 export type tabNavigation = NativeStackNavigationProp<TabParamList>
+export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
+
+// 루트 네비게이터
+export type RootStackParamList = {
+  SplashScreen: undefined
+  Tabs: NavigatorScreenParams<TabParamList> | undefined
+  LoginScreens: undefined
+  OnboardingSchedules: undefined
+  OnboardingSchedulesWithOCR: undefined
+}
+
+// 탭 네비게이터
+export type TabParamList = {
+  Home: NavigatorScreenParams<MainStackParamList>
+  Calendar: NavigatorScreenParams<CalendarScreenStackParamList>
+  MyInfo: undefined
+}
+
+// main 네비게이터 - "Home"
+export type MainStackParamList = {
+  MainScreen: undefined
+  AutoAlarm: undefined
+  Todo: undefined
+  Memo: undefined
+}
 
 // 로그인
 export type LoginStackParamList = {
@@ -24,9 +52,9 @@ export type LoginStackParamList = {
 
 // 온보딩 캘린더
 export type OnboardingStackParamList = {
-  ScheduleRegType: undefined
-  ScheduleInfoInput: { selectedScheduleScopeType: ScheduleScopeType }
-  CalendarType: {
+  SelectScheduleScope: undefined
+  InputSchedule: { selectedScheduleScopeType: ScheduleScopeType }
+  InputCalendarType: {
     selectedScheduleScopeType: ScheduleScopeType
     calendarName: string
     workGroup: string
@@ -36,7 +64,24 @@ export type OnboardingStackParamList = {
       N: { startTime: string; endTime: string }
     }
   }
-  SelectMonthWithOCR: {
+  CompleteSchedule: { selectedScheduleScopeType: ScheduleScopeType }
+}
+
+// 온보딩 OCR 캘린더
+export type OnboardingOCRStackParamList = {
+  SelectScheduleScopeOCR: undefined
+  InputScheduleOCR: { selectedScheduleScopeType: ScheduleScopeType }
+  InputCalendarTypeOCR: {
+    selectedScheduleScopeType: ScheduleScopeType
+    calendarName: string
+    workGroup: string
+    workTimes: {
+      D: { startTime: string; endTime: string }
+      E: { startTime: string; endTime: string }
+      N: { startTime: string; endTime: string }
+    }
+  }
+  SelectMonthOCR: {
     selectedScheduleScopeType: ScheduleScopeType
     calendarName: string
     workGroup: string
@@ -72,13 +117,12 @@ export type OnboardingStackParamList = {
     month: number
     ocrResult?: unknown
   }
-  CompleteSchedule: undefined
-  CompleteScheduleOCR: undefined
-  InfoEdit: undefined // 온보딩은 아님
-  Tabs: undefined
+  CompleteScheduleOCR:
+    | { selectedScheduleScopeType: ScheduleScopeType }
+    | undefined
 }
 
-// 캘린더 탭의 스크린
+// 캘린더 탭 네비게이터
 export type CalendarScreenStackParamList = {
   CalendarScreen: undefined
   EditCalendar: {
@@ -88,41 +132,13 @@ export type CalendarScreenStackParamList = {
       N: { startTime: string; endTime: string }
     }
   }
-  OnboardingSchedules:
-    | NavigatorScreenParams<OnboardingStackParamList>
-    | undefined // 삭제할거.
-  OnboardingSchedulesWithOCR: undefined
-  LoginScreens: NavigatorScreenParams<LoginStackParamList> | undefined // 로그인 스택네비게이터 내부의 스크린 접근 가능
-  Tabs: undefined
+  CalendarInfoEdit: undefined
 }
 
-// 루트
-export type RootStackParamList = {
-  SplashScreen: undefined
-  Tabs: NavigatorScreenParams<TabParamList> | undefined
-  LoginScreens: undefined
-  OnboardingSchedules: undefined
-  OnboardingSchedulesWithOCR: undefined
-}
-
-export type calendarStackParamList = {
-  Calendar: undefined
-  EditCalendar: {
-    workTimes: { [key: string]: { startTime: string; endTime: string } }
-  }
-  PlusEdit: undefined
-}
-// Tabs 네비게이터
-export type TabParamList = {
-  Home: NavigatorScreenParams<MainStackParamList>
-  Calendar: NavigatorScreenParams<CalendarScreenStackParamList>
-  MyInfo: undefined
-}
-
-// main 네비게이터 - "Home"
-export type MainStackParamList = {
-  MainScreen: undefined
-  AutoAlarm: undefined
-  Todo: undefined
-  Memo: undefined
-}
+// export type CalendarStackParamList = {
+//   Calendar: undefined
+//   EditCalendar: {
+//     workTimes: { [key: string]: { startTime: string; endTime: string } }
+//   }
+//   PlusEdit: undefined
+// }

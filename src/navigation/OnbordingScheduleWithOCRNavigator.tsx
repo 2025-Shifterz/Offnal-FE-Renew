@@ -1,16 +1,16 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import SelectMonthWithOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthWithOCRScreen'
+import SelectMonthOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthOCRScreen'
 import EditScheduleOCRScreen from '../presentation/schedule/screens/ocr/EditScheduleOCRScreen'
-import { OnboardingStackParamList } from './types'
-import ScheduleRegTypeOCR from '../presentation/schedule/screens/ocr/SelectScheduleScopeOCRScreen'
-import ScheduleInfoInputOCR from '../presentation/schedule/screens/ocr/InputScheduleOCRScreen'
+import { OnboardingOCRStackParamList } from './types'
+import SelectScheduleScopeOCR from '../presentation/schedule/screens/ocr/SelectScheduleScopeOCRScreen'
+import InputScheduleOCR from '../presentation/schedule/screens/ocr/InputScheduleOCRScreen'
 import CustomBackButton from '../shared/components/CustomBackButton'
 import StepBar from '../shared/components/StepBar'
 import CompleteScheduleOCRScreen from '../presentation/schedule/screens/ocr/CompleteScheduleOCRScreen'
 import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
 
-const Stack = createNativeStackNavigator<OnboardingStackParamList>()
+const Stack = createNativeStackNavigator<OnboardingOCRStackParamList>()
 
 // + 온보딩 화면들
 const OnBoardingScheduleWithOCRNavigator = () => {
@@ -24,22 +24,23 @@ const OnBoardingScheduleWithOCRNavigator = () => {
       }}
     >
       <Stack.Screen
-        name="ScheduleRegType"
-        component={ScheduleRegTypeOCR}
+        // 근무표 범위 선택 - 전체 / 개인
+        name="SelectScheduleScopeOCR"
+        component={SelectScheduleScopeOCR}
         options={{
           headerTitle: () => <StepBar currentStep={0} totalSteps={6} />,
         }}
       />
       <Stack.Screen
-        name="ScheduleInfoInput"
-        component={ScheduleInfoInputOCR}
+        name="InputScheduleOCR"
+        component={InputScheduleOCR}
         options={{
           headerTitle: () => <StepBar currentStep={1} totalSteps={6} />,
         }}
       />
       <Stack.Screen
-        name="SelectMonthWithOCR"
-        component={SelectMonthWithOCRScreen}
+        name="SelectMonthOCR"
+        component={SelectMonthOCRScreen}
         options={{
           headerTitle: () => <StepBar currentStep={2} totalSteps={6} />,
         }}

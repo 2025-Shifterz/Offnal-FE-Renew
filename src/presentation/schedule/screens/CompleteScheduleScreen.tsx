@@ -9,8 +9,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import CompleteCalendarLottie from '../../../assets/lottie/complete-calendar.svg'
 
 const CompleteScheduleScreen = () => {
-  // const navigation = useNavigation<NativeStackNavigationProp<StackParamList>>();
-
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   return (

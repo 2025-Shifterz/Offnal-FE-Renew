@@ -4,8 +4,8 @@ import CalendarEditor, {
 } from '../../../calenderType/components/calendar/personal/CalendarEditor'
 import { useRef } from 'react'
 import {
-  onboardingNavigation,
-  OnboardingStackParamList,
+  onboardingOCRNavigation,
+  OnboardingOCRStackParamList,
 } from '../../../../navigation/types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
@@ -22,13 +22,13 @@ import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 type ScheduleTypeRouteProp = RouteProp<
-  OnboardingStackParamList,
+  OnboardingOCRStackParamList,
   'EditScheduleOCR'
 >
 
 const EditScheduleOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<onboardingOCRNavigation>()
   const {
     selectedScheduleScopeType,
     calendarName,

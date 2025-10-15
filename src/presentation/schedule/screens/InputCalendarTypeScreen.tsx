@@ -5,18 +5,21 @@ import {
   onboardingNavigation,
   OnboardingStackParamList,
 } from '../../../navigation/types'
-import CalendarEditor, {
-  CalendarEditorRef,
-} from '../components/calendar/personal/CalendarEditor'
-import TCalendarEditor from '../components/calendar/team/TCalendarEditor'
 import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import CalendarEditor, {
+  CalendarEditorRef,
+} from '../../../shared/components/calendar/personal/CalendarEditor'
+import TCalendarEditor from '../../../shared/components/calendar/team/TCalendarEditor'
 
-type ScheduleTypeRouteProp = RouteProp<OnboardingStackParamList, 'CalendarType'>
+type ScheduleTypeRouteProp = RouteProp<
+  OnboardingStackParamList,
+  'InputCalendarType'
+>
 
-const CalendarType = () => {
+const InputCalendarTypeScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
   const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
     route.params
@@ -78,4 +81,4 @@ const CalendarType = () => {
   )
 }
 
-export default CalendarType
+export default InputCalendarTypeScreen

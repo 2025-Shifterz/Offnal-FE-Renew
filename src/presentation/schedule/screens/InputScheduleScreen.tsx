@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
-  'ScheduleInfoInput'
+  'InputSchedule'
 >
 
 const InputScheduleScreen = () => {
@@ -36,7 +36,7 @@ const InputScheduleScreen = () => {
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = () => {
-    navigation.navigate('CalendarType', {
+    navigation.navigate('InputCalendarType', {
       selectedScheduleScopeType,
       calendarName,
       workGroup,

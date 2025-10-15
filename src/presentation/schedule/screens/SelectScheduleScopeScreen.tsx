@@ -48,7 +48,7 @@ const SelectScheduleScopeScreen = () => {
         <BottomButton
           text="다음"
           onPress={() => {
-            navigation.navigate('ScheduleInfoInput', {
+            navigation.navigate('InputSchedule', {
               selectedScheduleScopeType,
             })
           }}
