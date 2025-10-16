@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 
 import ChervonLeft from '../../../assets/icons/ic_chervon_left.svg'
 import ChervonRight from '../../../assets/icons/ic_chervon_right.svg'

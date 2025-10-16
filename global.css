@@ -329,12 +329,11 @@
   --line-height-label-l: 1.2;
 
   /* Border Radius */
-  --border-radius-xs: 2px;
-  --border-radius-s: 4px;
-  --border-radius-m1: 6px;
-  --border-radius-m2: 8px;
-  --border-radius-l: 10px;
-  --border-radius-xl: 12px;
+  --border-radius-xs: 10px;
+  --border-radius-s: 12px;
+  --border-radius-m: 16px;
+  --border-radius-l: 20px;
+  --border-radius-xl: 24px;
   --border-radius-max: 1000px;
 
   /* Font Sizes */

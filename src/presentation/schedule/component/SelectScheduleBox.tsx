@@ -1,46 +1,36 @@
 import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
-import { twMerge } from 'tailwind-merge'
+import { Text, View } from 'react-native'
+import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
 import EntirePerson from '../../../assets/icons/entire-p.svg'
 import OnePerson from '../../../assets/icons/one-p.svg'
+import { ScheduleScopeType } from '../../../shared/types/ScheduleScopeType'
 
-// Define the type for the props
 interface SelectBoxProps {
-  id: number
+  type: ScheduleScopeType
   title: string
   subTitle: string
   isSelected: boolean
-  onPress: (id: number) => void // 부모로부터 id를 인자로 받음
+  onPress: (type: ScheduleScopeType) => void
 }
 
 const SelectScheduleBox = ({
-  id,
+  type,
   title,
   subTitle,
   isSelected,
   onPress,
 }: SelectBoxProps) => {
-  // 클릭 시 자신의 id를 부모에게 전달한다.
-  const handlePress = () => {
-    // 부모 컴포넌트의 onPress 함수 호출
-    // 자신이 클릭되면, 부모로부터 받은 onPress 함수를 호출하면서 자신의 id를 전달한다.
-    onPress(id)
-  }
-
-  const selectedStyle = isSelected
-    ? 'border border-border-primary bg-surface-primary-light-2'
-    : 'bg-surface-white'
-
   return (
-    <TouchableOpacity
-      onPress={handlePress}
-      className={twMerge(
-        'flex h-[148px] flex-1 items-center justify-center rounded-lg p-[5px]',
-        selectedStyle
-      )}
+    <ToggleBoxWrapper
+      type={type}
+      isSelected={isSelected}
+      onPress={onPress}
+      boxStyle={
+        'flex h-[148px] flex-1 items-center justify-center rounded-radius-xl p-[5px]'
+      }
     >
       <View className="flex items-center gap-[18px]">
-        {id === 1 ? <EntirePerson /> : <OnePerson />}
+        {type === 'ALL' ? <EntirePerson /> : <OnePerson />}
         <View className="flex items-center gap-[10px]">
           <Text className="text-text-basic heading-xxs">{title}</Text>
           <Text className="text-center text-text-subtle label-xxs">
@@ -48,7 +38,7 @@ const SelectScheduleBox = ({
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </ToggleBoxWrapper>
   )
 }
 
