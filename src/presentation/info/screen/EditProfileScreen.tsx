@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
+import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../components/TopAppBar'
-
+import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
+import TopAppBar from '../../../shared/components/TopAppBar'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
 
-const UpdateMyInfoScreen = () => {
-  const [userName, setUserName] = useState('')
-  const MAX_NAME_LENGTH = 10
+const MAX_NAME_LENGTH = 10
+
+const EditProfileScreen = () => {
+  const [name, setName] = useState('')
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
       <SafeAreaView className="flex-1">
-        <TopAppBar title="프로필 수정" enableNavigationBtn={true} />
+        <TopAppBar title="프로필 수정" />
 
         <View className="mb-number-8 mt-number-8 items-center">
           <View className="relative h-32 w-32 items-center justify-center">
@@ -37,12 +37,12 @@ const UpdateMyInfoScreen = () => {
               className="flex-1 py-3 text-text-basic label-xs"
               placeholder="이름을 입력해주세요."
               placeholderTextColor="#A0A0A0"
-              value={userName}
-              onChangeText={text => setUserName(text.slice(0, MAX_NAME_LENGTH))}
+              value={name}
+              onChangeText={text => setName(text.slice(0, MAX_NAME_LENGTH))}
               maxLength={MAX_NAME_LENGTH}
             />
             <Text className="text-text-disabled label-xs">
-              {userName.length}/{MAX_NAME_LENGTH}
+              {name.length}/{MAX_NAME_LENGTH}
             </Text>
           </View>
         </View>
@@ -51,4 +51,4 @@ const UpdateMyInfoScreen = () => {
   )
 }
 
-export default UpdateMyInfoScreen
+export default EditProfileScreen

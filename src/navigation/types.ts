@@ -113,7 +113,7 @@ export type calendarStackParamList = {
 export type TabParamList = {
   Home: NavigatorScreenParams<MainStackParamList>
   Calendar: NavigatorScreenParams<CalendarScreenStackParamList>
-  MyInfo: undefined
+  MyInfo: NavigatorScreenParams<InfoStackParamList>
 }
 
 // main 네비게이터 - "Home"
@@ -122,4 +122,10 @@ export type MainStackParamList = {
   AutoAlarm: undefined
   Todo: undefined
   Memo: undefined
+}
+
+export type InfoStackParamList = {
+  InformationScreen: undefined
+  EditProfileScreen: undefined
+  TermsWebViewScreen: { url: string; title: string }
 }

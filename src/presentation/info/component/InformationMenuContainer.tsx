@@ -41,7 +41,7 @@ export interface MenuItemProps {
   id: string
   title: string
   caption?: string
-  onPress: (id: string) => void
+  onPress: () => void
 }
 
 const InformationMenuItem = ({
@@ -52,7 +52,7 @@ const InformationMenuItem = ({
 }: MenuItemProps) => {
   return (
     <TouchableOpacity
-      onPress={() => onPress(id)}
+      onPress={() => onPress()}
       className="flex-row justify-between px-number-8 py-[9px]"
     >
       <GlobalText className="font-pretMedium text-body-xs">{title}</GlobalText>
