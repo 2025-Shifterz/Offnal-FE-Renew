@@ -2,7 +2,6 @@ import {
   initialize,
   requestPermission,
   readRecords,
-  insertRecords,
 } from 'react-native-health-connect'
 import { HealthData } from '../../../shared/types/Health'
 
@@ -14,7 +13,7 @@ export class AndroidHealthService {
 
       if (!isInitialized) {
         console.log('Health Connect를 사용할 수 없습니다')
-        return { steps: 0, weight: 0, bmi: 0 }
+        return { steps: 0, weight: 0, bmi: 0, stepPercentage: 0 }
       }
 
       // request permissions
@@ -22,9 +21,9 @@ export class AndroidHealthService {
         { accessType: 'read', recordType: 'Steps' },
         { accessType: 'read', recordType: 'Weight' },
         { accessType: 'read', recordType: 'Height' },
-        { accessType: 'write', recordType: 'Steps' },
-        { accessType: 'write', recordType: 'Weight' },
-        { accessType: 'write', recordType: 'Height' },
+        // { accessType: 'write', recordType: 'Steps' },
+        // { accessType: 'write', recordType: 'Weight' },
+        // { accessType: 'write', recordType: 'Height' },
       ])
 
       const now = new Date()
@@ -32,16 +31,6 @@ export class AndroidHealthService {
       startOfDay.setHours(0, 0, 0, 0)
       console.log('startOfDay:', startOfDay.toISOString())
 
-      await insertRecords([
-        {
-          recordType: 'Weight',
-          weight: {
-            value: 0,
-            unit: 'kilograms',
-          },
-          time: now.toISOString(),
-        },
-      ])
       // 걸음 수
       const stepsResult = await readRecords('Steps', {
         timeRangeFilter: {
@@ -95,17 +84,24 @@ export class AndroidHealthService {
         bmi = latestWeight / (latestHeight * latestHeight)
       }
 
+      // 걸음 수 % 계산 (9000걸음 목표 대비)
+      const stepGoal = 9000
+      let stepPercentage = (totalSteps / stepGoal) * 100
+      stepPercentage = Math.round(stepPercentage * 10) / 10
+
       console.log('Android 헬스 데이터:', {
         totalSteps,
         latestWeight,
         latestHeight,
         bmi,
+        stepPercentage,
       })
 
       return {
         steps: Math.round(totalSteps),
         weight: Math.round(latestWeight),
         bmi: Math.round(bmi * 10) / 10, // 소수점 1자리
+        stepPercentage: stepPercentage,
       }
     } catch (error) {
       console.error('Android 헬스 데이터 가져오기 오류:', error)
@@ -113,6 +109,7 @@ export class AndroidHealthService {
         steps: 0,
         weight: 0,
         bmi: 0,
+        stepPercentage: 0,
       }
     }
   }

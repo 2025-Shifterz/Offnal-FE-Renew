@@ -6,7 +6,7 @@ import WeightIcon from '../../../assets/icons/ic_weight_24.svg'
 import useHealthData from '../../../shared/hooks/useHealthData'
 
 const HealthCardSection = () => {
-  const { steps, weight, bmi } = useHealthData()
+  const { steps, weight, bmi, stepPercentage } = useHealthData()
 
   const calculateWeightStatus = (bmiValue: number) => {
     if (bmiValue < 18.5) return '저체중'
@@ -28,7 +28,7 @@ const HealthCardSection = () => {
           value={steps}
           unit={9000}
           Icon={SneakersIcon}
-          secondaryUnit="64%"
+          secondaryUnit={`${stepPercentage} %`}
         />
         <HealthCard
           title="체중"

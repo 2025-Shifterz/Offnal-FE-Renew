@@ -10,7 +10,9 @@ const useHealthData = () => {
   const [healthData, setHealthData] = useState<HealthData>({
     steps: 0,
     weight: 0,
+    height: 0,
     bmi: 0,
+    stepPercentage: 0,
   })
 
   const fetchHealthData = async () => {

@@ -17,6 +17,7 @@ export class IosHealthService {
         steps: 0,
         weight: 0,
         bmi: 0,
+        stepPercentage: 0,
       }
     }
 
@@ -49,12 +50,23 @@ export class IosHealthService {
     )
     const bmi = bmiData?.quantity ?? 0
 
-    console.log('ios Health Data :', { totalSteps, weight, bmi })
+    // 걸음 수 % 계산 (9000걸음 목표 대비)
+    const stepGoal = 9000
+    let stepPercentage = (totalSteps / stepGoal) * 100
+    stepPercentage = Math.round(stepPercentage * 10) / 10 // 소숫점 아래 하나까지 계산
+
+    console.log('ios Health Data :', {
+      totalSteps,
+      weight,
+      bmi,
+      stepPercentage,
+    })
 
     return {
       steps: Math.round(totalSteps),
       weight: Math.round(weight),
       bmi: Math.round(bmi),
+      stepPercentage: stepPercentage,
     }
   }
 }
