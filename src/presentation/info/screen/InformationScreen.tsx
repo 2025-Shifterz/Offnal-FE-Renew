@@ -5,13 +5,31 @@ import MyInformationCard from '../component/MyInformationCard'
 import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
-import { useEffect, useMemo } from 'react'
-import EncryptedStorage from 'react-native-encrypted-storage'
-import { useNavigation } from '@react-navigation/native'
+import { useEffect, useMemo, useCallback } from 'react'
+import {
+  CommonActions,
+  CompositeNavigationProp,
+  useNavigation,
+} from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
-import { InfoStackParamList } from '../../../navigation/types'
+import {
+  InfoStackParamList,
+  RootStackParamList,
+  TabParamList,
+} from '../../../navigation/types'
 import ShowLogOutAlert from '../component/InformationAlertDialogs'
+import { useUserStore } from '../../../store/useUserStore'
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+import { useAuthStore } from '../../../store/useAuthStore'
+
+type InformationScreenComposedNavigationProps = CompositeNavigationProp<
+  NativeStackNavigationProp<InfoStackParamList>,
+  CompositeNavigationProp<
+    BottomTabNavigationProp<TabParamList>,
+    NativeStackNavigationProp<RootStackParamList>
+  >
+>
 
 const informationMenus: MenuItemProps[] = [
   {
@@ -38,47 +56,45 @@ const informationMenus: MenuItemProps[] = [
   },
 ]
 
-const otherMenus: MenuItemProps[] = [
-  {
-    id: 'withdraw',
-    title: '회원 탈퇴',
-    onPress: () => {
-      /* TODO("Not yet Implemeted") */
-    },
-  },
-  {
-    id: 'logout',
-    title: '로그아웃',
-    onPress: () => {
-      ShowLogOutAlert(() => {
-        /* TODO("Not yet Implemeted") */
-      })
-    },
-  },
-]
-
 const InformationScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<InfoStackParamList>>()
+  const navigation = useNavigation<InformationScreenComposedNavigationProps>()
+
+  const { user, fetchProfile } = useUserStore()
+  const logout = useAuthStore(state => state.logout)
 
   useEffect(() => {
-    const checkStoredData = async () => {
-      const storedAuth = await EncryptedStorage.getItem('auth-storage')
-      const storedUser = await EncryptedStorage.getItem('user-storage')
+    fetchProfile()
+  }, [fetchProfile])
 
-      if (storedAuth) {
-        console.log('Stored Zustand data after login:', JSON.parse(storedAuth))
-      } else {
-        console.log('No auth data found.')
-      }
-      if (storedUser) {
-        console.log('Stored User data after login:', JSON.parse(storedUser))
-      } else {
-        console.log('No user data found.')
-      }
-    }
-    checkStoredData()
-  })
+  const handleLogout = useCallback(() => {
+    ShowLogOutAlert(() => {
+      logout()
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'LoginScreens' }],
+        })
+      )
+    })
+  }, [logout, navigation])
+
+  const otherMenus: MenuItemProps[] = useMemo(
+    () => [
+      {
+        id: 'withdraw',
+        title: '회원 탈퇴',
+        onPress: () => {
+          /* TODO("Not yet Implemeted") */
+        },
+      },
+      {
+        id: 'logout',
+        title: '로그아웃',
+        onPress: handleLogout,
+      },
+    ],
+    [handleLogout]
+  )
 
   const termsOfUseMenus: MenuItemProps[] = useMemo(
     () => [
@@ -113,7 +129,8 @@ const InformationScreen = () => {
         <ScrollView className="flex-1 px-number-8">
           <View className="flex-col gap-g-2">
             <MyInformationCard
-              profileName="김건우"
+              profileImgUrl={user?.profileImageUrl}
+              profileName={user?.memberName ?? '(알 수 없음)'}
               onPressEditProfile={() => {
                 navigation.navigate('EditProfileScreen')
               }}

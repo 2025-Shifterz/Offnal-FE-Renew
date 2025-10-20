@@ -1,18 +1,76 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  Alert,
+} from 'react-native'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
+import { useUserStore } from '../../../store/useUserStore'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { InfoStackParamList } from '../../../navigation/types'
 
 const MAX_NAME_LENGTH = 10
 
 const EditProfileScreen = () => {
-  const [name, setName] = useState('')
+  const navigation =
+    useNavigation<NativeStackNavigationProp<InfoStackParamList>>()
+  const { user, updateProfile } = useUserStore()
+  const [name, setName] = useState(user?.memberName ?? '')
+
+  useEffect(() => {
+    if (user) {
+      setName(user?.memberName ?? '')
+    }
+  }, [user])
+
+  const handleUpdateProfile = async () => {
+    if (!user) {
+      Alert.alert('오류', '사용자 정보를 불러올 수 없습니다.')
+      return
+    }
+
+    if (name.trim().length === 0) {
+      Alert.alert('오류', '이름을 입력해주세요.')
+      return
+    }
+
+    try {
+      await updateProfile({ ...user, memberName: name })
+
+      Alert.alert('성공', '프로필이 수정되었습니다.', [
+        {
+          text: '확인',
+          onPress: () => {
+            navigation.goBack()
+          },
+        },
+      ])
+    } catch (error) {
+      console.error(error)
+
+      Alert.alert('오류', '프로필 수정에 실패했습니다.')
+    }
+  }
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
       <SafeAreaView className="flex-1">
-        <TopAppBar title="프로필 수정" />
+        <TopAppBar
+          title="프로필 수정"
+          showBackButton={true}
+          onPressBackButton={() => navigation.goBack()}
+          rightActions={
+            <TouchableOpacity onPress={handleUpdateProfile}>
+              <Text>저장하기</Text>
+            </TouchableOpacity>
+          }
+        />
 
         <View className="mb-number-8 mt-number-8 items-center">
           <View className="relative h-32 w-32 items-center justify-center">
