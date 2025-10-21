@@ -78,13 +78,41 @@ const InformationScreen = () => {
     })
   }, [logout, navigation])
 
+  const informationMenus: MenuItemProps[] = useMemo(
+    () => [
+      {
+        id: 'notice',
+        title: '공지사항',
+        onPress: () => {
+          /* TODO("Not yet Implemeted") */
+        },
+      },
+      {
+        id: 'version',
+        title: '현재 버전',
+        caption: '0.0.1',
+        onPress: () => {
+          /* TODO("Not yet Implemeted") */
+        },
+      },
+      {
+        id: 'feedback',
+        title: '평가 및 피드백',
+        onPress: () => {
+          navigation.navigate('FeedbackScreen')
+        },
+      },
+    ],
+    [navigation]
+  )
+
   const otherMenus: MenuItemProps[] = useMemo(
     () => [
       {
         id: 'withdraw',
         title: '회원 탈퇴',
         onPress: () => {
-          /* TODO("Not yet Implemeted") */
+          navigation.navigate('WithdrawScreen')
         },
       },
       {
@@ -93,7 +121,7 @@ const InformationScreen = () => {
         onPress: handleLogout,
       },
     ],
-    [handleLogout]
+    [handleLogout, navigation]
   )
 
   const termsOfUseMenus: MenuItemProps[] = useMemo(

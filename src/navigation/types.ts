@@ -128,4 +128,6 @@ export type InfoStackParamList = {
   InformationScreen: undefined
   EditProfileScreen: undefined
   TermsWebViewScreen: { url: string; title: string }
+  FeedbackScreen: undefined
+  WithdrawScreen: undefined
 }

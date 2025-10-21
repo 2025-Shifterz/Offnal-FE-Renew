@@ -23,7 +23,7 @@ import ProgressModal from '../../../common/component/ProgressModal'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from '../../../../navigation/types'
-import { fastAPIService } from '../../../../infrastructure/di/Dependencies'
+import { ocrRepository } from '../../../../infrastructure/di/Dependencies'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules

@@ -14,6 +14,7 @@ import { useUserStore } from '../../../store/useUserStore'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { InfoStackParamList } from '../../../navigation/types'
+import { launchImageLibrary } from 'react-native-image-picker'
 
 const MAX_NAME_LENGTH = 10
 
@@ -22,10 +23,32 @@ const EditProfileScreen = () => {
     useNavigation<NativeStackNavigationProp<InfoStackParamList>>()
   const { user, updateProfile } = useUserStore()
   const [name, setName] = useState(user?.memberName ?? '')
+  const [profileImage, setProfileImage] = useState<string | null>(
+    user?.profileImageUrl ?? null
+  )
 
+  const handleChoosePhoto = async () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quality: 1,
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.errorCode) {
+          console.log('ImagePicker Error: ', response.errorCode)
+          Alert.alert('오류', '이미지를 가져오는 데 실패했습니다.')
+        } else if (response.assets && response.assets.length > 0) {
+          setProfileImage(response.assets[0].uri ?? null)
+        }
+      }
+    )
+  }
   useEffect(() => {
     if (user) {
       setName(user?.memberName ?? '')
+      setProfileImage(user?.profileImageUrl ?? null)
     }
   }, [user])
 
@@ -76,13 +99,20 @@ const EditProfileScreen = () => {
           <View className="relative h-32 w-32 items-center justify-center">
             <View className="relative h-32 w-32 items-center justify-center rounded-full bg-surface-gray-subtle2">
               <Image
-                source={require('../../../assets/images/default_profile.png')}
+                source={
+                  profileImage
+                    ? { uri: profileImage }
+                    : require('../../../assets/images/default_profile.png')
+                }
                 className="h-full w-full rounded-full"
                 resizeMode="cover"
               />
             </View>
 
-            <TouchableOpacity className="absolute bottom-0 right-0 h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-surface-disabled">
+            <TouchableOpacity
+              onPress={handleChoosePhoto}
+              className="absolute bottom-0 right-0 h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-surface-disabled"
+            >
               <GalleryIcon width={18} height={18} />
             </TouchableOpacity>
           </View>
