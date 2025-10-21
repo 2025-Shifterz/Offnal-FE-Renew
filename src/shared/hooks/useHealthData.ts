@@ -21,7 +21,6 @@ const useHealthData = () => {
       if (Platform.OS === 'ios') {
         data = await iosHealthService.getIosHealthService()
       } else if (Platform.OS === 'android') {
-        // Android Health Service 호출 (추후 구현)
         data = await androidHealthService.getAndroidHealthService()
       } else {
         throw new Error('지원하지 않는 플랫폼입니다')
@@ -36,7 +35,7 @@ const useHealthData = () => {
     fetchHealthData()
   }, [])
 
-  return { ...healthData }
+  return healthData
 }
 
 export default useHealthData

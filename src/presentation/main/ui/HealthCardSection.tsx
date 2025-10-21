@@ -4,6 +4,7 @@ import HealthCard from '../components/HealthCard'
 import SneakersIcon from '../../../assets/icons/ic_sneakers_61.svg'
 import WeightIcon from '../../../assets/icons/ic_weight_24.svg'
 import useHealthData from '../../../shared/hooks/useHealthData'
+import { STEP_GOAL } from '../constants/stepGoal'
 
 const HealthCardSection = () => {
   const { steps, weight, bmi, stepPercentage } = useHealthData()
@@ -26,7 +27,7 @@ const HealthCardSection = () => {
         <HealthCard
           title="걸음 수"
           value={steps}
-          unit={9000}
+          unit={STEP_GOAL}
           Icon={SneakersIcon}
           secondaryUnit={`${stepPercentage} %`}
         />

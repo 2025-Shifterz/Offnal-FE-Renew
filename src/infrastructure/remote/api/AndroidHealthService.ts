@@ -5,6 +5,7 @@ import {
 } from 'react-native-health-connect'
 import { HealthData } from '../../../shared/types/Health'
 import { Alert } from 'react-native'
+import { STEP_GOAL } from '../../../presentation/main/constants/stepGoal'
 
 export class AndroidHealthService {
   getAndroidHealthService = async (): Promise<HealthData> => {
@@ -41,7 +42,7 @@ export class AndroidHealthService {
         },
       })
       const totalSteps = stepsResult.records.reduce(
-        (sum: number, record: any) => sum + (record.count || 0),
+        (sum: number, record: { count?: number }) => sum + (record.count || 0),
         0
       )
 
@@ -86,9 +87,7 @@ export class AndroidHealthService {
       }
 
       // 걸음 수 % 계산 (9000걸음 목표 대비)
-      const stepGoal = 9000
-      let stepPercentage = (totalSteps / stepGoal) * 100
-      stepPercentage = Math.round(stepPercentage * 10) / 10
+      const stepPercentage = (totalSteps / STEP_GOAL) * 100
 
       console.log('Android 헬스 데이터:', {
         totalSteps,
@@ -101,8 +100,8 @@ export class AndroidHealthService {
       return {
         steps: Math.round(totalSteps),
         weight: Math.round(latestWeight),
-        bmi: Math.round(bmi * 10) / 10, // 소수점 1자리
-        stepPercentage: stepPercentage,
+        bmi: Math.round(bmi * 10) / 10,
+        stepPercentage: Math.round(stepPercentage * 10) / 10,
       }
     } catch (error) {
       console.error('Android 헬스 데이터 가져오기 오류:', error)

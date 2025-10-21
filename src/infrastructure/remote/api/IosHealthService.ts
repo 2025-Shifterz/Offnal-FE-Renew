@@ -6,6 +6,7 @@ import {
 } from '@kingstinct/react-native-healthkit'
 import { Alert } from 'react-native'
 import { HealthData } from '../../../shared/types/Health'
+import { STEP_GOAL } from '../../../presentation/main/constants/stepGoal'
 
 export class IosHealthService {
   getIosHealthService = async (): Promise<HealthData> => {
@@ -53,9 +54,7 @@ export class IosHealthService {
       const bmi = bmiData?.quantity ?? 0
 
       // 걸음 수 % 계산 (9000걸음 목표 대비)
-      const stepGoal = 9000
-      let stepPercentage = (totalSteps / stepGoal) * 100
-      stepPercentage = Math.round(stepPercentage * 10) / 10 // 소숫점 아래 하나까지 계산
+      const stepPercentage = (totalSteps / STEP_GOAL) * 100
 
       console.log('ios Health Data :', {
         totalSteps,
@@ -67,8 +66,8 @@ export class IosHealthService {
       return {
         steps: Math.round(totalSteps),
         weight: Math.round(weight),
-        bmi: Math.round(bmi),
-        stepPercentage: stepPercentage,
+        bmi: Math.round(bmi * 10) / 10,
+        stepPercentage: Math.round(stepPercentage * 10) / 10,
       }
     } catch (error) {
       console.error('iOS 헬스 데이터 가져오기 오류:', error)
