@@ -4,6 +4,7 @@ import {
   readRecords,
 } from 'react-native-health-connect'
 import { HealthData } from '../../../shared/types/Health'
+import { Alert } from 'react-native'
 
 export class AndroidHealthService {
   getAndroidHealthService = async (): Promise<HealthData> => {
@@ -105,6 +106,10 @@ export class AndroidHealthService {
       }
     } catch (error) {
       console.error('Android 헬스 데이터 가져오기 오류:', error)
+      Alert.alert(
+        '오류',
+        'Android 헬스 데이터 가져오기 중 오류가 발생했습니다.'
+      )
       return {
         steps: 0,
         weight: 0,
