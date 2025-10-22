@@ -1,7 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import { View, TouchableOpacity } from 'react-native'
-import { useState } from 'react'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
@@ -12,13 +11,9 @@ import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { ScrollView } from 'react-native-gesture-handler'
 import OneAddButton from '../components/OneAddButton'
 
+const HIDDEN_ITEM_WIDTH = 66
+
 const MemoScreen = () => {
-  const [isMemoEmpty, setIsMemoEmpty] = useState(true)
-
-  const handleAdd = () => {
-    setIsMemoEmpty(false)
-  }
-
   const memos = [
     {
       id: 1,
@@ -75,25 +70,25 @@ const MemoScreen = () => {
                     </GlobalText>
                   </View>
                 )}
-                renderHiddenItem={({ item: memo, index }) => (
+                renderHiddenItem={({ index }) => (
                   <View
                     className={`h-full flex-row items-center justify-end ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
                   >
                     <TouchableOpacity
-                      className="h-full w-[66px] items-center justify-center bg-surface-information-subtle "
+                      className={`h-full w-[${HIDDEN_ITEM_WIDTH}px] items-center justify-center bg-surface-information-subtle`}
                       onPress={() => {}}
                     >
                       <EditIcon />
                     </TouchableOpacity>
                     <TouchableOpacity
-                      className={`h-full w-[66px] items-center justify-center bg-surface-danger-subtle  ${index === memos.length - 1 ? 'rounded-br-radius-xl' : ''}`}
+                      className={`h-full w-[${HIDDEN_ITEM_WIDTH}px] items-center justify-center bg-surface-danger-subtle  ${index === memos.length - 1 ? 'rounded-br-radius-xl' : ''}`}
                       onPress={() => {}}
                     >
                       <DeleteIcon />
                     </TouchableOpacity>
                   </View>
                 )}
-                rightOpenValue={-132}
+                rightOpenValue={-HIDDEN_ITEM_WIDTH * 2}
                 disableRightSwipe={true}
                 keyExtractor={item => item.id.toString()}
               />

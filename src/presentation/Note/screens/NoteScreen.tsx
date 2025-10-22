@@ -11,7 +11,6 @@ import {
   todoCompletionUseCase,
 } from '../../../infrastructure/di/Dependencies'
 import { Todo } from '../../../domain/models/Todo'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 export type TodoType = 'todo' | 'memo'
 
