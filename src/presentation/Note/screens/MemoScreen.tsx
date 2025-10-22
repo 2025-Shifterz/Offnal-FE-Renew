@@ -8,7 +8,7 @@ import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
-import { ScrollView } from 'react-native-gesture-handler'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import OneAddButton from '../components/OneAddButton'
 
 const HIDDEN_ITEM_WIDTH = 66
@@ -48,7 +48,6 @@ const MemoScreen = () => {
 
         <ScrollView>
           <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
-
           <View className="rounded-bl-radius-xl rounded-br-radius-xl bg-surface-white">
             {memos.length === 0 ? (
               <View className="items-center justify-center py-[27px]">
@@ -57,9 +56,9 @@ const MemoScreen = () => {
             ) : (
               <SwipeListView
                 data={memos}
+                scrollEnabled={false}
                 renderItem={({ item: memo, index }) => (
                   <View
-                    key={memo.id}
                     className={`flex-col gap-[4px] bg-surface-white p-[12px] ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
                   >
                     <GlobalText className="text-body-s" numberOfLines={1}>
