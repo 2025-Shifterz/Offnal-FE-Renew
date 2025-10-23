@@ -1,8 +1,10 @@
 import {
+  deleteObjects,
   getMostRecentQuantitySample,
   isHealthDataAvailable,
   queryQuantitySamples,
   requestAuthorization,
+  saveQuantitySample,
 } from '@kingstinct/react-native-healthkit'
 import { Alert } from 'react-native'
 import { HealthData } from '../../../shared/types/Health'
@@ -33,10 +35,36 @@ export class IosHealthService {
         ]
       )
 
+      const now = new Date()
+      const todayStartDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        0,
+        0,
+        0
+      ) // 오늘 시작 시간
+      const todayEndDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59
+      ) // 오늘 끝 시간
+
       // 3. 건강 데이터 가져오기
+      // 걸음 수 가져오기
       const stepData = await queryQuantitySamples(
-        'HKQuantityTypeIdentifierStepCount'
+        'HKQuantityTypeIdentifierStepCount',
+        {
+          filter: {
+            startDate: todayStartDate,
+            endDate: todayEndDate,
+          },
+        }
       )
+      console.log('stepData:', stepData)
 
       const totalSteps =
         stepData?.reduce((sum, sample) => sum + sample.quantity, 0) ?? 0

@@ -10,6 +10,7 @@ const HealthCardSection = () => {
   const { steps, weight, bmi, stepPercentage } = useHealthData()
 
   const calculateWeightStatus = (bmiValue: number) => {
+    if (bmiValue == 0) return null
     if (bmiValue < 18.5) return '저체중'
     if (bmiValue < 23) return '표준'
     if (bmiValue < 25) return '과체중'

@@ -6,7 +6,7 @@ interface HealthCardProps {
   title: string
   value: number
   unit?: number
-  secondaryUnit: string
+  secondaryUnit: string | null
   Icon: FC<SvgProps>
 }
 
@@ -23,11 +23,13 @@ const HealthCard = ({
         <Text className="text-text-subtle heading-xxxxs">{title}</Text>
         <View className="flex-row gap-[5px]">
           <Text className="text-text-bolder heading-s">{value}</Text>
-          <View className="justify-center rounded-radius-s bg-primary-5 px-[6px]">
-            <Text className="text-primary-60 heading-xxxxs">
-              {secondaryUnit}
-            </Text>
-          </View>
+          {secondaryUnit && (
+            <View className="justify-center rounded-radius-s bg-primary-5 px-[6px]">
+              <Text className="text-primary-60 heading-xxxxs">
+                {secondaryUnit}
+              </Text>
+            </View>
+          )}
         </View>
       </View>
 
