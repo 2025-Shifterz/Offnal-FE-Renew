@@ -8,10 +8,8 @@ import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
-import { FlatList, ScrollView } from 'react-native-gesture-handler'
+import { ScrollView } from 'react-native-gesture-handler'
 import OneAddButton from '../components/OneAddButton'
-
-const HIDDEN_ITEM_WIDTH = 66
 
 const MemoScreen = () => {
   const memos = [
@@ -74,20 +72,20 @@ const MemoScreen = () => {
                     className={`h-full flex-row items-center justify-end ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
                   >
                     <TouchableOpacity
-                      className={`h-full w-[${HIDDEN_ITEM_WIDTH}px] items-center justify-center bg-surface-information-subtle`}
+                      className={`h-full w-[66px] items-center justify-center bg-surface-information-subtle`}
                       onPress={() => {}}
                     >
                       <EditIcon />
                     </TouchableOpacity>
                     <TouchableOpacity
-                      className={`h-full w-[${HIDDEN_ITEM_WIDTH}px] items-center justify-center bg-surface-danger-subtle  ${index === memos.length - 1 ? 'rounded-br-radius-xl' : ''}`}
+                      className={`h-full w-[66px] items-center justify-center bg-surface-danger-subtle  ${index === memos.length - 1 ? 'rounded-br-radius-xl' : ''}`}
                       onPress={() => {}}
                     >
                       <DeleteIcon />
                     </TouchableOpacity>
                   </View>
                 )}
-                rightOpenValue={-HIDDEN_ITEM_WIDTH * 2}
+                rightOpenValue={-132}
                 disableRightSwipe={true}
                 keyExtractor={item => item.id.toString()}
               />
