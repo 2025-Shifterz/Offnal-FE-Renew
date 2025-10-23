@@ -1,8 +1,154 @@
-import React from 'react'
-import NoteScreen from './NoteScreen'
+import React, { use, useState } from 'react'
+import {
+  Alert,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import TopAppBar from '../../../shared/components/TopAppBar'
+import DayBoxHeader from '../components/DayBoxHeader'
+import dayjs, { Dayjs } from 'dayjs'
+import { Todo } from '../../../domain/models/Todo'
+import {
+  addTodoUseCase,
+  deleteTodoUseCase,
+  getTodosUseCase,
+  todoCompletionUseCase,
+} from '../../../infrastructure/di/Dependencies'
+import CheckedIcon from '../../../assets/icons/checked.svg'
+import EmptyMessage from '../components/EmptyMessage'
+import GlobalText from '../../../shared/components/GlobalText'
+import OneAddButton from '../components/OneAddButton'
+import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 
 const TodoScreen = () => {
-  return <NoteScreen text="할 일" type="todo" />
+  const [todos, setTodos] = useState<Todo[]>([])
+  const [todo, addTodo] = useState('')
+  const [showInput, setShowInput] = useState(false)
+
+  const initTodos = async () => {
+    try {
+      const loadedTodos = await getTodosUseCase.execute()
+      setTodos(loadedTodos)
+    } catch (error) {
+      console.error('Failed to load todos:', error)
+    }
+  }
+
+  initTodos()
+
+  const handleAddTodo = async (date: Dayjs) => {
+    if (!todo.trim()) {
+      Alert.alert('알림', '할 일 내용을 압력해주세요')
+      return
+    }
+
+    try {
+      await addTodoUseCase.execute(todo, date)
+      addTodo('') // 초기화
+      const updatedTodos = await getTodosUseCase.execute()
+      setTodos(updatedTodos)
+    } catch (error) {
+      console.error('Error adding todo: ', error)
+    }
+  }
+
+  const handleDeleteTodo = async (id: number) => {
+    try {
+      await deleteTodoUseCase.execute(id)
+      const updatedTodos = await getTodosUseCase.execute()
+      setTodos(updatedTodos)
+    } catch (error) {
+      console.error('Error deleting todo:', error)
+    }
+  }
+
+  const updateTodoCompleted = async (id: number, currentCompleted: boolean) => {
+    try {
+      await todoCompletionUseCase.execute(id, !currentCompleted)
+      const updatedTodos = await getTodosUseCase.execute()
+      setTodos(updatedTodos)
+    } catch (error) {
+      console.error('Error completing todo: ', error)
+    }
+  }
+
+  return (
+    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
+      <SafeAreaView className="flex-1">
+        <TopAppBar
+          title="할 일"
+          showBackButton={true}
+          onPressBackButton={() => {}}
+        />
+
+        <ScrollView>
+          <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
+          <View className="rounded-bl-radius-xl rounded-br-radius-xl bg-surface-white">
+            {todos.length === 0 && !showInput ? (
+              <View className="items-center justify-center py-[27px]">
+                <EmptyMessage text="할 일" iconSize={48} />
+              </View>
+            ) : (
+              todos.map(item => (
+                <View
+                  key={item.id}
+                  className="w-full flex-row items-center justify-between px-[16px] py-p-3"
+                >
+                  <TouchableOpacity
+                    className="flex-1 flex-row items-center"
+                    onPress={() =>
+                      updateTodoCompleted(item.id, item.isCompleted)
+                    }
+                  >
+                    {item.isCompleted ? (
+                      <CheckedIcon />
+                    ) : (
+                      <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+                    )}
+
+                    <View className="ml-[8px] flex-1">
+                      <GlobalText>{item.content}</GlobalText>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {}}>
+                    <VerticalDots />
+                  </TouchableOpacity>
+                </View>
+              ))
+            )}
+
+            {showInput && (
+              <View className="w-full flex-row items-center justify-between px-[16px] py-[10px]">
+                <TouchableOpacity
+                  className="flex-1 flex-row items-center"
+                  onPress={() => {}}
+                >
+                  <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+
+                  <View className="h-[40px] flex-row items-center justify-between">
+                    <TextInput
+                      value={todo}
+                      onChangeText={addTodo}
+                      placeholder={`할 일 입력`}
+                    />
+                  </View>
+                  <View className="h-[1px] bg-border-gray-light" />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
+          <OneAddButton
+            addOneTodo={() => setShowInput(true)}
+            text="할 일 추가"
+          />
+        </ScrollView>
+      </SafeAreaView>
+    </View>
+  )
 }
 
 export default TodoScreen

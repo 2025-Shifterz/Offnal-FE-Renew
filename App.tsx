@@ -14,6 +14,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
 import MemoScreen from './src/presentation/Note/screens/MemoScreen'
+import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 enableScreens()
 
 function App() {
@@ -46,7 +47,7 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <WorkTimeProvider>
-          <MemoScreen />
+          <TodoScreen />
         </WorkTimeProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
