@@ -74,6 +74,7 @@ export class IosHealthService {
         'HKQuantityTypeIdentifierBodyMass'
       )
       const weight = weightData?.quantity ?? 0
+      console.log('weightData:', weightData)
 
       // BMI 가져오기
       const bmiData = await getMostRecentQuantitySample(
@@ -92,8 +93,8 @@ export class IosHealthService {
       })
 
       return {
-        steps: Math.round(totalSteps),
-        weight: Math.round(weight),
+        steps: totalSteps,
+        weight: Math.round(weight * 10) / 10,
         bmi: Math.round(bmi * 10) / 10,
         stepPercentage: Math.round(stepPercentage * 10) / 10,
       }

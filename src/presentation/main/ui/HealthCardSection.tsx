@@ -2,7 +2,7 @@ import { View } from 'react-native'
 import TitleSection from '../components/TitleSection'
 import HealthCard from '../components/HealthCard'
 import SneakersIcon from '../../../assets/icons/ic_sneakers_61.svg'
-import WeightIcon from '../../../assets/icons/ic_weight_24.svg'
+import WeightIcon from '../../../assets/icons/ic_weight_50.svg'
 import useHealthData from '../../../shared/hooks/useHealthData'
 import { STEP_GOAL } from '../constants/stepGoal'
 
@@ -28,12 +28,12 @@ const HealthCardSection = () => {
         <HealthCard
           title="걸음 수"
           value={steps}
-          unit={STEP_GOAL}
+          goal={STEP_GOAL}
           Icon={SneakersIcon}
           secondaryUnit={`${stepPercentage} %`}
         />
         <HealthCard
-          title="체중"
+          title="몸무게 기록"
           value={weight}
           Icon={WeightIcon}
           secondaryUnit={calculateWeightStatus(bmi)}

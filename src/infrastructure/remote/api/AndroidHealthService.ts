@@ -98,8 +98,8 @@ export class AndroidHealthService {
       })
 
       return {
-        steps: Math.round(totalSteps),
-        weight: Math.round(latestWeight),
+        steps: totalSteps,
+        weight: Math.round(latestWeight * 10) / 10,
         bmi: Math.round(bmi * 10) / 10,
         stepPercentage: Math.round(stepPercentage * 10) / 10,
       }
