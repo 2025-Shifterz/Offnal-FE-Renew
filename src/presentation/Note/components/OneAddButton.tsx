@@ -16,7 +16,9 @@ const OneAddButton = ({ text, addOneTodo }: AddButtonProps) => {
         className="w-[93px] flex-row items-center justify-center gap-[5px] rounded-radius-max bg-surface-white py-[8px]"
       >
         <AddIcon />
-        <GlobalText className="text-text-disabled-on body-xs">{`${text} 추가`}</GlobalText>
+        <GlobalText className="text-text-disabled-on body-xs">
+          {text}
+        </GlobalText>
       </TouchableOpacity>
     </View>
   )

@@ -444,12 +444,12 @@
   --color-divider-gray-darker: #e6e8ea;
   --color-divider-gray-light: #33363d;
 
-  --color-surface-danger-subtle: #260903;
+  --color-surface-danger-subtle: #FDEFEC;
   --color-surface-disabled: #464c53;
   --color-surface-disabled-inverse: #cdd1d5;
   --color-surface-gray-subtle1: #131416;
   --color-surface-gray-subtle2: #1e2124;
-  --color-surface-information-subtle: #021a2c;
+  --color-surface-information-subtle: #e7f4fe;
   --color-surface-inverse: #e6e8ea;
   --color-surface-inverse-static: #1e2124;
   --color-surface-primary: #2ecadc;
