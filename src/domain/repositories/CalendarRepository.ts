@@ -1,7 +1,11 @@
+import { CreateCalendarRequest } from '../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { Calendar } from '../models/Calendar'
 
 export interface CalendarRepository {
-  createCalendar(): Promise<void>
+  createCalendar(
+    organizationId: number,
+    calendarData: CreateCalendarRequest
+  ): Promise<void>
 
   getCalendar(
     organizationId: number,

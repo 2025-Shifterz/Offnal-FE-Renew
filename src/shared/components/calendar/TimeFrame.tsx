@@ -2,18 +2,18 @@
 
 import { Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { ShiftType } from '../../../data/model/Calendar'
+import { WorkType } from '../../types/Calendar'
 
 // TimeFrameChildren을 ShiftType과 동일하게 정의
-export type TimeFrameChildren = ShiftType
+export type TimeFrameChildren = WorkType
 
 interface TimeFrameProps {
-  text: ShiftType
+  text: WorkType
   onPress?: () => void
 }
 
 const stylesMap: Record<
-  ShiftType,
+  WorkType,
   { backgroundColor: string; textColor: string }
 > = {
   주간: {

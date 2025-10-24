@@ -1,13 +1,27 @@
 import { Calendar } from '../../domain/models/Calendar'
 import { CalendarRepository } from '../../domain/repositories/CalendarRepository'
 import { CalendarService } from '../../infrastructure/remote/api/CalendarService'
+import { CreateCalendarRequest } from '../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { toCalendarDomain } from '../mappers/CalendarMapper'
 
 export class CalendarRepositoryImpl implements CalendarRepository {
   constructor(private calendarService: CalendarService) {}
 
-  async createCalendar(): Promise<void> {
+  async createCalendar(
+    organizationId: number,
+    calendarData: CreateCalendarRequest
+  ): Promise<void> {
     // TODO("Method not implemented.")
+    try {
+      const response = await this.calendarService.createWorkCalendar(
+        organizationId,
+        calendarData
+      )
+
+      return response
+    } catch (error) {
+      throw error
+    }
   }
 
   async getCalendar(

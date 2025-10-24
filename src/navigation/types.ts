@@ -64,6 +64,7 @@ export type OnboardingStackParamList = {
       E: { startTime: string; endTime: string }
       N: { startTime: string; endTime: string }
     }
+    organizationId: number
   }
   CompleteSchedule: { selectedScheduleScopeType: ScheduleScopeType }
 }

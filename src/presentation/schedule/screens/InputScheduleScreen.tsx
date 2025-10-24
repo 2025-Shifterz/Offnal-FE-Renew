@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
@@ -12,6 +12,8 @@ import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useStore } from 'zustand'
+import { useCalendarStore } from '../../../store/useCalendarStore'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -24,14 +26,17 @@ const InputScheduleScreen = () => {
 
   const navigation = useNavigation<onboardingNavigation>()
 
-  // 필수 입력 값을 작성해야 넘어가도록
+  // states
   const [calendarName, setCalendarName] = useState('') // 근무표 이름
   const [workGroup, setWorkGroup] = useState('1조') // 직접 입력 시 팀 이름
   const [workTimes, setWorkTimes] = useState({
     D: { startTime: '08:00', endTime: '16:00' },
     E: { startTime: '16:00', endTime: '00:00' },
     N: { startTime: '00:00', endTime: '08:00' },
-  }) // 직접 입력 시 팀 이름
+  })
+  // organizationId from store
+  const organizationId = useCalendarStore(state => state.organizationId)
+  //
 
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
@@ -41,9 +46,24 @@ const InputScheduleScreen = () => {
       calendarName,
       workGroup,
       workTimes,
+      organizationId,
     })
   }
-
+  useEffect(() => {
+    console.log('근무표 기본정보 입력 데이터: ', {
+      selectedScheduleScopeType,
+      calendarName,
+      workGroup,
+      workTimes,
+      organizationId,
+    })
+  }, [
+    workGroup,
+    calendarName,
+    workTimes,
+    organizationId,
+    selectedScheduleScopeType,
+  ])
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}

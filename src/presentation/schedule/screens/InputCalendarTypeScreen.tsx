@@ -21,12 +21,13 @@ type ScheduleTypeRouteProp = RouteProp<
 
 const InputCalendarTypeScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
-    route.params
-  console.log(selectedScheduleScopeType)
-  console.log(calendarName)
-  console.log(workGroup)
-  console.log(workTimes)
+  const {
+    organizationId,
+    selectedScheduleScopeType,
+    calendarName,
+    workGroup,
+    workTimes,
+  } = route.params
 
   const { setWorkTimes } = useWorkTime()
 
@@ -42,6 +43,7 @@ const InputCalendarTypeScreen = () => {
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const handleNext = () => {
     if (calendarEditorRef.current) {
+      // 조직 id post 요청
       calendarEditorRef.current.postData() // 근무표 저장 요청
     }
     navigation.navigate('CompleteSchedule', { selectedScheduleScopeType })

@@ -2,8 +2,8 @@
 import { create } from 'zustand'
 import {
   WorkType,
-  CalendarData,
   DateAndWorkType,
+  DateAndWorkTypeRecord,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
 import { calendarService } from '../infrastructure/di/Dependencies'
@@ -19,12 +19,14 @@ import { calendarService } from '../infrastructure/di/Dependencies'
 */
 
 interface CalendarState {
-  calendarData: CalendarData
+  organizationId: number
+  calendarData: DateAndWorkTypeRecord
   selectedDate: dayjs.Dayjs | null
   currentYearMonth: { year: number; month: number }
   isLoading: boolean
 
   // setter
+  setOrganizationId: (id: number) => void
   setCalendarData: (data: DateAndWorkType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   setCurrentYearMonth: (year: number, month: number) => void
@@ -41,14 +43,17 @@ interface CalendarState {
 }
 
 export const useCalendarStore = create<CalendarState>(set => ({
+  organizationId: 1,
   calendarData: {},
   selectedDate: null,
   currentYearMonth: { year: dayjs().year(), month: dayjs().month() + 1 },
   isLoading: false,
 
+  setOrganizationId: id => set({ organizationId: id }),
+
   setCalendarData: data =>
     set(() => {
-      const mapped: CalendarData = {}
+      const mapped: DateAndWorkTypeRecord = {}
       data.forEach(item => {
         mapped[item.date] = { workTypeName: item.workTypeName }
       })

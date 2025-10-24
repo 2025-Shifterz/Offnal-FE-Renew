@@ -1,3 +1,5 @@
+import { WorkTypeEn } from '../../../shared/types/Calendar'
+
 export interface WorkTimeDetail {
   startTime: string
   endTime: string
@@ -14,6 +16,6 @@ export interface MonthlyShift {
 export interface CreateCalendarRequest {
   calendarName: string
   organizationId: number
-  workTimes: { [workType: string]: WorkTimeDetail }
+  workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }
