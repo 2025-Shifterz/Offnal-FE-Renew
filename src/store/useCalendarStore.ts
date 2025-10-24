@@ -21,7 +21,12 @@ interface CalendarState {
   organizationId: number
   calendarData: DateAndWorkTypeRecord
   selectedDate: dayjs.Dayjs | null
-  currentYearMonth: { year: number; month: number }
+  currentYearMonth: {
+    year: number
+    month: number
+    currentStartDate: string
+    currentEndDate: string
+  }
   isLoading: boolean
 
   // setter
@@ -45,7 +50,13 @@ export const useCalendarStore = create<CalendarState>(set => ({
   organizationId: 1,
   calendarData: {},
   selectedDate: null,
-  currentYearMonth: { year: dayjs().year(), month: dayjs().month() + 1 },
+  currentYearMonth: {
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+    // TODO: currentDate를 현재 달 대신에 선택된 달로 바꿔야 함!!!
+    currentStartDate: '',
+    currentEndDate: '',
+  },
   isLoading: false,
 
   setOrganizationId: id => set({ organizationId: id }),
@@ -73,8 +84,18 @@ export const useCalendarStore = create<CalendarState>(set => ({
       return { calendarData: updated }
     }),
 
-  setCurrentYearMonth: (year, month) =>
-    set({ currentYearMonth: { year, month } }),
+  setCurrentYearMonth: (year, month) => {
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`
+    const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
+    set({
+      currentYearMonth: {
+        year,
+        month,
+        currentStartDate: startDate,
+        currentEndDate: endDate,
+      },
+    })
+  },
 
   setSelectedDate: date => set({ selectedDate: date }),
 

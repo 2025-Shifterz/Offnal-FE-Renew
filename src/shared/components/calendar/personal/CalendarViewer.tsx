@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { ShiftType } from '../../../../../data/model/Calendar'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
-import { workDaysToMap } from '../../../utils/calendar/workDaysToMap'
+// import { workDaysToMap } from '../../../utils/calendar/workDaysToMap'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
 
 interface CalendarViewerProps {
   onPressTeamIcon?: () => void
@@ -14,20 +14,23 @@ interface CalendarViewerProps {
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   onDateSelected?: (date: dayjs.Dayjs) => void // ✅ 콜백 추가
-
-  calendarData: Map<string, ShiftType>
-  setCalendarData: (map: Map<string, ShiftType>) => void
 }
 
 const CalendarViewer = ({
-  calendarData,
-  setCalendarData,
   onPressTeamIcon,
   onPressEditIcon,
   selectedDate,
   setSelectedDate,
   onDateSelected,
 }: CalendarViewerProps) => {
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const setCalendarData = useCalendarStore(state => state.setCalendarData)
+  const currentStartDate = useCalendarStore(
+    state => state.currentYearMonth.currentStartDate
+  )
+  const currentEndDate = useCalendarStore(
+    state => state.currentYearMonth.currentEndDate
+  )
   const [currentDate, setCurrentDate] = useState(dayjs())
   const isFocused = useIsFocused() // 화면 포커스 여부 확인
 
@@ -38,9 +41,14 @@ const CalendarViewer = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await calendarRepository.getWorkCalendar(year, month)
-        const formatted = workDaysToMap(response, year, month)
-        setCalendarData(formatted)
+        const organizationId = 1 // 임시 조직 ID
+        const response = await calendarRepository.getCalendar(
+          organizationId,
+          currentStartDate,
+          currentEndDate
+        )
+        // const formatted = workDaysToMap(response, year, month)
+        setCalendarData(response)
         console.log('근무표 조회 성공:', response)
       } catch (error) {
         console.log('근무표 조회 실패:', error)

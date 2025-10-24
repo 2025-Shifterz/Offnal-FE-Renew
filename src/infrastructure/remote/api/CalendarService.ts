@@ -38,15 +38,11 @@ export class CalendarService {
     calendarData: CreateCalendarRequest
   ) => {
     try {
-      const res = await api.post<CreateCalendarRequest>(
-        '/works/calendar',
-        calendarData,
-        {
-          params: {
-            organizationId,
-          },
-        }
-      )
+      const res = await api.post('/works/calendar', calendarData, {
+        params: {
+          organizationId,
+        },
+      })
       return res.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -59,14 +55,20 @@ export class CalendarService {
     }
   }
 
-  deleteWorkCalendar = async (year: number, month: number) => {
+  deleteWorkCalendar = async (
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ) => {
     try {
-      await api.delete(`/works/calendar`, {
+      const res = await api.delete(`/works/calendar`, {
         params: {
-          year,
-          month,
+          organizationId,
+          startDate,
+          endDate,
         },
       })
+      return res.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)
@@ -78,22 +80,20 @@ export class CalendarService {
   }
 
   updateWorkCalendar = async (
-    year: number,
-    month: number,
-    calendarData: UpdateShiftsRequest
+    organiztionId: number,
+    startDate: string,
+    endDate: string,
+    shiftsData: UpdateShiftsRequest
   ) => {
     try {
-      const response = await api.patch<UpdateShiftsRequest>(
-        '/works/calendar',
-        calendarData,
-        {
-          params: {
-            year: String(year),
-            month: String(month),
-          },
-        }
-      )
-      return response.data
+      const res = await api.patch('/works/calendar', shiftsData, {
+        params: {
+          organiztionId,
+          startDate,
+          endDate,
+        },
+      })
+      return res.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)

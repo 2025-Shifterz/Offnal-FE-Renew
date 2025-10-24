@@ -4,12 +4,13 @@ import BottomSheet from '@gorhom/bottom-sheet'
 import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
-import { ShiftType } from '../../../data/model/Calendar'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
+import { WorkType } from '../../../shared/types/Calendar'
+import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
 dayjs.locale('ko') // 한글 locale 적용
 
 // 근무형태 선택 박스 map 데이터
-const shiftTypes: { id: number; text: ShiftType }[] = [
+const shiftTypes: { id: number; text: WorkType }[] = [
   { id: 1, text: '주간' },
   { id: 2, text: '오후' },
   { id: 3, text: '야간' },
@@ -18,7 +19,7 @@ const shiftTypes: { id: number; text: ShiftType }[] = [
 
 interface EditBottomSheetProps {
   selectedDate: dayjs.Dayjs | null
-  handleTypeSelect: (type: ShiftType) => void
+  handleTypeSelect: (type: WorkType) => void
   handleCancel: () => void
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
@@ -53,19 +54,6 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       ? selectedDate.format('YYYY년 M월 D일 (dd)')
       : '날짜 없음'
 
-    const shiftTypeToKey = (type: ShiftType): 'D' | 'E' | 'N' => {
-      switch (type) {
-        case '주간':
-          return 'D'
-        case '오후':
-          return 'E'
-        case '야간':
-          return 'N'
-        default:
-          return 'D'
-      }
-    }
-
     return (
       <>
         {/* 바텀 시트 */}
@@ -81,7 +69,7 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
               <Text className="text-text-subtle heading-xxs">간격</Text>
               <View className="gap-[7px]">
                 {shiftTypes.map(({ id, text }) => {
-                  const key = shiftTypeToKey(text)
+                  const key = fromShiftType(text)
                   const time = workTimes[key]
                   return (
                     <SelectShiftBox

@@ -5,7 +5,7 @@ export const toCalendarDomain = (
   response: GetWorkCalendarResponseData[]
 ): Calendar[] => {
   return response.map(data => ({
-    day: data.day,
-    shiftType: data.workTypeName,
+    date: data.date,
+    workTypeName: data.workTypeName,
   }))
 }

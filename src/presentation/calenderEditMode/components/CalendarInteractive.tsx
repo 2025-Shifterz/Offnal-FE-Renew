@@ -3,10 +3,10 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { ShiftType } from '../../../data/model/Calendar'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { workDaysToMap } from '../../../shared/utils/calendar/workDaysToMap'
+// import { workDaysToMap } from '../../../shared/utils/calendar/workDaysToMap'
 import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
+import { useCalendarStore } from '../../../store/useCalendarStore'
 
 interface CalendarInteractiveProps {
   isEditScreen: boolean
@@ -14,8 +14,6 @@ interface CalendarInteractiveProps {
   setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
-  calendarData: Map<string, ShiftType> // 키를 string으로 변경
-  setCalendarData: (data: Map<string, ShiftType>) => void // 키를 string으로 변경
 }
 
 const CalendarInteractive = ({
@@ -24,27 +22,34 @@ const CalendarInteractive = ({
   setCurrentDate,
   selectedDate,
   setSelectedDate,
-  calendarData,
-  setCalendarData,
 }: CalendarInteractiveProps) => {
-  const year = currentDate.year()
-  const month = currentDate.month() + 1
-
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const setCalendarData = useCalendarStore(state => state.setCalendarData)
+  // TODO: currentDate를 현재 달 대신에 선택된 달로 바꿔야 함!!!
+  const currentStartDate = useCalendarStore(
+    state => state.currentYearMonth.currentStartDate
+  )
+  const currentEndDate = useCalendarStore(
+    state => state.currentYearMonth.currentEndDate
+  )
+  const organizationId = 1 // 임시 조직 ID
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await calendarRepository.getWorkCalendar(year, month)
-        // workDaysToMap 유틸리티를 사용하여 'YYYY-MM-DD'를 키로 하는 Map을 생성
-        const formattedMap = workDaysToMap(response, year, month)
-        setCalendarData(formattedMap)
+        const response = await calendarRepository.getCalendar(
+          organizationId,
+          currentStartDate,
+          currentEndDate
+        )
+        setCalendarData(response)
         console.log('근무표 조회 성공:', response)
       } catch (error) {
         console.log('근무표 조회 실패:', error)
       }
     }
     fetchData()
-  }, [year, month])
+  }, [currentStartDate, currentEndDate])
 
   return (
     <View>

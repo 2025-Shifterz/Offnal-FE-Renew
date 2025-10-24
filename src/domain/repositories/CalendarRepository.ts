@@ -1,5 +1,6 @@
 import { CreateCalendarRequest } from '../../infrastructure/remote/request/CreateWorkCalendarRequest'
-import { Calendar } from '../models/Calendar'
+import { UpdateShiftsRequest } from '../../infrastructure/remote/request/PatchWorkCalendarReqeust'
+import { GetWorkCalendarResponseData } from '../../infrastructure/remote/response/GetWorkCalendarResponse'
 
 export interface CalendarRepository {
   createCalendar(
@@ -11,13 +12,18 @@ export interface CalendarRepository {
     organizationId: number,
     startDate: string,
     endDate: string
-  ): Promise<Calendar[]>
+  ): Promise<GetWorkCalendarResponseData[]>
 
-  updateWorkCalendar(
-    year: number,
-    month: number,
-    shifts: string[]
+  updateCalendar(
+    organizationId: number,
+    startDate: string,
+    endDate: string,
+    shiftsData: UpdateShiftsRequest
   ): Promise<void>
 
-  deleteCalendar(year: number, month: number): Promise<void>
+  deleteCalendar(
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ): Promise<void>
 }

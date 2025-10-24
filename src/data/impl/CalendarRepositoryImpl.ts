@@ -2,7 +2,7 @@ import { Calendar } from '../../domain/models/Calendar'
 import { CalendarRepository } from '../../domain/repositories/CalendarRepository'
 import { CalendarService } from '../../infrastructure/remote/api/CalendarService'
 import { CreateCalendarRequest } from '../../infrastructure/remote/request/CreateWorkCalendarRequest'
-import { toCalendarDomain } from '../mappers/CalendarMapper'
+import { UpdateShiftsRequest } from '../../infrastructure/remote/request/PatchWorkCalendarReqeust'
 
 export class CalendarRepositoryImpl implements CalendarRepository {
   constructor(private calendarService: CalendarService) {}
@@ -11,12 +11,12 @@ export class CalendarRepositoryImpl implements CalendarRepository {
     organizationId: number,
     calendarData: CreateCalendarRequest
   ): Promise<void> {
-    // TODO("Method not implemented.")
     try {
-      await this.calendarService.createWorkCalendar(
+      const res = await this.calendarService.createWorkCalendar(
         organizationId,
         calendarData
       )
+      return res
     } catch (error) {
       throw error
     }
@@ -28,30 +28,48 @@ export class CalendarRepositoryImpl implements CalendarRepository {
     endDate: string
   ): Promise<Calendar[]> {
     try {
-      const response = await this.calendarService.getWorkCalendar(
+      const res = await this.calendarService.getWorkCalendar(
         organizationId,
         startDate,
         endDate
       )
-      const result = toCalendarDomain(response)
-
-      return result
+      return res
     } catch (error) {
       throw error
     }
   }
 
-  async updateWorkCalendar(
-    year: number,
-    month: number,
-    shifts: string[]
+  async updateCalendar(
+    organizationId: number,
+    startDate: string,
+    endDate: string,
+    shiftsData: UpdateShiftsRequest
   ): Promise<void> {
-    // TODO("Method not implemented.")
+    try {
+      const res = await this.calendarService.updateWorkCalendar(
+        organizationId,
+        startDate,
+        endDate,
+        shiftsData
+      )
+      return res
+    } catch (error) {
+      throw error
+    }
   }
 
-  async deleteCalendar(year: number, month: number): Promise<void> {
+  async deleteCalendar(
+    organizationId: number,
+    startDate: string,
+    endDate: string
+  ): Promise<void> {
     try {
-      return await this.calendarService.deleteWorkCalendar(year, month)
+      const res = await this.calendarService.deleteWorkCalendar(
+        organizationId,
+        startDate,
+        endDate
+      )
+      return res
     } catch (error) {
       throw error
     }
