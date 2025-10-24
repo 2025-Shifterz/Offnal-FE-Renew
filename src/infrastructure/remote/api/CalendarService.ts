@@ -38,11 +38,16 @@ export class CalendarService {
     calendarData: CreateCalendarRequest
   ) => {
     try {
-      await api.post<CreateCalendarRequest>('/works/calendar', calendarData, {
-        params: {
-          organizationId,
-        },
-      })
+      const res = await api.post<CreateCalendarRequest>(
+        '/works/calendar',
+        calendarData,
+        {
+          params: {
+            organizationId,
+          },
+        }
+      )
+      return res.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)

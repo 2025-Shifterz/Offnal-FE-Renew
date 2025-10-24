@@ -67,7 +67,6 @@ const CalendarBase = ({
 
       const key = date.format('YYYY-MM-DD') // string 형식
       const time = calendarData?.[key]?.workTypeName // string 전달
-      console.log('렌더링하는 날짜:', key, '근무 형태:', time)
 
       days.push(
         <TouchableOpacity

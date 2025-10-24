@@ -11,11 +11,10 @@ import { calendarService } from '../infrastructure/di/Dependencies'
 /*
 <---- calendarData 형태 ----> 
 
-{
+const calendarData: DateAndWorkTypeRecord = {
   "2025-09-01": { workTypeName: "오후" },
   "2025-09-02": { workTypeName: "휴일" },
 }
-
 */
 
 interface CalendarState {

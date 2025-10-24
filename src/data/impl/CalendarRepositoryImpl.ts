@@ -13,12 +13,10 @@ export class CalendarRepositoryImpl implements CalendarRepository {
   ): Promise<void> {
     // TODO("Method not implemented.")
     try {
-      const response = await this.calendarService.createWorkCalendar(
+      await this.calendarService.createWorkCalendar(
         organizationId,
         calendarData
       )
-
-      return response
     } catch (error) {
       throw error
     }

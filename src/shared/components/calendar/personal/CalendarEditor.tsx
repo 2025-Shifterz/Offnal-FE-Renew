@@ -7,12 +7,17 @@ import React, {
 } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import dayjs from 'dayjs'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { WorkType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { View } from 'react-native'
 import TypeSelect from './TypeSelect'
+import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 
 export interface CalendarEditorRef {
   postData: () => void
@@ -49,33 +54,59 @@ const CalendarEditor: ForwardRefRenderFunction<
     updateCalendarDay(key, type)
   }
 
+  // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
+  const storedMonths = Array.from(
+    new Set( // 중복 제거
+      Object.keys(calendarData).map(dateStr => dayjs(dateStr).format('YYYY-MM'))
+    )
+  )
+  console.log('저장된 달력 데이터의 년-월:', storedMonths)
+
+  // 새 캘린더 데이터 생성 (calendars의 월별 목록)
+  const newCalendars = storedMonths.map(monthStr => {
+    // monthStr: '2025-10'
+    const startDate = dayjs(monthStr + '-01').format('YYYY-MM-DD')
+    const endDate = dayjs(monthStr + '-01')
+      .endOf('month')
+      .format('YYYY-MM-DD')
+
+    const shifts: Record<string, string> = {}
+
+    Object.entries(calendarData).forEach(([date, value]) => {
+      if (
+        dayjs(date).isSameOrAfter(startDate) &&
+        dayjs(date).isSameOrBefore(endDate)
+      ) {
+        shifts[date] = fromShiftType(value.workTypeName) // 문자열로 추출
+      }
+    })
+
+    return {
+      startDate,
+      endDate,
+      shifts,
+    }
+  })
+
+  console.log('생성된 새 calendars 데이터:', newCalendars)
+
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
         const organizationId = 1 // 임시 값
-        const newCalendar: CreateCalendarRequest = {
+        const newCalendarRequest: CreateCalendarRequest = {
           calendarName: calendarName,
           organizationId: organizationId,
           workTimes: workTimes,
-          calendars: [
-            {
-              startDate: '2025-10-01',
-              endDate: '2025-10-31',
-              shifts: {
-                '2025-10-01': 'E',
-                '2025-10-02': 'N',
-                // 예시 데이터
-              },
-            },
-          ],
+          calendars: newCalendars,
         }
-        console.log('요청하는 데이터:', newCalendar)
+        console.log('요청하는 데이터:', newCalendarRequest)
 
         // API 호출
         const res = await calendarRepository.createCalendar(
           organizationId,
-          newCalendar
+          newCalendarRequest
         )
         console.log('근무표 저장 성공', res)
       } catch (error) {
