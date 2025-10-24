@@ -1,6 +1,6 @@
 import { WorkType, WorkTypeEn } from '../../shared/types/Calendar'
 
-export function fromCodetoShiftType(code: WorkType): WorkType {
+export function fromCodetoShiftType(code: string): WorkType {
   switch (code) {
     case '주간':
       return '주간'
@@ -49,7 +49,7 @@ export function toShiftType(code: string): WorkType {
 // }
 
 /**
- * ShiftType(enum)을 API가 요구하는 문자열('오전', '휴무' 등)로 변환하는 헬퍼 함수
+ * WorkType을 API가 요구하는 문자열('오전', '휴무' 등)로 변환하는 헬퍼 함수
  */
 export function fromShiftType(shift: WorkType): string {
   switch (shift) {
@@ -125,13 +125,8 @@ export function fromShiftType(shift: WorkType): string {
 //   }
 // }
 
-// DATA REPO 사용을 위한 변경함수
-
-export type ShiftDataType = 'D' | 'E' | 'N' | 'OFF'
-export type ShiftsDataMap = Map<number, ShiftDataType>
-
 // 문자열을 ShiftType으로 변환하는 헬퍼 함수
-function toDataShiftType(value: WorkTypeEn): WorkTypeEn {
+export function toDataShiftType(value: string): WorkTypeEn {
   switch (value) {
     case 'D':
       return 'D'
@@ -140,8 +135,8 @@ function toDataShiftType(value: WorkTypeEn): WorkTypeEn {
     case 'N':
       return 'N'
     case '-':
-      return 'OFF'
+      return '-'
     default:
-      return 'OFF'
+      return '-'
   }
 }

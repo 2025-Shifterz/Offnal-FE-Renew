@@ -1,15 +1,12 @@
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
+  useEffect,
   useImperativeHandle,
   useState,
 } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import dayjs from 'dayjs'
-import {
-  fromCodetoShiftType,
-  toShiftType,
-} from '../../../../data/mappers/ShiftTypeMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { WorkType } from '../../../types/Calendar'
@@ -24,12 +21,18 @@ export interface CalendarEditorRef {
 const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
   CreateCalendarRequest
-> = ({ calendarName, workTimes, calendars }, ref) => {
+> = ({ calendarName, workTimes }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
   const calendarData = useCalendarStore(state => state.calendarData)
+  const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+
+  // 처음에는 초기화
+  useEffect(() => {
+    clearCalendarData()
+  }, [clearCalendarData])
 
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
@@ -43,21 +46,29 @@ const CalendarEditor: ForwardRefRenderFunction<
     const key = selectedDate.format('YYYY-MM-DD')
 
     // 상태 업데이트
-    updateCalendarDay(key, fromCodetoShiftType(type))
+    updateCalendarDay(key, type)
   }
 
-  // 부모에서 호출할 수 있게 내보낸다.
+  // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
-        // const calendarData: DateAndWorkTypeRecord = {}
-
         const organizationId = 1 // 임시 값
         const newCalendar: CreateCalendarRequest = {
           calendarName: calendarName,
           organizationId: organizationId,
           workTimes: workTimes,
-          calendars: calendars,
+          calendars: [
+            {
+              startDate: '2025-10-01',
+              endDate: '2025-10-31',
+              shifts: {
+                '2025-10-01': 'E',
+                '2025-10-02': 'N',
+                // 예시 데이터
+              },
+            },
+          ],
         }
         console.log('요청하는 데이터:', newCalendar)
 
