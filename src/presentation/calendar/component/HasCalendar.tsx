@@ -1,15 +1,10 @@
- 
 import { useNavigation } from '@react-navigation/native'
-import { Button, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { calendarNavigation } from '../../../navigation/types'
-import CalendarViewer from '../../calenderType/components/calendar/personal/CalendarViewer'
-import TCalendarViewer from '../../calenderType/components/calendar/team/TCalendarViewer'
 import { useEffect, useRef, useState } from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
-import BottomSheetWrapper from '../../common/component/BottomSheetWrapper'
 import BottomSheet from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
-import TimeFrame from '../../calenderType/components/TimeFrame'
 import ToDoCard from '../../main/components/ToDoCard'
 import MemoCard from '../../main/components/MemoCard'
 import { ShiftType } from '../../../data/model/Calendar'
@@ -18,6 +13,10 @@ import {
   getMemosByDate,
   getToDosByDate,
 } from '../../../infrastructure/di/Dependencies'
+import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
+import TCalendarViewer from '../../../shared/components/calendar/team/TCalendarViewer'
+import CalendarViewer from '../../../shared/components/calendar/personal/CalendarViewer'
+import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
@@ -87,7 +86,7 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
               console.log('클릭됨')
             }}
             onPressEditIcon={() => {
-              navigation.navigate('OnboardingSchedules', { screen: 'InfoEdit' })
+              navigation.navigate('CalendarInfoEdit')
             }}
           />
         ) : (
@@ -101,7 +100,7 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
               setIsTeamView(!isTeamView)
             }}
             onPressEditIcon={() => {
-              navigation.navigate('OnboardingSchedules', { screen: 'InfoEdit' })
+              navigation.navigate('CalendarInfoEdit')
             }}
           />
         )}

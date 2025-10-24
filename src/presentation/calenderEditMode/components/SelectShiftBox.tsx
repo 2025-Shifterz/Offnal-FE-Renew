@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
+
+import { twMerge } from 'tailwind-merge'
 import TimeFrame, {
   TimeFrameChildren,
-} from '../../calenderType/components/TimeFrame'
-import { twMerge } from 'tailwind-merge'
+} from '../../../shared/components/calendar/TimeFrame'
 
 interface SelectShiftBoxProps {
   boxId: number

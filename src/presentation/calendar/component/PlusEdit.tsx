@@ -9,7 +9,7 @@ import CancelIcon from '../../../assets/icons/w-cancel.svg'
 import CameraIcon from '../../../assets/icons/pr-cam.svg'
 import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
-import { calendarNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
 import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 
@@ -31,7 +31,7 @@ type PlusEditProps = {
 }
 
 const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
-  const navigation = useNavigation<calendarNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const { workTimes } = useWorkTime()
 
@@ -56,7 +56,7 @@ const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
       <View className="absolute bottom-[13px] right-[13px] w-[189px] flex-col items-end gap-[13px]">
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('OnboardingSchedulesWithOCR')
+            navigation.navigate('OnboardingSchedulesOCR')
           }}
           className="flex-row items-center gap-[10px]"
         >
@@ -66,7 +66,13 @@ const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
 
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('EditCalendar', { workTimes: workTimes })
+            navigation.navigate('Tabs', {
+              screen: 'Calendar',
+              params: {
+                screen: 'EditCalendar',
+                params: { workTimes: workTimes },
+              },
+            })
           }
           className="flex-row items-center gap-[10px]"
         >

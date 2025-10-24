@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import dayjs, { Dayjs } from 'dayjs'
+import { Dayjs } from 'dayjs'
 
 import ArrowLeft from '../../../assets/icons/black-arrow-l.svg'
 import ArrowRight from '../../../assets/icons/black-arrow-r.svg'

@@ -1,5 +1,3 @@
- 
- 
 import React, { useState } from 'react'
 import { Button, Text, View } from 'react-native'
 import ArrowUp from '../../../assets/icons/arrow-up.svg'

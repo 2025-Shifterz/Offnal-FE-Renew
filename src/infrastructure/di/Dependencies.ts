@@ -30,7 +30,7 @@ import { UserRepositoryImpl } from '../../data/impl/UserRepositoryImpl'
 const todoDao = new TodoDao()
 const memoDao = new MemoDao()
 
-const ocrService = new OcrService()
+export const ocrService = new OcrService()
 export const calendarService = new CalendarService()
 export const homeService = new HomeService()
 export const profileService = new ProfileService()

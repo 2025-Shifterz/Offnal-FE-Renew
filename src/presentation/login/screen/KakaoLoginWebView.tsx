@@ -4,7 +4,7 @@ import { View, ActivityIndicator, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { API_URL } from '@env'
 import { useNavigation } from '@react-navigation/native'
-import { loginNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { useUserStore } from '../../../store/useUserStore'
@@ -15,7 +15,7 @@ const KakaoLoginWebView = () => {
   const [loginUrl, setLoginUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const webviewRef = useRef(null)
-  const navigation = useNavigation<loginNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const [shouldHideWebView, setShouldHideWebView] = useState(false)
 
   useEffect(() => {
@@ -85,16 +85,18 @@ const KakaoLoginWebView = () => {
         refreshToken: storedRefreshToken,
       })
 
-      // TODO: 처음 로그인 아닐 때 홈 화면으로 이동한느거 필요함
-      if (!newMember) {
-        Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
-        console.log('accessToken:', accessToken)
-        console.log('refreshToken:', refreshToken)
-        console.log('memberName:', memberName)
-        navigation.replace('Tabs')
-      }
+      console.log('accessToken:', accessToken)
+      console.log('refreshToken:', refreshToken)
+      console.log('memberName:', memberName)
 
-      navigation.replace('SelectRegMethod')
+      if (newMember) {
+        Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
+        navigation.replace('OnboardingSchedules', {
+          screen: 'SelectScheduleReg',
+        }) // 신규 회원이면 온보딩 화면으로 이동
+      } else {
+        navigation.replace('Tabs') // 로그인 한 적이 있으면 홈 화면으로 이동
+      }
     } catch (err) {
       Alert.alert('에러', '로그인 응답 처리 중 오류 발생')
       console.error('postMessage parse error:', err)

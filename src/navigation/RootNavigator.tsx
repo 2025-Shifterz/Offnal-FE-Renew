@@ -5,7 +5,7 @@ import SplashScreen from '../presentation/splash/screen/SplashScreen'
 import TabsNavigator from './TabsNavigator'
 import OnBoardingScheduleNavigator from './OnboardingScheduleNavigator'
 import LoginNavigator from './LoginNavigator'
-import OnBoardingScheduleWithOCRNavigator from './OnbordingScheduleWithOCRNavigator'
+import OnBoardingScheduleOCRNavigator from './OnbordingScheduleOCRNavigator'
 import { RootStackParamList } from './types'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
@@ -22,8 +22,8 @@ const RootNavigator = () => {
           component={OnBoardingScheduleNavigator}
         />
         <RootStack.Screen
-          name="OnboardingSchedulesWithOCR"
-          component={OnBoardingScheduleWithOCRNavigator}
+          name="OnboardingSchedulesOCR"
+          component={OnBoardingScheduleOCRNavigator}
         />
       </RootStack.Navigator>
     </NavigationContainer>

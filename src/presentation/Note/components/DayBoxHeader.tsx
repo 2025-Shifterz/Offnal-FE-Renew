@@ -19,15 +19,15 @@ interface DayBoxHeaderProps {
 const DayBoxHeader = ({ currentDate, setCurrentDate }: DayBoxHeaderProps) => {
   const isToday = currentDate.isSame(dayjs(), 'day')
   const handlePrevDate = () => {
-    setCurrentDate((prev: Dayjs) => prev.subtract(1, 'day'))
+    setCurrentDate(currentDate.subtract(1, 'day'))
   }
 
   const handleNextDate = () => {
-    setCurrentDate((prev: Dayjs) => prev.add(1, 'day'))
+    setCurrentDate(currentDate.add(1, 'day'))
   }
 
   return (
-    <View className="flex-row items-center justify-between bg-surface-primary-subtle px-p-6 py-p-3">
+    <View className="flex-row items-center justify-between rounded-tl-radius-xl rounded-tr-radius-xl bg-surface-primary-subtle px-p-6 py-p-3">
       <TouchableOpacity onPress={handlePrevDate} className={arrowStyle}>
         <ArrowLeft />
       </TouchableOpacity>
