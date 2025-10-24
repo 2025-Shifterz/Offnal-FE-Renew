@@ -46,22 +46,11 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <WorkTimeProvider>
-          <MemoScreen />
+          <RootNavigator />
         </WorkTimeProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   )
-
-  // return (
-  //   <GestureHandlerRootView style={{ flex: 1 }}>
-  //     <BottomSheetModalProvider>
-  //       <WorkTimeProvider>
-  //         <RootNavigator />
-
-  //       </WorkTimeProvider>
-  //     </BottomSheetModalProvider>
-  //   </GestureHandlerRootView>
-  // )
 }
 
 export default App
