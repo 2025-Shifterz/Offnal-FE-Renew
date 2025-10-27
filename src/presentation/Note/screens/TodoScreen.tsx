@@ -73,6 +73,8 @@ const TodoScreen = () => {
       setTodos(updatedTodos)
     } catch (error) {
       console.error('Error deleting todo:', error)
+    } finally {
+      sheetRef.current?.close()
     }
   }
 
@@ -165,8 +167,9 @@ const TodoScreen = () => {
         ref={sheetRef}
         selectedTodo={selectedTodo}
         onEdit={() => {}}
-        onDelete={() => {}}
-        onSchedule={() => {}}
+        onDelete={() => handleDeleteTodo(selectedTodo?.id || 0)}
+        onScheduleToday={() => {}}
+        onScheduleNextDay={() => {}}
         onReSchedule={() => {}}
       />
     </View>
