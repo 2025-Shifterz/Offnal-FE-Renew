@@ -1,8 +1,13 @@
 import { WorkTypeEn } from '../../../shared/types/Calendar'
 
-export interface WorkTimeDetail {
+export interface InputWorkTimeDetail {
   startTime: string
   endTime: string
+}
+
+export interface WorkTimeDetail {
+  startTime: string
+  duration: string // PT8H30M 형식
 }
 
 export interface MonthlyShift {

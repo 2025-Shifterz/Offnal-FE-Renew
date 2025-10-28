@@ -29,6 +29,22 @@ const InputCalendarTypeScreen = () => {
     workTimes,
   } = route.params
 
+  useEffect(() => {
+    console.log('넘어온 근무표 기본정보 입력: ', {
+      selectedScheduleScopeType,
+      calendarName,
+      workGroup,
+      workTimes,
+      organizationId,
+    })
+  }, [
+    organizationId,
+    selectedScheduleScopeType,
+    calendarName,
+    workGroup,
+    workTimes,
+  ])
+
   const { setWorkTimes } = useWorkTime()
 
   useEffect(() => {

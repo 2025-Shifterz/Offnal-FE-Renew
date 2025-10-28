@@ -49,21 +49,7 @@ const InputScheduleScreen = () => {
       organizationId,
     })
   }
-  useEffect(() => {
-    console.log('근무표 기본정보 입력 데이터: ', {
-      selectedScheduleScopeType,
-      calendarName,
-      workGroup,
-      workTimes,
-      organizationId,
-    })
-  }, [
-    workGroup,
-    calendarName,
-    workTimes,
-    organizationId,
-    selectedScheduleScopeType,
-  ])
+
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}

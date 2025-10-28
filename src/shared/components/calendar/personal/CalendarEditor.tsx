@@ -12,12 +12,16 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
-import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
+import {
+  CreateCalendarRequest,
+  InputWorkTimeDetail,
+} from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { WorkType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { View } from 'react-native'
 import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
+import { convertToDuration } from '../../../utils/calendar/convertWorkTimesToDuration'
 
 export interface CalendarEditorRef {
   postData: () => void
@@ -25,7 +29,9 @@ export interface CalendarEditorRef {
 
 const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
-  CreateCalendarRequest
+  Omit<CreateCalendarRequest, 'workTimes'> & {
+    workTimes: Record<string, InputWorkTimeDetail>
+  }
 > = ({ calendarName, workTimes }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
@@ -90,6 +96,22 @@ const CalendarEditor: ForwardRefRenderFunction<
 
   console.log('생성된 새 calendars 데이터:', newCalendars)
 
+  const [convertedWorkTimes, setConvertedWorkTimes] = useState<
+    Record<string, { startTime: string; duration: string }>
+  >({
+    D: { startTime: '08:00', duration: 'PT8H' },
+    E: { startTime: '16:00', duration: 'PT8H' },
+    N: { startTime: '00:00', duration: 'PT8H' },
+  })
+
+  // workTimes 에서 endTime -> duration 변환
+  useEffect(() => {
+    if (!workTimes) return
+    const converted = convertToDuration(workTimes)
+    setConvertedWorkTimes(converted)
+    console.log('변환된 근무시간 데이터:', converted)
+  }, [workTimes])
+
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
@@ -98,7 +120,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         const newCalendarRequest: CreateCalendarRequest = {
           calendarName: calendarName,
           organizationId: organizationId,
-          workTimes: workTimes,
+          workTimes: convertedWorkTimes,
           calendars: newCalendars,
         }
         console.log('요청하는 데이터:', newCalendarRequest)
