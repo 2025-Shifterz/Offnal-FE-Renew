@@ -9,6 +9,7 @@ import GlobalText from '../../../../shared/components/GlobalText'
 import { Todo } from '../../../../domain/models/Todo'
 import { View } from 'react-native'
 import TodoOptionItem from './TodoOptionItem'
+import dayjs from 'dayjs'
 
 export interface TodoOptionBottomSheetProps {
   selectedTodo: Todo | null
@@ -59,7 +60,11 @@ const TodoOptionBottomSheet = forwardRef<
     }))
 
     const TodoOptions = useMemo(() => {
-      return [
+      const isSelectedTodoToday = selectedTodo
+        ? dayjs(selectedTodo.targetDate).isSame(dayjs(), 'day')
+        : false
+
+      const options = [
         {
           icon: <EditIcon width={16} height={16} />,
           title: '수정하기',
@@ -70,11 +75,17 @@ const TodoOptionBottomSheet = forwardRef<
           title: '삭제하기',
           action: () => selectedTodo && onDelete(selectedTodo),
         },
-        {
+      ]
+
+      if (!isSelectedTodoToday) {
+        options.push({
           icon: <ArrowDownIcon width={16} height={16} />,
           title: '오늘하기',
           action: () => selectedTodo && onScheduleToday(selectedTodo),
-        },
+        })
+      }
+
+      options.push(
         {
           icon: <ArrowRightIcon width={16} height={16} />,
           title: '내일하기',
@@ -84,8 +95,10 @@ const TodoOptionBottomSheet = forwardRef<
           icon: <FilpRightIcon width={16} height={16} />,
           title: '날짜 바꾸기',
           action: () => selectedTodo && onReSchedule(selectedTodo),
-        },
-      ]
+        }
+      )
+
+      return options
     }, [
       onEdit,
       onDelete,

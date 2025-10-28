@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
   Alert,
   ScrollView,
@@ -48,7 +48,9 @@ const TodoScreen = () => {
     }
   }
 
-  initTodos()
+  useEffect(() => {
+    initTodos()
+  }, [])
 
   const handleAddTodo = async (date: Dayjs) => {
     if (!todo.trim()) {
@@ -133,6 +135,10 @@ const TodoScreen = () => {
                   )}
                 </Fragment>
               ))
+            )}
+
+            {todos.length > 0 && showInput && (
+              <View className="h-px bg-border-gray-light" />
             )}
 
             {showInput && (
