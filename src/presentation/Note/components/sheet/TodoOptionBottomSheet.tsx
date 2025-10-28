@@ -112,7 +112,7 @@ const TodoOptionBottomSheet = forwardRef<
           <GlobalText className="text-heading-xs">
             {selectedTodo ? `${selectedTodo.content}` : '옵션'}
           </GlobalText>
-          <View className="my-[8px] h-[1px] bg-border-gray-light" />
+          <View className="my-[8px] h-[1px] rounded-[1px] border-t border-dashed border-border-gray-light" />
           {TodoOptions.map((option, index) => (
             <TodoOptionItem
               key={index}

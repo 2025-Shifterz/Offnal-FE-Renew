@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import {
   Alert,
   ScrollView,
@@ -105,31 +105,33 @@ const TodoScreen = () => {
                 <EmptyMessage text="할 일" iconSize={48} />
               </View>
             ) : (
-              todos.map(item => (
-                <View
-                  key={item.id}
-                  className="w-full flex-row items-center justify-between px-[16px] py-p-3"
-                >
-                  <TouchableOpacity
-                    className="flex-1 flex-row items-center"
-                    onPress={() =>
-                      updateTodoCompleted(item.id, item.isCompleted)
-                    }
-                  >
-                    {item.isCompleted ? (
-                      <CheckedIcon />
-                    ) : (
-                      <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
-                    )}
+              todos.map((item, index) => (
+                <Fragment key={item.id}>
+                  <View className="w-full flex-row items-center justify-between px-[16px] py-p-3">
+                    <TouchableOpacity
+                      className="flex-1 flex-row items-center"
+                      onPress={() =>
+                        updateTodoCompleted(item.id, item.isCompleted)
+                      }
+                    >
+                      {item.isCompleted ? (
+                        <CheckedIcon />
+                      ) : (
+                        <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+                      )}
 
-                    <View className="ml-[8px] flex-1">
-                      <GlobalText>{item.content}</GlobalText>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleOpenSheet(item)}>
-                    <VerticalDots />
-                  </TouchableOpacity>
-                </View>
+                      <View className="ml-[8px] flex-1">
+                        <GlobalText>{item.content}</GlobalText>
+                      </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleOpenSheet(item)}>
+                      <VerticalDots />
+                    </TouchableOpacity>
+                  </View>
+                  {index < todos.length - 1 && (
+                    <View className="h-px bg-border-gray-light" />
+                  )}
+                </Fragment>
               ))
             )}
 
