@@ -14,6 +14,7 @@ import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useStore } from 'zustand'
 import { useCalendarStore } from '../../../store/useCalendarStore'
+import api from '../../../infrastructure/remote/api/axiosInstance'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -40,7 +41,17 @@ const InputScheduleScreen = () => {
 
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // 조직 생성 요청 - 등록 시에 조직 생성되는 것으로 API 수정되면 나중에 삭제할 예정!
+    try {
+      const res = await api.post('/organizations', {
+        organizationName: calendarName,
+        team: workGroup,
+      })
+      console.log('조직 생성 응답:', res.data)
+    } catch (error) {
+      console.error('조직 생성 오류:', error)
+    }
     navigation.navigate('InputCalendarType', {
       selectedScheduleScopeType,
       calendarName,
