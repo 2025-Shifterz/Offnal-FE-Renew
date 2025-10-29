@@ -38,6 +38,7 @@ const InputScheduleScreen = () => {
   // organizationId from store
   const organizationId = useCalendarStore(state => state.organizationId)
   //
+  console.log('organizationId in InputScheduleScreen: ', organizationId)
 
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 

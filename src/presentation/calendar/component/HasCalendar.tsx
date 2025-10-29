@@ -7,7 +7,6 @@ import BottomSheet from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
 import ToDoCard from '../../main/components/ToDoCard'
 import MemoCard from '../../main/components/MemoCard'
-import { ShiftType } from '../../../data/model/Calendar'
 import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 import {
   getMemosByDate,
@@ -17,6 +16,7 @@ import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import TCalendarViewer from '../../../shared/components/calendar/team/TCalendarViewer'
 import CalendarViewer from '../../../shared/components/calendar/personal/CalendarViewer'
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
+import { WorkType } from '../../../shared/types/Calendar'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
@@ -25,7 +25,7 @@ interface HasCalendarProps {
 const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
   const navigation = useNavigation<calendarNavigation>()
   const [isTeamView, setIsTeamView] = useState(false)
-  const [calendarData, setCalendarData] = useState<Map<string, ShiftType>>(
+  const [calendarData, setCalendarData] = useState<Map<string, WorkType>>(
     new Map()
   )
   // console.log('calendarData', calendarData);
@@ -91,8 +91,6 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
           />
         ) : (
           <CalendarViewer
-            calendarData={calendarData}
-            setCalendarData={setCalendarData}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             onDateSelected={openBottomSheet} // ✅ 날짜 선택 시 바텀시트 열기

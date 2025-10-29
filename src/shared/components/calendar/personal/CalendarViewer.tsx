@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 // import { workDaysToMap } from '../../../utils/calendar/workDaysToMap'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
+import api from '../../../../infrastructure/remote/api/axiosInstance'
 
 interface CalendarViewerProps {
   onPressTeamIcon?: () => void
@@ -25,6 +26,8 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
+
+  // 현재 달 기준으므로 수정이 필요함 !!
   const currentStartDate = useCalendarStore(
     state => state.currentYearMonth.currentStartDate
   )
@@ -42,14 +45,17 @@ const CalendarViewer = ({
     const fetchData = async () => {
       try {
         const organizationId = 1 // 임시 조직 ID
+
         const response = await calendarRepository.getCalendar(
           organizationId,
           currentStartDate,
           currentEndDate
         )
-        // const formatted = workDaysToMap(response, year, month)
         setCalendarData(response)
         console.log('근무표 조회 성공:', response)
+
+        const res2 = await api.get('organizations')
+        console.log('조직 조회 성공:', res2.data.data)
       } catch (error) {
         console.log('근무표 조회 실패:', error)
       }
@@ -58,8 +64,6 @@ const CalendarViewer = ({
       fetchData()
     }
   }, [year, month, isFocused]) // isFocused를 dependency array에 추가
-
-  console.log('calendarData instanceof Map', calendarData instanceof Map)
 
   // ----------
 

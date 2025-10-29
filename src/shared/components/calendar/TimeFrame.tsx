@@ -40,6 +40,11 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
 }: TimeFrameProps) => {
   const currentStyle = stylesMap[text]
 
+  if (!currentStyle) {
+    console.warn(`Unknown WorkType: ${text}`)
+    return null // 렌더링 안함
+  }
+
   // onPress를 호출하는 것은, 위에서 받은 handleTypeSelect('주간')을 그대로 실행하는 것이다.
   return (
     <TouchableOpacity

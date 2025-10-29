@@ -54,8 +54,8 @@ export const useCalendarStore = create<CalendarState>(set => ({
     year: dayjs().year(),
     month: dayjs().month() + 1,
     // TODO: currentDate를 현재 달 대신에 선택된 달로 바꿔야 함!!!
-    currentStartDate: '',
-    currentEndDate: '',
+    currentStartDate: dayjs().startOf('month').format('YYYY-MM-DD'), // ✅
+    currentEndDate: dayjs().endOf('month').format('YYYY-MM-DD'),
   },
   isLoading: false,
 

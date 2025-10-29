@@ -62,7 +62,7 @@ const CalendarEditScreen = () => {
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
   const openBottomSheet = (date: dayjs.Dayjs) => {
     const key = date.format('YYYY-MM-DD')
-    const currentShift = calendarData[key] || null
+    const currentShift = calendarData[key]?.workTypeName
 
     setSelectedDate(date)
     setBackupType(currentShift)
@@ -74,15 +74,6 @@ const CalendarEditScreen = () => {
     if (selectedDate) {
       const key = selectedDate.format('YYYY-MM-DD')
 
-      // setCalendarData(prev => {
-      //   const newMap = new Map(prev)
-      //   if (backupType !== null) {
-      //     newMap.set(key, backupType)
-      //   } else {
-      //     newMap.delete(key)
-      //   }
-      //   return newMap
-      // })
       // 상태 업데이트
       if (backupType !== null) {
         updateCalendarDay(key, backupType)
