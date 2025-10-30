@@ -13,7 +13,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import MemoScreen from './src/presentation/Note/screens/MemoScreen'
+import TodoScreen from './src/presentation/Note/screens/TodoScreen'
 enableScreens()
 
 function App() {
@@ -46,13 +47,22 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <WorkTimeProvider>
-          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
-            <RootNavigator />
-          </SafeAreaView>
+          <TodoScreen />
         </WorkTimeProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   )
+
+  // return (
+  //   <GestureHandlerRootView style={{ flex: 1 }}>
+  //     <BottomSheetModalProvider>
+  //       <WorkTimeProvider>
+  //         <RootNavigator />
+
+  //       </WorkTimeProvider>
+  //     </BottomSheetModalProvider>
+  //   </GestureHandlerRootView>
+  // )
 }
 
 export default App
