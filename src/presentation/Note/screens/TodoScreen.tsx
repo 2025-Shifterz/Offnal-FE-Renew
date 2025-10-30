@@ -165,7 +165,18 @@ const TodoScreen = () => {
           </View>
 
           <OneAddButton
-            addOneTodo={() => setShowInput(!showInput)}
+            addOneTodo={async () => {
+              if (!showInput) {
+                setShowInput(true)
+              } else {
+                if (todo.trim()) {
+                  await handleAddTodo(dayjs())
+                  setShowInput(true)
+                } else {
+                  setShowInput(false)
+                }
+              }
+            }}
             text="할 일 추가"
           />
         </ScrollView>
