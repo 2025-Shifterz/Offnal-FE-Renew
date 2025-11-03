@@ -3,6 +3,7 @@ import { Memo as MemoEntity } from '../../infrastructure/local/entities/MemoEnti
 
 export const toMemoDomain = (entity: MemoEntity): Memo => ({
   id: entity.id,
+  title: entity.title,
   content: entity.content,
 })
 
