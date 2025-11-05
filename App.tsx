@@ -52,17 +52,6 @@ function App() {
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   )
-
-  // return (
-  //   <GestureHandlerRootView style={{ flex: 1 }}>
-  //     <BottomSheetModalProvider>
-  //       <WorkTimeProvider>
-  //         <RootNavigator />
-
-  //       </WorkTimeProvider>
-  //     </BottomSheetModalProvider>
-  //   </GestureHandlerRootView>
-  // )
 }
 
 export default App

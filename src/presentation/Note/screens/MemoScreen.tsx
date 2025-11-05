@@ -10,15 +10,19 @@ import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { ScrollView } from 'react-native-gesture-handler'
 import OneAddButton from '../components/OneAddButton'
-import { useIsFocused, useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
 import { Memo } from '../../../domain/models/Memo'
 import {
   deleteMemoUseCase,
   getMemosByDate,
 } from '../../../infrastructure/di/Dependencies'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { MainStackParamList } from '../../../navigation/types'
 
 const MemoScreen = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const [memos, setMemos] = useState<Memo[]>([])
 
   const loadMemos = async () => {
@@ -99,7 +103,10 @@ const MemoScreen = () => {
             )}
           </View>
 
-          <OneAddButton addOneTodo={() => {}} text="메모 작성" />
+          <OneAddButton
+            addOneTodo={() => navigation.navigate('AddMemo')}
+            text="메모 작성"
+          />
         </ScrollView>
       </SafeAreaView>
     </View>
