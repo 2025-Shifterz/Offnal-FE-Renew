@@ -11,18 +11,23 @@ export class MemoDao {
    *
    * memo를 생성합니다 (Create).
    *
+   * @param title 생성할 메모의 타이틀
    * @param content 생성할 메모의 내용
    * @param targetDate 메모의 목표 날짜 (dayjs 객체)
    *
    * @return void
    */
-  async createMemo(content: string, targetDate: dayjs.Dayjs): Promise<void> {
+  async createMemo(
+    title: string,
+    content: string,
+    targetDate: dayjs.Dayjs
+  ): Promise<void> {
     const db = await openShifterzDB()
 
     try {
       const formattedTargetDate = targetDate.valueOf() // 밀리초 단위 타임스탬프로 변환
 
-      const query = `INSERT INTO memos (content, targetDate) VALUES (?, ?);`
+      const query = `INSERT INTO memos (title, content, targetDate) VALUES (?, ?, ?);`
       const params = [content, formattedTargetDate]
 
       const [result] = await db.executeSql(query, params)
@@ -135,6 +140,7 @@ export class MemoDao {
    * content와 targetDate 중 하나 또는 둘 다 업데이트할 수 있습니다.
    *
    * @param id 업데이트할 메모의 ID
+   * @param title ()
    * @param content (선택) 업데이트할 새로운 내용
    * @param targetDate (선택) 업데이트할 새로운 목표 날짜 (dayjs 객체)
    *
@@ -142,6 +148,7 @@ export class MemoDao {
    */
   async updateMemo(
     id: number,
+    title?: string,
     content?: string,
     targetDate?: dayjs.Dayjs
   ): Promise<void> {
@@ -150,6 +157,11 @@ export class MemoDao {
     try {
       const setParts: string[] = []
       const params: (string | number)[] = []
+
+      if (title !== undefined) {
+        setParts.push('title = ?')
+        params.push(title)
+      }
 
       if (content !== undefined) {
         setParts.push('content = ?')

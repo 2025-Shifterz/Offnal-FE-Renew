@@ -1,6 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
-import { View, TouchableOpacity } from 'react-native'
+import { View, TouchableOpacity, Alert } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
@@ -10,30 +10,39 @@ import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { ScrollView } from 'react-native-gesture-handler'
 import OneAddButton from '../components/OneAddButton'
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
+import { useEffect, useState } from 'react'
+import { Memo } from '../../../domain/models/Memo'
+import {
+  deleteMemoUseCase,
+  getMemosByDate,
+} from '../../../infrastructure/di/Dependencies'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { MainStackParamList } from '../../../navigation/types'
 
 const MemoScreen = () => {
-  const memos = [
-    {
-      id: 1,
-      title: '1번 타이틀',
-      content: '1번 메시지',
-    },
-    {
-      id: 2,
-      title: '2번 타이틀',
-      content: '2번 메시지',
-    },
-    {
-      id: 3,
-      title: '3번 타이틀',
-      content: '3번 메시지',
-    },
-    {
-      id: 4,
-      title: '4번 타이틀',
-      content: '4번 메시지',
-    },
-  ]
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const [memos, setMemos] = useState<Memo[]>([])
+
+  const loadMemos = async () => {
+    try {
+      const loadedMemos = await getMemosByDate.execute(dayjs())
+      setMemos(loadedMemos)
+    } catch (error) {
+      console.error('Failed to load memos:', error)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteMemoUseCase.execute(id)
+      loadMemos()
+    } catch (error) {
+      console.error('Failed to delete memo:', error)
+      Alert.alert('오류', '메모 삭제에 실패했습니다.')
+    }
+  }
 
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
@@ -56,7 +65,9 @@ const MemoScreen = () => {
                 data={memos}
                 scrollEnabled={false}
                 renderItem={({ item: memo, index }) => (
-                  <View
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {}}
                     className={`flex-col gap-[4px] bg-surface-white p-[12px] ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
                   >
                     <GlobalText className="text-body-s" numberOfLines={1}>
@@ -65,9 +76,9 @@ const MemoScreen = () => {
                     <GlobalText className="text-body-xxs" numberOfLines={2}>
                       {memo.content}
                     </GlobalText>
-                  </View>
+                  </TouchableOpacity>
                 )}
-                renderHiddenItem={({ index }) => (
+                renderHiddenItem={({ item, index }) => (
                   <View
                     className={`h-full flex-row items-center justify-end ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
                   >
@@ -79,7 +90,7 @@ const MemoScreen = () => {
                     </TouchableOpacity>
                     <TouchableOpacity
                       className={`h-full w-[66px] items-center justify-center bg-surface-danger-subtle  ${index === memos.length - 1 ? 'rounded-br-radius-xl' : ''}`}
-                      onPress={() => {}}
+                      onPress={() => handleDelete(item.id)}
                     >
                       <DeleteIcon />
                     </TouchableOpacity>
@@ -92,7 +103,10 @@ const MemoScreen = () => {
             )}
           </View>
 
-          <OneAddButton addOneTodo={() => {}} text="메모 작성" />
+          <OneAddButton
+            addOneTodo={() => navigation.navigate('AddMemo')}
+            text="메모 작성"
+          />
         </ScrollView>
       </SafeAreaView>
     </View>

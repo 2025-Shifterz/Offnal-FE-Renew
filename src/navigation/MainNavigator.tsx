@@ -1,10 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MainScreen from '../presentation/main/screen/MainScreen'
-import TodoScreen from '../presentation/Note/screens/TodoScreen'
-import MemoScreen from '../presentation/Note/screens/MemoScreen'
+import TodoScreen from '../presentation/note/screens/TodoScreen'
+import MemoScreen from '../presentation/note/screens/MemoScreen'
 import AutoAlarm from '../presentation/alarm/screen/AutoAlarm'
 import { MainStackParamList } from './types'
 import CustomBackButton from '../shared/components/CustomBackButton'
+import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
 
 // 탭1. 메인 탭에 사용되는 스택 네비게이터
 const Stack = createNativeStackNavigator<MainStackParamList>()
@@ -38,6 +39,11 @@ const MainNavigator = () => {
         name="Memo"
         options={{ title: '메모' }}
         component={MemoScreen}
+      />
+      <Stack.Screen
+        name="AddMemo"
+        options={{ title: '' }}
+        component={AddMemoScreen}
       />
     </Stack.Navigator>
   )

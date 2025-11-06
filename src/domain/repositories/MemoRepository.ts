@@ -6,10 +6,17 @@ export interface MemoRepository {
 
   getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]>
 
-  addMemo(content: string, targetDate: dayjs.Dayjs): Promise<void>
+  getMemoById(id: number): Promise<Memo | undefined>
+
+  addMemo(
+    title: string,
+    content: string,
+    targetDate: dayjs.Dayjs
+  ): Promise<void>
 
   updateMemo(
     id: number,
+    title: string,
     content: string,
     targetDate: dayjs.Dayjs
   ): Promise<void>

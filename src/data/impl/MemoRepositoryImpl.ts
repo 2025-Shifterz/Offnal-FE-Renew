@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { MemoRepository } from '../../domain/repositories/MemoRepository'
 import { MemoDao } from '../../infrastructure/local/dao/MemoDao'
-import { toMemoDomainArray } from '../mappers/MemoMapper'
+import { toMemoDomain, toMemoDomainArray } from '../mappers/MemoMapper'
 import { Memo } from '../../domain/models/Memo'
 
 export class MemoRepositoryImpl implements MemoRepository {
@@ -21,16 +21,31 @@ export class MemoRepositoryImpl implements MemoRepository {
     return result
   }
 
-  async addMemo(content: string, targetDate: dayjs.Dayjs): Promise<void> {
-    return this.memoDao.createMemo(content, targetDate)
+  async getMemoById(id: number): Promise<Memo | undefined> {
+    const memo = await this.memoDao.getMemoById(id)
+    if (!memo) {
+      return undefined
+    }
+    const result = toMemoDomain(memo)
+
+    return result
+  }
+
+  async addMemo(
+    title: string,
+    content: string,
+    targetDate: dayjs.Dayjs
+  ): Promise<void> {
+    return this.memoDao.createMemo(title, content, targetDate)
   }
 
   async updateMemo(
     id: number,
+    title: string,
     content: string,
     targetDate: dayjs.Dayjs
   ): Promise<void> {
-    return this.memoDao.updateMemo(id, content, targetDate)
+    return this.memoDao.updateMemo(id, title, content, targetDate)
   }
 
   async deleteMemo(id: number): Promise<void> {

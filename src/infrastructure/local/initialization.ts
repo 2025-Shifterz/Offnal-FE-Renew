@@ -43,7 +43,8 @@ export const initializeDataBaseTables = async (): Promise<void> => {
     await tx.executeSql(
       `CREATE TABLE IF NOT EXISTS memos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        content TEXT NOT NULL,
+        title TEXT NOT NULL,
+        content TEXT,
         targetDate INTEGER NOT NULL,
         createdAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000),
         updatedAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000)
