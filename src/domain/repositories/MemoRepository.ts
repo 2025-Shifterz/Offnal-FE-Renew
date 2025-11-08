@@ -12,7 +12,7 @@ export interface MemoRepository {
     title: string,
     content: string,
     targetDate: dayjs.Dayjs
-  ): Promise<void>
+  ): Promise<Memo>
 
   updateMemo(
     id: number,

@@ -10,7 +10,7 @@ import MemoCard from '../../main/components/MemoCard'
 import { ShiftType } from '../../../data/model/Calendar'
 import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 import {
-  getMemosByDate,
+  getMemosByDateUseCase,
   getToDosByDate,
 } from '../../../infrastructure/di/Dependencies'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
@@ -62,7 +62,7 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
 
         const [todosOnly, memosOnly] = await Promise.all([
           getToDosByDate.execute(selectedDate), // todo만 조회
-          getMemosByDate.execute(selectedDate), // memo는 MemoDao에서!
+          getMemosByDateUseCase.execute(selectedDate), // memo는 MemoDao에서!
         ])
         setTodo(todosOnly)
         setMemo(memosOnly)

@@ -10,10 +10,24 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import GlobalText from '../../../shared/components/GlobalText'
 import { useState } from 'react'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { MainStackParamList } from '../../../navigation/types'
+import { addMemoUseCase } from '../../../infrastructure/di/Dependencies'
+import dayjs from 'dayjs'
+import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 const AddMemoScreen = () => {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const route = useRoute<RouteProp<MainStackParamList, 'AddMemo'>>()
+  const memoToUpdate = route.params?.memo
+
+  const addMemo = localMemoStore(state => state.addMemo)
+  const updateMemo = localMemoStore(state => state.updateMemo)
+
+  const [title, setTitle] = useState(memoToUpdate?.title || '')
+  const [content, setContent] = useState(memoToUpdate?.content || '')
 
   const isDisabled = !title.trim()
 
@@ -21,6 +35,19 @@ const AddMemoScreen = () => {
     if (isDisabled) {
       Alert.alert('알림', '제목을 모두 입력해주세요.')
       return
+    }
+
+    try {
+      if (memoToUpdate) {
+        await updateMemo(memoToUpdate.id, title, content, dayjs())
+        navigation.goBack()
+      } else {
+        await addMemo(title, content, dayjs())
+        navigation.goBack()
+      }
+    } catch (error) {
+      console.error('Error saving memo:', error)
+      Alert.alert('오류', '메모 생성에 실패했습니다.')
     }
   }
 
@@ -30,7 +57,9 @@ const AddMemoScreen = () => {
         <TopAppBar
           title=""
           showBackButton={true}
-          onPressBackButton={() => {}}
+          onPressBackButton={() => {
+            navigation.goBack()
+          }}
           rightActions={[
             <TouchableOpacity onPress={handleSave} disabled={isDisabled}>
               <GlobalText

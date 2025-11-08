@@ -10,39 +10,42 @@ import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { ScrollView } from 'react-native-gesture-handler'
 import OneAddButton from '../components/OneAddButton'
-import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
-import { Memo } from '../../../domain/models/Memo'
-import {
-  deleteMemoUseCase,
-  getMemosByDate,
-} from '../../../infrastructure/di/Dependencies'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useCallback, useEffect, useRef } from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { MainStackParamList } from '../../../navigation/types'
+import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 const MemoScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<MainStackParamList>>()
-  const [memos, setMemos] = useState<Memo[]>([])
 
-  const loadMemos = async () => {
-    try {
-      const loadedMemos = await getMemosByDate.execute(dayjs())
-      setMemos(loadedMemos)
-    } catch (error) {
-      console.error('Failed to load memos:', error)
-    }
+  const swipeListViewRef = useRef<SwipeListView<any>>(null)
+
+  const memos = localMemoStore(state => state.memos)
+  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
+  const deleteMemo = localMemoStore(state => state.deleteMemo)
+
+  useEffect(() => {
+    fetchMemosByDate(dayjs())
+  }, [fetchMemosByDate])
+
+  const handleDelete = (id: number) => {
+    Alert.alert('메모 삭제', '정말로 이 메모를 삭제하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        onPress: () => deleteMemo(id),
+        style: 'destructive',
+      },
+    ])
   }
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteMemoUseCase.execute(id)
-      loadMemos()
-    } catch (error) {
-      console.error('Failed to delete memo:', error)
-      Alert.alert('오류', '메모 삭제에 실패했습니다.')
-    }
-  }
+  useFocusEffect(
+    useCallback(() => {
+      return () => swipeListViewRef.current?.closeAllOpenRows()
+    }, [])
+  )
 
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
@@ -50,7 +53,9 @@ const MemoScreen = () => {
         <TopAppBar
           title="메모"
           showBackButton={true}
-          onPressBackButton={() => {}}
+          onPressBackButton={() => {
+            navigation.goBack()
+          }}
         />
 
         <ScrollView>
@@ -62,6 +67,7 @@ const MemoScreen = () => {
               </View>
             ) : (
               <SwipeListView
+                ref={swipeListViewRef}
                 data={memos}
                 scrollEnabled={false}
                 renderItem={({ item: memo, index }) => (
@@ -84,7 +90,9 @@ const MemoScreen = () => {
                   >
                     <TouchableOpacity
                       className={`h-full w-[66px] items-center justify-center bg-surface-information-subtle`}
-                      onPress={() => {}}
+                      onPress={() => {
+                        navigation.navigate('AddMemo', { memo: item })
+                      }}
                     >
                       <EditIcon />
                     </TouchableOpacity>

@@ -35,8 +35,11 @@ export class MemoRepositoryImpl implements MemoRepository {
     title: string,
     content: string,
     targetDate: dayjs.Dayjs
-  ): Promise<void> {
-    return this.memoDao.createMemo(title, content, targetDate)
+  ): Promise<Memo> {
+    const memo = await this.memoDao.createMemo(title, content, targetDate)
+    const result = toMemoDomain(memo)
+
+    return result
   }
 
   async updateMemo(

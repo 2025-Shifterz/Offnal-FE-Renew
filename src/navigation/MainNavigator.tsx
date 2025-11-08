@@ -32,18 +32,18 @@ const MainNavigator = () => {
       />
       <Stack.Screen
         name="Todo"
-        options={{ title: '할 일' }}
         component={TodoScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Memo"
-        options={{ title: '메모' }}
         component={MemoScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="AddMemo"
-        options={{ title: '' }}
         component={AddMemoScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   )
