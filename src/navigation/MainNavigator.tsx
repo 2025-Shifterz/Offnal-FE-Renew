@@ -14,6 +14,7 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerShown: false,
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
         headerLeft: () => <CustomBackButton />,

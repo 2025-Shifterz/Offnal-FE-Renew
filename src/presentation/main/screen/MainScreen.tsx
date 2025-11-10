@@ -3,13 +3,11 @@ import React, { useCallback, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import HomeWorkTypeChip from '../components/HomeWorkTypeChip'
 import AlramSection from '../ui/AlramSection'
 import HealthGuideSection from '../ui/HealthGuideSection'
 import RecommnedMealSection from '../ui/RecommendMealSection'
 import NoteSection from '../ui/NoteSection'
 import HealthCardSection from '../ui/HealthCardSection'
-import TopCard from '../components/TopCard'
 import dayjs from 'dayjs'
 
 import { useFocusEffect } from '@react-navigation/native'
@@ -67,7 +65,7 @@ export default function MainScreen() {
         {/* <TopCard /> */}
         <TopBanner />
 
-        <View className="items-top flex-1 justify-start bg-background-gray-subtle1 p-number-8">
+        <View className="items-top flex-1 justify-start rounded-radius-l bg-background-gray-subtle1 p-number-8">
           <RecommnedMealSection
             meals={(homeData?.todayRoutine?.meals as any) ?? []}
           />

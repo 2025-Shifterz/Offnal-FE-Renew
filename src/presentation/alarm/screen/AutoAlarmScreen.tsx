@@ -26,6 +26,7 @@ const AutoAlarmScreen = () => {
         <TopAppBar
           title="자동 알람"
           showBackButton={true}
+          onPressBackButton={() => nav.goBack()}
           rightActions={
             showAlarmList && (
               <View className="w-[64px] flex-row items-center justify-between">

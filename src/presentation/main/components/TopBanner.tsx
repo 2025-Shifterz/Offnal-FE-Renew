@@ -8,6 +8,8 @@ import BellIcon from '../../../assets/icons/ic_home_bell_24.svg'
 
 const TopBanner = () => {
   const [homeData, setHomeData] = useState<HomeResponse['data'] | null>(null)
+  const today = new Date()
+  const formattedDate = `${today.getMonth() + 1}월 ${today.getDate()}일 (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`
 
   const translateWorkType = (type?: string): string => {
     if (!type) return '미등록'
@@ -29,7 +31,7 @@ const TopBanner = () => {
       <View className="h-[50px] justify-center">
         <View className="flex-row justify-between">
           <GlobalText className="text-surface-white heading-xxs">
-            7월 6일 (일)
+            {formattedDate}
           </GlobalText>
           <TouchableOpacity>
             <BellIcon />
