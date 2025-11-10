@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import HomeWorkTypeChip, { DayType } from '../components/HomeWorkTypeChip'
+import HomeWorkTypeChip from '../components/HomeWorkTypeChip'
 import AlramSection from '../ui/AlramSection'
 import HealthGuideSection from '../ui/HealthGuideSection'
 import RecommnedMealSection from '../ui/RecommendMealSection'
@@ -77,50 +77,31 @@ export default function MainScreen() {
   }
 
   return (
-    <View className="flex-1 bg-black">
-      <SafeAreaView className="flex-1 bg-transparent" edges={['left', 'right']}>
-        <ScrollView className="flex-1">
-          <TopCard />
-          <View className="w-full flex-row items-center justify-center gap-g-2 px-number-8 py-number-8">
-            <HomeWorkTypeChip
-              dayType={DayType.PAST}
-              workType={
-                homeData && homeData.yesterdayType
-                  ? translateWorkType(homeData.yesterdayType)
-                  : '미등록'
-              }
-            />
-            <HomeWorkTypeChip
-              dayType={DayType.TODAY}
-              workType={
-                homeData && homeData.todayType
-                  ? translateWorkType(homeData.todayType)
-                  : '미등록'
-              }
-            />
-            <HomeWorkTypeChip
-              dayType={DayType.UPCOMMING}
-              workType={
-                homeData && homeData.tomorrowType
-                  ? translateWorkType(homeData.tomorrowType)
-                  : '미등록'
-              }
-            />
-          </View>
+    <SafeAreaView className="flex-1 " edges={['left', 'right']}>
+      <ScrollView className="flex-1" bounces={false}>
+        <TopCard />
+        <View className="mx-[20px]  ">
+          <HomeWorkTypeChip
+            workType={
+              homeData && homeData.todayType
+                ? translateWorkType(homeData.todayType)
+                : '미등록'
+            }
+          />
+        </View>
 
-          <View className="items-top flex-1 justify-start bg-background-gray-subtle1 p-number-8">
-            <RecommnedMealSection
-              meals={(homeData?.todayRoutine?.meals as any) ?? []}
-            />
-            <HealthGuideSection
-              health={(homeData?.todayRoutine?.health as any) ?? null}
-            />
-            <AlramSection alarms={[]} />
-            <HealthCardSection />
-            <NoteSection todos={todos} memos={memos} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+        <View className="items-top flex-1 justify-start bg-background-gray-subtle1 p-number-8">
+          <RecommnedMealSection
+            meals={(homeData?.todayRoutine?.meals as any) ?? []}
+          />
+          <HealthGuideSection
+            health={(homeData?.todayRoutine?.health as any) ?? null}
+          />
+          <AlramSection alarms={[]} />
+          <HealthCardSection />
+          <NoteSection todos={todos} memos={memos} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
