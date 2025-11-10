@@ -11,7 +11,7 @@ const TabsNavigator = () => {
   return (
     <BottomNavigationBar>
       <Tab.Screen name="Home" component={MainNavigator} />
-      <Tab.Screen name="AutoAlarm" component={AutoAlarmNavigator} />
+      {/* <Tab.Screen name="AutoAlarm" component={AutoAlarmNavigator} /> */}
       <Tab.Screen name="Calendar" component={CalendarNavigator} />
       <Tab.Screen name="MyInfo" component={MyInfoNavigator} />
     </BottomNavigationBar>
