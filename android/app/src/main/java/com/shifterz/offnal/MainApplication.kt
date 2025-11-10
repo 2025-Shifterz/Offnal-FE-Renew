@@ -1,4 +1,4 @@
-package com.shifterznew
+package com.shifterz.offnal
 
 import android.app.Application
 import com.facebook.react.PackageList
