@@ -3,6 +3,7 @@ import BottomNavigationBar from '../presentation/main/components/BottomNavigatio
 import MainNavigator from './MainNavigator'
 import CalendarNavigator from './CalendarNavigator'
 import MyInfoNavigator from './MyInfoNavigator'
+import AutoAlarmNavigator from './AutoAlarmNavigator'
 
 const Tab = createBottomTabNavigator()
 
@@ -10,6 +11,7 @@ const TabsNavigator = () => {
   return (
     <BottomNavigationBar>
       <Tab.Screen name="Home" component={MainNavigator} />
+      <Tab.Screen name="AutoAlarm" component={AutoAlarmNavigator} />
       <Tab.Screen name="Calendar" component={CalendarNavigator} />
       <Tab.Screen name="MyInfo" component={MyInfoNavigator} />
     </BottomNavigationBar>

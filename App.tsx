@@ -14,6 +14,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
 import AddMemoScreen from './src/presentation/note/screens/AddMemoScreen'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 enableScreens()
 
@@ -47,7 +48,9 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <WorkTimeProvider>
-          <AddMemoScreen />
+          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
+            <RootNavigator />
+          </SafeAreaView>
         </WorkTimeProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

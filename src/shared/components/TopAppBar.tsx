@@ -29,6 +29,8 @@ const TopAppBar = ({
   onPressBackButton,
   rightActions,
 }: TopAppBarProps) => {
+  console.log('title:', title)
+  console.log('rightActions', rightActions)
   return (
     <View className="h-[50px] w-full items-center justify-center">
       {showBackButton && (
@@ -48,11 +50,9 @@ const TopAppBar = ({
         </GlobalText>
       </View>
 
-      {rightActions && (
-        <View className="absolute right-number-8 items-center justify-center">
-          {rightActions}
-        </View>
-      )}
+      <View className="absolute right-number-8 items-center justify-center">
+        {rightActions}
+      </View>
     </View>
   )
 }
