@@ -65,7 +65,7 @@ export default function MainScreen() {
         {/* <TopCard /> */}
         <TopBanner />
 
-        <View className="items-top flex-1 justify-start rounded-radius-l bg-background-gray-subtle1 p-number-8">
+        <View className="items-top flex-1 justify-start rounded-t-radius-l bg-background-gray-subtle1 p-number-8">
           <RecommnedMealSection
             meals={(homeData?.todayRoutine?.meals as any) ?? []}
           />
