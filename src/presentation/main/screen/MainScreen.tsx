@@ -20,6 +20,7 @@ import {
 } from '../../../infrastructure/di/Dependencies'
 import { HomeResponse } from '../../../infrastructure/remote/response/homeResponse'
 import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import TopBanner from '../components/TopBanner'
 
 export default function MainScreen() {
   const [loading, setLoading] = useState(true)
@@ -52,22 +53,6 @@ export default function MainScreen() {
     }, [])
   )
 
-  const translateWorkType = (type?: string): string => {
-    if (!type) return '미등록'
-    switch (type) {
-      case 'DAY':
-        return '주간'
-      case 'EVENING':
-        return '오후'
-      case 'NIGHT':
-        return '야간'
-      case 'OFF':
-        return '휴일'
-      default:
-        return '미등록'
-    }
-  }
-
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-black">
@@ -77,18 +62,10 @@ export default function MainScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 " edges={['left', 'right']}>
+    <SafeAreaView className="flex-1 bg-surface-disabled-inverse">
       <ScrollView className="flex-1" bounces={false}>
-        <TopCard />
-        <View className="mx-[20px]  ">
-          <HomeWorkTypeChip
-            workType={
-              homeData && homeData.todayType
-                ? translateWorkType(homeData.todayType)
-                : '미등록'
-            }
-          />
-        </View>
+        {/* <TopCard /> */}
+        <TopBanner />
 
         <View className="items-top flex-1 justify-start bg-background-gray-subtle1 p-number-8">
           <RecommnedMealSection
