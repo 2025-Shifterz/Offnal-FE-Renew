@@ -9,7 +9,7 @@ import CalendarGrayIcon from '../../../assets/icons/ic_calendar_24_gray.svg'
 import MyInfoGrayIcon from '../../../assets/icons/ic_myinfo_24_gray.svg'
 
 import HomeBkIcon from '../../../assets/icons/ic_home_24_bk.svg'
-import AlermBkIcon from '../../../assets/icons/ic_alarm_24_bk.svg'
+import AlarmBkIcon from '../../../assets/icons/ic_alarm_24_bk.svg'
 import CalendarBkIcon from '../../../assets/icons/ic_calendar_24_bk.svg'
 import MyInfoBkIcon from '../../../assets/icons/ic_myinfo_24_bk.svg'
 
@@ -28,7 +28,7 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
               IconComponent = focused ? HomeBkIcon : HomeGrayIcon
               break
             case 'AutoAlarm':
-              IconComponent = focused ? AlermBkIcon : AlarmGrayIcon
+              IconComponent = focused ? AlarmBkIcon : AlarmGrayIcon
               break
             case 'Calendar':
               IconComponent = focused ? CalendarBkIcon : CalendarGrayIcon

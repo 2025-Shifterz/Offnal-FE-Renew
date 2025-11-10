@@ -29,8 +29,6 @@ const TopAppBar = ({
   onPressBackButton,
   rightActions,
 }: TopAppBarProps) => {
-  console.log('title:', title)
-  console.log('rightActions', rightActions)
   return (
     <View className="h-[50px] w-full items-center justify-center">
       {showBackButton && (

@@ -1,4 +1,4 @@
-import { use, useState } from 'react'
+import { useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import EmptyAlarmPage from '../components/EmptyAlarmPage'
 import FilledAlarmPage from '../components/FilledAlarmPage'
