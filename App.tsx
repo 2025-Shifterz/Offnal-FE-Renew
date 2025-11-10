@@ -13,7 +13,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
-import MemoScreen from './src/presentation/Note/screens/MemoScreen'
+
 enableScreens()
 
 function App() {

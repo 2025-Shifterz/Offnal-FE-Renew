@@ -40,6 +40,7 @@ export type MainStackParamList = {
   AutoAlarm: undefined
   Todo: undefined
   Memo: undefined
+  AddMemo: undefined
 }
 
 export type InfoStackParamList = {
@@ -143,11 +144,3 @@ export type CalendarScreenStackParamList = {
   }
   CalendarInfoEdit: undefined
 }
-
-// export type CalendarStackParamList = {
-//   Calendar: undefined
-//   EditCalendar: {
-//     workTimes: { [key: string]: { startTime: string; endTime: string } }
-//   }
-//   PlusEdit: undefined
-// }

@@ -1,4 +1,4 @@
-import NoteScreen from '../../../src/presentation/Note/screens/NoteScreen'
+import NoteScreen from '../../../src/presentation/note/screens/NoteScreen'
 import { render, waitFor } from '@testing-library/react-native'
 import { getTodosUseCase } from '../../../src/infrastructure/di/Dependencies'
 

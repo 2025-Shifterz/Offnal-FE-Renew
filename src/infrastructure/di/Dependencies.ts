@@ -25,6 +25,9 @@ import { ProfileService } from '../remote/api/ProfileService'
 import { TodoService } from '../remote/api/TodoService'
 import { AuthService } from '../remote/api/AuthService'
 import { UserRepositoryImpl } from '../../data/impl/UserRepositoryImpl'
+import { IosHealthService } from '../remote/api/IosHealthService'
+import { AndroidHealthService } from '../remote/api/AndroidHealthService'
+import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -37,6 +40,8 @@ export const profileService = new ProfileService()
 export const todoService = new TodoService()
 export const memoService = new MemoService()
 export const authService = new AuthService()
+export const iosHealthService = new IosHealthService()
+export const androidHealthService = new AndroidHealthService()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
 export const todoRepository = new TodoRepositoryImpl(todoDao)
@@ -59,3 +64,5 @@ export const deleteMemoUseCase = new DeleteMemoUseCase(memoRepository)
 
 export const getToDosByDate = new GetTodosByDateUseCase(todoRepository)
 export const getMemosByDate = new GetMemosByDateUseCase(memoRepository)
+export const getMemoByIdUseCase = new GetMemosByDateUseCase(memoRepository)
+export const updateMemoUseCase = new UpdateMemoUseCase(memoRepository)

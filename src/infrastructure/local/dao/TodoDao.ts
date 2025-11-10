@@ -200,6 +200,7 @@ export class TodoDao {
       console.log(`Todo with ID ${id} deleted successfully.`)
       return
     } catch (error) {
+      console.error('Error deleting todo:', error)
       throw error
     }
   }

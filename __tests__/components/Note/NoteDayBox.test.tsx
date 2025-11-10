@@ -1,5 +1,5 @@
 import React from 'react'
-import NoteDayBox from '../../../src/presentation/Note/components/NoteDayBox'
+import NoteDayBox from '../../../src/presentation/note/components/NoteDayBox'
 import { fireEvent, render } from '@testing-library/react-native'
 import dayjs from 'dayjs'
 import { Todo } from '../../../src/infrastructure/local/entities/TodoEntity'
