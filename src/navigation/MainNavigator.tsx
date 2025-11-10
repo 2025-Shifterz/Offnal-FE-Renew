@@ -17,7 +17,6 @@ const MainNavigator = () => {
         headerShown: false,
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
-        headerLeft: () => <CustomBackButton />,
         headerTitleAlign: 'center',
       }}
     >
