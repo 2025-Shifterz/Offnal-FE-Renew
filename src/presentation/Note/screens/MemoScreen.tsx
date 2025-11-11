@@ -68,7 +68,7 @@ const MemoScreen = () => {
               <SwipeListView
                 ref={swipeListViewRef}
                 data={memos}
-                scrollEnabled={false}
+                scrollEnabled={true}
                 renderItem={({ item: memo, index }) => (
                   <Fragment key={memo.id}>
                     <TouchableOpacity
