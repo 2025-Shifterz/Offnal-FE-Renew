@@ -45,8 +45,6 @@ export class MemoDao {
       }
       return newMemo
     } catch (error) {
-      console.error('Error creating memo:', error)
-
       throw error
     }
   }
@@ -128,8 +126,6 @@ export class MemoDao {
 
       const [result] = await db.executeSql(query, params)
       const memos: Memo[] = []
-
-      console.log('result :', result)
 
       for (let i = 0; i < result.rows.length; i++) {
         const item = result.rows.item(i)

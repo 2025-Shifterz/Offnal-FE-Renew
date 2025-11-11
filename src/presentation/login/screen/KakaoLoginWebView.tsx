@@ -23,8 +23,6 @@ const KakaoLoginWebView = () => {
       try {
         const data = await authService.getLoginUrl()
 
-        console.log('KakaoLoginWebView - fetchLoginUrl data:', data)
-
         setLoginUrl(data)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')

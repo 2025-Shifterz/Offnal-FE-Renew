@@ -56,9 +56,18 @@ export const localMemoStore = create<LocalMemoState>(set => ({
       return
     }
 
-    set(() => ({
-      memos: [data],
-    }))
+    set(state => {
+      const memos = [...state.memos]
+      const index = memos.findIndex(memo => memo.id === id)
+
+      if (index !== -1) {
+        memos[index] = data
+      } else {
+        memos.push(data)
+      }
+
+      return { memos }
+    })
   },
 
   addMemo: async (title, content, date) => {
@@ -75,7 +84,7 @@ export const localMemoStore = create<LocalMemoState>(set => ({
     set(state => ({
       memos: state.memos.map(memo => {
         if (memo.id === id) {
-          return { ...memo, title, content, date }
+          return { ...memo, title, content }
         }
         return memo
       }),

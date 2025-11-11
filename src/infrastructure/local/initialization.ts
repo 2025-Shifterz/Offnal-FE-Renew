@@ -39,9 +39,9 @@ export const initializeDataBaseTables = async (): Promise<void> => {
           END;`,
     ]
 
-    sqlQueries.forEach(async query => {
+    for (const query of sqlQueries) {
       await db.executeSql(query)
-    })
+    }
 
     console.log('Database tables initialized!')
   } catch (error) {
