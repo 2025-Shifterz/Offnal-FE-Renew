@@ -21,14 +21,14 @@ export class MemoDao {
     title: string,
     content: string,
     targetDate: dayjs.Dayjs
-  ): Promise<void> {
+  ): Promise<Memo> {
     const db = await openShifterzDB()
 
     try {
       const formattedTargetDate = targetDate.valueOf() // 밀리초 단위 타임스탬프로 변환
 
       const query = `INSERT INTO memos (title, content, targetDate) VALUES (?, ?, ?);`
-      const params = [content, formattedTargetDate]
+      const params = [title, content, formattedTargetDate]
 
       const [result] = await db.executeSql(query, params)
       const newId = result?.insertId || null
@@ -38,7 +38,12 @@ export class MemoDao {
       }
 
       console.log('Memo created with ID:', newId)
-      return
+
+      const newMemo = await this.getMemoById(newId)
+      if (!newMemo) {
+        throw new Error('Failed to retrieve the newly created memo.')
+      }
+      return newMemo
     } catch (error) {
       throw error
     }
@@ -129,6 +134,8 @@ export class MemoDao {
 
       return memos
     } catch (error) {
+      console.error('Error getting memos by date:', error)
+
       throw error
     }
   }

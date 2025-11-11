@@ -13,7 +13,7 @@ const REDIRECT_URI = `${API_URL}/callback`
 
 const KakaoLoginWebView = () => {
   const [loginUrl, setLoginUrl] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading] = useState(false)
   const webviewRef = useRef(null)
   const navigation = useNavigation<rootNavigation>()
   const [shouldHideWebView, setShouldHideWebView] = useState(false)
@@ -22,6 +22,7 @@ const KakaoLoginWebView = () => {
     const fetchLoginUrl = async () => {
       try {
         const data = await authService.getLoginUrl()
+
         setLoginUrl(data)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')
@@ -33,7 +34,8 @@ const KakaoLoginWebView = () => {
     fetchLoginUrl()
   }, [navigation])
 
-  // WebView 내에서 JS로 document.body.innerText → RN으로 전달
+  console.log('loginUrl:', loginUrl)
+
   const injectedJS = `
     if (window.location.href.startsWith('${REDIRECT_URI}')) {
       window.ReactNativeWebView.postMessage(document.body.innerText);

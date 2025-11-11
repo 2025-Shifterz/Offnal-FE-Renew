@@ -1,47 +1,49 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import { View, TouchableOpacity, Alert } from 'react-native'
-import { SwipeListView } from 'react-native-swipe-list-view'
+import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
-import { ScrollView } from 'react-native-gesture-handler'
+import { Fragment, useCallback, useRef } from 'react'
 import OneAddButton from '../components/OneAddButton'
-import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
-import { Memo } from '../../../domain/models/Memo'
-import {
-  deleteMemoUseCase,
-  getMemosByDate,
-} from '../../../infrastructure/di/Dependencies'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useEffect } from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { MainStackParamList } from '../../../navigation/types'
+import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 const MemoScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<MainStackParamList>>()
-  const [memos, setMemos] = useState<Memo[]>([])
+  const swipeListViewRef = useRef<SwipeListView<any>>(null)
 
-  const loadMemos = async () => {
-    try {
-      const loadedMemos = await getMemosByDate.execute(dayjs())
-      setMemos(loadedMemos)
-    } catch (error) {
-      console.error('Failed to load memos:', error)
-    }
-  }
+  const memos = localMemoStore(state => state.memos)
+  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
+  const deleteMemo = localMemoStore(state => state.deleteMemo)
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteMemoUseCase.execute(id)
-      loadMemos()
-    } catch (error) {
-      console.error('Failed to delete memo:', error)
-      Alert.alert('오류', '메모 삭제에 실패했습니다.')
-    }
+  useEffect(() => {
+    fetchMemosByDate(dayjs())
+  }, [fetchMemosByDate])
+
+  useFocusEffect(
+    useCallback(() => {
+      swipeListViewRef.current?.closeAllOpenRows()
+    }, [])
+  )
+
+  const handleDelete = (id: number) => {
+    Alert.alert('메모 삭제', '정말로 이 메모를 삭제하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '삭제',
+        onPress: () => deleteMemo(id),
+        style: 'destructive',
+      },
+    ])
   }
 
   return (
@@ -50,10 +52,12 @@ const MemoScreen = () => {
         <TopAppBar
           title="메모"
           showBackButton={true}
-          onPressBackButton={() => {}}
+          onPressBackButton={() => {
+            navigation.goBack()
+          }}
         />
 
-        <ScrollView>
+        <View className="flex-1">
           <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
           <View className="rounded-bl-radius-xl rounded-br-radius-xl bg-surface-white">
             {memos.length === 0 ? (
@@ -62,21 +66,29 @@ const MemoScreen = () => {
               </View>
             ) : (
               <SwipeListView
+                ref={swipeListViewRef}
                 data={memos}
-                scrollEnabled={false}
+                scrollEnabled={true}
                 renderItem={({ item: memo, index }) => (
-                  <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => {}}
-                    className={`flex-col gap-[4px] bg-surface-white p-[12px] ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
-                  >
-                    <GlobalText className="text-body-s" numberOfLines={1}>
-                      {memo.title}
-                    </GlobalText>
-                    <GlobalText className="text-body-xxs" numberOfLines={2}>
-                      {memo.content}
-                    </GlobalText>
-                  </TouchableOpacity>
+                  <Fragment key={memo.id}>
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={() => {}}
+                      className={`flex-col gap-[4px] bg-surface-white p-[12px] ${index === memos.length - 1 ? 'rounded-bl-radius-xl rounded-br-radius-xl' : ''}`}
+                    >
+                      <GlobalText className="text-body-s" numberOfLines={1}>
+                        {memo.title}
+                      </GlobalText>
+                      {memo.content && (
+                        <GlobalText className="text-body-xxs" numberOfLines={2}>
+                          {memo.content}
+                        </GlobalText>
+                      )}
+                    </TouchableOpacity>
+                    {index < memos.length - 1 && (
+                      <View className="h-px bg-border-gray-light" />
+                    )}
+                  </Fragment>
                 )}
                 renderHiddenItem={({ item, index }) => (
                   <View
@@ -84,7 +96,9 @@ const MemoScreen = () => {
                   >
                     <TouchableOpacity
                       className={`h-full w-[66px] items-center justify-center bg-surface-information-subtle`}
-                      onPress={() => {}}
+                      onPress={() => {
+                        navigation.navigate('AddMemo', { memo: item })
+                      }}
                     >
                       <EditIcon />
                     </TouchableOpacity>
@@ -107,7 +121,7 @@ const MemoScreen = () => {
             addOneTodo={() => navigation.navigate('AddMemo')}
             text="메모 작성"
           />
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </View>
   )

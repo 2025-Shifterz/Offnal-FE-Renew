@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await initializeDataBaseTables() // 앱 시작 시 테이블 생성
+        await initializeDataBaseTables()
         console.log('DB tables created')
       } catch (error) {
         console.error('Error creating DB tables', error)
