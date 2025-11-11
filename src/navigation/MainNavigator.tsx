@@ -14,37 +14,17 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerShown: false,
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
-        headerLeft: () => <CustomBackButton />,
         headerTitleAlign: 'center',
       }}
     >
-      <Stack.Screen
-        name="MainScreen"
-        component={MainScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AutoAlarm"
-        options={{ title: '자동 알람' }}
-        component={AutoAlarm}
-      />
-      <Stack.Screen
-        name="Todo"
-        component={TodoScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Memo"
-        component={MemoScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AddMemo"
-        component={AddMemoScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="MainScreen" component={MainScreen} />
+      <Stack.Screen name="AutoAlarm" component={AutoAlarm} />
+      <Stack.Screen name="Todo" component={TodoScreen} />
+      <Stack.Screen name="Memo" component={MemoScreen} />
+      <Stack.Screen name="AddMemo" component={AddMemoScreen} />
     </Stack.Navigator>
   )
 }
