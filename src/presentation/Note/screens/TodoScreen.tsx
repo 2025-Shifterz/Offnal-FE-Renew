@@ -93,11 +93,7 @@ const TodoScreen = () => {
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
       <SafeAreaView className="flex-1">
-        <TopAppBar
-          title="할 일"
-          showBackButton={true}
-          onPressBackButton={() => {}}
-        />
+        <TopAppBar title="할 일" showBackButton={true} />
 
         <ScrollView>
           <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
