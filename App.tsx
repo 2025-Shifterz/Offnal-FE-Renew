@@ -14,11 +14,13 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useCalendarStore } from './src/store/useCalendarStore'
 
 enableScreens()
 
 function App() {
   const [isReady, setIsReady] = useState(false)
+  const userCalendar = useCalendarStore(state => state.userCalendar)
 
   useEffect(() => {
     const init = async () => {
@@ -34,6 +36,11 @@ function App() {
 
     init()
   }, [])
+
+  // 캘린더 GET 요청을 위한 데이터가 늦게 로드되는 것 방지
+  useEffect(() => {
+    console.log('앱 진입 시 userCalendar 설정', userCalendar)
+  }, [userCalendar])
 
   if (!isReady) {
     return (
