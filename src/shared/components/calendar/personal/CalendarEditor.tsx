@@ -32,21 +32,16 @@ const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
   Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
     workTimes: Record<string, InputWorkTimeDetail>
-    organizationName: string
-    workGroup: string
   }
-> = ({ workTimes, organizationName, workGroup }, ref) => {
+> = ({ workTimes }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
   const calendarData = useCalendarStore(state => state.calendarData)
   const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-
-  const setTeam = useCalendarStore(state => state.setTeam)
-  const setOrganizationName = useCalendarStore(
-    state => state.setOrganizationName
-  )
+  const userCalendar = useCalendarStore(state => state.userCalendar)
+  const setUserCalendar = useCalendarStore(state => state.setUserCalendar)
 
   // 처음에는 초기화
   useEffect(() => {
@@ -96,8 +91,8 @@ const CalendarEditor: ForwardRefRenderFunction<
     })
 
     return {
-      organizationName: organizationName, // 임시 값
-      team: workGroup, // 임시 값
+      organizationName: userCalendar.organizationName, // 임시 값
+      team: userCalendar.team, // 임시 값
       startDate,
       endDate,
       shifts,
@@ -135,8 +130,7 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         // API 호출
         const res = await calendarRepository.createCalendar(newCalendarRequest)
-        setOrganizationName(organizationName)
-        setTeam(workGroup)
+        setUserCalendar(userCalendar.organizationName, userCalendar.team)
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)

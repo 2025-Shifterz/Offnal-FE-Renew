@@ -32,6 +32,12 @@ interface CalendarState {
   organizationName: string
   team: string
 
+  // userCalendar
+  userCalendar: {
+    organizationName: string
+    team: string
+  }
+
   // setter
   setOrganizationName: (name: string) => void
   setTeam: (team: string) => void
@@ -41,6 +47,7 @@ interface CalendarState {
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
+  setUserCalendar: (organizationName: string, team: string) => void
 
   // fetch
   fetchCalendarData: (
@@ -66,6 +73,13 @@ export const useCalendarStore = create<CalendarState>()(
       isLoading: false,
       organizationName: '',
       team: '',
+
+      userCalendar: {
+        organizationName: '',
+        team: '',
+        // startDate: '',
+        // endDate: '',
+      },
 
       setOrganizationName: name => set({ organizationName: name }),
 
@@ -143,6 +157,9 @@ export const useCalendarStore = create<CalendarState>()(
           set({ isLoading: false })
         }
       },
+
+      setUserCalendar: (organizationName, team) =>
+        set({ userCalendar: { organizationName, team } }),
     }),
 
     {
@@ -151,6 +168,7 @@ export const useCalendarStore = create<CalendarState>()(
       partialize: state => ({
         organizationName: state.organizationName,
         team: state.team,
+        userCalendar: state.userCalendar,
       }),
     }
   )
