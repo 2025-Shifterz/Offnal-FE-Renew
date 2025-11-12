@@ -6,7 +6,8 @@ import { GetWorkCalendarResponse } from '../response/GetWorkCalendarResponse'
 
 export class CalendarService {
   getWorkCalendar = async (
-    organizationId: number,
+    organizationName: string,
+    team: string,
     startDate: string,
     endDate: string
   ) => {
@@ -15,7 +16,8 @@ export class CalendarService {
         '/works/calendar',
         {
           params: {
-            organizationId,
+            organizationName,
+            team,
             startDate,
             endDate,
           },
@@ -33,16 +35,9 @@ export class CalendarService {
     }
   }
 
-  createWorkCalendar = async (
-    organizationId: number,
-    calendarData: CreateCalendarRequest
-  ) => {
+  createWorkCalendar = async (calendarData: CreateCalendarRequest) => {
     try {
-      const res = await api.post('/works/calendar', calendarData, {
-        params: {
-          organizationId,
-        },
-      })
+      const res = await api.post('/works/calendar', calendarData)
       return res.data
     } catch (error) {
       if (axios.isAxiosError(error)) {

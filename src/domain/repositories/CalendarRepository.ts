@@ -3,15 +3,13 @@ import { UpdateShiftsRequest } from '../../infrastructure/remote/request/PatchWo
 import { GetWorkCalendarResponseData } from '../../infrastructure/remote/response/GetWorkCalendarResponse'
 
 export interface CalendarRepository {
-  createCalendar(
-    organizationId: number,
-    calendarData: CreateCalendarRequest
-  ): Promise<void>
+  createCalendar(calendarData: CreateCalendarRequest): Promise<void>
 
   getCalendar(
-    organizationId: number,
+    organizationName: string,
+    team: string,
     startDate: string,
-    endDate: string
+    duration: string
   ): Promise<GetWorkCalendarResponseData[]>
 
   updateCalendar(

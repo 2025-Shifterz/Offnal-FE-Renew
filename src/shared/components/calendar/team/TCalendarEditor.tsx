@@ -6,7 +6,7 @@ import TeamTypeSelect from './TeamTypeSelect'
 import { TimeFrameChildren } from '../TimeFrame'
 
 interface TCalendarEditorProps {
-  calendarName: string
+  organizationName: string
   workGroup: string
   workTimes: {
     [key: string]: {
@@ -17,7 +17,7 @@ interface TCalendarEditorProps {
 }
 
 const TCalendarEditor = ({
-  calendarName,
+  organizationName,
   workGroup,
   workTimes,
 }: TCalendarEditorProps) => {

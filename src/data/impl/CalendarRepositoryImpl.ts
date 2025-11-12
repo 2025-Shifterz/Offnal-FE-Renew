@@ -7,15 +7,10 @@ import { UpdateShiftsRequest } from '../../infrastructure/remote/request/PatchWo
 export class CalendarRepositoryImpl implements CalendarRepository {
   constructor(private calendarService: CalendarService) {}
 
-  async createCalendar(
-    organizationId: number,
-    calendarData: CreateCalendarRequest
-  ): Promise<void> {
+  async createCalendar(calendarData: CreateCalendarRequest): Promise<void> {
     try {
-      const res = await this.calendarService.createWorkCalendar(
-        organizationId,
-        calendarData
-      )
+      const res = await this.calendarService.createWorkCalendar(calendarData)
+
       return res
     } catch (error) {
       throw error
@@ -23,13 +18,15 @@ export class CalendarRepositoryImpl implements CalendarRepository {
   }
 
   async getCalendar(
-    organizationId: number,
+    organizationName: string,
+    team: string,
     startDate: string,
     endDate: string
   ): Promise<Calendar[]> {
     try {
       const res = await this.calendarService.getWorkCalendar(
-        organizationId,
+        organizationName,
+        team,
         startDate,
         endDate
       )

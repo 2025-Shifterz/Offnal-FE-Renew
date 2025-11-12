@@ -26,6 +26,7 @@
     "axios": "^1.12.2",
     "babel-plugin-dotenv-import": "^3.0.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.19",
     "identity-obj-proxy": "^3.0.0",
     "lottie-react-native": "^7.3.4",
     "nativewind": "^4.2.1",

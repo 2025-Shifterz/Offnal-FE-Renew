@@ -1,6 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+ 
 // 근무표 조회 & 저장 동시에 되는 캘린더
-import React, { useEffect } from 'react'
+import React, { use, useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
@@ -32,16 +32,20 @@ const CalendarInteractive = ({
   const currentEndDate = useCalendarStore(
     state => state.currentYearMonth.currentEndDate
   )
-  const organizationId = 1 // 임시 조직 ID
+  const organizationName = useCalendarStore(state => state.organizationName)
+  const team = useCalendarStore(state => state.team)
+
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await calendarRepository.getCalendar(
-          organizationId,
+          organizationName,
+          team,
           currentStartDate,
           currentEndDate
         )
+
         setCalendarData(response)
         console.log('근무표 조회 성공:', response)
       } catch (error) {
@@ -49,7 +53,23 @@ const CalendarInteractive = ({
       }
     }
     fetchData()
-  }, [currentStartDate, currentEndDate])
+  }, [
+    currentStartDate,
+    currentEndDate,
+    organizationName,
+    team,
+    setCalendarData,
+  ])
+
+  // GET요청 데이터
+  // useEffect(() => {
+  //   console.log('GET 요청 데이터:', {
+  //     organizationName,
+  //     team,
+  //     currentStartDate,
+  //     currentEndDate,
+  //   })
+  // }, [calendarData])
 
   return (
     <View>

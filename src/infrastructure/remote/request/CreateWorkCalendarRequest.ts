@@ -11,6 +11,8 @@ export interface WorkTimeDetail {
 }
 
 export interface MonthlyShift {
+  organizationName: string
+  team: string
   startDate: string
   endDate: string
   shifts: {
@@ -19,8 +21,7 @@ export interface MonthlyShift {
 }
 
 export interface CreateCalendarRequest {
-  calendarName: string
-  organizationId: number
+  calendarName: string // API 바뀌면 삭제할 예정
   workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }

@@ -1,6 +1,7 @@
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
+  use,
   useEffect,
   useImperativeHandle,
   useState,
@@ -29,16 +30,23 @@ export interface CalendarEditorRef {
 
 const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
-  Omit<CreateCalendarRequest, 'workTimes'> & {
+  Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
     workTimes: Record<string, InputWorkTimeDetail>
+    organizationName: string
+    workGroup: string
   }
-> = ({ calendarName, workTimes }, ref) => {
+> = ({ workTimes, organizationName, workGroup }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
   const calendarData = useCalendarStore(state => state.calendarData)
   const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+
+  const setTeam = useCalendarStore(state => state.setTeam)
+  const setOrganizationName = useCalendarStore(
+    state => state.setOrganizationName
+  )
 
   // 처음에는 초기화
   useEffect(() => {
@@ -88,6 +96,8 @@ const CalendarEditor: ForwardRefRenderFunction<
     })
 
     return {
+      organizationName: organizationName, // 임시 값
+      team: workGroup, // 임시 값
       startDate,
       endDate,
       shifts,
@@ -116,20 +126,17 @@ const CalendarEditor: ForwardRefRenderFunction<
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
-        const organizationId = 1 // 임시 값
         const newCalendarRequest: CreateCalendarRequest = {
-          calendarName: calendarName,
-          organizationId: organizationId,
+          calendarName: '임시 근무표', // 임시 값
           workTimes: convertedWorkTimes,
           calendars: newCalendars,
         }
-        console.log('요청하는 데이터:', newCalendarRequest)
+        console.log('요청하는 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
-        const res = await calendarRepository.createCalendar(
-          organizationId,
-          newCalendarRequest
-        )
+        const res = await calendarRepository.createCalendar(newCalendarRequest)
+        setOrganizationName(organizationName)
+        setTeam(workGroup)
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)

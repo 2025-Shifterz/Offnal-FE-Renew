@@ -28,7 +28,7 @@ const InputScheduleScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
 
   // states
-  const [calendarName, setCalendarName] = useState('') // 근무표 이름
+  const [organizationName, setOrganizationName] = useState('') // 조직 이름
   const [workGroup, setWorkGroup] = useState('1조') // 직접 입력 시 팀 이름
   const [workTimes, setWorkTimes] = useState({
     D: { startTime: '08:00', endTime: '16:00' },
@@ -36,29 +36,28 @@ const InputScheduleScreen = () => {
     N: { startTime: '00:00', endTime: '08:00' },
   })
   // organizationId from store
-  const organizationId = useCalendarStore(state => state.organizationId)
+  // const organizationId = useCalendarStore(state => state.organizationId)
   //
-  console.log('organizationId in InputScheduleScreen: ', organizationId)
+  // console.log('organizationId in InputScheduleScreen: ', organizationId)
 
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = async () => {
     // 조직 생성 요청 - 등록 시에 조직 생성되는 것으로 API 수정되면 나중에 삭제할 예정!
-    try {
-      const res = await api.post('/organizations', {
-        organizationName: calendarName,
-        team: workGroup,
-      })
-      console.log('조직 생성 응답:', res.data)
-    } catch (error) {
-      console.error('조직 생성 오류:', error)
-    }
+    // try {
+    //   const res = await api.post('/organizations', {
+    //     organizationName: organizationName,
+    //     team: workGroup,
+    //   })
+    //   console.log('조직 생성 응답:', res.data)
+    // } catch (error) {
+    //   console.error('조직 생성 오류:', error)
+    // }
     navigation.navigate('InputCalendarType', {
       selectedScheduleScopeType,
-      calendarName,
+      organizationName,
       workGroup,
       workTimes,
-      organizationId,
     })
   }
 
@@ -72,8 +71,8 @@ const InputScheduleScreen = () => {
 
         <View className="flex gap-[26px]">
           <ScheduleNameInput
-            calendarName={calendarName}
-            setCalendarName={setCalendarName}
+            organizationName={organizationName}
+            setOrganizationName={setOrganizationName}
           />
           <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
             <TimeInput />

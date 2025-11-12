@@ -4,7 +4,6 @@ import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'
 import PlusEdit from '../component/PlusEdit'
-import { userRepository } from '../../../infrastructure/di/Dependencies'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 
 const CalendarScreen = () => {
