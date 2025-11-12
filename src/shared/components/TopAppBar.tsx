@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import GlobalText from './GlobalText'
-import IconNavigationBack from '../../assets/icons/black-arrow-l.svg'
+import ArrowLeft from '../../assets/icons/arrow-left.svg'
 
 /**
  * ### TopAppBarProps
@@ -36,7 +36,7 @@ const TopAppBar = ({
           onPress={onPressBackButton}
           className="absolute left-number-8"
         >
-          <IconNavigationBack width={24} height={24} />
+          <ArrowLeft width={24} height={24} />
         </TouchableOpacity>
       )}
       <View

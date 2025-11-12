@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScheduleScopeType } from '../shared/types/ScheduleScopeType'
+import { Memo } from '../domain/models/Memo'
 
 // 네비게이션
 export type onboardingNavigation =
@@ -40,6 +41,7 @@ export type MainStackParamList = {
   AutoAlarm: undefined
   Todo: undefined
   Memo: undefined
+  AddMemo: { memo: Memo } | undefined
 }
 
 // 로그인
@@ -137,11 +139,3 @@ export type CalendarScreenStackParamList = {
   }
   CalendarInfoEdit: undefined
 }
-
-// export type CalendarStackParamList = {
-//   Calendar: undefined
-//   EditCalendar: {
-//     workTimes: { [key: string]: { startTime: string; endTime: string } }
-//   }
-//   PlusEdit: undefined
-// }

@@ -14,6 +14,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
 import { SafeAreaView } from 'react-native-safe-area-context'
+
 enableScreens()
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await initializeDataBaseTables() // 앱 시작 시 테이블 생성
+        await initializeDataBaseTables()
         console.log('DB tables created')
       } catch (error) {
         console.error('Error creating DB tables', error)

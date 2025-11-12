@@ -1,10 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MainScreen from '../presentation/main/screen/MainScreen'
-import TodoScreen from '../presentation/Note/screens/TodoScreen'
-import MemoScreen from '../presentation/Note/screens/MemoScreen'
+import TodoScreen from '../presentation/note/screens/TodoScreen'
+import MemoScreen from '../presentation/note/screens/MemoScreen'
 import AutoAlarm from '../presentation/alarm/screen/AutoAlarm'
 import { MainStackParamList } from './types'
 import CustomBackButton from '../shared/components/CustomBackButton'
+import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
 
 // 탭1. 메인 탭에 사용되는 스택 네비게이터
 const Stack = createNativeStackNavigator<MainStackParamList>()
@@ -13,32 +14,17 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerShown: false,
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
-        headerLeft: () => <CustomBackButton />,
         headerTitleAlign: 'center',
       }}
     >
-      <Stack.Screen
-        name="MainScreen"
-        component={MainScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AutoAlarm"
-        options={{ title: '자동 알람' }}
-        component={AutoAlarm}
-      />
-      <Stack.Screen
-        name="Todo"
-        options={{ title: '할 일' }}
-        component={TodoScreen}
-      />
-      <Stack.Screen
-        name="Memo"
-        options={{ title: '메모' }}
-        component={MemoScreen}
-      />
+      <Stack.Screen name="MainScreen" component={MainScreen} />
+      <Stack.Screen name="AutoAlarm" component={AutoAlarm} />
+      <Stack.Screen name="Todo" component={TodoScreen} />
+      <Stack.Screen name="Memo" component={MemoScreen} />
+      <Stack.Screen name="AddMemo" component={AddMemoScreen} />
     </Stack.Navigator>
   )
 }

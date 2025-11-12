@@ -27,6 +27,8 @@ import { AuthService } from '../remote/api/AuthService'
 import { UserRepositoryImpl } from '../../data/impl/UserRepositoryImpl'
 import { IosHealthService } from '../remote/api/IosHealthService'
 import { AndroidHealthService } from '../remote/api/AndroidHealthService'
+import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
+import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -62,4 +64,6 @@ export const addMemoUseCase = new CreateMemoUseCase(memoRepository)
 export const deleteMemoUseCase = new DeleteMemoUseCase(memoRepository)
 
 export const getToDosByDate = new GetTodosByDateUseCase(todoRepository)
-export const getMemosByDate = new GetMemosByDateUseCase(memoRepository)
+export const getMemosByDateUseCase = new GetMemosByDateUseCase(memoRepository)
+export const getMemoByIdUseCase = new GetMemoByIdUseCase(memoRepository)
+export const updateMemoUseCase = new UpdateMemoUseCase(memoRepository)

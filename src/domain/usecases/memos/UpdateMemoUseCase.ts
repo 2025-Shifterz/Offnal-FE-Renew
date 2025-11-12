@@ -1,15 +1,15 @@
 import dayjs from 'dayjs'
 import { MemoRepository } from '../../repositories/MemoRepository'
-import { Memo } from '../../models/Memo'
 
-export class CreateMemoUseCase {
+export class UpdateMemoUseCase {
   constructor(private memoRepository: MemoRepository) {}
 
   async execute(
+    id: number,
     title: string,
     content: string,
     targetDate: dayjs.Dayjs
-  ): Promise<Memo> {
-    return await this.memoRepository.addMemo(title, content, targetDate)
+  ): Promise<void> {
+    return await this.memoRepository.updateMemo(id, title, content, targetDate)
   }
 }

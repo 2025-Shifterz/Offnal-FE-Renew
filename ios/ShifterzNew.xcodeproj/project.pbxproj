@@ -305,7 +305,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ShifterzNew/ShifterzNew.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 8CG24965GX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ShifterzNew/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -319,7 +319,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.yujin.--PRODUCT-NAME-rfc1034identifier-";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.offnal.--PRODUCT-NAME-rfc1034identifier-";
 				PRODUCT_NAME = ShifterzNew;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -339,7 +339,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ShifterzNew/ShifterzNew.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 8CG24965GX;
 				INFOPLIST_FILE = ShifterzNew/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -352,7 +352,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.yujin.--PRODUCT-NAME-rfc1034identifier-";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.offnal.--PRODUCT-NAME-rfc1034identifier-";
 				PRODUCT_NAME = ShifterzNew;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
