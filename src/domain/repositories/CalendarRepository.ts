@@ -13,15 +13,10 @@ export interface CalendarRepository {
   ): Promise<GetWorkCalendarResponseData[]>
 
   updateCalendar(
-    organizationId: number,
-    startDate: string,
-    endDate: string,
+    organizationName: string,
+    team: string,
     shiftsData: UpdateShiftsRequest
   ): Promise<void>
 
-  deleteCalendar(
-    organizationId: number,
-    startDate: string,
-    endDate: string
-  ): Promise<void>
+  deleteCalendar(organizationName: string, team: string): Promise<void>
 }

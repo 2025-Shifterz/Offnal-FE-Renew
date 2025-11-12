@@ -50,17 +50,12 @@ export class CalendarService {
     }
   }
 
-  deleteWorkCalendar = async (
-    organizationId: number,
-    startDate: string,
-    endDate: string
-  ) => {
+  deleteWorkCalendar = async (organizationName: string, team: string) => {
     try {
       const res = await api.delete(`/works/calendar`, {
         params: {
-          organizationId,
-          startDate,
-          endDate,
+          organizationName,
+          team,
         },
       })
       return res.data
@@ -75,17 +70,15 @@ export class CalendarService {
   }
 
   updateWorkCalendar = async (
-    organiztionId: number,
-    startDate: string,
-    endDate: string,
+    organizationName: string,
+    team: string,
     shiftsData: UpdateShiftsRequest
   ) => {
     try {
       const res = await api.patch('/works/calendar', shiftsData, {
         params: {
-          organiztionId,
-          startDate,
-          endDate,
+          organizationName,
+          team,
         },
       })
       return res.data

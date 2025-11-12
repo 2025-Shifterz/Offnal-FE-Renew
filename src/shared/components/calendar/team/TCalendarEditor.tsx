@@ -6,8 +6,6 @@ import TeamTypeSelect from './TeamTypeSelect'
 import { TimeFrameChildren } from '../TimeFrame'
 
 interface TCalendarEditorProps {
-  organizationName: string
-  workGroup: string
   workTimes: {
     [key: string]: {
       startTime: string
@@ -16,11 +14,7 @@ interface TCalendarEditorProps {
   }
 }
 
-const TCalendarEditor = ({
-  organizationName,
-  workGroup,
-  workTimes,
-}: TCalendarEditorProps) => {
+const TCalendarEditor = ({ workTimes }: TCalendarEditorProps) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   const [calendarData, setCalendarData] = useState<
     Record<string, Record<string, TimeFrameChildren>>

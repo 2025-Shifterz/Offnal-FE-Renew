@@ -12,6 +12,7 @@ import { calendarRepository } from '../../../infrastructure/di/Dependencies'
 import { CalendarScreenStackParamList } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
+import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
@@ -22,6 +23,7 @@ const CalendarEditScreen = () => {
   const navigation = useNavigation()
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  const userCalendar = useCalendarStore(state => state.userCalendar)
   const route = useRoute<CalendarEditScreenRouteProp>()
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
@@ -94,17 +96,11 @@ const CalendarEditScreen = () => {
 
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
-    const organizationId = 1 // 임시 조직 ID
     try {
-      // TODO: 선택된 연도와 월의 startDate, endDate 계산해야 함
-      const startDate = currentDate.startOf('month').format('YYYY-MM-DD')
-      const endDate = currentDate.endOf('month').format('YYYY-MM-DD')
       await calendarRepository.updateCalendar(
-        organizationId,
-        startDate,
-        endDate,
-        // TODO: 내가 선택한 달의 shifts로 변경해야함 !!!
-        calendarData
+        userCalendar.organizationName,
+        userCalendar.team,
+        toUpdateShiftRecord(calendarData)
       )
       console.log('근무표 수정 성공')
       navigation.goBack() // 저장 성공 후 이전 화면으로 이동

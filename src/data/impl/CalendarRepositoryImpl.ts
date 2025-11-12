@@ -38,16 +38,14 @@ export class CalendarRepositoryImpl implements CalendarRepository {
   }
 
   async updateCalendar(
-    organizationId: number,
-    startDate: string,
-    endDate: string,
+    organizationName: string,
+    team: string,
     shiftsData: UpdateShiftsRequest
   ): Promise<void> {
     try {
       const res = await this.calendarService.updateWorkCalendar(
-        organizationId,
-        startDate,
-        endDate,
+        organizationName,
+        team,
         shiftsData
       )
       return res
@@ -56,16 +54,11 @@ export class CalendarRepositoryImpl implements CalendarRepository {
     }
   }
 
-  async deleteCalendar(
-    organizationId: number,
-    startDate: string,
-    endDate: string
-  ): Promise<void> {
+  async deleteCalendar(organizationName: string, team: string): Promise<void> {
     try {
       const res = await this.calendarService.deleteWorkCalendar(
-        organizationId,
-        startDate,
-        endDate
+        organizationName,
+        team
       )
       return res
     } catch (error) {
