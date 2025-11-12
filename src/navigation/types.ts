@@ -14,6 +14,8 @@ export type calendarNavigation =
 export type mainNavigation = NativeStackNavigationProp<MainStackParamList>
 export type tabNavigation = NativeStackNavigationProp<TabParamList>
 export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
+export type autoAlarmNavigation =
+  NativeStackNavigationProp<AutoAlarmScreenStackParamList>
 
 // 루트 네비게이터
 export type RootStackParamList = {
@@ -33,6 +35,7 @@ export type TabParamList = {
   Home: NavigatorScreenParams<MainStackParamList>
   Calendar: NavigatorScreenParams<CalendarScreenStackParamList>
   MyInfo: undefined
+  AutoAlarm: NavigatorScreenParams<AutoAlarmScreenStackParamList>
 }
 
 // main 네비게이터 - "Home"
@@ -138,4 +141,11 @@ export type CalendarScreenStackParamList = {
     }
   }
   CalendarInfoEdit: undefined
+}
+
+// 오토알람 탭 네비게이터
+export type AutoAlarmScreenStackParamList = {
+  AutoAlarm: undefined
+  CreateAlarm: undefined
+  EditAutoAlarm: { alarmId: string }
 }
