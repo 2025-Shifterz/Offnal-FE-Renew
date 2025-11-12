@@ -55,9 +55,6 @@ const CalendarViewer = ({
         )
         setCalendarData(response)
         console.log('근무표 조회 성공:', response)
-
-        const res2 = await api.get('organizations')
-        console.log('조직 조회 성공:', res2.data.data)
       } catch (error) {
         console.log('근무표 조회 실패:', error)
       }
