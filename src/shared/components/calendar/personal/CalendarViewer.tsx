@@ -27,20 +27,9 @@ const CalendarViewer = ({
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
-  // 현재 달 기준으므로 수정이 필요함 !!
-  // const selectedMonthStartDate = selectedDate
-  //   ? selectedDate.startOf('month').format('YYYY-MM-DD')
-  //   : dayjs().startOf('month').format('YYYY-MM-DD')
-  // const selectedMonthEndDate = selectedDate
-  //   ? selectedDate.endOf('month').format('YYYY-MM-DD')
-  //   : dayjs().endOf('month').format('YYYY-MM-DD')
-
   // current date  -> 선택한 달로 바꾸기 !!!!!!!!!!!!
   const [currentDate, setCurrentDate] = useState(dayjs())
   const isFocused = useIsFocused() // 화면 포커스 여부 확인
-
-  const year = currentDate.year()
-  const month = currentDate.month() + 1
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
@@ -65,7 +54,7 @@ const CalendarViewer = ({
     if (isFocused) {
       fetchData()
     }
-  }, [year, month, isFocused]) // isFocused를 dependency array에 추가
+  }, [isFocused]) // isFocused를 dependency array에 추가
 
   // ----------
 

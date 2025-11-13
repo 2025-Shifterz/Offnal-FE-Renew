@@ -25,13 +25,12 @@ const CalendarInteractive = ({
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  // TODO: currentDate를 현재 달 대신에 선택된 달로 바꿔야 함!!!
-  const currentStartDate = useCalendarStore(
-    state => state.currentYearMonth.currentStartDate
-  )
-  const currentEndDate = useCalendarStore(
-    state => state.currentYearMonth.currentEndDate
-  )
+  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
+
+  // '2025-11-01' 형태
+  const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
+  const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
+
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
@@ -39,20 +38,20 @@ const CalendarInteractive = ({
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
           latestOrganization.team,
-          currentStartDate,
-          currentEndDate
+          monthStartDate,
+          monthEndDate
         )
 
         setCalendarData(response)
-        console.log('근무표 조회 성공:', response)
+        console.log('월별 근무표 조회 성공2:', response)
       } catch (error) {
-        console.log('근무표 조회 실패:', error)
+        console.log('월별 근무표 조회 실패2:', error)
       }
     }
     fetchData()
   }, [
-    currentStartDate,
-    currentEndDate,
+    monthStartDate,
+    monthEndDate,
     latestOrganization.organizationName,
     latestOrganization.team,
     setCalendarData,
