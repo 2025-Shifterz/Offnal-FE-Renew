@@ -34,7 +34,7 @@ const TopAppBar = ({
       {showBackButton && (
         <TouchableOpacity
           onPress={onPressBackButton}
-          className="absolute left-number-8"
+          className="absolute left-number-9"
         >
           <ArrowLeft width={24} height={24} />
         </TouchableOpacity>
@@ -48,7 +48,7 @@ const TopAppBar = ({
         </GlobalText>
       </View>
 
-      <View className="absolute right-number-8 items-center justify-center">
+      <View className="absolute right-number-9 items-center justify-center">
         {rightActions}
       </View>
     </View>
