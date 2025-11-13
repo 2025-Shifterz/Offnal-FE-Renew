@@ -41,6 +41,7 @@ const CalendarEditor: ForwardRefRenderFunction<
   const calendarData = useCalendarStore(state => state.calendarData)
   const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  let newCalendars: CreateCalendarRequest['calendars'] = []
 
   // 처음에는 초기화
   useEffect(() => {
@@ -71,34 +72,41 @@ const CalendarEditor: ForwardRefRenderFunction<
   console.log('저장된 달력 데이터의 년-월:', storedMonths)
 
   // 새 캘린더 데이터 생성 (calendars의 월별 목록)
-  const newCalendars = storedMonths.map(monthStr => {
-    // monthStr: '2025-10'
-    const startDate = dayjs(monthStr + '-01').format('YYYY-MM-DD')
-    const endDate = dayjs(monthStr + '-01')
-      .endOf('month')
-      .format('YYYY-MM-DD')
+  const firstMonth = storedMonths[0]
+  const lastMonth = storedMonths[storedMonths.length - 1]
+
+  const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
+  const endDate = dayjs(lastMonth + '-01')
+    .endOf('month')
+    .format('YYYY-MM-DD')
+
+  const seenCombinations = new Set<string>()
+  const key = `${organizationName}_${workGroup}`
+
+  if (!seenCombinations.has(key)) {
+    seenCombinations.add(key)
 
     const shifts: Record<string, string> = {}
-
     Object.entries(calendarData).forEach(([date, value]) => {
       if (
         dayjs(date).isSameOrAfter(startDate) &&
         dayjs(date).isSameOrBefore(endDate)
       ) {
-        shifts[date] = fromShiftType(value.workTypeName) // 문자열로 추출
+        shifts[date] = fromShiftType(value.workTypeName)
       }
     })
 
-    return {
-      organizationName: organizationName, // params로 받아오기
-      team: workGroup, // params로 받아오기
-      startDate,
-      endDate,
-      shifts,
-    }
-  })
-
-  console.log('생성된 새 calendars 데이터:', newCalendars)
+    newCalendars = [
+      {
+        organizationName,
+        team: workGroup,
+        startDate,
+        endDate,
+        shifts,
+      },
+    ]
+    console.log('생성된 새 calendars 데이터:', newCalendars)
+  }
 
   const [convertedWorkTimes, setConvertedWorkTimes] = useState<
     Record<string, { startTime: string; duration: string }>

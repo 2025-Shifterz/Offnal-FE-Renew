@@ -24,35 +24,42 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
+  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
   // 현재 달 기준으므로 수정이 필요함 !!
-  const currentStartDate = useCalendarStore(
-    state => state.currentYearMonth.currentStartDate
-  )
-  const currentEndDate = useCalendarStore(
-    state => state.currentYearMonth.currentEndDate
-  )
+  // const selectedMonthStartDate = selectedDate
+  //   ? selectedDate.startOf('month').format('YYYY-MM-DD')
+  //   : dayjs().startOf('month').format('YYYY-MM-DD')
+  // const selectedMonthEndDate = selectedDate
+  //   ? selectedDate.endOf('month').format('YYYY-MM-DD')
+  //   : dayjs().endOf('month').format('YYYY-MM-DD')
+
+  // current date  -> 선택한 달로 바꾸기 !!!!!!!!!!!!
   const [currentDate, setCurrentDate] = useState(dayjs())
   const isFocused = useIsFocused() // 화면 포커스 여부 확인
 
   const year = currentDate.year()
   const month = currentDate.month() + 1
 
-  // 근무표 조회 API (화면이 포커스될 때마다 다시 호출)
+  // '2025-11-01' 형태
+  const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
+  const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
+
+  // 근무표 조회 API (화면이 포커스될 때마다 다시 호출) -> 월별 조회
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
           latestOrganization.team,
-          currentStartDate,
-          currentEndDate
+          monthStartDate,
+          monthEndDate
         )
         setCalendarData(response)
-        console.log('근무표 조회 성공:', response)
+        console.log('월별 근무표 조회 성공:', response)
       } catch (error) {
-        console.log('근무표 조회 실패:', error)
+        console.log('월별 근무표 조회 실패:', error)
       }
     }
     if (isFocused) {
