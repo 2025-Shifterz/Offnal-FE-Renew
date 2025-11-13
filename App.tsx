@@ -13,6 +13,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 enableScreens()
 
@@ -22,7 +23,7 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await initializeDataBaseTables() // 앱 시작 시 테이블 생성
+        await initializeDataBaseTables()
         console.log('DB tables created')
       } catch (error) {
         console.error('Error creating DB tables', error)
@@ -46,7 +47,9 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <WorkTimeProvider>
-          <RootNavigator />
+          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
+            <RootNavigator />
+          </SafeAreaView>
         </WorkTimeProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

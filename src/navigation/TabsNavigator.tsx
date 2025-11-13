@@ -2,7 +2,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import BottomNavigationBar from '../presentation/main/components/BottomNavigationBar'
 import MainNavigator from './MainNavigator'
 import CalendarNavigator from './CalendarNavigator'
-import InformationNavigator from './InformationNavigator'
+import MyInfoNavigator from './MyInfoNavigator'
+import AutoAlarmNavigator from './AutoAlarmNavigator'
 
 const Tab = createBottomTabNavigator()
 
@@ -10,8 +11,9 @@ const TabsNavigator = () => {
   return (
     <BottomNavigationBar>
       <Tab.Screen name="Home" component={MainNavigator} />
+      {/* <Tab.Screen name="AutoAlarm" component={AutoAlarmNavigator} /> */}
       <Tab.Screen name="Calendar" component={CalendarNavigator} />
-      <Tab.Screen name="MyInfo" component={InformationNavigator} />
+      <Tab.Screen name="MyInfo" component={MyInfoNavigator} />
     </BottomNavigationBar>
   )
 }

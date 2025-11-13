@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScheduleScopeType } from '../shared/types/ScheduleScopeType'
+import { Memo } from '../domain/models/Memo'
 
 // 네비게이션
 export type onboardingNavigation =
@@ -13,6 +14,8 @@ export type calendarNavigation =
 export type mainNavigation = NativeStackNavigationProp<MainStackParamList>
 export type tabNavigation = NativeStackNavigationProp<TabParamList>
 export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
+export type autoAlarmNavigation =
+  NativeStackNavigationProp<AutoAlarmScreenStackParamList>
 
 // 루트 네비게이터
 export type RootStackParamList = {
@@ -31,7 +34,8 @@ export type RootStackParamList = {
 export type TabParamList = {
   Home: NavigatorScreenParams<MainStackParamList>
   Calendar: NavigatorScreenParams<CalendarScreenStackParamList>
-  MyInfo: NavigatorScreenParams<InfoStackParamList>
+  MyInfo: undefined
+  AutoAlarm: NavigatorScreenParams<AutoAlarmScreenStackParamList>
 }
 
 // main 네비게이터 - "Home"
@@ -40,16 +44,9 @@ export type MainStackParamList = {
   AutoAlarm: undefined
   Todo: undefined
   Memo: undefined
-  AddMemo: undefined
+  AddMemo: { memo: Memo } | undefined
 }
 
-export type InfoStackParamList = {
-  InformationScreen: undefined
-  EditProfileScreen: undefined
-  TermsWebViewScreen: { url: string; title: string }
-  FeedbackScreen: undefined
-  WithdrawScreen: undefined
-}
 // 로그인
 export type LoginStackParamList = {
   Login: undefined
@@ -143,4 +140,11 @@ export type CalendarScreenStackParamList = {
     }
   }
   CalendarInfoEdit: undefined
+}
+
+// 오토알람 탭 네비게이터
+export type AutoAlarmScreenStackParamList = {
+  AutoAlarm: undefined
+  CreateAlarm: undefined
+  EditAutoAlarm: { alarmId: string }
 }

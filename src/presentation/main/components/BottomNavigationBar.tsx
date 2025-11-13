@@ -4,10 +4,12 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { ReactNode } from 'react'
 
 import HomeGrayIcon from '../../../assets/icons/ic_home_24_gray.svg'
+import AlarmGrayIcon from '../../../assets/icons/ic_alarm_24_gray.svg'
 import CalendarGrayIcon from '../../../assets/icons/ic_calendar_24_gray.svg'
 import MyInfoGrayIcon from '../../../assets/icons/ic_myinfo_24_gray.svg'
 
 import HomeBkIcon from '../../../assets/icons/ic_home_24_bk.svg'
+import AlarmBkIcon from '../../../assets/icons/ic_alarm_24_bk.svg'
 import CalendarBkIcon from '../../../assets/icons/ic_calendar_24_bk.svg'
 import MyInfoBkIcon from '../../../assets/icons/ic_myinfo_24_bk.svg'
 
@@ -24,6 +26,9 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
           switch (route.name) {
             case 'Home':
               IconComponent = focused ? HomeBkIcon : HomeGrayIcon
+              break
+            case 'AutoAlarm':
+              IconComponent = focused ? AlarmBkIcon : AlarmGrayIcon
               break
             case 'Calendar':
               IconComponent = focused ? CalendarBkIcon : CalendarGrayIcon
@@ -45,6 +50,9 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
           switch (route.name) {
             case 'Home':
               label = '홈'
+              break
+            case 'AutoAlarm':
+              label = '자동 알람'
               break
             case 'Calendar':
               label = '근무 캘린더'
