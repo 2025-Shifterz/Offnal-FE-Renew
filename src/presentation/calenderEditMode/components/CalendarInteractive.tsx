@@ -1,6 +1,5 @@
- 
 // 근무표 조회 & 저장 동시에 되는 캘린더
-import React, { use, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
@@ -23,6 +22,7 @@ const CalendarInteractive = ({
   selectedDate,
   setSelectedDate,
 }: CalendarInteractiveProps) => {
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   // TODO: currentDate를 현재 달 대신에 선택된 달로 바꿔야 함!!!
@@ -32,16 +32,13 @@ const CalendarInteractive = ({
   const currentEndDate = useCalendarStore(
     state => state.currentYearMonth.currentEndDate
   )
-  const organizationName = useCalendarStore(state => state.organizationName)
-  const team = useCalendarStore(state => state.team)
-
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await calendarRepository.getCalendar(
-          organizationName,
-          team,
+          latestOrganization.organizationName,
+          latestOrganization.team,
           currentStartDate,
           currentEndDate
         )
@@ -56,20 +53,10 @@ const CalendarInteractive = ({
   }, [
     currentStartDate,
     currentEndDate,
-    organizationName,
-    team,
+    latestOrganization.organizationName,
+    latestOrganization.team,
     setCalendarData,
   ])
-
-  // GET요청 데이터
-  // useEffect(() => {
-  //   console.log('GET 요청 데이터:', {
-  //     organizationName,
-  //     team,
-  //     currentStartDate,
-  //     currentEndDate,
-  //   })
-  // }, [calendarData])
 
   return (
     <View>

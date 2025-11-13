@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'
@@ -12,7 +12,9 @@ const CalendarScreen = () => {
   const [showPlus, setShowPlus] = useState(false)
 
   const calendarData = useCalendarStore(state => state.calendarData)
-
+  const setLatestOrganization = useCalendarStore(
+    state => state.setLatestOrganization
+  )
   const hasCalendar = Object.keys(calendarData).length > 0
 
   useEffect(() => {
@@ -20,15 +22,20 @@ const CalendarScreen = () => {
     // 전체 조직 조회: 하나라도 있으면 캘린더가 있다고 판단
     const fetchData = async () => {
       try {
-        const res2 = await api.get('organizations')
-        console.log('조직 조회 성공:', res2.data.data)
+        // 조직 조회 API 호출 수정 필요
+        const res = await api.get('organizations')
+        console.log('조직 조회 성공:', res.data.data)
         setNoCalendar(!hasCalendar)
+
+        // 가장 마지막 조직 데이터를 저장
+        const latestItem = res.data.data[res.data.data.length - 1]
+        setLatestOrganization(latestItem.organizationName, latestItem.team)
       } catch (error) {
         console.log('조직 조회 실패:', error)
       }
     }
     fetchData()
-  }, [hasCalendar])
+  }, [hasCalendar, setLatestOrganization])
 
   if (noCalendar === null) {
     // 로딩 중이거나 판단 전이면 아무것도 보여주지 않거나 로딩 컴포넌트

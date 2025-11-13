@@ -13,11 +13,6 @@ import { convertDurationToEndTime } from '../../shared/utils/calendar/convertDur
 // data는 “앱 내부 데이터의 표준 포맷”, - Entity
 // domain은 “비즈니스 의미만 표현하는 순수 모델” - Domain 모델
 
-// Entity와 Domain 모델의 형식은 다를 수 있다.
-// - 서버는 shiftType: 'NIGHT'로 보낼 수 있고
-// - DB는 '야간'이라고 저장할 수 있지만
-// - 도메인은 "22:00부터 8시간 근무"라는 의미가 있어야,
-
 // Entity는 저장하기 좋은 형태
 // Domain은 애플리케이션이 “의미 있게 다루기 좋은 형태”
 
@@ -91,46 +86,6 @@ export class CalendarRepositoryImpl implements CalendarRepository {
       return res
     } catch (error) {
       throw error
-    }
-  }
-
-  // 캘린더 GET 요청을 위해 로컬에 저장
-  async initUserCalendarData(
-    organizationName: string,
-    team: string
-    //startDate: string,
-    //endDate: string
-  ): Promise<void> {
-    try {
-      await EncryptedStorage.setItem('organizationName', organizationName)
-      await EncryptedStorage.setItem('team', team)
-    } catch (error) {
-      console.error('CalendarRepository Error - initUserCalendarData()', error)
-
-      return
-    }
-  }
-
-  // 저장된 조직 이름 가져오기
-  async getOrganizationName(): Promise<string> {
-    try {
-      const storedOrganization =
-        await EncryptedStorage.getItem('organizationName')
-      return storedOrganization ?? '' // 값이 없으면 빈 문자열 반환
-    } catch (error) {
-      console.error('CalendarRepository Error - getOrganizationName():', error)
-      return ''
-    }
-  }
-
-  // 저장된 팀 가져오기
-  async getTeam(): Promise<string> {
-    try {
-      const storedTeam = await EncryptedStorage.getItem('team')
-      return storedTeam ?? ''
-    } catch (error) {
-      console.error('CalendarRepository Error - getTeam():', error)
-      return ''
     }
   }
 }

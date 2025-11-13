@@ -5,9 +5,7 @@ import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
-// import { workDaysToMap } from '../../../utils/calendar/workDaysToMap'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import api from '../../../../infrastructure/remote/api/axiosInstance'
 
 interface CalendarViewerProps {
   onPressTeamIcon?: () => void
@@ -26,6 +24,7 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
   // 현재 달 기준으므로 수정이 필요함 !!
   const currentStartDate = useCalendarStore(
@@ -39,16 +38,14 @@ const CalendarViewer = ({
 
   const year = currentDate.year()
   const month = currentDate.month() + 1
-  const organizationName = useCalendarStore(state => state.organizationName)
-  const userCalendar = useCalendarStore(state => state.userCalendar)
 
   // 근무표 조회 API (화면이 포커스될 때마다 다시 호출)
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await calendarRepository.getCalendar(
-          userCalendar.organizationName,
-          userCalendar.team,
+          latestOrganization.organizationName,
+          latestOrganization.team,
           currentStartDate,
           currentEndDate
         )

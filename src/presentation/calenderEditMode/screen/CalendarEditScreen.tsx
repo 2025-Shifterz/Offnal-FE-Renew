@@ -23,7 +23,7 @@ const CalendarEditScreen = () => {
   const navigation = useNavigation()
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-  const userCalendar = useCalendarStore(state => state.userCalendar)
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const route = useRoute<CalendarEditScreenRouteProp>()
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
@@ -98,8 +98,8 @@ const CalendarEditScreen = () => {
   const handlePatchData = async () => {
     try {
       await calendarRepository.updateCalendar(
-        userCalendar.organizationName,
-        userCalendar.team,
+        latestOrganization.organizationName,
+        latestOrganization.team,
         toUpdateShiftRecord(calendarData)
       )
       console.log('근무표 수정 성공')

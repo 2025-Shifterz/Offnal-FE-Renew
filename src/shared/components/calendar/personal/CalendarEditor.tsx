@@ -41,8 +41,6 @@ const CalendarEditor: ForwardRefRenderFunction<
   const calendarData = useCalendarStore(state => state.calendarData)
   const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-  // const userCalendar = useCalendarStore(state => state.userCalendar)
-  const setUserCalendar = useCalendarStore(state => state.setUserCalendar)
 
   // 처음에는 초기화
   useEffect(() => {
@@ -131,7 +129,6 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         // API 호출
         const res = await calendarRepository.createCalendar(newCalendarRequest)
-        setUserCalendar(organizationName, workGroup)
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)
