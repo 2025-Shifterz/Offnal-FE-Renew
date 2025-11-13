@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.shifterznew"
+    namespace "com.shifterz.offnal"
     defaultConfig {
-        applicationId "com.shifterznew"
+        applicationId "com.shifterz.offnal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
