@@ -39,17 +39,16 @@ const CalendarViewer = ({
 
   const year = currentDate.year()
   const month = currentDate.month() + 1
-
   const organizationName = useCalendarStore(state => state.organizationName)
-  const team = useCalendarStore(state => state.team)
+  const userCalendar = useCalendarStore(state => state.userCalendar)
 
   // 근무표 조회 API (화면이 포커스될 때마다 다시 호출)
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await calendarRepository.getCalendar(
-          organizationName,
-          team,
+          userCalendar.organizationName,
+          userCalendar.team,
           currentStartDate,
           currentEndDate
         )

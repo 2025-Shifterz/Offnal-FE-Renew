@@ -1,6 +1,6 @@
 import { CreateCalendarRequest } from '../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { UpdateShiftsRequest } from '../../infrastructure/remote/request/PatchWorkCalendarReqeust'
-import { GetWorkCalendarResponseData } from '../../infrastructure/remote/response/GetWorkCalendarResponse'
+import { Calendar } from '../models/Calendar'
 
 export interface CalendarRepository {
   createCalendar(calendarData: CreateCalendarRequest): Promise<void>
@@ -10,7 +10,7 @@ export interface CalendarRepository {
     team: string,
     startDate: string,
     duration: string
-  ): Promise<GetWorkCalendarResponseData[]>
+  ): Promise<Calendar[]>
 
   updateCalendar(
     organizationName: string,

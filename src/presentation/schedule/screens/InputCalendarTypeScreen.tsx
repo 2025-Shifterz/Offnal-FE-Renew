@@ -65,9 +65,18 @@ const InputCalendarTypeScreen = () => {
         />
         <View className="mt-[20px]">
           {selectedScheduleScopeType === 'ALL' ? (
-            <TCalendarEditor workTimes={workTimes} />
+            <TCalendarEditor
+              organizationName={organizationName}
+              workGroup={workGroup}
+              workTimes={workTimes}
+            />
           ) : (
-            <CalendarEditor ref={calendarEditorRef} workTimes={workTimes} />
+            <CalendarEditor
+              ref={calendarEditorRef}
+              workTimes={workTimes}
+              organizationName={organizationName}
+              workGroup={workGroup}
+            />
           )}
         </View>
       </ScrollView>

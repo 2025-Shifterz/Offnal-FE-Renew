@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import { calendarService } from '../infrastructure/di/Dependencies'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import EncryptedStorage from 'react-native-encrypted-storage'
+import { convertDurationToEndTime } from '../shared/utils/calendar/convertDuration'
 
 /*
 <---- calendarData 형태 ----> 
@@ -92,7 +93,7 @@ export const useCalendarStore = create<CalendarState>()(
             mapped[item.date] = {
               workTypeName: item.workTypeName,
               startTime: item.startTime,
-              duration: item.duration,
+              endTime: item.endTime,
             }
           })
           return { calendarData: mapped }
@@ -147,7 +148,8 @@ export const useCalendarStore = create<CalendarState>()(
             date: item.date,
             workTypeName: item.workTypeName,
             startTime: item.startTime ?? '',
-            duration: item.duration ?? '',
+            endTime:
+              convertDurationToEndTime(item.startTime, item.duration) ?? '',
           }))
 
           useCalendarStore.getState().setCalendarData(mapped)
@@ -159,7 +161,11 @@ export const useCalendarStore = create<CalendarState>()(
       },
 
       setUserCalendar: (organizationName, team) =>
-        set({ userCalendar: { organizationName, team } }),
+        set({
+          userCalendar: { organizationName, team },
+          organizationName,
+          team,
+        }),
     }),
 
     {

@@ -4,15 +4,16 @@ export type WorkTypeEn = 'D' | 'E' | 'N' | '-' | string
 export interface WorkTypeInfo {
   workTypeName: WorkType
   startTime?: string
-  duration?: string
+  endTime?: string
 }
 
 // "YYYY-MM-DD" → WorkTypeInfo 형태의 매핑
+// 프론트엔드에서 캘린더 데이터를 다룰 때 사용
 export type DateAndWorkTypeRecord = Record<string, WorkTypeInfo>
 
 export interface DateAndWorkType {
   date: string // "YYYY-MM-DD"
   workTypeName: WorkType
   startTime: string
-  duration: string
+  endTime: string
 }

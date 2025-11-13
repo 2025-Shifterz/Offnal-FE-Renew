@@ -1,7 +1,6 @@
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
-  use,
   useEffect,
   useImperativeHandle,
   useState,
@@ -22,7 +21,7 @@ import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { View } from 'react-native'
 import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
-import { convertToDuration } from '../../../utils/calendar/convertWorkTimesToDuration'
+import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 
 export interface CalendarEditorRef {
   postData: () => void
@@ -32,15 +31,17 @@ const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
   Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
     workTimes: Record<string, InputWorkTimeDetail>
+    organizationName: string
+    workGroup: string
   }
-> = ({ workTimes }, ref) => {
+> = ({ workTimes, organizationName, workGroup }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
   const calendarData = useCalendarStore(state => state.calendarData)
   const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-  const userCalendar = useCalendarStore(state => state.userCalendar)
+  // const userCalendar = useCalendarStore(state => state.userCalendar)
   const setUserCalendar = useCalendarStore(state => state.setUserCalendar)
 
   // 처음에는 초기화
@@ -91,8 +92,8 @@ const CalendarEditor: ForwardRefRenderFunction<
     })
 
     return {
-      organizationName: userCalendar.organizationName, // 임시 값
-      team: userCalendar.team, // 임시 값
+      organizationName: organizationName, // params로 받아오기
+      team: workGroup, // params로 받아오기
       startDate,
       endDate,
       shifts,
@@ -112,7 +113,7 @@ const CalendarEditor: ForwardRefRenderFunction<
   // workTimes 에서 endTime -> duration 변환
   useEffect(() => {
     if (!workTimes) return
-    const converted = convertToDuration(workTimes)
+    const converted = convertEndTimeToDuration(workTimes)
     setConvertedWorkTimes(converted)
     console.log('변환된 근무시간 데이터:', converted)
   }, [workTimes])
@@ -122,7 +123,7 @@ const CalendarEditor: ForwardRefRenderFunction<
     postData: async () => {
       try {
         const newCalendarRequest: CreateCalendarRequest = {
-          calendarName: '임시 근무표', // 임시 값
+          calendarName: '임시 근무표', // 임시 값 - 삭제 예정
           workTimes: convertedWorkTimes,
           calendars: newCalendars,
         }
@@ -130,7 +131,7 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         // API 호출
         const res = await calendarRepository.createCalendar(newCalendarRequest)
-        setUserCalendar(userCalendar.organizationName, userCalendar.team)
+        setUserCalendar(organizationName, workGroup)
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)

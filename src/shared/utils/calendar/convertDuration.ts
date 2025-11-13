@@ -11,7 +11,7 @@ export interface WorkTimeDuration {
 }
 
 // startTime과 endTime을 받아 PT형식 duration으로 변환
-export function convertToDuration(
+export function convertEndTimeToDuration(
   workTimes: Record<string, InputWorkTimeDetail>
 ): Record<string, WorkTimeDuration> {
   const todayStr = dayjs().format('YYYY-MM-DD')
@@ -37,4 +37,15 @@ export function convertToDuration(
   })
 
   return converted
+}
+
+// duration을 endTime로 변환하는 함수
+export function convertDurationToEndTime(
+  startTime: string,
+  duration: string
+): string {
+  const [hour, min] = startTime.split(':').map(Number)
+  const hoursToAdd = parseInt(duration.replace('PT', '').replace('H', ''), 10)
+  const endHour = hour + hoursToAdd
+  return `${endHour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
 }

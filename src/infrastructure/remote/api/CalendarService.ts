@@ -2,7 +2,10 @@ import axios from 'axios'
 import api from './axiosInstance'
 import { CreateCalendarRequest } from '../request/CreateWorkCalendarRequest'
 import { UpdateShiftsRequest } from '../request/PatchWorkCalendarReqeust'
-import { GetWorkCalendarResponse } from '../response/GetWorkCalendarResponse'
+import {
+  GetWorkCalendarResponse,
+  GetWorkCalendarResponseData,
+} from '../response/GetWorkCalendarResponse'
 
 export class CalendarService {
   getWorkCalendar = async (
@@ -10,7 +13,7 @@ export class CalendarService {
     team: string,
     startDate: string,
     endDate: string
-  ) => {
+  ): Promise<GetWorkCalendarResponseData[]> => {
     try {
       const response = await api.get<GetWorkCalendarResponse>(
         '/works/calendar',
@@ -37,8 +40,8 @@ export class CalendarService {
 
   createWorkCalendar = async (calendarData: CreateCalendarRequest) => {
     try {
-      const res = await api.post('/works/calendar', calendarData)
-      return res.data
+      const response = await api.post('/works/calendar', calendarData)
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)
@@ -52,13 +55,13 @@ export class CalendarService {
 
   deleteWorkCalendar = async (organizationName: string, team: string) => {
     try {
-      const res = await api.delete(`/works/calendar`, {
+      const response = await api.delete(`/works/calendar`, {
         params: {
           organizationName,
           team,
         },
       })
-      return res.data
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)
@@ -75,13 +78,13 @@ export class CalendarService {
     shiftsData: UpdateShiftsRequest
   ) => {
     try {
-      const res = await api.patch('/works/calendar', shiftsData, {
+      const response = await api.patch('/works/calendar', shiftsData, {
         params: {
           organizationName,
           team,
         },
       })
-      return res.data
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)

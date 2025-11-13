@@ -12,9 +12,15 @@ interface TCalendarEditorProps {
       endTime: string
     }
   }
+  organizationName: string
+  workGroup: string
 }
 
-const TCalendarEditor = ({ workTimes }: TCalendarEditorProps) => {
+const TCalendarEditor = ({
+  organizationName,
+  workGroup,
+  workTimes,
+}: TCalendarEditorProps) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   const [calendarData, setCalendarData] = useState<
     Record<string, Record<string, TimeFrameChildren>>
