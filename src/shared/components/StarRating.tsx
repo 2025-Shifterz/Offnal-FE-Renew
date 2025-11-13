@@ -10,12 +10,12 @@ interface StarRatingProps {
   starSize?: number
 }
 
-const StarRating: React.FC<StarRatingProps> = ({
+const StarRating = ({
   rating,
   onRatingChange,
   maxStars = 5,
   starSize = 40,
-}) => {
+}: StarRatingProps) => {
   const renderStar = (index: number) => {
     const isFilled = index <= rating
     const StarIcon = isFilled ? IcStarYellow : IcStarGray
