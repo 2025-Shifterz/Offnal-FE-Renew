@@ -28,7 +28,7 @@ const FeedBackScreen = () => {
   const [feedback, setFeedback] = useState('')
 
   const MAX_FEEDBACK_LENGTH = 100
-  const currentRatingData = rating > 0 ? RATING_DATA[rating] : null
+  const currentRatingData = RATING_DATA[rating]
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
