@@ -23,11 +23,12 @@ const RATING_DATA: { [key: number]: RatingInfo } = {
   5: { emoji: '🥰', text: '매우 만족' },
 }
 
+const MAX_FEEDBACK_LENGTH = 100
+
 const FeedBackScreen = () => {
   const [rating, setRating] = useState(1)
   const [feedback, setFeedback] = useState('')
 
-  const MAX_FEEDBACK_LENGTH = 100
   const currentRatingData = RATING_DATA[rating]
 
   return (
