@@ -9,7 +9,7 @@ interface BottomButtonProps {
 
 const BottomButton = ({ text, onPress, className }: BottomButtonProps) => {
   return (
-    <View className={`absolute bottom-[18px] w-full ${className}`}>
+    <View className={`absolute bottom-[18px] w-full ${className || ''}`}>
       <TouchableOpacity
         className="flex w-full  items-center rounded-radius-xl bg-surface-inverse py-[13px]"
         onPress={onPress}
