@@ -51,7 +51,6 @@ const CalendarEditor: ForwardRefRenderFunction<
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
     setSelectedDate(date)
-    console.log('선택된 날짜:', date.format('YYYY-MM-DD'))
   }
 
   // 근무 형태 추가
@@ -69,7 +68,6 @@ const CalendarEditor: ForwardRefRenderFunction<
       Object.keys(calendarData).map(dateStr => dayjs(dateStr).format('YYYY-MM'))
     )
   )
-  console.log('저장된 달력 데이터의 년-월:', storedMonths)
 
   // 새 캘린더 데이터 생성 (calendars의 월별 목록)
   const firstMonth = storedMonths[0]
@@ -121,7 +119,6 @@ const CalendarEditor: ForwardRefRenderFunction<
     if (!workTimes) return
     const converted = convertEndTimeToDuration(workTimes)
     setConvertedWorkTimes(converted)
-    console.log('변환된 근무시간 데이터:', converted)
   }, [workTimes])
 
   // 부모에서 호출할 수 있는 함수 정의

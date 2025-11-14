@@ -26,12 +26,7 @@ interface CalendarState {
     year: number
     month: number
   }
-  currentYearMonth: {
-    year: number
-    month: number
-    currentStartDate: string
-    currentEndDate: string
-  }
+
   isLoading: boolean
 
   // 최신 조직 정보
@@ -44,7 +39,6 @@ interface CalendarState {
   setCalendarData: (data: DateAndWorkType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   setSelectedYearMonth: (date: { year: number; month: number }) => void
-  setCurrentYearMonth: (year: number, month: number) => void
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
@@ -106,19 +100,6 @@ export const useCalendarStore = create<CalendarState>()(set => ({
       }
       return { calendarData: updated }
     }),
-
-  setCurrentYearMonth: (year, month) => {
-    const startDate = `${year}-${String(month).padStart(2, '0')}-01`
-    const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
-    set({
-      currentYearMonth: {
-        year,
-        month,
-        currentStartDate: startDate,
-        currentEndDate: endDate,
-      },
-    })
-  },
 
   setSelectedDate: date => set({ selectedDate: date }),
 

@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-// import { workDaysToMap } from '../../../shared/utils/calendar/workDaysToMap'
 import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 

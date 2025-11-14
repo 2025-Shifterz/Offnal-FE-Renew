@@ -1,4 +1,4 @@
-import React, { use } from 'react'
+import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { Dayjs } from 'dayjs'
 
@@ -18,17 +18,25 @@ const EditScreenMonthHeader = ({
   currentDate,
   setCurrentDate,
 }: EditScreenMonthHeaderProps) => {
-  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
+  const setSelectedYearMonth = useCalendarStore(
+    state => state.setSelectedYearMonth
+  )
   const handlePrevMonth = () => {
-    setCurrentDate(currentDate.subtract(1, 'month'))
-    selectedYearMonth.year = currentDate.subtract(1, 'month').year()
-    selectedYearMonth.month = currentDate.subtract(1, 'month').month() + 1
+    const newDate = currentDate.subtract(1, 'month')
+    setCurrentDate(newDate)
+    setSelectedYearMonth({
+      year: newDate.year(),
+      month: newDate.month() + 1,
+    })
   }
 
   const handleNextMonth = () => {
-    setCurrentDate(currentDate.add(1, 'month'))
-    selectedYearMonth.year = currentDate.add(1, 'month').year()
-    selectedYearMonth.month = currentDate.add(1, 'month').month() + 1
+    const newDate = currentDate.add(1, 'month')
+    setCurrentDate(newDate)
+    setSelectedYearMonth({
+      year: newDate.year(),
+      month: newDate.month() + 1,
+    })
   }
   return (
     <View className="flex-row items-center gap-[10px]">

@@ -1,4 +1,3 @@
-import EncryptedStorage from 'react-native-encrypted-storage'
 import { Calendar } from '../../domain/models/Calendar'
 import { CalendarRepository } from '../../domain/repositories/CalendarRepository'
 import { CalendarService } from '../../infrastructure/remote/api/CalendarService'

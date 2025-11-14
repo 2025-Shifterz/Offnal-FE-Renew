@@ -9,7 +9,7 @@ export interface CalendarRepository {
     organizationName: string,
     team: string,
     startDate: string,
-    duration: string
+    endDate: string
   ): Promise<Calendar[]>
 
   updateCalendar(

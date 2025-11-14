@@ -1,4 +1,3 @@
-import { useIsFocused } from '@react-navigation/native'
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import CalendarBase from './../personal/CalendarBase'
@@ -29,7 +28,6 @@ const CalendarViewer = ({
 
   // current date  -> 선택한 달로 바꾸기 !!!!!!!!!!!!
   const [currentDate, setCurrentDate] = useState(dayjs())
-  const isFocused = useIsFocused() // 화면 포커스 여부 확인
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
@@ -51,10 +49,8 @@ const CalendarViewer = ({
         console.log('월별 근무표 조회 실패:', error)
       }
     }
-    if (isFocused) {
-      fetchData()
-    }
-  }, [isFocused]) // isFocused를 dependency array에 추가
+    fetchData()
+  }, [latestOrganization, monthStartDate, monthEndDate])
 
   // ----------
 

@@ -28,8 +28,11 @@ const CalendarScreen = () => {
         setNoCalendar(!hasCalendar)
 
         // 가장 마지막 조직 데이터를 저장
-        const latestItem = res.data.data[res.data.data.length - 1]
-        setLatestOrganization(latestItem.organizationName, latestItem.team)
+        const organizations = res.data.data
+        if (organizations && organizations.length > 0) {
+          const latestItem = organizations[organizations.length - 1]
+          setLatestOrganization(latestItem.organizationName, latestItem.team)
+        }
       } catch (error) {
         console.log('조직 조회 실패:', error)
       }

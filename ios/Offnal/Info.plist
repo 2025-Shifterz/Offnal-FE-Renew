@@ -46,7 +46,7 @@
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>앱이 운동 데이터를 다른 앱과 공유하기 위해 접근이 필요합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>
