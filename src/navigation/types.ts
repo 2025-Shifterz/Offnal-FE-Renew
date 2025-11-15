@@ -148,3 +148,13 @@ export type AutoAlarmScreenStackParamList = {
   CreateAlarm: undefined
   EditAutoAlarm: { alarmId: string }
 }
+
+// Infomation Navigator
+export type InfoStackParamList = {
+  InformationScreen: undefined
+  UpdateMyInfoScreen: undefined
+  WithdrawBeforeScreen: undefined
+  WithdrawScreen: undefined
+}
+
+export type infoNavigation = NativeStackNavigationProp<InfoStackParamList>

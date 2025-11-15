@@ -1,16 +1,19 @@
 import TopAppBar from '../../../shared/components/TopAppBar'
-import { ScrollView, View } from 'react-native'
+import { Alert, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MyInformationCard from '../component/MyInformationCard'
 import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
+import { useCallback, useMemo } from 'react'
+import { infoNavigation } from '../../../navigation/types'
+import { useNavigation } from '@react-navigation/native'
 
 const informationMenus: MenuItemProps[] = [
   {
     id: 'notice',
     title: '공지사항',
-    onPress: id => {
+    onPress: () => {
       /* TODO("Not yet Implemeted") */
     },
   },
@@ -18,14 +21,14 @@ const informationMenus: MenuItemProps[] = [
     id: 'version',
     title: '현재 버전',
     caption: '0.0.1',
-    onPress: id => {
+    onPress: () => {
       /* TODO("Not yet Implemeted") */
     },
   },
   {
     id: 'feedback',
     title: '평가 및 피드백',
-    onPress: id => {
+    onPress: () => {
       /* TODO("Not yet Implemeted") */
     },
   },
@@ -34,36 +37,50 @@ const termsOfUseMenus: MenuItemProps[] = [
   {
     id: 'termsOfUse',
     title: '이용 약관',
-    onPress: id => {
+    onPress: () => {
       /* TODO("Not yet Implemeted") */
     },
   },
   {
     id: 'privacyPolicy',
     title: '개인정보 처리방침',
-    onPress: id => {
-      /* TODO("Not yet Implemeted") */
-    },
-  },
-]
-const otherMenus: MenuItemProps[] = [
-  {
-    id: 'withdraw',
-    title: '회원 탈퇴',
-    onPress: id => {
-      /* TODO("Not yet Implemeted") */
-    },
-  },
-  {
-    id: 'logout',
-    title: '로그아웃',
-    onPress: id => {
+    onPress: () => {
       /* TODO("Not yet Implemeted") */
     },
   },
 ]
 
 const InformationScreen = () => {
+  const navigation = useNavigation<infoNavigation>()
+
+  const handleLogOut = useCallback(() => {
+    Alert.alert('로그아웃', '정말로 로그아웃 하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '로그아웃',
+        onPress: () => {},
+        style: 'destructive',
+      },
+    ])
+  }, [])
+
+  const otherMenus: MenuItemProps[] = useMemo(() => {
+    return [
+      {
+        id: 'withdraw',
+        title: '회원 탈퇴',
+        onPress: () => {
+          navigation.navigate('WithdrawBeforeScreen')
+        },
+      },
+      {
+        id: 'logout',
+        title: '로그아웃',
+        onPress: () => handleLogOut(),
+      },
+    ]
+  }, [navigation, handleLogOut])
+
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
       <SafeAreaView className="flex-1">

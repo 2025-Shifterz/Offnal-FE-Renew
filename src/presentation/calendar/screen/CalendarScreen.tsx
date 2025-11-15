@@ -4,7 +4,7 @@ import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'
 import PlusEdit from '../component/PlusEdit'
-import { userRepository } from '../../../infrastructure/di/Dependencies'
+import { memberRepository } from '../../../infrastructure/di/Dependencies'
 
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
@@ -13,7 +13,7 @@ const CalendarScreen = () => {
   // NoCalendar가 보이는지 여부
   useEffect(() => {
     const checkCalendar = async () => {
-      const hasSchedule = await userRepository.isUserScheduleRegistered()
+      const hasSchedule = await memberRepository.isMemberScheduleRegistered()
       setNoCalendar(!hasSchedule) // 등록된 게 없으면 true
       //  console.log('noCalendar', noCalendar);
     }
