@@ -21,7 +21,6 @@ export interface MonthlyShift {
 }
 
 export interface CreateCalendarRequest {
-  calendarName: string // API 바뀌면 삭제할 예정
   workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }
