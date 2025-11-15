@@ -12,11 +12,9 @@ const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
   const [showPlus, setShowPlus] = useState(false)
 
-  const calendarData = useCalendarStore(state => state.calendarData)
   const setLatestOrganization = useCalendarStore(
     state => state.setLatestOrganization
   )
-  const hasCalendar = Object.keys(calendarData).length > 0
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(
@@ -28,7 +26,7 @@ const CalendarScreen = () => {
           const res = await organizationRepository.getAllOrganizations()
 
           console.log('조직 조회 성공:', res)
-          setNoCalendar(!hasCalendar)
+          if (res.length === 0) setNoCalendar(true)
 
           // 가장 마지막 조직 데이터를 저장
           const organizations = res
@@ -41,7 +39,7 @@ const CalendarScreen = () => {
         }
       }
       fetchData()
-    }, [hasCalendar, setLatestOrganization])
+    }, [setLatestOrganization])
   )
 
   if (noCalendar === null) {
