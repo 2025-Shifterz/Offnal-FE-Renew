@@ -56,7 +56,7 @@ const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
       <View className="absolute bottom-[13px] right-[13px] w-[189px] flex-col items-end gap-[13px]">
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('OnboardingSchedulesOCR')
+            navigation.navigate('OnboardingSchedules')
           }}
           className="flex-row items-center gap-[10px]"
         >

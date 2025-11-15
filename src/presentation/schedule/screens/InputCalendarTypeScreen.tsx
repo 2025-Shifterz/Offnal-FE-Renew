@@ -47,7 +47,6 @@ const InputCalendarTypeScreen = () => {
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const handleNext = () => {
     if (calendarEditorRef.current) {
-      // 조직 id post 요청
       calendarEditorRef.current.postData() // 근무표 저장 요청
     }
     navigation.navigate('CompleteSchedule', { selectedScheduleScopeType })

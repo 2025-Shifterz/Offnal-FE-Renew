@@ -10,12 +10,13 @@ import { RootStackParamList } from './types'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
+// 주석 복구해야함
 const RootNavigator = () => {
   return (
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <RootStack.Screen name="SplashScreen" component={SplashScreen} /> */}
-        {/* <RootStack.Screen name="LoginScreens" component={LoginNavigator} /> */}
+        <RootStack.Screen name="SplashScreen" component={SplashScreen} />
+        <RootStack.Screen name="LoginScreens" component={LoginNavigator} />
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
         <RootStack.Screen
           name="OnboardingSchedules"

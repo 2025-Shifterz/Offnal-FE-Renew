@@ -44,9 +44,11 @@ const CalendarViewer = ({
           monthEndDate
         )
         setCalendarData(response)
-        console.log('월별 근무표 조회 성공:', response)
+        console.log('캘린더 탭: 월별 근무표 조회 성공:', response)
+        console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {
-        console.log('월별 근무표 조회 실패:', error)
+        console.log('캘린더 탭: 월별 근무표 조회 실패:', error)
+        console.log('organization name:', latestOrganization.organizationName)
       }
     }
     fetchData()

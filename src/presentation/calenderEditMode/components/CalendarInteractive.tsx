@@ -42,9 +42,9 @@ const CalendarInteractive = ({
         )
 
         setCalendarData(response)
-        console.log('월별 근무표 조회 성공2:', response)
+        console.log('근무표 수정 모드: 월별 근무표 조회 성공:', response)
       } catch (error) {
-        console.log('월별 근무표 조회 실패2:', error)
+        console.log('근무표 수정 모드: 월별 근무표 조회 실패:', error)
       }
     }
     fetchData()

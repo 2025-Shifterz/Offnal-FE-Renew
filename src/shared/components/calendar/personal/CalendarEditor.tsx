@@ -43,10 +43,11 @@ const CalendarEditor: ForwardRefRenderFunction<
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   let newCalendars: CreateCalendarRequest['calendars'] = []
 
-  // 처음에는 초기화
+  // 처음에는 초기화//
   useEffect(() => {
     clearCalendarData()
-  }, [clearCalendarData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
@@ -60,50 +61,6 @@ const CalendarEditor: ForwardRefRenderFunction<
 
     // 상태 업데이트
     updateCalendarDay(key, type)
-  }
-
-  // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
-  const storedMonths = Array.from(
-    new Set( // 중복 제거
-      Object.keys(calendarData).map(dateStr => dayjs(dateStr).format('YYYY-MM'))
-    )
-  )
-
-  // 새 캘린더 데이터 생성 (calendars의 월별 목록)
-  const firstMonth = storedMonths[0]
-  const lastMonth = storedMonths[storedMonths.length - 1]
-
-  const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
-  const endDate = dayjs(lastMonth + '-01')
-    .endOf('month')
-    .format('YYYY-MM-DD')
-
-  const seenCombinations = new Set<string>()
-  const key = `${organizationName}_${workGroup}`
-
-  if (!seenCombinations.has(key)) {
-    seenCombinations.add(key)
-
-    const shifts: Record<string, string> = {}
-    Object.entries(calendarData).forEach(([date, value]) => {
-      if (
-        dayjs(date).isSameOrAfter(startDate) &&
-        dayjs(date).isSameOrBefore(endDate)
-      ) {
-        shifts[date] = fromShiftType(value.workTypeName)
-      }
-    })
-
-    newCalendars = [
-      {
-        organizationName,
-        team: workGroup,
-        startDate,
-        endDate,
-        shifts,
-      },
-    ]
-    console.log('생성된 새 calendars 데이터:', newCalendars)
   }
 
   const [convertedWorkTimes, setConvertedWorkTimes] = useState<
@@ -125,15 +82,63 @@ const CalendarEditor: ForwardRefRenderFunction<
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
+        // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
+        const storedMonths = Array.from(
+          new Set( // 중복 제거
+            Object.keys(calendarData).map(dateStr =>
+              dayjs(dateStr).format('YYYY-MM')
+            )
+          )
+        ).sort()
+        console.log('저장된 calendarData의 년/월 목록:', storedMonths)
+
+        // 새 캘린더 데이터 생성 (calendars의 월별 목록)
+        const firstMonth = storedMonths[0]
+        const lastMonth = storedMonths[storedMonths.length - 1]
+
+        const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
+        const endDate = dayjs(lastMonth + '-01')
+          .endOf('month')
+          .format('YYYY-MM-DD')
+
+        const seenCombinations = new Set<string>()
+        const key = `${organizationName}_${workGroup}`
+
+        if (!seenCombinations.has(key)) {
+          seenCombinations.add(key)
+
+          const shifts: Record<string, string> = {}
+          Object.entries(calendarData).forEach(([date, value]) => {
+            if (
+              dayjs(date).isSameOrAfter(startDate) &&
+              dayjs(date).isSameOrBefore(endDate)
+            ) {
+              shifts[date] = fromShiftType(value.workTypeName)
+            }
+          })
+
+          newCalendars = [
+            {
+              organizationName,
+              team: workGroup,
+              startDate,
+              endDate,
+              shifts,
+            },
+          ]
+          console.log('생성된 새 calendars 데이터:', newCalendars)
+        }
+
         const newCalendarRequest: CreateCalendarRequest = {
-          calendarName: '임시 근무표', // 임시 값 - 삭제 예정
           workTimes: convertedWorkTimes,
           calendars: newCalendars,
         }
         console.log('요청하는 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
+
         const res = await calendarRepository.createCalendar(newCalendarRequest)
+
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)
