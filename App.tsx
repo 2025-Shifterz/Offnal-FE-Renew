@@ -14,6 +14,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import FeedBackScreen from './src/presentation/info/screen/FeedBackScreen'
 
 enableScreens()
 
@@ -48,7 +49,8 @@ function App() {
       <BottomSheetModalProvider>
         <WorkTimeProvider>
           <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
-            <RootNavigator />
+            {/* <RootNavigator /> */}
+            <FeedBackScreen />
           </SafeAreaView>
         </WorkTimeProvider>
       </BottomSheetModalProvider>
