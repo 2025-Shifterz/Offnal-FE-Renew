@@ -7,7 +7,8 @@ import InformationMenuContainer, {
 } from '../component/InformationMenuContainer'
 import { useCallback, useMemo } from 'react'
 import { infoNavigation } from '../../../navigation/types'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
+import { useAuthStore } from '../../../store/useAuthStore'
 
 const informationMenus: MenuItemProps[] = [
   {
@@ -53,16 +54,27 @@ const termsOfUseMenus: MenuItemProps[] = [
 const InformationScreen = () => {
   const navigation = useNavigation<infoNavigation>()
 
+  const { logout } = useAuthStore.getState()
+
   const handleLogOut = useCallback(() => {
     Alert.alert('로그아웃', '정말로 로그아웃 하시겠습니까?', [
       { text: '취소', style: 'cancel' },
       {
         text: '로그아웃',
-        onPress: () => {},
+        onPress: () => {
+          logout()
+
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'LoginScreens' }],
+            })
+          )
+        },
         style: 'destructive',
       },
     ])
-  }, [])
+  }, [logout, navigation])
 
   const otherMenus: MenuItemProps[] = useMemo(() => {
     return [
