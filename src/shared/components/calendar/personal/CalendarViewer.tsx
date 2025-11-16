@@ -8,7 +8,6 @@ import { useCalendarStore } from '../../../../store/useCalendarStore'
 
 interface CalendarViewerProps {
   onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   onDateSelected?: (date: dayjs.Dayjs) => void // ✅ 콜백 추가
@@ -16,7 +15,6 @@ interface CalendarViewerProps {
 
 const CalendarViewer = ({
   onPressTeamIcon,
-  onPressEditIcon,
   selectedDate,
   setSelectedDate,
   onDateSelected,
@@ -25,9 +23,6 @@ const CalendarViewer = ({
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
-
-  // current date  -> 선택한 달로 바꾸기 !!!!!!!!!!!!
-  const [currentDate, setCurrentDate] = useState(dayjs())
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
@@ -68,8 +63,6 @@ const CalendarViewer = ({
       <CalendarBase
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        currentDate={currentDate}
-        onChangeMonth={setCurrentDate}
         calendarData={calendarData}
         onPressTeamIcon={onPressTeamIcon}
         isViewer

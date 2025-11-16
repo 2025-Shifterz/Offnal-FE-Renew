@@ -8,16 +8,12 @@ import { useCalendarStore } from '../../../store/useCalendarStore'
 
 interface CalendarInteractiveProps {
   isEditScreen: boolean
-  currentDate: dayjs.Dayjs
-  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
 }
 
 const CalendarInteractive = ({
   isEditScreen,
-  currentDate,
-  setCurrentDate,
   selectedDate,
   setSelectedDate,
 }: CalendarInteractiveProps) => {
@@ -59,8 +55,6 @@ const CalendarInteractive = ({
   return (
     <View>
       <CalendarBase
-        currentDate={currentDate}
-        onChangeMonth={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={setSelectedDate}
         calendarData={calendarData}

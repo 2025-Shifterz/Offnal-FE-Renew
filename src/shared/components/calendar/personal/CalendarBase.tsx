@@ -1,5 +1,5 @@
 // 캘린더 기본 UI
-import React from 'react'
+import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -19,8 +19,6 @@ interface CalendarBaseProps {
   isViewer: boolean
   isEditScreen?: boolean
   onPressTeamIcon?: () => void
-  currentDate: dayjs.Dayjs
-  onChangeMonth: (newDate: dayjs.Dayjs) => void
 }
 
 const CalendarBase = ({
@@ -30,19 +28,19 @@ const CalendarBase = ({
   isViewer,
   isEditScreen,
   onPressTeamIcon,
-  currentDate,
-  onChangeMonth,
 }: CalendarBaseProps) => {
+  const [currentDate, setCurrentDate] = useState(dayjs())
+
   const startOfMonth = currentDate.startOf('month') // 2025-07-01
   // const endOfMonth = currentDate.endOf('month'); // 2025-07-31
   const startDay = startOfMonth.day() // 그 달의 1일의 요일 -> 달력에서 1일은 어느 칸에 둘지
   const daysInMonth = currentDate.daysInMonth() // 그 달이 며칠까지 있는지 계산.
 
   const handlePrevMonth = () => {
-    onChangeMonth(currentDate.subtract(1, 'month'))
+    setCurrentDate(currentDate.subtract(1, 'month'))
   }
   const handleNextMonth = () => {
-    onChangeMonth(currentDate.add(1, 'month'))
+    setCurrentDate(currentDate.add(1, 'month'))
   }
 
   // 날짜 박스 렌더링 함수
@@ -108,7 +106,7 @@ const CalendarBase = ({
           <CalendarViewerHeader
             onPressTeamIcon={onPressTeamIcon}
             selectedDate={currentDate.toDate()}
-            onChange={newDate => onChangeMonth(dayjs(newDate))}
+            onChange={newDate => setCurrentDate(dayjs(newDate))}
           />
         ) : (
           <CalendarEditorHeader

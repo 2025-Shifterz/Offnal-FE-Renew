@@ -146,13 +146,10 @@ const CalendarEditor: ForwardRefRenderFunction<
       }
     },
   }))
-  const [currentDate, setCurrentDate] = useState(dayjs()) // 달력의 현재 표시되는 달
 
   return (
     <View>
       <CalendarBase
-        currentDate={currentDate}
-        onChangeMonth={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         calendarData={calendarData}

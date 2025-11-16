@@ -1,4 +1,9 @@
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import {
+  useNavigation,
+  useRoute,
+  RouteProp,
+  NavigationProp,
+} from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -20,7 +25,8 @@ type CalendarEditScreenRouteProp = RouteProp<
 >
 
 const CalendarEditScreen = () => {
-  const navigation = useNavigation()
+  const navigation =
+    useNavigation<NavigationProp<CalendarScreenStackParamList>>()
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
@@ -103,7 +109,7 @@ const CalendarEditScreen = () => {
         toUpdateShiftRecord(calendarData)
       )
       console.log('근무표 수정 성공')
-      navigation.goBack() // 저장 성공 후 이전 화면으로 이동
+      navigation.navigate('CalendarScreen') // 저장 성공 후 이전 화면으로 이동
     } catch (error) {
       console.log('근무표 수정 실패:', error)
     }
@@ -137,9 +143,7 @@ const CalendarEditScreen = () => {
             <CalendarInteractive
               selectedDate={selectedDate}
               setSelectedDate={openBottomSheet}
-              setCurrentDate={setCurrentDate}
               isEditScreen={true}
-              currentDate={currentDate}
             />
           </View>
         </View>

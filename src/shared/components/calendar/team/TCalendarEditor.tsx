@@ -27,9 +27,10 @@ const TCalendarEditor: ForwardRefRenderFunction<
   TCalendarEditorRef,
   Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
     workTimes: Record<string, InputWorkTimeDetail>
+    workGroup: string
     organizationName: string
   }
-> = ({ workTimes, organizationName }, ref) => {
+> = ({ workTimes, workGroup, organizationName }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const updateTeamCalendarDay = useTeamCalendarStore(
@@ -108,27 +109,6 @@ const TCalendarEditor: ForwardRefRenderFunction<
           .endOf('month')
           .format('YYYY-MM-DD')
 
-        // const shifts: Record<string, string> = {}
-        // teamCalendarData.forEach(teamRecord => {
-        //   Object.entries(teamRecord.dates).forEach(([date, work]) => {
-        //     if (
-        //       dayjs(date).isSameOrAfter(startDate) &&
-        //       dayjs(date).isSameOrBefore(endDate)
-        //     ) {
-        //       shifts[date] = fromShiftType(work.workTypeName)
-        //     }
-        //   })
-        // })
-
-        // newTeamCalendars = [
-        //   {
-        //     organizationName,
-        //     team: '1조',
-        //     startDate,
-        //     endDate,
-        //     shifts,
-        //   },
-        // ]
         // 팀별로 shifts 생성
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           teamCalendarData.map(teamRecord => {
