@@ -12,7 +12,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import CalendarEditor, {
   CalendarEditorRef,
 } from '../../../shared/components/calendar/personal/CalendarEditor'
-import TCalendarEditor from '../../../shared/components/calendar/team/TCalendarEditor'
+import TCalendarEditor, {
+  TCalendarEditorRef,
+} from '../../../shared/components/calendar/team/TCalendarEditor'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -45,10 +47,20 @@ const InputCalendarTypeScreen = () => {
 
   // 자식의 postData 호출
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
+  const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
   const handleNext = () => {
-    if (calendarEditorRef.current) {
-      calendarEditorRef.current.postData() // 근무표 저장 요청
+    if (selectedScheduleScopeType === 'ALL') {
+      if (tCalendarEditorRef.current) {
+        console.log('팀 근무표 저장 요청 실행')
+        tCalendarEditorRef.current.postData() // 팀 근무표 저장 요청
+      }
+    } else {
+      if (calendarEditorRef.current) {
+        console.log('개인 근무표 저장 요청 실행')
+        calendarEditorRef.current.postData() // 근무표 저장 요청
+      }
     }
+
     navigation.navigate('CompleteSchedule', { selectedScheduleScopeType })
   }
 
@@ -65,6 +77,7 @@ const InputCalendarTypeScreen = () => {
         <View className="mt-[20px]">
           {selectedScheduleScopeType === 'ALL' ? (
             <TCalendarEditor
+              ref={tCalendarEditorRef}
               organizationName={organizationName}
               workGroup={workGroup}
               workTimes={workTimes}

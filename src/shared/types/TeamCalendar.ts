@@ -10,6 +10,6 @@ export interface TeamDateAndWorkType {
 
   date: string // "YYYY-MM-DD"
   workTypeName: WorkType
-  startTime: string
-  endTime: string
+  startTime?: string
+  endTime?: string
 }
