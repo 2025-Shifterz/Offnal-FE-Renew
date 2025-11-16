@@ -4,6 +4,7 @@ import { useCalendarStore } from './useCalendarStore'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
+import { authService } from '../infrastructure/di/Dependencies'
 
 interface AuthState {
   accessToken: string | null
@@ -42,17 +43,18 @@ export const useAuthStore = create<AuthState>()(
         })
       },
       // 로그아웃 시
-      logout: () => {
+      logout: async () => {
         const { clearUser } = useUserStore.getState()
         const { clearCalendarData } = useCalendarStore.getState()
 
         clearUser() // 유저 정보 초기화
         clearCalendarData() // 캘린더 데이터 초기화
-
         set({
           accessToken: null,
           refreshToken: null,
         })
+
+        await authService.tokenLogOut()
       },
 
       // 토큰만 업데이트
