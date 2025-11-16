@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 import { Todo } from '../models/Todo'
 
 export interface TodoRepository {
-  createTodo(content: string, targetDate: dayjs.Dayjs): Promise<void>
+  createTodo(content: string, targetDate: dayjs.Dayjs): Promise<Todo>
 
   getAllTodos(): Promise<Todo[]>
 
