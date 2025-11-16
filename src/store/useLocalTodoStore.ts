@@ -1,89 +1,88 @@
 import dayjs from 'dayjs'
 import { Todo } from '../domain/models/Todo'
 import { create } from 'zustand'
-import { todoRepository } from '../infrastructure/di/Dependencies'
+import {
+  addTodoUseCase,
+  deleteTodoUseCase,
+  getTodosUseCase,
+  todoCompletionUseCase,
+  updateTodoUseCase,
+} from '../infrastructure/di/Dependencies'
 
 export interface LocalTodoState {
   todos: Todo[]
+  todo: string
+  showInput: boolean
+  selectedTodo: Todo | null
 
-  fetchAllTodos: () => Promise<void>
+  setTodo: (todo: string) => void
+  setShowInput: (show: boolean) => void
+  setSelectedTodo: (todo: Todo | null) => void
 
-  fetchTodosByDate: (targetDate: dayjs.Dayjs) => Promise<void>
-
-  fetchTodoById: (id: number) => Promise<void>
-
-  addTodo: (content: string, date: dayjs.Dayjs) => Promise<void>
-
-  updateTodo: (
-    id: number,
-    content: string,
-    date: dayjs.Dayjs,
-    isCompleted: boolean
-  ) => Promise<void>
-
+  initTodos: () => Promise<void>
+  addTodo: (date: dayjs.Dayjs) => Promise<void>
   deleteTodo: (id: number) => Promise<void>
+  updateTodoCompleted: (id: number, currentCompleted: boolean) => Promise<void>
+  scheduleToday: () => Promise<void>
+  scheduleNextDay: () => Promise<void>
 }
 
-export const localTodoStore = create<LocalTodoState>(set => ({
+export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
   todos: [],
+  todo: '',
+  showInput: false,
+  selectedTodo: null,
 
-  fetchAllTodos: async () => {
-    const data = await todoRepository.getAllTodos()
+  setTodo: todo => set({ todo }),
+  setShowInput: showInput => set({ showInput }),
+  setSelectedTodo: selectedTodo => set({ selectedTodo }),
 
-    set(() => ({
-      todos: data,
-    }))
+  initTodos: async () => {
+    const loadedTodos = await getTodosUseCase.execute()
+    set({ todos: loadedTodos })
   },
 
-  fetchTodoById: async (id: number) => {
-    const data = await todoRepository.getTodoById(id)
-
-    if (!data) {
+  addTodo: async (date: dayjs.Dayjs) => {
+    const todoText = get().todo.trim()
+    if (!todoText) {
       return
     }
-
-    set(state => {
-      const todos = [...state.todos]
-      const index = todos.findIndex(todo => todo.id === id)
-
-      if (index !== -1) {
-        todos[index] = data
-      } else {
-        todos.push(data)
-      }
-
-      return { todos }
-    })
-  },
-
-  fetchTodosByDate: async (targetDate: dayjs.Dayjs) => {
-    const todos = await todoRepository.getTodosByDate(targetDate)
-
-    set(() => ({ todos: todos }))
-  },
-
-  addTodo: async (content, date) => {
-    const todo = await todoRepository.createTodo(content, date)
-
-    set(state => ({ todos: [...state.todos, todo] }))
-  },
-
-  updateTodo: async (id, content, date, isCompleted) => {
-    await todoRepository.updateTodo(id, content, date, isCompleted)
-
-    set(state => ({
-      todos: state.todos.map(todo => {
-        if (todo.id === id) {
-          return { ...todo, content, date, isCompleted }
-        }
-        return todo
-      }),
-    }))
+    await addTodoUseCase.execute(todoText, date)
+    const updatedTodos = await getTodosUseCase.execute()
+    set({ todos: updatedTodos, todo: '' })
   },
 
   deleteTodo: async (id: number) => {
-    await todoRepository.deleteTodoById(id)
+    await deleteTodoUseCase.execute(id)
+    const updatedTodos = await getTodosUseCase.execute()
+    set({ todos: updatedTodos })
+  },
 
-    set(state => ({ todos: state.todos.filter(todo => todo.id !== id) }))
+  updateTodoCompleted: async (id: number, currentCompleted: boolean) => {
+    await todoCompletionUseCase.execute(id, !currentCompleted)
+    const updatedTodos = await getTodosUseCase.execute()
+    set({ todos: updatedTodos })
+  },
+
+  scheduleToday: async () => {
+    const { selectedTodo } = get()
+    if (selectedTodo) {
+      await updateTodoUseCase.execute(selectedTodo.id, undefined, dayjs())
+      const updatedTodos = await getTodosUseCase.execute()
+      set({ todos: updatedTodos })
+    }
+  },
+
+  scheduleNextDay: async () => {
+    const { selectedTodo } = get()
+    if (selectedTodo) {
+      await updateTodoUseCase.execute(
+        selectedTodo.id,
+        undefined,
+        dayjs().add(1, 'day')
+      )
+      const updatedTodos = await getTodosUseCase.execute()
+      set({ todos: updatedTodos })
+    }
   },
 }))

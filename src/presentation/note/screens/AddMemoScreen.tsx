@@ -13,7 +13,6 @@ import { useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { MainStackParamList } from '../../../navigation/types'
-import { addMemoUseCase } from '../../../infrastructure/di/Dependencies'
 import dayjs from 'dayjs'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 
