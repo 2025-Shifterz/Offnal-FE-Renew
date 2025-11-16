@@ -21,12 +21,17 @@ type ScheduleTypeRouteProp = RouteProp<
 
 const InputCalendarTypeScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
+  const { selectedScheduleScopeType, organizationName, workGroup, workTimes } =
     route.params
-  console.log(selectedScheduleScopeType)
-  console.log(calendarName)
-  console.log(workGroup)
-  console.log(workTimes)
+
+  useEffect(() => {
+    console.log('넘어온 근무표 기본정보 입력: ', {
+      selectedScheduleScopeType,
+      organizationName,
+      workGroup,
+      workTimes,
+    })
+  }, [selectedScheduleScopeType, organizationName, workGroup, workTimes])
 
   const { setWorkTimes } = useWorkTime()
 
@@ -60,16 +65,16 @@ const InputCalendarTypeScreen = () => {
         <View className="mt-[20px]">
           {selectedScheduleScopeType === 'ALL' ? (
             <TCalendarEditor
-              calendarName={calendarName}
+              organizationName={organizationName}
               workGroup={workGroup}
               workTimes={workTimes}
             />
           ) : (
             <CalendarEditor
               ref={calendarEditorRef}
-              calendarName={calendarName}
-              workGroup={workGroup}
               workTimes={workTimes}
+              organizationName={organizationName}
+              workGroup={workGroup}
             />
           )}
         </View>

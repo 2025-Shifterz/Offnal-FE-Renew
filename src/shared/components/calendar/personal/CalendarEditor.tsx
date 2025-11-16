@@ -1,34 +1,27 @@
 import React, {
   forwardRef,
   ForwardRefRenderFunction,
+  useEffect,
   useImperativeHandle,
   useState,
 } from 'react'
-import { View } from 'react-native'
 import CalendarBase from './../personal/CalendarBase'
-import TypeSelect from './TypeSelect'
 import dayjs from 'dayjs'
-import {
-  MonthlySchedule,
-  NewCalendar,
-  ShiftType,
-} from '../../../../../data/model/Calendar'
-import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
-
-interface CalendarEditorProps {
-  calendarName: string
-  workGroup: string
-  workTimes: {
-    [key: string]: {
-      startTime: string
-      endTime: string
-    }
-  }
-  year?: number
-  month?: number
-  scheduleData?: Map<string, ShiftType>
-}
+import {
+  CreateCalendarRequest,
+  InputWorkTimeDetail,
+} from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
+import { WorkType } from '../../../types/Calendar'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { View } from 'react-native'
+import TypeSelect from './TypeSelect'
+import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
+import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 
 export interface CalendarEditorRef {
   postData: () => void
@@ -36,26 +29,25 @@ export interface CalendarEditorRef {
 
 const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
-  CalendarEditorProps
-> = (
-  { calendarName, workGroup, workTimes, year, month, scheduleData },
-  ref
-) => {
-  const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
-  const [calendarData, setCalendarData] = useState<Map<string, ShiftType>>(
-    () => {
-      console.log(scheduleData)
-      return scheduleData ?? new Map<string, ShiftType>()
-    }
-  )
-  const [currentDate, setCurrentDate] = useState(() => {
-    if (year !== undefined && month !== undefined) {
-      return dayjs()
-        .year(year)
-        .month(month - 1)
-    }
-    return dayjs()
-  })
+  Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
+    workTimes: Record<string, InputWorkTimeDetail>
+    organizationName: string
+    workGroup: string
+  }
+> = ({ workTimes, organizationName, workGroup }, ref) => {
+  // stores
+  const selectedDate = useCalendarStore(state => state.selectedDate)
+  const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
+  const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  let newCalendars: CreateCalendarRequest['calendars'] = []
+
+  // 처음에는 초기화//
+  useEffect(() => {
+    clearCalendarData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
@@ -63,101 +55,98 @@ const CalendarEditor: ForwardRefRenderFunction<
   }
 
   // 근무 형태 추가
-  const handleTypeSelect = (type: ShiftType) => {
+  const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
 
-    setCalendarData(prev => {
-      // 이미 근무 형태가 있으면 또 클릭하면 삭제
-      const updated = new Map(prev)
-      if (updated.get(key) === type) {
-        updated.delete(key)
-        console.log(`Deleted shift for ${key}`)
-      } else {
-        updated.set(key, type)
-        console.log(`Set shift ${type} for ${key}`)
-      }
-      console.log('Updated calendarData (Map):', updated)
-      console.log(
-        'Updated calendarData entries:',
-        Array.from(updated.entries())
-      )
-      console.log(
-        'CalendarEditor render calendarData:',
-        Array.from(calendarData.entries())
-      )
-
-      return updated
-    })
+    // 상태 업데이트
+    updateCalendarDay(key, type)
   }
 
-  // 부모에서 호출할 수 있게 내보낸다.
+  const [convertedWorkTimes, setConvertedWorkTimes] = useState<
+    Record<string, { startTime: string; duration: string }>
+  >({
+    D: { startTime: '08:00', duration: 'PT8H' },
+    E: { startTime: '16:00', duration: 'PT8H' },
+    N: { startTime: '00:00', duration: 'PT8H' },
+  })
+
+  // workTimes 에서 endTime -> duration 변환
+  useEffect(() => {
+    if (!workTimes) return
+    const converted = convertEndTimeToDuration(workTimes)
+    setConvertedWorkTimes(converted)
+  }, [workTimes])
+
+  // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
-        const calendarMap: Record<string, Map<number, ShiftType>> = {}
-        console.log(
-          '📅 최종 calendarData 내용:',
-          Array.from(calendarData.entries())
-        )
+        // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
+        const storedMonths = Array.from(
+          new Set( // 중복 제거
+            Object.keys(calendarData).map(dateStr =>
+              dayjs(dateStr).format('YYYY-MM')
+            )
+          )
+        ).sort()
+        console.log('저장된 calendarData의 년/월 목록:', storedMonths)
 
-        calendarData.forEach((type, dateStr) => {
-          const date = dayjs(dateStr)
-          const year = date.year()
-          const month = date.month() + 1
-          const day = date.date()
+        // 새 캘린더 데이터 생성 (calendars의 월별 목록)
+        const firstMonth = storedMonths[0]
+        const lastMonth = storedMonths[storedMonths.length - 1]
 
-          const key = `${year}-${month}`
-          if (!calendarMap[key]) {
-            calendarMap[key] = new Map()
-          }
-          calendarMap[key].set(day, type as ShiftType)
-        })
+        const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
+        const endDate = dayjs(lastMonth + '-01')
+          .endOf('month')
+          .format('YYYY-MM-DD')
 
-        // MonthlySchedule 리스트 생성
-        const schedules: MonthlySchedule[] = Object.entries(calendarMap).map(
-          ([key, shiftsMap]) => {
-            const [year, month] = key.split('-').map(Number)
-            console.log('shifts: ', shiftsMap)
-            return {
-              year,
-              month,
-              shifts: shiftsMap,
+        const seenCombinations = new Set<string>()
+        const key = `${organizationName}_${workGroup}`
+
+        if (!seenCombinations.has(key)) {
+          seenCombinations.add(key)
+
+          const shifts: Record<string, string> = {}
+          Object.entries(calendarData).forEach(([date, value]) => {
+            if (
+              dayjs(date).isSameOrAfter(startDate) &&
+              dayjs(date).isSameOrBefore(endDate)
+            ) {
+              shifts[date] = fromShiftType(value.workTypeName)
             }
-          }
-        )
-        // props.workTimes를 Map<ShiftType, { startTime, endTime }> 형태로 바꿔주는 코드가 필요
+          })
 
-        const shiftTimesMap = new Map<
-          ShiftType,
-          { startTime: string; endTime: string }
-        >()
-
-        Object.entries(workTimes).forEach(([type, time]) => {
-          // 만약 type이 "D", "E", "N"처럼 영어 코드면 아래처럼 매핑 필요
-          const shiftType = toShiftType(type) // 예: "D" => "주간"
-          if (shiftType) {
-            shiftTimesMap.set(shiftType, time)
-          }
-        })
-
-        const newCalendar: NewCalendar = {
-          name: calendarName,
-          group: workGroup,
-          shiftTimes: shiftTimesMap,
-          schedules,
+          newCalendars = [
+            {
+              organizationName,
+              team: workGroup,
+              startDate,
+              endDate,
+              shifts,
+            },
+          ]
+          console.log('생성된 새 calendars 데이터:', newCalendars)
         }
-        console.log('요청하는 데이터:', newCalendar)
+
+        const newCalendarRequest: CreateCalendarRequest = {
+          workTimes: convertedWorkTimes,
+          calendars: newCalendars,
+        }
+        console.log('요청하는 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
-        const res = await calendarRepository.createWorkCalendar(newCalendar)
+
+        const res = await calendarRepository.createCalendar(newCalendarRequest)
+
         console.log('근무표 저장 성공', res)
       } catch (error) {
         console.error('근무표 저장 실패:', error)
-        //throw error;
+        throw error
       }
     },
   }))
+  const [currentDate, setCurrentDate] = useState(dayjs()) // 달력의 현재 표시되는 달
 
   return (
     <View>

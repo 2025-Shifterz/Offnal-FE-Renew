@@ -49,8 +49,7 @@ function App() {
       <BottomSheetModalProvider>
         <WorkTimeProvider>
           <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
-            {/* <RootNavigator /> */}
-            <FeedBackScreen />
+            <RootNavigator />
           </SafeAreaView>
         </WorkTimeProvider>
       </BottomSheetModalProvider>

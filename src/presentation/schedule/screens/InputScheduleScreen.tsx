@@ -24,21 +24,25 @@ const InputScheduleScreen = () => {
 
   const navigation = useNavigation<onboardingNavigation>()
 
-  // 필수 입력 값을 작성해야 넘어가도록
-  const [calendarName, setCalendarName] = useState('') // 근무표 이름
+  // states
+  const [organizationName, setOrganizationName] = useState('') // 조직 이름
   const [workGroup, setWorkGroup] = useState('1조') // 직접 입력 시 팀 이름
   const [workTimes, setWorkTimes] = useState({
     D: { startTime: '08:00', endTime: '16:00' },
     E: { startTime: '16:00', endTime: '00:00' },
     N: { startTime: '00:00', endTime: '08:00' },
-  }) // 직접 입력 시 팀 이름
+  })
+  // organizationId from store
+  // const organizationId = useCalendarStore(state => state.organizationId)
+  //
+  // console.log('organizationId in InputScheduleScreen: ', organizationId)
 
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
-  const handleNext = () => {
+  const handleNext = async () => {
     navigation.navigate('InputCalendarType', {
       selectedScheduleScopeType,
-      calendarName,
+      organizationName,
       workGroup,
       workTimes,
     })
@@ -54,8 +58,8 @@ const InputScheduleScreen = () => {
 
         <View className="flex gap-[26px]">
           <ScheduleNameInput
-            calendarName={calendarName}
-            setCalendarName={setCalendarName}
+            organizationName={organizationName}
+            setOrganizationName={setOrganizationName}
           />
           <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
             <TimeInput />

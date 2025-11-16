@@ -7,7 +7,7 @@ export const api = axios.create({
   baseURL: API_URL,
   timeout: 10000,
 })
-
+// console.log('API_URL:', API_URL)
 // 요청 인터셉터
 api.interceptors.request.use(
   config => {

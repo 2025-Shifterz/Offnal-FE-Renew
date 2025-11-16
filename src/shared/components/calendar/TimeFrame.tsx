@@ -2,18 +2,18 @@
 
 import { Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { ShiftType } from '../../../data/model/Calendar'
+import { WorkType } from '../../types/Calendar'
 
 // TimeFrameChildren을 ShiftType과 동일하게 정의
-export type TimeFrameChildren = ShiftType
+export type TimeFrameChildren = WorkType
 
 interface TimeFrameProps {
-  text: ShiftType
+  text: WorkType
   onPress?: () => void
 }
 
 const stylesMap: Record<
-  ShiftType,
+  WorkType,
   { backgroundColor: string; textColor: string }
 > = {
   주간: {
@@ -39,6 +39,11 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
   onPress,
 }: TimeFrameProps) => {
   const currentStyle = stylesMap[text]
+
+  if (!currentStyle) {
+    console.warn(`Unknown WorkType: ${text}`)
+    return null // 렌더링 안함
+  }
 
   // onPress를 호출하는 것은, 위에서 받은 handleTypeSelect('주간')을 그대로 실행하는 것이다.
   return (
