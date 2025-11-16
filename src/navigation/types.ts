@@ -44,7 +44,7 @@ export type MainStackParamList = {
   AutoAlarm: undefined
   Todo: undefined
   Memo: undefined
-  AddMemo: { memo: Memo } | undefined
+  AddMemo: { memo?: Memo; date?: string } | undefined
 }
 
 // 로그인

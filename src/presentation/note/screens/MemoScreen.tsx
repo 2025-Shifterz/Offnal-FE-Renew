@@ -8,7 +8,7 @@ import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
-import { Fragment, useCallback, useRef } from 'react'
+import { Fragment, useCallback, useRef, useState } from 'react'
 import OneAddButton from '../components/OneAddButton'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useEffect } from 'react'
@@ -25,9 +25,11 @@ const MemoScreen = () => {
   const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
   const deleteMemo = localMemoStore(state => state.deleteMemo)
 
+  const [currentDate, setCurrentDate] = useState(dayjs())
+
   useEffect(() => {
-    fetchMemosByDate(dayjs())
-  }, [fetchMemosByDate])
+    fetchMemosByDate(currentDate)
+  }, [currentDate, fetchMemosByDate])
 
   useFocusEffect(
     useCallback(() => {
@@ -58,7 +60,10 @@ const MemoScreen = () => {
         />
 
         <View className="flex-1">
-          <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
+          <DayBoxHeader
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+          />
           <View className="rounded-bl-radius-xl rounded-br-radius-xl bg-surface-white">
             {memos.length === 0 ? (
               <View className="items-center justify-center py-[27px]">
@@ -118,7 +123,11 @@ const MemoScreen = () => {
           </View>
 
           <OneAddButton
-            addOneTodo={() => navigation.navigate('AddMemo')}
+            addOneTodo={() =>
+              navigation.navigate('AddMemo', {
+                date: currentDate.toISOString(),
+              })
+            }
             text="메모 작성"
           />
         </View>
