@@ -9,14 +9,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import DayBoxHeader from '../components/DayBoxHeader'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { Todo } from '../../../domain/models/Todo'
-import {
-  addTodoUseCase,
-  deleteTodoUseCase,
-  getTodosUseCase,
-  todoCompletionUseCase,
-} from '../../../infrastructure/di/Dependencies'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
@@ -25,6 +19,7 @@ import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 import TodoOptionBottomSheet, {
   BottomSheetMethods,
 } from '../components/sheet/TodoOptionBottomSheet'
+import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
 
 const TodoScreen = () => {
   const sheetRef = useRef<BottomSheetMethods>(null)
@@ -34,35 +29,36 @@ const TodoScreen = () => {
     setSelectedTodo(todo)
   }
 
-  const [todos, setTodos] = useState<Todo[]>([])
-  const [todo, addTodo] = useState('')
+  const [todo, setTodo] = useState('')
   const [showInput, setShowInput] = useState(false)
-  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
 
-  const initTodos = async () => {
-    try {
-      const loadedTodos = await getTodosUseCase.execute()
-      setTodos(loadedTodos)
-    } catch (error) {
-      console.error('Failed to load todos:', error)
-    }
-  }
+  const [currentDate, setCurrentDate] = useState(dayjs())
+  const {
+    todos,
+    selectedTodo,
+    setSelectedTodo,
+    getTodosByDate,
+    addTodo,
+    deleteTodo,
+    updateTodoCompleted,
+    scheduleToday,
+    scheduleNextDay,
+  } = useLocalTodoStore.getState()
 
   useEffect(() => {
-    initTodos()
-  }, [])
+    getTodosByDate(currentDate)
+  }, [todos, currentDate, getTodosByDate])
 
-  const handleAddTodo = async (date: Dayjs) => {
+  const handleAddTodo = async () => {
     if (!todo.trim()) {
       Alert.alert('알림', '할 일 내용을 압력해주세요')
       return
     }
 
     try {
-      await addTodoUseCase.execute(todo, date)
-      addTodo('') // 초기화
-      const updatedTodos = await getTodosUseCase.execute()
-      setTodos(updatedTodos)
+      await addTodo(todo, currentDate)
+      setTodo('') // 초기화
+      getTodosByDate(currentDate)
     } catch (error) {
       console.error('Error adding todo: ', error)
     }
@@ -70,23 +66,36 @@ const TodoScreen = () => {
 
   const handleDeleteTodo = async (id: number) => {
     try {
-      await deleteTodoUseCase.execute(id)
-      const updatedTodos = await getTodosUseCase.execute()
-      setTodos(updatedTodos)
-    } catch (error) {
-      console.error('Error deleting todo:', error)
+      await deleteTodo(id, currentDate)
     } finally {
       sheetRef.current?.close()
     }
   }
 
-  const updateTodoCompleted = async (id: number, currentCompleted: boolean) => {
+  const handleUpdateTodoCompleted = async (
+    id: number,
+    currentCompleted: boolean
+  ) => {
     try {
-      await todoCompletionUseCase.execute(id, !currentCompleted)
-      const updatedTodos = await getTodosUseCase.execute()
-      setTodos(updatedTodos)
+      await updateTodoCompleted(id, !currentCompleted, currentDate)
     } catch (error) {
       console.error('Error completing todo: ', error)
+    }
+  }
+
+  const handleScheduleToday = async () => {
+    try {
+      await scheduleToday()
+    } catch (error) {
+      console.error('Error scheduling today: ', error)
+    }
+  }
+
+  const handleScheduleNextDay = async () => {
+    try {
+      await scheduleNextDay()
+    } catch (error) {
+      console.error('Error scheduling next day: ', error)
     }
   }
 
@@ -96,7 +105,10 @@ const TodoScreen = () => {
         <TopAppBar title="할 일" showBackButton={true} />
 
         <ScrollView>
-          <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
+          <DayBoxHeader
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+          />
           <View className="rounded-bl-radius-xl rounded-br-radius-xl bg-surface-white">
             {todos.length === 0 && !showInput ? (
               <View className="items-center justify-center py-[27px]">
@@ -109,7 +121,7 @@ const TodoScreen = () => {
                     <TouchableOpacity
                       className="flex-1 flex-row items-center"
                       onPress={() =>
-                        updateTodoCompleted(item.id, item.isCompleted)
+                        handleUpdateTodoCompleted(item.id, item.isCompleted)
                       }
                     >
                       {item.isCompleted ? (
@@ -146,11 +158,11 @@ const TodoScreen = () => {
                 <View className="ml-[8px] flex-row items-center justify-between">
                   <TextInput
                     value={todo}
-                    onChangeText={addTodo}
+                    onChangeText={setTodo}
                     placeholder={`할 일 입력`}
                     className="mb-[5px] flex-1 text-body-xs text-text-basic"
                     placeholderTextColor="#6d7882"
-                    onSubmitEditing={() => handleAddTodo(dayjs())}
+                    onSubmitEditing={() => handleAddTodo(currentDate)}
                     numberOfLines={1}
                     autoFocus={true}
                   />
@@ -166,7 +178,7 @@ const TodoScreen = () => {
                 setShowInput(true)
               } else {
                 if (todo.trim()) {
-                  await handleAddTodo(dayjs())
+                  await handleAddTodo(currentDate)
                   setShowInput(true)
                 } else {
                   setShowInput(false)
@@ -183,8 +195,8 @@ const TodoScreen = () => {
         selectedTodo={selectedTodo}
         onEdit={() => {}}
         onDelete={() => handleDeleteTodo(selectedTodo?.id || 0)}
-        onScheduleToday={() => {}}
-        onScheduleNextDay={() => {}}
+        onScheduleToday={() => handleScheduleToday}
+        onScheduleNextDay={() => handleScheduleNextDay}
         onReSchedule={() => {}}
       />
     </View>

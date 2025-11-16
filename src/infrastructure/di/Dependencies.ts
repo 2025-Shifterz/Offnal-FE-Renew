@@ -74,7 +74,7 @@ export const updateTodoUseCase = new UpdateTodoUseCase(todoRepository)
 export const addMemoUseCase = new CreateMemoUseCase(memoRepository)
 export const deleteMemoUseCase = new DeleteMemoUseCase(memoRepository)
 
-export const getToDosByDate = new GetTodosByDateUseCase(todoRepository)
+export const getToDosByDateUseCase = new GetTodosByDateUseCase(todoRepository)
 export const getMemosByDateUseCase = new GetMemosByDateUseCase(memoRepository)
 export const getMemoByIdUseCase = new GetMemoByIdUseCase(memoRepository)
 export const updateMemoUseCase = new UpdateMemoUseCase(memoRepository)

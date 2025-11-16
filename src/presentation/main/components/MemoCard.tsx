@@ -3,16 +3,16 @@ import { View, Text } from 'react-native'
 import TitleSection from './TitleSection'
 import NoteIcon from '../../../assets/icons/ic_note_24.svg'
 import { useNavigation } from '@react-navigation/native'
-import { mainNavigation, RootStackParamList } from '../../../navigation/types'
+import { RootStackParamList } from '../../../navigation/types'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import { Memo } from '../../../domain/models/Memo'
 
 interface MemoCardProps {
-  memos: Todo[]
+  memos: Memo[]
 }
 
 interface MemoItemProps {
-  memo: Todo
+  memo: Memo
   isFirst: boolean
   isLast: boolean
 }
@@ -81,7 +81,7 @@ const Item = ({ memo, isFirst, isLast }: MemoItemProps) => {
     <View
       className={`bg-background-gray-subtle1 px-number-6 py-number-4 ${itemBorderClass} ${!isLast ? 'mb-number-1' : ''}`}
     >
-      <Text className="text-text-subtle body-xxs">{memo.text}</Text>
+      <Text className="text-text-subtle body-xxs">{memo.title}</Text>
     </View>
   )
 }
