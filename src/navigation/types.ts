@@ -62,13 +62,14 @@ export type OnboardingStackParamList = {
   InputSchedule: { selectedScheduleScopeType: ScheduleScopeType }
   InputCalendarType: {
     selectedScheduleScopeType: ScheduleScopeType
-    calendarName: string
+    organizationName: string
     workGroup: string
     workTimes: {
       D: { startTime: string; endTime: string }
       E: { startTime: string; endTime: string }
       N: { startTime: string; endTime: string }
     }
+    // organizationId: number
   }
   CompleteSchedule: { selectedScheduleScopeType: ScheduleScopeType }
 }
@@ -148,3 +149,13 @@ export type AutoAlarmScreenStackParamList = {
   CreateAlarm: undefined
   EditAutoAlarm: { alarmId: string }
 }
+
+// Infomation Navigator
+export type InfoStackParamList = {
+  InformationScreen: undefined
+  UpdateMyInfoScreen: undefined
+  WithdrawBeforeScreen: undefined
+  WithdrawScreen: undefined
+}
+
+export type infoNavigation = NativeStackNavigationProp<InfoStackParamList>

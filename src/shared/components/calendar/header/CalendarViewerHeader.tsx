@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Modal,
   Text,
@@ -10,12 +10,12 @@ import {
 import TeamVersion from '../../../../assets/icons/users-profiles-01.svg'
 import CalEdit from '../../../../assets/icons/file-edit-02.svg'
 import ArrowDown from '../../../../assets/icons/chevron-down.svg'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
 
 interface CalendarViewerHeaderProps {
   selectedDate: Date
   onChange: (date: Date) => void
   onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
 }
 
 const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() + i)
@@ -25,11 +25,17 @@ const CalendarViewerHeader = ({
   selectedDate,
   onChange,
   onPressTeamIcon,
-  onPressEditIcon,
 }: CalendarViewerHeaderProps) => {
   const [visible, setVisible] = useState(false)
   const [tempYear, setTempYear] = useState(selectedDate.getFullYear())
   const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
+
+  const setSelectedYearMonth = useCalendarStore(
+    state => state.setSelectedYearMonth
+  )
+  useEffect(() => {
+    setSelectedYearMonth({ year: tempYear, month: tempMonth })
+  }, [tempYear, tempMonth, setSelectedYearMonth])
 
   const handleConfirm = () => {
     setVisible(false)
@@ -104,9 +110,6 @@ const CalendarViewerHeader = ({
       <View className="flex-row gap-[10px]">
         <TouchableOpacity onPress={onPressTeamIcon}>
           <TeamVersion />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPressEditIcon}>
-          <CalEdit />
         </TouchableOpacity>
       </View>
     </View>
