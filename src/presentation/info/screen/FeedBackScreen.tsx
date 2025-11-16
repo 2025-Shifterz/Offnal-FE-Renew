@@ -12,6 +12,8 @@ import { useState } from 'react'
 import GlobalText from '../../../shared/components/GlobalText'
 import StarRating from '../../../shared/components/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
+import { useNavigation } from '@react-navigation/native'
+import { infoNavigation } from '../../../navigation/types'
 
 type RatingInfo = { emoji: string; text: string }
 
@@ -26,6 +28,8 @@ const RATING_DATA: { [key: number]: RatingInfo } = {
 const MAX_FEEDBACK_LENGTH = 100
 
 const FeedBackScreen = () => {
+  const navigation = useNavigation<infoNavigation>()
+
   const [rating, setRating] = useState(1)
   const [feedback, setFeedback] = useState('')
 
@@ -37,7 +41,9 @@ const FeedBackScreen = () => {
         <TopAppBar
           title="평가 및 피드백"
           showBackButton={true}
-          onPressBackButton={() => {}}
+          onPressBackButton={() => {
+            navigation.pop()
+          }}
         />
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -75,9 +81,9 @@ const FeedBackScreen = () => {
                     textAlignVertical="top"
                   />
                   <View className="self-end">
-                    <Text className="text-text-disabled label-xs">
+                    <GlobalText className="text-text-disabled label-xs">
                       {feedback.length}/{MAX_FEEDBACK_LENGTH}
-                    </Text>
+                    </GlobalText>
                   </View>
                 </View>
               </View>

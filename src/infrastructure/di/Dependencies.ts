@@ -21,10 +21,10 @@ import { HomeService } from '../remote/api/HomeService'
 import { OcrService } from '../remote/api/OcrService'
 import { CalendarService } from '../remote/api/CalendarService'
 import { MemoService } from '../remote/api/MemoService'
-import { ProfileService } from '../remote/api/ProfileService'
+import { MemberService } from '../remote/api/MemberService'
 import { TodoService } from '../remote/api/TodoService'
 import { AuthService } from '../remote/api/AuthService'
-import { UserRepositoryImpl } from '../../data/impl/UserRepositoryImpl'
+import { MemberRepositoryImpl as MemberRepositoryImpl } from '../../data/impl/MemberRepositoryImpl'
 import { IosHealthService } from '../remote/api/IosHealthService'
 import { AndroidHealthService } from '../remote/api/AndroidHealthService'
 import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
@@ -40,7 +40,7 @@ export const ocrService = new OcrService()
 export const organizationService = new OrganizationService()
 export const calendarService = new CalendarService()
 export const homeService = new HomeService()
-export const profileService = new ProfileService()
+export const memberService = new MemberService()
 export const todoService = new TodoService()
 export const memoService = new MemoService()
 export const authService = new AuthService()
@@ -56,7 +56,10 @@ export const organizationRepository = new OrganizationRepositoryImpl(
 )
 export const calendarRepository = new CalendarRepositoryImpl(calendarService)
 export const homeRepository = new HomeRepositoryImpl(homeService)
-export const userRepository = new UserRepositoryImpl()
+export const memberRepository = new MemberRepositoryImpl(
+  homeService,
+  memberService
+)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
