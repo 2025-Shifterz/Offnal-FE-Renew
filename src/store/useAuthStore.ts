@@ -43,7 +43,7 @@ export const useAuthStore = create<AuthState>()(
         })
       },
       // 로그아웃 시
-      logout: () => {
+      logout: async () => {
         const { clearUser } = useUserStore.getState()
         const { clearCalendarData } = useCalendarStore.getState()
 
@@ -54,7 +54,7 @@ export const useAuthStore = create<AuthState>()(
           refreshToken: null,
         })
 
-        authService.tokenLogOut()
+        await authService.tokenLogOut()
       },
 
       // 토큰만 업데이트

@@ -27,6 +27,10 @@ const WithdrawBeforeScreen = () => {
   const [otherReason, setOtherReason] = useState('')
 
   const handleCheck = (key: keyof typeof checkedState) => {
+    if (key === 'other' && checkedState.other) {
+      setOtherReason('')
+    }
+
     setCheckedState(prevState => ({
       ...prevState,
       [key]: !prevState[key],

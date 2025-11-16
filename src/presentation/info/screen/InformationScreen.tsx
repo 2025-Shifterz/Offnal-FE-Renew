@@ -54,7 +54,7 @@ const termsOfUseMenus: MenuItemProps[] = [
 const InformationScreen = () => {
   const navigation = useNavigation<infoNavigation>()
 
-  const { logout } = useAuthStore.getState()
+  const logout = useAuthStore(state => state.logout)
 
   const handleLogOut = useCallback(() => {
     Alert.alert('로그아웃', '정말로 로그아웃 하시겠습니까?', [
