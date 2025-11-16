@@ -15,7 +15,6 @@ interface CalendarBaseProps {
   calendarData: Record<string, Record<string, TimeFrameChildren>>
   isViewer: boolean
   onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
 }
 
 const TCalendarBase = ({
@@ -24,7 +23,6 @@ const TCalendarBase = ({
   calendarData,
   isViewer,
   onPressTeamIcon,
-  onPressEditIcon,
 }: CalendarBaseProps) => {
   const [currentDate, setCurrentDate] = useState(dayjs())
 
@@ -132,7 +130,6 @@ const TCalendarBase = ({
       {isViewer ? (
         <CalendarViewerHeader
           onPressTeamIcon={onPressTeamIcon}
-          onPressEditIcon={onPressEditIcon}
           selectedDate={currentDate.toDate()}
           onChange={newDate => setCurrentDate(dayjs(newDate))}
         />
