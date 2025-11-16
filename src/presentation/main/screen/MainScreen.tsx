@@ -2,7 +2,6 @@ import '../../../../global.css'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
 import AlramSection from '../ui/AlramSection'
 import HealthGuideSection from '../ui/HealthGuideSection'
 import RecommnedMealSection from '../ui/RecommendMealSection'
@@ -12,42 +11,42 @@ import dayjs from 'dayjs'
 import { useFocusEffect } from '@react-navigation/native'
 import {
   todoRepository,
-  homeRepository,
+  getMemosByDateUseCase,
 } from '../../../infrastructure/di/Dependencies'
 import { HomeResponse } from '../../../infrastructure/remote/response/homeResponse'
 import TopBanner from '../components/TopBanner'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
 import { Todo } from '../../../domain/models/Todo'
+import { Memo } from '../../../domain/models/Memo'
 
 export default function MainScreen() {
   const [loading, setLoading] = useState(true)
 
-  const [homeData, setHomeData] = useState<HomeResponse['data'] | null>(null)
+  const [homeData] = useState<HomeResponse['data'] | null>(null)
   const [todos, setTodo] = useState<Todo[]>()
+  const [memos, setMemos] = useState<Memo[]>()
 
-  const memos = localMemoStore(state => state.memos)
-  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
+  const fetchHome = async () => {
+    try {
+      // const data = await homeRepository.getHome()
+      const todos = await todoRepository.getTodosByDate(dayjs())
+      const memos = await getMemosByDateUseCase.execute(dayjs())
+
+      // setHomeData(data)
+      setMemos(memos)
+      setTodo(todos)
+    } catch (error) {
+      console.error('홈 데이터 불러오기 실패:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useFocusEffect(
     useCallback(() => {
-      const fetchAllData = async () => {
-        setLoading(true)
-        try {
-          const data = await homeRepository.getHome()
-          const todos = await todoRepository.getTodosByDate(dayjs())
-          await fetchMemosByDate(dayjs())
+      fetchHome()
 
-          setHomeData(data)
-          setTodo(todos)
-        } catch (error) {
-          console.error('홈 데이터 불러오기 실패:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-
-      fetchAllData()
-    }, [fetchMemosByDate])
+      return () => {}
+    }, [])
   )
 
   if (loading) {

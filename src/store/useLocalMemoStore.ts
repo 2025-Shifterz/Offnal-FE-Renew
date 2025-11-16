@@ -46,9 +46,7 @@ export const localMemoStore = create<LocalMemoState>(set => ({
   fetchMemosByDate: async (targetDate: dayjs.Dayjs) => {
     const data = await getMemosByDateUseCase.execute(targetDate)
 
-    set(() => ({
-      memos: data,
-    }))
+    set(() => ({ memos: data }))
   },
 
   fetchMemoById: async (id: number) => {
