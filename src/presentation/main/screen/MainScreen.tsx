@@ -25,34 +25,30 @@ export default function MainScreen() {
   const [homeData, setHomeData] = useState<HomeResponse['data'] | null>(null)
   const [todos, setTodo] = useState<Todo[]>()
 
-  const { memos, fetchMemosByDate } = localMemoStore.getState()
-
-  const fetchHome = async () => {
-    try {
-      const data = await homeRepository.getHome()
-      const todos = await todoRepository.getTodosByDate(dayjs())
-
-      setHomeData(data)
-
-      setTodo(todos)
-    } catch (error) {
-      console.error('홈 데이터 불러오기 실패:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const memos = localMemoStore(state => state.memos)
+  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
 
   useFocusEffect(
     useCallback(() => {
-      fetchHome()
+      const fetchAllData = async () => {
+        setLoading(true)
+        try {
+          const data = await homeRepository.getHome()
+          const todos = await todoRepository.getTodosByDate(dayjs())
+          await fetchMemosByDate(dayjs())
 
-      return () => {}
-    }, [])
+          setHomeData(data)
+          setTodo(todos)
+        } catch (error) {
+          console.error('홈 데이터 불러오기 실패:', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      fetchAllData()
+    }, [fetchMemosByDate])
   )
-
-  useEffect(() => {
-    fetchMemosByDate(dayjs())
-  }, [fetchMemosByDate])
 
   if (loading) {
     return (
