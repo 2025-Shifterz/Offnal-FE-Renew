@@ -91,13 +91,13 @@ const TCalendarBase = ({
                     {dayCounter}
                   </Text>
                 </View>
-                <View className="flex h-[110px] gap-1">
+                <View className="flex h-[130px] gap-1 ">
                   {['1조', '2조', '3조', '4조'].map(team => {
                     const teamTime = time?.[team]
                     return teamTime ? (
                       <TimeFrame key={team} text={teamTime} />
                     ) : (
-                      <View key={team} style={{ height: 23 }} />
+                      <View key={team} style={{ height: 26 }} />
                     )
                   })}
                 </View>
