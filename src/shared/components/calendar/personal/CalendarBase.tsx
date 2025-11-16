@@ -19,7 +19,6 @@ interface CalendarBaseProps {
   isViewer: boolean
   isEditScreen?: boolean
   onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
   currentDate: dayjs.Dayjs
   onChangeMonth: (newDate: dayjs.Dayjs) => void
 }
@@ -31,7 +30,6 @@ const CalendarBase = ({
   isViewer,
   isEditScreen,
   onPressTeamIcon,
-  onPressEditIcon,
   currentDate,
   onChangeMonth,
 }: CalendarBaseProps) => {
@@ -108,7 +106,6 @@ const CalendarBase = ({
       {!isEditScreen &&
         (isViewer ? (
           <CalendarViewerHeader
-            onPressEditIcon={onPressEditIcon}
             onPressTeamIcon={onPressTeamIcon}
             selectedDate={currentDate.toDate()}
             onChange={newDate => onChangeMonth(dayjs(newDate))}

@@ -72,7 +72,6 @@ const CalendarViewer = ({
         onChangeMonth={setCurrentDate}
         calendarData={calendarData}
         onPressTeamIcon={onPressTeamIcon}
-        onPressEditIcon={onPressEditIcon}
         isViewer
       />
     </View>
