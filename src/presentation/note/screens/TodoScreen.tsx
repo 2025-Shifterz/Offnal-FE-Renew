@@ -163,7 +163,6 @@ const TodoScreen = () => {
                       </View>
                     </View>
                   ) : (
-                    // === 평소 상태 (GlobalText) ===
                     <View className="w-full flex-row items-center justify-between px-[16px] py-p-3">
                       <TouchableOpacity
                         className="flex-1 flex-row items-center"

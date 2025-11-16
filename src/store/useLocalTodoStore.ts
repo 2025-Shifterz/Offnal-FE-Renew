@@ -68,7 +68,7 @@ export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
       return
     }
 
-    await updateTodoUseCase.execute(id, todoText, date)
+    await updateTodoUseCase.execute(id, todoText, undefined)
     const updatedTodos = await getToDosByDateUseCase.execute(date)
     set({ todos: updatedTodos })
   },
@@ -78,7 +78,7 @@ export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
     currentCompleted: boolean,
     date: dayjs.Dayjs
   ) => {
-    await todoCompletionUseCase.execute(id, !currentCompleted)
+    await todoCompletionUseCase.execute(id, currentCompleted)
     const updatedTodos = await getToDosByDateUseCase.execute(date)
     set({ todos: updatedTodos })
   },
