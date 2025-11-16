@@ -20,13 +20,23 @@ import TodoOptionBottomSheet, {
   BottomSheetMethods,
 } from '../components/sheet/TodoOptionBottomSheet'
 import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
+import ChangeTodoDateBottomSheet, {
+  ChangeTodoDateBottomSheetMethods,
+} from '../components/sheet/ChangeTodoDateBottomSheet'
 
 const TodoScreen = () => {
   const sheetRef = useRef<BottomSheetMethods>(null)
+  const changeTodoDateBottomSheetRef =
+    useRef<ChangeTodoDateBottomSheetMethods>(null)
 
   const handleOpenSheet = (todo: Todo) => {
     sheetRef.current?.open()
     setSelectedTodo(todo)
+  }
+
+  const handleOpenChangeDateSheet = () => {
+    sheetRef.current?.close()
+    changeTodoDateBottomSheetRef.current?.open()
   }
 
   const [todo, setTodo] = useState('')
@@ -47,6 +57,7 @@ const TodoScreen = () => {
     updateTodoCompleted,
     scheduleToday,
     scheduleNextDay,
+    scheduleByDate,
   } = useLocalTodoStore.getState()
 
   useEffect(() => {
@@ -105,7 +116,7 @@ const TodoScreen = () => {
     currentCompleted: boolean
   ) => {
     try {
-      await updateTodoCompleted(id, !currentCompleted, currentDate)
+      await updateTodoCompleted(id, currentCompleted, currentDate)
     } catch (error) {
       console.error('Error completing todo: ', error)
     }
@@ -147,7 +158,12 @@ const TodoScreen = () => {
                 <Fragment key={item.id}>
                   {editingTodoId === item.id ? (
                     <View className="-scroll-py-safe-offset-p-3 w-full flex-row items-center justify-between px-[16px] py-p-3">
-                      <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+                      {item.isCompleted ? (
+                        <CheckedIcon />
+                      ) : (
+                        <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+                      )}
+
                       <View className="ml-[8px] flex-1">
                         <TextInput
                           value={editingTodoText}
@@ -167,7 +183,7 @@ const TodoScreen = () => {
                       <TouchableOpacity
                         className="flex-1 flex-row items-center"
                         onPress={() =>
-                          handleUpdateTodoCompleted(item.id, item.isCompleted)
+                          handleUpdateTodoCompleted(item.id, !item.isCompleted)
                         }
                       >
                         {item.isCompleted ? (
@@ -249,7 +265,18 @@ const TodoScreen = () => {
         onDelete={() => handleDeleteTodo(selectedTodo?.id || 0)}
         onScheduleToday={() => handleScheduleToday()}
         onScheduleNextDay={() => handleScheduleNextDay()}
-        onReSchedule={() => {}}
+        onReSchedule={() => handleOpenChangeDateSheet()}
+      />
+
+      <ChangeTodoDateBottomSheet
+        ref={changeTodoDateBottomSheetRef}
+        date={currentDate}
+        onChangeDate={async (targetDate: dayjs.Dayjs) => {
+          if (!selectedTodo) return
+
+          await scheduleByDate(selectedTodo, targetDate, currentDate)
+          changeTodoDateBottomSheetRef.current?.close()
+        }}
       />
     </View>
   )

@@ -36,6 +36,12 @@ export interface LocalTodoState {
     selectedTodo: Todo | null,
     date: dayjs.Dayjs
   ) => Promise<void>
+
+  scheduleByDate: (
+    selectedTodo: Todo | null,
+    targetDate: dayjs.Dayjs,
+    currentDate: dayjs.Dayjs
+  ) => Promise<void>
 }
 
 export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
@@ -99,6 +105,23 @@ export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
         date.add(1, 'day')
       )
       const updatedTodos = await getToDosByDateUseCase.execute(date)
+      set({ todos: updatedTodos })
+    }
+  },
+
+  scheduleByDate: async (
+    selectedTodo: Todo | null,
+    targetDate: dayjs.Dayjs,
+    currentDate: dayjs.Dayjs
+  ) => {
+    if (selectedTodo) {
+      await updateTodoUseCase.execute(
+        selectedTodo.id,
+        selectedTodo.content,
+        targetDate
+      )
+
+      const updatedTodos = await getToDosByDateUseCase.execute(currentDate)
       set({ todos: updatedTodos })
     }
   },
