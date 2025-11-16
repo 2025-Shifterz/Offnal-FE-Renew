@@ -16,7 +16,7 @@ const WithdrawScreen = () => {
     setIsLoading(true)
 
     try {
-      useUserStore.getState().onWithdraw()
+      await useUserStore.getState().onWithdraw()
 
       Alert.alert('알림', '회원 탈퇴가 완료되었습니다.', [
         {

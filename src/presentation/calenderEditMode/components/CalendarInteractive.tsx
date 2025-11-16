@@ -1,12 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // 근무표 조회 & 저장 동시에 되는 캘린더
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { ShiftType } from '../../../data/model/Calendar'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { workDaysToMap } from '../../../shared/utils/calendar/workDaysToMap'
 import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
+import { useCalendarStore } from '../../../store/useCalendarStore'
 
 interface CalendarInteractiveProps {
   isEditScreen: boolean
@@ -14,8 +12,6 @@ interface CalendarInteractiveProps {
   setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
-  calendarData: Map<string, ShiftType> // 키를 string으로 변경
-  setCalendarData: (data: Map<string, ShiftType>) => void // 키를 string으로 변경
 }
 
 const CalendarInteractive = ({
@@ -24,27 +20,41 @@ const CalendarInteractive = ({
   setCurrentDate,
   selectedDate,
   setSelectedDate,
-  calendarData,
-  setCalendarData,
 }: CalendarInteractiveProps) => {
-  const year = currentDate.year()
-  const month = currentDate.month() + 1
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const setCalendarData = useCalendarStore(state => state.setCalendarData)
+  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
+
+  // '2025-11-01' 형태
+  const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
+  const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
 
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await calendarRepository.getWorkCalendar(year, month)
-        // workDaysToMap 유틸리티를 사용하여 'YYYY-MM-DD'를 키로 하는 Map을 생성
-        const formattedMap = workDaysToMap(response, year, month)
-        setCalendarData(formattedMap)
-        console.log('근무표 조회 성공:', response)
+        const response = await calendarRepository.getCalendar(
+          latestOrganization.organizationName,
+          latestOrganization.team,
+          monthStartDate,
+          monthEndDate
+        )
+
+        setCalendarData(response)
+        console.log('근무표 수정 모드: 월별 근무표 조회 성공:', response)
       } catch (error) {
-        console.log('근무표 조회 실패:', error)
+        console.log('근무표 수정 모드: 월별 근무표 조회 실패:', error)
       }
     }
     fetchData()
-  }, [year, month])
+  }, [
+    monthStartDate,
+    monthEndDate,
+    latestOrganization.organizationName,
+    latestOrganization.team,
+    setCalendarData,
+  ])
 
   return (
     <View>

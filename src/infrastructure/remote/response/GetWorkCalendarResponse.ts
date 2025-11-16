@@ -9,4 +9,6 @@ export interface GetWorkCalendarResponse {
 export interface GetWorkCalendarResponseData {
   date: string
   workTypeName: WorkType
+  startTime: string
+  duration: string
 }

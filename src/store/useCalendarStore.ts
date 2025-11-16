@@ -2,55 +2,87 @@
 import { create } from 'zustand'
 import {
   WorkType,
-  CalendarData,
   DateAndWorkType,
+  DateAndWorkTypeRecord,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
 import { calendarService } from '../infrastructure/di/Dependencies'
+import { convertDurationToEndTime } from '../shared/utils/calendar/convertDuration'
 
 /*
 <---- calendarData 형태 ----> 
 
-{
+const calendarData: DateAndWorkTypeRecord = {
   "2025-09-01": { workTypeName: "오후" },
   "2025-09-02": { workTypeName: "휴일" },
 }
-
 */
 
 interface CalendarState {
-  calendarData: CalendarData
+  calendarData: DateAndWorkTypeRecord
   selectedDate: dayjs.Dayjs | null
-  currentYearMonth: { year: number; month: number }
+  // month selector 헤더를 위한 상태
+  selectedYearMonth: {
+    year: number
+    month: number
+  }
+
   isLoading: boolean
+
+  // 최신 조직 정보
+  latestOrganization: {
+    organizationName: string
+    team: string
+  }
 
   // setter
   setCalendarData: (data: DateAndWorkType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
-  setCurrentYearMonth: (year: number, month: number) => void
+  setSelectedYearMonth: (date: { year: number; month: number }) => void
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
+  setLatestOrganization: (organizationName: string, team: string) => void
 
   // fetch
   fetchCalendarData: (
-    organizationId: number,
+    organizationName: string,
+    team: string,
     startDate: string,
     endDate: string
   ) => Promise<void>
 }
 
-export const useCalendarStore = create<CalendarState>(set => ({
+export const useCalendarStore = create<CalendarState>()(set => ({
   calendarData: {},
   selectedDate: null,
-  currentYearMonth: { year: dayjs().year(), month: dayjs().month() + 1 },
+  selectedYearMonth: {
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+  },
+  currentYearMonth: {
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+    // TODO: currentDate를 현재 달 대신에 선택된 달로 바꿔야 함!!!
+    currentStartDate: dayjs().startOf('month').format('YYYY-MM-DD'), // ✅
+    currentEndDate: dayjs().endOf('month').format('YYYY-MM-DD'),
+  },
   isLoading: false,
+
+  latestOrganization: {
+    organizationName: '',
+    team: '',
+  },
 
   setCalendarData: data =>
     set(() => {
-      const mapped: CalendarData = {}
+      const mapped: DateAndWorkTypeRecord = {}
       data.forEach(item => {
-        mapped[item.date] = { workTypeName: item.workTypeName }
+        mapped[item.date] = {
+          workTypeName: item.workTypeName,
+          startTime: item.startTime,
+          endTime: item.endTime,
+        }
       })
       return { calendarData: mapped }
     }),
@@ -69,10 +101,9 @@ export const useCalendarStore = create<CalendarState>(set => ({
       return { calendarData: updated }
     }),
 
-  setCurrentYearMonth: (year, month) =>
-    set({ currentYearMonth: { year, month } }),
-
   setSelectedDate: date => set({ selectedDate: date }),
+
+  setSelectedYearMonth: date => set({ selectedYearMonth: date }),
 
   // 캘린더 데이터 전체 삭제
   clearCalendarData: () => set({ calendarData: {} }),
@@ -80,19 +111,33 @@ export const useCalendarStore = create<CalendarState>(set => ({
   setLoading: loading => set({ isLoading: loading }),
 
   // 서버에서 캘린더 데이터 불러오기
-  fetchCalendarData: async (organizationId, startDate, endDate) => {
+  fetchCalendarData: async (organizationName, team, startDate, endDate) => {
     set({ isLoading: true })
     try {
       const data = await calendarService.getWorkCalendar(
-        organizationId,
+        organizationName,
+        team,
         startDate,
         endDate
       )
-      useCalendarStore.getState().setCalendarData(data)
+
+      const mapped: DateAndWorkType[] = data.map(item => ({
+        date: item.date,
+        workTypeName: item.workTypeName,
+        startTime: item.startTime ?? '',
+        endTime: convertDurationToEndTime(item.startTime, item.duration) ?? '',
+      }))
+
+      useCalendarStore.getState().setCalendarData(mapped)
     } catch (error) {
       console.error('Error fetching calendar data:', error)
     } finally {
       set({ isLoading: false })
     }
   },
+
+  setLatestOrganization: (organizationName, team) =>
+    set(() => ({
+      latestOrganization: { organizationName, team },
+    })),
 }))

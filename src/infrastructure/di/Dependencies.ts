@@ -29,12 +29,15 @@ import { IosHealthService } from '../remote/api/IosHealthService'
 import { AndroidHealthService } from '../remote/api/AndroidHealthService'
 import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
 import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
+import { OrganizationService } from '../remote/api/OrganizationService'
+import { OrganizationRepositoryImpl } from '../../data/impl/OrganizationRepositoryImpl'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
 const memoDao = new MemoDao()
 
 export const ocrService = new OcrService()
+export const organizationService = new OrganizationService()
 export const calendarService = new CalendarService()
 export const homeService = new HomeService()
 export const memberService = new MemberService()
@@ -48,6 +51,9 @@ export const androidHealthService = new AndroidHealthService()
 export const todoRepository = new TodoRepositoryImpl(todoDao)
 export const memoRepository = new MemoRepositoryImpl(memoDao)
 export const ocrRepository = new OCRRepositoryImpl(ocrService)
+export const organizationRepository = new OrganizationRepositoryImpl(
+  organizationService
+)
 export const calendarRepository = new CalendarRepositoryImpl(calendarService)
 export const homeRepository = new HomeRepositoryImpl(homeService)
 export const memberRepository = new MemberRepositoryImpl(

@@ -10,24 +10,14 @@ export class MemberRepositoryImpl implements MemberRepository {
 
   async isMemberScheduleRegistered(): Promise<boolean> {
     const result = await this.homeService.getHome().then(
-      data => {
-        if (data != null) {
-          return true
-        } else {
-          return false
-        }
-      },
-      () => {
-        return false
-      }
+      data => data != null,
+      () => false
     )
 
     return result
   }
 
   async withDrawMember(): Promise<void> {
-    await this.memberService.withdrawMember().catch(_error => {
-      throw _error
-    })
+    await this.memberService.withdrawMember()
   }
 }
