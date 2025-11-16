@@ -20,4 +20,12 @@ export class AuthService {
       throw error
     }
   }
+
+  tokenLogOut = async () => {
+    try {
+      await api.post('/tokens/logout')
+    } catch (error) {
+      throw error
+    }
+  }
 }
