@@ -7,11 +7,7 @@ import {
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 
-import {
-  MonthlySchedule,
-  NewCalendar,
-  ShiftType,
-} from '../../../../data/model/Calendar'
+import { MonthlySchedule, NewCalendar } from '../../../../data/model/Calendar'
 import { convertOCRResultToPersonalSchduleData } from '../../mapper/calendarDataMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import BottomButton from '../../../../shared/components/BottomButton'
@@ -20,6 +16,7 @@ import CalendarEditor, {
   CalendarEditorRef,
 } from '../../../../shared/components/calendar/personal/CalendarEditor'
 import TCalendarEditor from '../../../../shared/components/calendar/team/TCalendarEditor'
+import { WorkType } from '../../../../shared/types/Calendar'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingOCRStackParamList,
@@ -57,7 +54,7 @@ const EditScheduleOCRScreen = () => {
   const handleNext = () => {
     try {
       const shiftTimesMap = new Map<
-        ShiftType,
+        WorkType,
         { startTime: string; endTime: string }
       >()
 

@@ -1,9 +1,18 @@
-export interface WorkTimeDetail {
+import { WorkTypeEn } from '../../../shared/types/Calendar'
+
+export interface InputWorkTimeDetail {
   startTime: string
   endTime: string
 }
 
+export interface WorkTimeDetail {
+  startTime: string
+  duration: string // PT8H30M 형식
+}
+
 export interface MonthlyShift {
+  organizationName: string
+  team: string
   startDate: string
   endDate: string
   shifts: {
@@ -12,8 +21,6 @@ export interface MonthlyShift {
 }
 
 export interface CreateCalendarRequest {
-  calendarName: string
-  organizationId: number
-  workTimes: { [workType: string]: WorkTimeDetail }
+  workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }

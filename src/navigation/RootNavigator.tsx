@@ -10,6 +10,7 @@ import { RootStackParamList } from './types'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
+// 주석 복구해야함
 const RootNavigator = () => {
   return (
     <NavigationContainer>

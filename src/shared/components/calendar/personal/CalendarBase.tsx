@@ -5,8 +5,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import CalendarEditorHeader from '../header/CalendarEditorHeader'
 import CalendarViewerHeader from '../header/CalendarViewerHeader'
-import { ShiftType } from '../../../../../data/model/Calendar'
 import TimeFrame from '../TimeFrame'
+import { DateAndWorkTypeRecord } from '../../../types/Calendar'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
@@ -15,11 +15,10 @@ const textDanger = '#BD2C0F'
 interface CalendarBaseProps {
   selectedDate?: dayjs.Dayjs | null
   onDatePress?: (date: dayjs.Dayjs) => void
-  calendarData: Map<string, ShiftType>
+  calendarData: DateAndWorkTypeRecord
   isViewer: boolean
   isEditScreen?: boolean
   onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
   currentDate: dayjs.Dayjs
   onChangeMonth: (newDate: dayjs.Dayjs) => void
 }
@@ -31,7 +30,6 @@ const CalendarBase = ({
   isViewer,
   isEditScreen,
   onPressTeamIcon,
-  onPressEditIcon,
   currentDate,
   onChangeMonth,
 }: CalendarBaseProps) => {
@@ -46,9 +44,6 @@ const CalendarBase = ({
   const handleNextMonth = () => {
     onChangeMonth(currentDate.add(1, 'month'))
   }
-
-  console.log('부모가 넘기는 calendarData:', calendarData)
-  console.log('Map 여부:', calendarData instanceof Map)
 
   // 날짜 박스 렌더링 함수
   const renderDays = () => {
@@ -69,7 +64,7 @@ const CalendarBase = ({
       else if (weekDay === 6) textColor = textInformation
 
       const key = date.format('YYYY-MM-DD') // string 형식
-      const time = calendarData?.get(key) // string 전달
+      const time = calendarData?.[key]?.workTypeName // string 전달
 
       days.push(
         <TouchableOpacity
@@ -111,7 +106,6 @@ const CalendarBase = ({
       {!isEditScreen &&
         (isViewer ? (
           <CalendarViewerHeader
-            onPressEditIcon={onPressEditIcon}
             onPressTeamIcon={onPressTeamIcon}
             selectedDate={currentDate.toDate()}
             onChange={newDate => onChangeMonth(dayjs(newDate))}

@@ -1,14 +1,14 @@
 import { toShiftType } from '../../../data/mappers/ShiftTypeMapper'
-import { ShiftType } from '../../../data/model/Calendar'
 import dayjs from 'dayjs'
+import { WorkType } from '../../../shared/types/Calendar'
 
 export function convertOCRResultToPersonalSchduleData(
   year: number,
   month: number,
   workGroupString: string,
   ocrResult: [string, Record<string, string>]
-): Map<string, ShiftType> {
-  const personalCalendarData = new Map<string, ShiftType>()
+): Map<string, WorkType> {
+  const personalCalendarData = new Map<string, WorkType>()
   const cleanWorkGroup = workGroupString.replace('조', '')
 
   const foundSheet = ocrResult.find(([workGroupNumber]) => {

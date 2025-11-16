@@ -2,20 +2,25 @@ import axios from 'axios'
 import api from './axiosInstance'
 import { CreateCalendarRequest } from '../request/CreateWorkCalendarRequest'
 import { UpdateShiftsRequest } from '../request/PatchWorkCalendarReqeust'
-import { GetWorkCalendarResponse } from '../response/GetWorkCalendarResponse'
+import {
+  GetWorkCalendarResponse,
+  GetWorkCalendarResponseData,
+} from '../response/GetWorkCalendarResponse'
 
 export class CalendarService {
   getWorkCalendar = async (
-    organizationId: number,
+    organizationName: string,
+    team: string,
     startDate: string,
     endDate: string
-  ) => {
+  ): Promise<GetWorkCalendarResponseData[]> => {
     try {
       const response = await api.get<GetWorkCalendarResponse>(
         '/works/calendar',
         {
           params: {
-            organizationId,
+            organizationName,
+            team,
             startDate,
             endDate,
           },
@@ -35,7 +40,8 @@ export class CalendarService {
 
   createWorkCalendar = async (calendarData: CreateCalendarRequest) => {
     try {
-      await api.post<CreateCalendarRequest>('/works/calendar', calendarData)
+      const response = await api.post('/works/calendar', calendarData)
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)
@@ -47,14 +53,15 @@ export class CalendarService {
     }
   }
 
-  deleteWorkCalendar = async (year: number, month: number) => {
+  deleteWorkCalendar = async (organizationName: string, team: string) => {
     try {
-      await api.delete(`/works/calendar`, {
+      const response = await api.delete(`/works/calendar`, {
         params: {
-          year,
-          month,
+          organizationName,
+          team,
         },
       })
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)
@@ -66,21 +73,17 @@ export class CalendarService {
   }
 
   updateWorkCalendar = async (
-    year: number,
-    month: number,
-    calendarData: UpdateShiftsRequest
+    organizationName: string,
+    team: string,
+    shiftsData: UpdateShiftsRequest
   ) => {
     try {
-      const response = await api.patch<UpdateShiftsRequest>(
-        '/works/calendar',
-        calendarData,
-        {
-          params: {
-            year: String(year),
-            month: String(month),
-          },
-        }
-      )
+      const response = await api.patch('/works/calendar', shiftsData, {
+        params: {
+          organizationName,
+          team,
+        },
+      })
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -7,10 +7,12 @@ import EditBottomSheet from '../components/EditBottomSheet'
 import CalendarInteractive from '../components/CalendarInteractive'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { ShiftType, ShiftsMap } from '../../../data/model/Calendar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
 import { CalendarScreenStackParamList } from '../../../navigation/types'
+import { WorkType } from '../../../shared/types/Calendar'
+import { useCalendarStore } from '../../../store/useCalendarStore'
+import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
@@ -19,19 +21,21 @@ type CalendarEditScreenRouteProp = RouteProp<
 
 const CalendarEditScreen = () => {
   const navigation = useNavigation()
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const route = useRoute<CalendarEditScreenRouteProp>()
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
-  const [calendarData, setCalendarData] = useState<ShiftsMap>(new Map()) // ShiftsMap 타입 사용
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
-  const [backupType, setBackupType] = useState<ShiftType | null>(null)
+  const [backupType, setBackupType] = useState<WorkType | null>(null)
   const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
   const sheetRef = useRef<BottomSheet>(null)
 
-  const shiftTypeToId = (type: ShiftType | null): number => {
+  const shiftTypeToId = (type: WorkType | null): number => {
     switch (type) {
       case '주간':
         return 1
@@ -47,15 +51,12 @@ const CalendarEditScreen = () => {
   }
 
   // 근무 형태 캘린더에 넣기
-  const handleTypeSelect = (type: ShiftType) => {
+  const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
 
-    setCalendarData(prev => {
-      const newMap = new Map(prev)
-      newMap.set(key, type)
-      return newMap
-    })
+    // 상태 업데이트
+    updateCalendarDay(key, type)
 
     // sheetRef.current?.close(); // 이 줄을 주석 처리하거나 삭제합니다.
   }
@@ -63,7 +64,7 @@ const CalendarEditScreen = () => {
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
   const openBottomSheet = (date: dayjs.Dayjs) => {
     const key = date.format('YYYY-MM-DD')
-    const currentShift = calendarData.get(key) ?? null
+    const currentShift = calendarData[key]?.workTypeName
 
     setSelectedDate(date)
     setBackupType(currentShift)
@@ -75,15 +76,16 @@ const CalendarEditScreen = () => {
     if (selectedDate) {
       const key = selectedDate.format('YYYY-MM-DD')
 
-      setCalendarData(prev => {
-        const newMap = new Map(prev)
-        if (backupType !== null) {
-          newMap.set(key, backupType)
-        } else {
-          newMap.delete(key)
+      // 상태 업데이트
+      if (backupType !== null) {
+        updateCalendarDay(key, backupType)
+      } else {
+        // 이전에 근무 형태가 없었으면 삭제
+        const existing = calendarData[key]?.workTypeName
+        if (existing) {
+          updateCalendarDay(key, existing)
         }
-        return newMap
-      })
+      }
     }
     sheetRef.current?.close()
   }
@@ -94,11 +96,12 @@ const CalendarEditScreen = () => {
 
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
-    const year = currentDate.year()
-    const month = currentDate.month() + 1
-
     try {
-      await calendarRepository.updateWorkCalendar(year, month, calendarData)
+      await calendarRepository.updateCalendar(
+        latestOrganization.organizationName,
+        latestOrganization.team,
+        toUpdateShiftRecord(calendarData)
+      )
       console.log('근무표 수정 성공')
       navigation.goBack() // 저장 성공 후 이전 화면으로 이동
     } catch (error) {
@@ -132,11 +135,9 @@ const CalendarEditScreen = () => {
         <View className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
             <CalendarInteractive
-              calendarData={calendarData}
               selectedDate={selectedDate}
               setSelectedDate={openBottomSheet}
               setCurrentDate={setCurrentDate}
-              setCalendarData={setCalendarData}
               isEditScreen={true}
               currentDate={currentDate}
             />
