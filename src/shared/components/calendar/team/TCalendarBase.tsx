@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import CalendarEditorHeader from '../header/CalendarEditorHeader'
 import CalendarViewerHeader from '../header/CalendarViewerHeader'
-import TimeFrame, { TimeFrameChildren } from '../TimeFrame'
+import TimeFrame from '../TimeFrame'
+import { TeamCalendarRecord } from '../../../types/TeamCalendar'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
@@ -12,7 +13,7 @@ const textDanger = '#BD2C0F'
 interface CalendarBaseProps {
   selectedDate?: dayjs.Dayjs | null
   onDatePress?: (date: dayjs.Dayjs) => void
-  calendarData: Record<string, Record<string, TimeFrameChildren>>
+  teamCalendarData: TeamCalendarRecord[]
   isViewer: boolean
   onPressTeamIcon?: () => void
 }
@@ -20,10 +21,14 @@ interface CalendarBaseProps {
 const TCalendarBase = ({
   selectedDate,
   onDatePress,
-  calendarData,
+  teamCalendarData,
   isViewer,
   onPressTeamIcon,
 }: CalendarBaseProps) => {
+  useEffect(() => {
+    console.log('teamCalendarData', teamCalendarData)
+  }, [teamCalendarData])
+
   const [currentDate, setCurrentDate] = useState(dayjs())
 
   const startOfMonth = currentDate.startOf('month')
@@ -60,7 +65,15 @@ const TCalendarBase = ({
           const isSelected = selectedDate
             ? selectedDate.isSame(date, 'day')
             : false
-          const time = calendarData?.[date.format('YYYY-MM-DD')]
+          const dateKey = date.format('YYYY-MM-DD')
+          // const time = calendarData?.[date.format('YYYY-MM-DD')]
+          const time: Record<string, string> = {}
+          teamCalendarData.forEach(teamRecord => {
+            const work = teamRecord.dates[dateKey]
+            if (work) {
+              time[teamRecord.team] = work.workTypeName
+            }
+          })
 
           let textColor = '#000'
           if (weekDay === 0) textColor = textDanger
