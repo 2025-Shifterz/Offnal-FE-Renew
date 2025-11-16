@@ -5,41 +5,41 @@ import {
   addTodoUseCase,
   deleteTodoUseCase,
   getToDosByDateUseCase,
-  getTodosUseCase,
   todoCompletionUseCase,
   updateTodoUseCase,
 } from '../infrastructure/di/Dependencies'
 
 export interface LocalTodoState {
   todos: Todo[]
-  selectedTodo: Todo | null
 
-  setSelectedTodo: (todo: Todo | null) => void
-
-  initTodos: () => Promise<void>
   getTodosByDate: (date: dayjs.Dayjs) => Promise<void>
 
   addTodo: (todo: string, date: dayjs.Dayjs) => Promise<void>
+
   deleteTodo: (id: number, date: dayjs.Dayjs) => Promise<void>
+
+  updateTodoContent: (
+    id: number,
+    content: string,
+    date: dayjs.Dayjs
+  ) => Promise<void>
+
   updateTodoCompleted: (
     id: number,
     currentCompleted: boolean,
     date: dayjs.Dayjs
   ) => Promise<void>
-  scheduleToday: () => Promise<void>
-  scheduleNextDay: () => Promise<void>
+
+  scheduleToday: (selectedTodo: Todo | null, date: dayjs.Dayjs) => Promise<void>
+
+  scheduleNextDay: (
+    selectedTodo: Todo | null,
+    date: dayjs.Dayjs
+  ) => Promise<void>
 }
 
 export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
   todos: [],
-  selectedTodo: null,
-
-  setSelectedTodo: selectedTodo => set({ selectedTodo }),
-
-  initTodos: async () => {
-    const loadedTodos = await getTodosUseCase.execute()
-    set({ todos: loadedTodos })
-  },
 
   getTodosByDate: async (date: dayjs.Dayjs) => {
     const loadedTodos = await getToDosByDateUseCase.execute(date)
@@ -62,30 +62,43 @@ export const useLocalTodoStore = create<LocalTodoState>((set, get) => ({
     set({ todos: updatedTodos })
   },
 
-  updateTodoCompleted: async (id: number, currentCompleted: boolean) => {
-    await todoCompletionUseCase.execute(id, !currentCompleted)
-    const updatedTodos = await getTodosUseCase.execute()
+  updateTodoContent: async (id: number, content: string, date: dayjs.Dayjs) => {
+    const todoText = content.trim()
+    if (!todoText) {
+      return
+    }
+
+    await updateTodoUseCase.execute(id, todoText, date)
+    const updatedTodos = await getToDosByDateUseCase.execute(date)
     set({ todos: updatedTodos })
   },
 
-  scheduleToday: async () => {
-    const { selectedTodo } = get()
+  updateTodoCompleted: async (
+    id: number,
+    currentCompleted: boolean,
+    date: dayjs.Dayjs
+  ) => {
+    await todoCompletionUseCase.execute(id, !currentCompleted)
+    const updatedTodos = await getToDosByDateUseCase.execute(date)
+    set({ todos: updatedTodos })
+  },
+
+  scheduleToday: async (selectedTodo: Todo | null, date: dayjs.Dayjs) => {
     if (selectedTodo) {
       await updateTodoUseCase.execute(selectedTodo.id, undefined, dayjs())
-      const updatedTodos = await getTodosUseCase.execute()
+      const updatedTodos = await getToDosByDateUseCase.execute(date)
       set({ todos: updatedTodos })
     }
   },
 
-  scheduleNextDay: async () => {
-    const { selectedTodo } = get()
+  scheduleNextDay: async (selectedTodo: Todo | null, date: dayjs.Dayjs) => {
     if (selectedTodo) {
       await updateTodoUseCase.execute(
         selectedTodo.id,
         undefined,
-        dayjs().add(1, 'day')
+        date.add(1, 'day')
       )
-      const updatedTodos = await getTodosUseCase.execute()
+      const updatedTodos = await getToDosByDateUseCase.execute(date)
       set({ todos: updatedTodos })
     }
   },

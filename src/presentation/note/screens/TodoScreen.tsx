@@ -30,16 +30,20 @@ const TodoScreen = () => {
   }
 
   const [todo, setTodo] = useState('')
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [showInput, setShowInput] = useState(false)
 
   const [currentDate, setCurrentDate] = useState(dayjs())
+
+  const [editingTodoId, setEditingTodoId] = useState<number | null>(null)
+  const [editingTodoText, setEditingTodoText] = useState<string>('')
+
+  const todos = useLocalTodoStore(state => state.todos)
   const {
-    todos,
-    selectedTodo,
-    setSelectedTodo,
     getTodosByDate,
     addTodo,
     deleteTodo,
+    updateTodoContent,
     updateTodoCompleted,
     scheduleToday,
     scheduleNextDay,
@@ -47,7 +51,7 @@ const TodoScreen = () => {
 
   useEffect(() => {
     getTodosByDate(currentDate)
-  }, [todos, currentDate, getTodosByDate])
+  }, [currentDate, getTodosByDate])
 
   const handleAddTodo = async () => {
     if (!todo.trim()) {
@@ -58,7 +62,6 @@ const TodoScreen = () => {
     try {
       await addTodo(todo, currentDate)
       setTodo('') // 초기화
-      getTodosByDate(currentDate)
     } catch (error) {
       console.error('Error adding todo: ', error)
     }
@@ -70,6 +73,31 @@ const TodoScreen = () => {
     } finally {
       sheetRef.current?.close()
     }
+  }
+
+  const handleStartEditing = () => {
+    if (selectedTodo) {
+      setEditingTodoId(selectedTodo.id)
+      setEditingTodoText(selectedTodo.content)
+      setShowInput(false)
+      sheetRef.current?.close()
+    }
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editingTodoId) return
+
+    const newContent = editingTodoText.trim()
+    if (newContent) {
+      try {
+        await updateTodoContent(editingTodoId, newContent, currentDate)
+      } catch (error) {
+        console.error('Error updating todo content: ', error)
+      }
+    }
+
+    setEditingTodoId(null)
+    setEditingTodoText('')
   }
 
   const handleUpdateTodoCompleted = async (
@@ -85,17 +113,17 @@ const TodoScreen = () => {
 
   const handleScheduleToday = async () => {
     try {
-      await scheduleToday()
-    } catch (error) {
-      console.error('Error scheduling today: ', error)
+      await scheduleToday(selectedTodo, currentDate)
+    } finally {
+      sheetRef.current?.close()
     }
   }
 
   const handleScheduleNextDay = async () => {
     try {
-      await scheduleNextDay()
-    } catch (error) {
-      console.error('Error scheduling next day: ', error)
+      await scheduleNextDay(selectedTodo, currentDate)
+    } finally {
+      sheetRef.current?.close()
     }
   }
 
@@ -117,27 +145,47 @@ const TodoScreen = () => {
             ) : (
               todos.map((item, index) => (
                 <Fragment key={item.id}>
-                  <View className="w-full flex-row items-center justify-between px-[16px] py-p-3">
-                    <TouchableOpacity
-                      className="flex-1 flex-row items-center"
-                      onPress={() =>
-                        handleUpdateTodoCompleted(item.id, item.isCompleted)
-                      }
-                    >
-                      {item.isCompleted ? (
-                        <CheckedIcon />
-                      ) : (
-                        <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
-                      )}
-
+                  {editingTodoId === item.id ? (
+                    <View className="-scroll-py-safe-offset-p-3 w-full flex-row items-center justify-between px-[16px] py-p-3">
+                      <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
                       <View className="ml-[8px] flex-1">
-                        <GlobalText>{item.content}</GlobalText>
+                        <TextInput
+                          value={editingTodoText}
+                          onChangeText={setEditingTodoText}
+                          placeholder={`할 일 수정`}
+                          className="flex-1 text-body-xs text-text-basic"
+                          placeholderTextColor="#6d7882"
+                          onSubmitEditing={handleSaveEdit}
+                          onBlur={handleSaveEdit}
+                          numberOfLines={1}
+                          autoFocus={true}
+                        />
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleOpenSheet(item)}>
-                      <VerticalDots />
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  ) : (
+                    // === 평소 상태 (GlobalText) ===
+                    <View className="w-full flex-row items-center justify-between px-[16px] py-p-3">
+                      <TouchableOpacity
+                        className="flex-1 flex-row items-center"
+                        onPress={() =>
+                          handleUpdateTodoCompleted(item.id, item.isCompleted)
+                        }
+                      >
+                        {item.isCompleted ? (
+                          <CheckedIcon />
+                        ) : (
+                          <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+                        )}
+
+                        <View className="ml-[8px] flex-1">
+                          <GlobalText>{item.content}</GlobalText>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleOpenSheet(item)}>
+                        <VerticalDots />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                   {index < todos.length - 1 && (
                     <View className="h-px bg-border-gray-light" />
                   )}
@@ -162,7 +210,7 @@ const TodoScreen = () => {
                     placeholder={`할 일 입력`}
                     className="mb-[5px] flex-1 text-body-xs text-text-basic"
                     placeholderTextColor="#6d7882"
-                    onSubmitEditing={() => handleAddTodo(currentDate)}
+                    onSubmitEditing={() => handleAddTodo()}
                     numberOfLines={1}
                     autoFocus={true}
                   />
@@ -174,11 +222,16 @@ const TodoScreen = () => {
 
           <OneAddButton
             addOneTodo={async () => {
+              if (editingTodoId) {
+                setEditingTodoId(null)
+                setEditingTodoText('')
+              }
+
               if (!showInput) {
                 setShowInput(true)
               } else {
                 if (todo.trim()) {
-                  await handleAddTodo(currentDate)
+                  await handleAddTodo()
                   setShowInput(true)
                 } else {
                   setShowInput(false)
@@ -193,10 +246,10 @@ const TodoScreen = () => {
       <TodoOptionBottomSheet
         ref={sheetRef}
         selectedTodo={selectedTodo}
-        onEdit={() => {}}
+        onEdit={() => handleStartEditing()}
         onDelete={() => handleDeleteTodo(selectedTodo?.id || 0)}
-        onScheduleToday={() => handleScheduleToday}
-        onScheduleNextDay={() => handleScheduleNextDay}
+        onScheduleToday={() => handleScheduleToday()}
+        onScheduleNextDay={() => handleScheduleNextDay()}
         onReSchedule={() => {}}
       />
     </View>
