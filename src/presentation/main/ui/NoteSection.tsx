@@ -2,11 +2,12 @@ import { View } from 'react-native'
 import TitleSection from '../components/TitleSection'
 import ToDoCard from '../components/ToDoCard'
 import MemoCard from '../components/MemoCard'
-import { Todo } from '../../../domain/entities/Todo'
+import { Memo } from '../../../domain/models/Memo'
+import { Todo } from '../../../domain/models/Todo'
 
 interface NoteSectionProps {
   todos?: Todo[] | undefined
-  memos?: Todo[] | undefined
+  memos?: Memo[] | undefined
 }
 
 const NoteSection = ({ todos, memos }: NoteSectionProps) => {

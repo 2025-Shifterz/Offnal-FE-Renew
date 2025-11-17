@@ -1,40 +1,38 @@
 import '../../../../global.css'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
 import AlramSection from '../ui/AlramSection'
 import HealthGuideSection from '../ui/HealthGuideSection'
 import RecommnedMealSection from '../ui/RecommendMealSection'
 import NoteSection from '../ui/NoteSection'
 import HealthCardSection from '../ui/HealthCardSection'
 import dayjs from 'dayjs'
-
 import { useFocusEffect } from '@react-navigation/native'
 import {
-  memoRepository,
   todoRepository,
-  homeRepository,
+  getMemosByDateUseCase,
 } from '../../../infrastructure/di/Dependencies'
 import { HomeResponse } from '../../../infrastructure/remote/response/homeResponse'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 import TopBanner from '../components/TopBanner'
+import { Todo } from '../../../domain/models/Todo'
+import { Memo } from '../../../domain/models/Memo'
 
 export default function MainScreen() {
   const [loading, setLoading] = useState(true)
 
-  const [homeData, setHomeData] = useState<HomeResponse['data'] | null>(null)
-  const [memos, setMemo] = useState<Todo[]>()
+  const [homeData] = useState<HomeResponse['data'] | null>(null)
   const [todos, setTodo] = useState<Todo[]>()
+  const [memos, setMemos] = useState<Memo[]>()
 
   const fetchHome = async () => {
     try {
-      const data = await homeRepository.getHome()
-      const memos = await memoRepository.getMemosByDate(dayjs())
+      // const data = await homeRepository.getHome()
       const todos = await todoRepository.getTodosByDate(dayjs())
+      const memos = await getMemosByDateUseCase.execute(dayjs())
 
-      setHomeData(data)
-      setMemo(memos)
+      // setHomeData(data)
+      setMemos(memos)
       setTodo(todos)
     } catch (error) {
       console.error('홈 데이터 불러오기 실패:', error)
