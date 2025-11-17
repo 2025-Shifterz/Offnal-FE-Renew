@@ -7,16 +7,17 @@ import BottomSheet from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
 import ToDoCard from '../../main/components/ToDoCard'
 import MemoCard from '../../main/components/MemoCard'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
 import {
   getMemosByDateUseCase,
-  getToDosByDate,
+  getToDosByDateUseCase,
 } from '../../../infrastructure/di/Dependencies'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import TCalendarViewer from '../../../shared/components/calendar/team/TCalendarViewer'
 import CalendarViewer from '../../../shared/components/calendar/personal/CalendarViewer'
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 import { WorkType } from '../../../shared/types/Calendar'
+import { Memo } from '../../../domain/models/Memo'
+import { Todo } from '../../../domain/models/Todo'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
@@ -25,13 +26,11 @@ interface HasCalendarProps {
 const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
   const navigation = useNavigation<calendarNavigation>()
   const [isTeamView, setIsTeamView] = useState(false)
-  const [calendarData, setCalendarData] = useState<Map<string, WorkType>>(
-    new Map()
-  )
+  const [calendarData] = useState<Map<string, WorkType>>(new Map())
   // console.log('calendarData', calendarData);
 
   // 노트
-  const [memos, setMemo] = useState<Todo[]>()
+  const [memos, setMemo] = useState<Memo[]>()
   const [todos, setTodo] = useState<Todo[]>()
 
   // 선택된 날짜.
@@ -61,7 +60,7 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
         if (!selectedDate) return
 
         const [todosOnly, memosOnly] = await Promise.all([
-          getToDosByDate.execute(selectedDate), // todo만 조회
+          getToDosByDateUseCase.execute(selectedDate), // todo만 조회
           getMemosByDateUseCase.execute(selectedDate), // memo는 MemoDao에서!
         ])
         setTodo(todosOnly)

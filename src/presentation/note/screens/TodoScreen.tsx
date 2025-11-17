@@ -9,14 +9,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import DayBoxHeader from '../components/DayBoxHeader'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { Todo } from '../../../domain/models/Todo'
-import {
-  addTodoUseCase,
-  deleteTodoUseCase,
-  getTodosUseCase,
-  todoCompletionUseCase,
-} from '../../../infrastructure/di/Dependencies'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
@@ -25,44 +19,60 @@ import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 import TodoOptionBottomSheet, {
   BottomSheetMethods,
 } from '../components/sheet/TodoOptionBottomSheet'
+import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
+import ChangeTodoDateBottomSheet, {
+  ChangeTodoDateBottomSheetMethods,
+} from '../components/sheet/ChangeTodoDateBottomSheet'
 
 const TodoScreen = () => {
   const sheetRef = useRef<BottomSheetMethods>(null)
+  const changeTodoDateBottomSheetRef =
+    useRef<ChangeTodoDateBottomSheetMethods>(null)
 
   const handleOpenSheet = (todo: Todo) => {
     sheetRef.current?.open()
     setSelectedTodo(todo)
   }
 
-  const [todos, setTodos] = useState<Todo[]>([])
-  const [todo, addTodo] = useState('')
-  const [showInput, setShowInput] = useState(false)
-  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
-
-  const initTodos = async () => {
-    try {
-      const loadedTodos = await getTodosUseCase.execute()
-      setTodos(loadedTodos)
-    } catch (error) {
-      console.error('Failed to load todos:', error)
-    }
+  const handleOpenChangeDateSheet = () => {
+    sheetRef.current?.close()
+    changeTodoDateBottomSheetRef.current?.open()
   }
 
-  useEffect(() => {
-    initTodos()
-  }, [])
+  const [todo, setTodo] = useState('')
+  const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
+  const [showInput, setShowInput] = useState(false)
 
-  const handleAddTodo = async (date: Dayjs) => {
+  const [currentDate, setCurrentDate] = useState(dayjs())
+
+  const [editingTodoId, setEditingTodoId] = useState<number | null>(null)
+  const [editingTodoText, setEditingTodoText] = useState<string>('')
+
+  const todos = useLocalTodoStore(state => state.todos)
+  const {
+    getTodosByDate,
+    addTodo,
+    deleteTodo,
+    updateTodoContent,
+    updateTodoCompleted,
+    scheduleToday,
+    scheduleNextDay,
+    scheduleByDate,
+  } = useLocalTodoStore.getState()
+
+  useEffect(() => {
+    getTodosByDate(currentDate)
+  }, [currentDate, getTodosByDate])
+
+  const handleAddTodo = async () => {
     if (!todo.trim()) {
       Alert.alert('알림', '할 일 내용을 압력해주세요')
       return
     }
 
     try {
-      await addTodoUseCase.execute(todo, date)
-      addTodo('') // 초기화
-      const updatedTodos = await getTodosUseCase.execute()
-      setTodos(updatedTodos)
+      await addTodo(todo, currentDate)
+      setTodo('') // 초기화
     } catch (error) {
       console.error('Error adding todo: ', error)
     }
@@ -70,23 +80,61 @@ const TodoScreen = () => {
 
   const handleDeleteTodo = async (id: number) => {
     try {
-      await deleteTodoUseCase.execute(id)
-      const updatedTodos = await getTodosUseCase.execute()
-      setTodos(updatedTodos)
-    } catch (error) {
-      console.error('Error deleting todo:', error)
+      await deleteTodo(id, currentDate)
     } finally {
       sheetRef.current?.close()
     }
   }
 
-  const updateTodoCompleted = async (id: number, currentCompleted: boolean) => {
+  const handleStartEditing = () => {
+    if (selectedTodo) {
+      setEditingTodoId(selectedTodo.id)
+      setEditingTodoText(selectedTodo.content)
+      setShowInput(false)
+      sheetRef.current?.close()
+    }
+  }
+
+  const handleSaveEdit = async () => {
+    if (!editingTodoId) return
+
+    const newContent = editingTodoText.trim()
+    if (newContent) {
+      try {
+        await updateTodoContent(editingTodoId, newContent, currentDate)
+      } catch (error) {
+        console.error('Error updating todo content: ', error)
+      }
+    }
+
+    setEditingTodoId(null)
+    setEditingTodoText('')
+  }
+
+  const handleUpdateTodoCompleted = async (
+    id: number,
+    currentCompleted: boolean
+  ) => {
     try {
-      await todoCompletionUseCase.execute(id, !currentCompleted)
-      const updatedTodos = await getTodosUseCase.execute()
-      setTodos(updatedTodos)
+      await updateTodoCompleted(id, currentCompleted, currentDate)
     } catch (error) {
       console.error('Error completing todo: ', error)
+    }
+  }
+
+  const handleScheduleToday = async () => {
+    try {
+      await scheduleToday(selectedTodo, currentDate)
+    } finally {
+      sheetRef.current?.close()
+    }
+  }
+
+  const handleScheduleNextDay = async () => {
+    try {
+      await scheduleNextDay(selectedTodo, currentDate)
+    } finally {
+      sheetRef.current?.close()
     }
   }
 
@@ -96,7 +144,10 @@ const TodoScreen = () => {
         <TopAppBar title="할 일" showBackButton={true} />
 
         <ScrollView>
-          <DayBoxHeader currentDate={dayjs()} setCurrentDate={() => {}} />
+          <DayBoxHeader
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+          />
           <View className="rounded-bl-radius-xl rounded-br-radius-xl bg-surface-white">
             {todos.length === 0 && !showInput ? (
               <View className="items-center justify-center py-[27px]">
@@ -105,13 +156,8 @@ const TodoScreen = () => {
             ) : (
               todos.map((item, index) => (
                 <Fragment key={item.id}>
-                  <View className="w-full flex-row items-center justify-between px-[16px] py-p-3">
-                    <TouchableOpacity
-                      className="flex-1 flex-row items-center"
-                      onPress={() =>
-                        updateTodoCompleted(item.id, item.isCompleted)
-                      }
-                    >
+                  {editingTodoId === item.id ? (
+                    <View className="-scroll-py-safe-offset-p-3 w-full flex-row items-center justify-between px-[16px] py-p-3">
                       {item.isCompleted ? (
                         <CheckedIcon />
                       ) : (
@@ -119,13 +165,42 @@ const TodoScreen = () => {
                       )}
 
                       <View className="ml-[8px] flex-1">
-                        <GlobalText>{item.content}</GlobalText>
+                        <TextInput
+                          value={editingTodoText}
+                          onChangeText={setEditingTodoText}
+                          placeholder={`할 일 수정`}
+                          className="flex-1 text-body-xs text-text-basic"
+                          placeholderTextColor="#6d7882"
+                          onSubmitEditing={handleSaveEdit}
+                          onBlur={handleSaveEdit}
+                          numberOfLines={1}
+                          autoFocus={true}
+                        />
                       </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleOpenSheet(item)}>
-                      <VerticalDots />
-                    </TouchableOpacity>
-                  </View>
+                    </View>
+                  ) : (
+                    <View className="w-full flex-row items-center justify-between px-[16px] py-p-3">
+                      <TouchableOpacity
+                        className="flex-1 flex-row items-center"
+                        onPress={() =>
+                          handleUpdateTodoCompleted(item.id, !item.isCompleted)
+                        }
+                      >
+                        {item.isCompleted ? (
+                          <CheckedIcon />
+                        ) : (
+                          <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
+                        )}
+
+                        <View className="ml-[8px] flex-1">
+                          <GlobalText>{item.content}</GlobalText>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleOpenSheet(item)}>
+                        <VerticalDots />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                   {index < todos.length - 1 && (
                     <View className="h-px bg-border-gray-light" />
                   )}
@@ -146,11 +221,11 @@ const TodoScreen = () => {
                 <View className="ml-[8px] flex-row items-center justify-between">
                   <TextInput
                     value={todo}
-                    onChangeText={addTodo}
+                    onChangeText={setTodo}
                     placeholder={`할 일 입력`}
                     className="mb-[5px] flex-1 text-body-xs text-text-basic"
                     placeholderTextColor="#6d7882"
-                    onSubmitEditing={() => handleAddTodo(dayjs())}
+                    onSubmitEditing={() => handleAddTodo()}
                     numberOfLines={1}
                     autoFocus={true}
                   />
@@ -162,11 +237,16 @@ const TodoScreen = () => {
 
           <OneAddButton
             addOneTodo={async () => {
+              if (editingTodoId) {
+                setEditingTodoId(null)
+                setEditingTodoText('')
+              }
+
               if (!showInput) {
                 setShowInput(true)
               } else {
                 if (todo.trim()) {
-                  await handleAddTodo(dayjs())
+                  await handleAddTodo()
                   setShowInput(true)
                 } else {
                   setShowInput(false)
@@ -181,11 +261,22 @@ const TodoScreen = () => {
       <TodoOptionBottomSheet
         ref={sheetRef}
         selectedTodo={selectedTodo}
-        onEdit={() => {}}
+        onEdit={() => handleStartEditing()}
         onDelete={() => handleDeleteTodo(selectedTodo?.id || 0)}
-        onScheduleToday={() => {}}
-        onScheduleNextDay={() => {}}
-        onReSchedule={() => {}}
+        onScheduleToday={() => handleScheduleToday()}
+        onScheduleNextDay={() => handleScheduleNextDay()}
+        onReSchedule={() => handleOpenChangeDateSheet()}
+      />
+
+      <ChangeTodoDateBottomSheet
+        ref={changeTodoDateBottomSheetRef}
+        date={currentDate}
+        onChangeDate={async (targetDate: dayjs.Dayjs) => {
+          if (!selectedTodo) return
+
+          await scheduleByDate(selectedTodo, targetDate, currentDate)
+          changeTodoDateBottomSheetRef.current?.close()
+        }}
       />
     </View>
   )

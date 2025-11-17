@@ -31,6 +31,7 @@ import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase
 import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
 import { OrganizationService } from '../remote/api/OrganizationService'
 import { OrganizationRepositoryImpl } from '../../data/impl/OrganizationRepositoryImpl'
+import { UpdateTodoUseCase } from '../../domain/usecases/todos/UpdateTodoUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -68,11 +69,12 @@ export const todoCompletionUseCase = new UpdateTodoStateCompleteUseCase(
   todoRepository
 )
 export const deleteTodoUseCase = new DeleteTodoUseCase(todoRepository)
+export const updateTodoUseCase = new UpdateTodoUseCase(todoRepository)
 
 export const addMemoUseCase = new CreateMemoUseCase(memoRepository)
 export const deleteMemoUseCase = new DeleteMemoUseCase(memoRepository)
 
-export const getToDosByDate = new GetTodosByDateUseCase(todoRepository)
+export const getToDosByDateUseCase = new GetTodosByDateUseCase(todoRepository)
 export const getMemosByDateUseCase = new GetMemosByDateUseCase(memoRepository)
 export const getMemoByIdUseCase = new GetMemoByIdUseCase(memoRepository)
 export const updateMemoUseCase = new UpdateMemoUseCase(memoRepository)
