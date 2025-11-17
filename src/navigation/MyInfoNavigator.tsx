@@ -1,9 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import UpdateMyInfoScreen from '../presentation/myInfo/screen/UpdateMyInfoScreen'
 import InformationScreen from '../presentation/info/screen/InformationScreen'
 import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
 import { InfoStackParamList } from './types'
 import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
+import FeedBackScreen from '../presentation/info/screen/FeedBackScreen'
+import EditProfileScreen from '../presentation/info/screen/EditProfileScreen'
+import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 
 const Stack = createNativeStackNavigator<InfoStackParamList>()
 
@@ -18,8 +20,18 @@ const MyInfoNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="UpdateMyInfoScreen"
-        component={UpdateMyInfoScreen}
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FeedbackScreen"
+        component={FeedBackScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="TermsWebViewScreen"
+        component={TermsWebViewScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

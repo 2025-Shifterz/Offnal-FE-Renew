@@ -153,7 +153,9 @@ export type AutoAlarmScreenStackParamList = {
 // Infomation Navigator
 export type InfoStackParamList = {
   InformationScreen: undefined
-  UpdateMyInfoScreen: undefined
+  EditProfileScreen: undefined
+  TermsWebViewScreen: { title: string; url: string }
+  FeedbackScreen: undefined
   WithdrawBeforeScreen: undefined
   WithdrawScreen: undefined
 }
