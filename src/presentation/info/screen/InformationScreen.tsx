@@ -7,7 +7,11 @@ import InformationMenuContainer, {
 } from '../component/InformationMenuContainer'
 import { useCallback, useMemo } from 'react'
 import { infoNavigation } from '../../../navigation/types'
-import { CommonActions, useNavigation } from '@react-navigation/native'
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
 import { useUserStore } from '../../../store/useUserStore'
@@ -15,9 +19,15 @@ import { useUserStore } from '../../../store/useUserStore'
 const InformationScreen = () => {
   const navigation = useNavigation<infoNavigation>()
 
-  const { user } = useUserStore.getState()
+  const user = useUserStore(state => state.user)
   const fetchProfile = useUserStore(state => state.fetchProfile)
   const logout = useAuthStore(state => state.logout)
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfile()
+    }, [fetchProfile])
+  )
 
   const handleLogOut = useCallback(() => {
     Alert.alert('로그아웃', '정말로 로그아웃 하시겠습니까?', [
