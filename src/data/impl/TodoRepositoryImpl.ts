@@ -7,8 +7,11 @@ import { Todo } from '../../domain/models/Todo'
 export class TodoRepositoryImpl implements TodoRepository {
   constructor(private todoDao: TodoDao) {}
 
-  async createTodo(content: string, targetDate: Dayjs): Promise<void> {
-    return await this.todoDao.createTodo(content, targetDate)
+  async createTodo(content: string, targetDate: Dayjs): Promise<Todo> {
+    const todo = await this.todoDao.createTodo(content, targetDate)
+    const result = toTodoDomain(todo)
+
+    return result
   }
 
   async getAllTodos(): Promise<Todo[]> {

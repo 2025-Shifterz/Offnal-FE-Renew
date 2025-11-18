@@ -21,16 +21,17 @@ import { HomeService } from '../remote/api/HomeService'
 import { OcrService } from '../remote/api/OcrService'
 import { CalendarService } from '../remote/api/CalendarService'
 import { MemoService } from '../remote/api/MemoService'
-import { ProfileService } from '../remote/api/ProfileService'
+import { MemberService } from '../remote/api/MemberService'
 import { TodoService } from '../remote/api/TodoService'
 import { AuthService } from '../remote/api/AuthService'
-import { UserRepositoryImpl } from '../../data/impl/UserRepositoryImpl'
+import { MemberRepositoryImpl as MemberRepositoryImpl } from '../../data/impl/MemberRepositoryImpl'
 import { IosHealthService } from '../remote/api/IosHealthService'
 import { AndroidHealthService } from '../remote/api/AndroidHealthService'
 import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
 import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
 import { OrganizationService } from '../remote/api/OrganizationService'
 import { OrganizationRepositoryImpl } from '../../data/impl/OrganizationRepositoryImpl'
+import { UpdateTodoUseCase } from '../../domain/usecases/todos/UpdateTodoUseCase'
 import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarRepository'
 import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 
@@ -42,7 +43,7 @@ export const ocrService = new OcrService()
 export const organizationService = new OrganizationService()
 export const calendarService = new CalendarService()
 export const homeService = new HomeService()
-export const profileService = new ProfileService()
+export const memberService = new MemberService()
 export const todoService = new TodoService()
 export const memoService = new MemoService()
 export const authService = new AuthService()
@@ -62,7 +63,10 @@ export const teamCalendarRepository = new TeamCalendarRepositoryImpl(
   teamCalendarService
 )
 export const homeRepository = new HomeRepositoryImpl(homeService)
-export const userRepository = new UserRepositoryImpl()
+export const memberRepository = new MemberRepositoryImpl(
+  homeService,
+  memberService
+)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
@@ -71,11 +75,12 @@ export const todoCompletionUseCase = new UpdateTodoStateCompleteUseCase(
   todoRepository
 )
 export const deleteTodoUseCase = new DeleteTodoUseCase(todoRepository)
+export const updateTodoUseCase = new UpdateTodoUseCase(todoRepository)
 
 export const addMemoUseCase = new CreateMemoUseCase(memoRepository)
 export const deleteMemoUseCase = new DeleteMemoUseCase(memoRepository)
 
-export const getToDosByDate = new GetTodosByDateUseCase(todoRepository)
+export const getToDosByDateUseCase = new GetTodosByDateUseCase(todoRepository)
 export const getMemosByDateUseCase = new GetMemosByDateUseCase(memoRepository)
 export const getMemoByIdUseCase = new GetMemoByIdUseCase(memoRepository)
 export const updateMemoUseCase = new UpdateMemoUseCase(memoRepository)

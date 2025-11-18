@@ -28,6 +28,8 @@ export interface LocalMemoState {
   ) => Promise<void>
 
   deleteMemo: (id: number) => Promise<void>
+
+  deleteAllMemos: () => Promise<void>
 }
 
 export const localMemoStore = create<LocalMemoState>(set => ({
@@ -44,9 +46,7 @@ export const localMemoStore = create<LocalMemoState>(set => ({
   fetchMemosByDate: async (targetDate: dayjs.Dayjs) => {
     const data = await getMemosByDateUseCase.execute(targetDate)
 
-    set(() => ({
-      memos: data,
-    }))
+    set(() => ({ memos: data }))
   },
 
   fetchMemoById: async (id: number) => {
@@ -97,5 +97,11 @@ export const localMemoStore = create<LocalMemoState>(set => ({
     set(state => ({
       memos: state.memos.filter(memo => memo.id !== id),
     }))
+  },
+
+  deleteAllMemos: async () => {
+    await memoRepository.deleteMemoAll()
+
+    set(() => ({ memos: [] }))
   },
 }))

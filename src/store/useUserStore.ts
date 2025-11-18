@@ -1,8 +1,13 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { profileService } from '../infrastructure/di/Dependencies'
+import {
+  memberRepository,
+  memberService,
+} from '../infrastructure/di/Dependencies'
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
+import { useCalendarStore } from './useCalendarStore'
+import { localMemoStore } from './useLocalMemoStore'
 
 export interface UserState {
   user: User | null
@@ -14,6 +19,9 @@ export interface UserState {
   // fetch
   fetchProfile: () => Promise<void>
   updateProfile: (profile: User) => Promise<void>
+
+  // withdraw
+  onWithdraw: () => Promise<void>
 }
 
 export const useUserStore = create<UserState>()(
@@ -26,17 +34,29 @@ export const useUserStore = create<UserState>()(
       clearUser: () => set({ user: null }),
 
       fetchProfile: async () => {
-        const data = await profileService.getProfile()
+        const data = await memberService.getProfile()
         set(() => ({
           user: data,
         }))
       },
 
       updateProfile: async (profile: User) => {
-        const data = await profileService.updateProfile(profile)
+        const data = await memberService.updateProfile(profile)
         set(() => ({
           user: data,
         }))
+      },
+
+      onWithdraw: async () => {
+        await memberRepository.withDrawMember()
+
+        const { clearCalendarData } = useCalendarStore.getState()
+        const { deleteAllMemos } = localMemoStore.getState()
+
+        clearCalendarData()
+        deleteAllMemos()
+
+        set(() => ({ user: null }))
       },
     }),
     { name: 'user-storage', storage: createJSONStorage(() => EncryptedStorage) }

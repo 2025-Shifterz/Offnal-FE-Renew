@@ -16,7 +16,7 @@ export class TodoDao {
    *
    * @return void
    */
-  async createTodo(content: string, targetDate: dayjs.Dayjs): Promise<void> {
+  async createTodo(content: string, targetDate: dayjs.Dayjs): Promise<Todo> {
     const db = await openShifterzDB()
 
     try {
@@ -33,7 +33,12 @@ export class TodoDao {
       }
 
       console.log('Todo created with ID:', newId)
-      return
+
+      const newTodo = await this.getTodoById(newId)
+      if (!newTodo) {
+        throw new Error('Failed to retrieve the newly created todo.')
+      }
+      return newTodo
     } catch (error) {
       throw error
     }

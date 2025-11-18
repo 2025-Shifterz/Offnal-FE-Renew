@@ -4,7 +4,6 @@ import TodoScreen from '../presentation/note/screens/TodoScreen'
 import MemoScreen from '../presentation/note/screens/MemoScreen'
 import AutoAlarm from '../presentation/alarm/screen/AutoAlarmScreen'
 import { MainStackParamList } from './types'
-import CustomBackButton from '../shared/components/CustomBackButton'
 import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
 
 // 탭1. 메인 탭에 사용되는 스택 네비게이터

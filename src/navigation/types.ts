@@ -44,7 +44,7 @@ export type MainStackParamList = {
   AutoAlarm: undefined
   Todo: undefined
   Memo: undefined
-  AddMemo: { memo: Memo } | undefined
+  AddMemo: { memo?: Memo; date?: string } | undefined
 }
 
 // 로그인
@@ -149,3 +149,13 @@ export type AutoAlarmScreenStackParamList = {
   CreateAlarm: undefined
   EditAutoAlarm: { alarmId: string }
 }
+
+// Infomation Navigator
+export type InfoStackParamList = {
+  InformationScreen: undefined
+  UpdateMyInfoScreen: undefined
+  WithdrawBeforeScreen: undefined
+  WithdrawScreen: undefined
+}
+
+export type infoNavigation = NativeStackNavigationProp<InfoStackParamList>

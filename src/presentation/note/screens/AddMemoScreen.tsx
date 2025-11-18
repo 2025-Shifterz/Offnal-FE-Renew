@@ -13,7 +13,6 @@ import { useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { MainStackParamList } from '../../../navigation/types'
-import { addMemoUseCase } from '../../../infrastructure/di/Dependencies'
 import dayjs from 'dayjs'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 
@@ -22,6 +21,8 @@ const AddMemoScreen = () => {
     useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const route = useRoute<RouteProp<MainStackParamList, 'AddMemo'>>()
   const memoToUpdate = route.params?.memo
+  const dateString = route.params?.date
+  const date = dateString ? dayjs(dateString) : dayjs()
 
   const addMemo = localMemoStore(state => state.addMemo)
   const updateMemo = localMemoStore(state => state.updateMemo)
@@ -39,10 +40,15 @@ const AddMemoScreen = () => {
 
     try {
       if (memoToUpdate) {
-        await updateMemo(memoToUpdate.id, title, content, dayjs())
+        await updateMemo(
+          memoToUpdate.id,
+          title,
+          content,
+          dayjs(memoToUpdate.targetDate)
+        )
         navigation.goBack()
       } else {
-        await addMemo(title, content, dayjs())
+        await addMemo(title, content, date)
         navigation.goBack()
       }
     } catch (error) {

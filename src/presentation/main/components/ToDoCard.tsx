@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../navigation/types'
-import { Todo } from '../../../infrastructure/local/entities/TodoEntity'
+import { Todo } from '../../../domain/models/Todo'
 
 interface TodoCardProps {
   todos: Todo[]
@@ -85,14 +85,14 @@ const Item = ({ todo, isFirst, isLast }: TodoItemProps) => {
     <View
       className={`flex-row items-center bg-background-gray-subtle1 px-number-6 py-number-4 ${itemBorderClass} ${!isLast ? 'mb-number-1' : ''}`}
     >
-      {todo.completed ? (
+      {todo.isCompleted ? (
         <View className="mr-[5px]">
           <CheckIcon />
         </View>
       ) : (
         <View className="mr-[5px] h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
       )}
-      <Text className="text-text-subtle body-xxs">{todo.text}</Text>
+      <Text className="text-text-subtle body-xxs">{todo.content}</Text>
     </View>
   )
 }
