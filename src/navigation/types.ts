@@ -91,7 +91,7 @@ export type OnboardingOCRStackParamList = {
   }
   SelectMonthOCR: {
     selectedScheduleScopeType: ScheduleScopeType
-    calendarName: string
+    organizationName: string
     workGroup: string
     workTimes: {
       D: { startTime: string; endTime: string }
