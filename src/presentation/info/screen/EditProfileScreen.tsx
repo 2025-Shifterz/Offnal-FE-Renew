@@ -63,11 +63,11 @@ const EditProfileScreen = () => {
     try {
       await updateProfile(
         name,
-        newImage
+        newImage && newImage.uri && newImage.type && newImage.fileName
           ? {
-              uri: newImage.uri!,
-              type: newImage.type!,
-              fileName: newImage.fileName!,
+              uri: newImage.uri,
+              type: newImage.type,
+              fileName: newImage.fileName,
             }
           : null
       )

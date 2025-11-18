@@ -2,10 +2,12 @@ import { Profile } from '../models/Profile'
 
 export interface MemberRepository {
   updateUserProfile(
-    fileUrl: string,
-    fileType: string,
-    fileName: string,
-    userName: string
+    userName: string,
+    file?: {
+      url: string
+      type: string
+      name: string
+    }
   ): Promise<Profile>
 
   withDrawMember(): Promise<void>

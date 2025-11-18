@@ -1,4 +1,4 @@
-interface GetPresignedUrlResponse {
+export interface GetPresignedUrlResponse {
   code: string
   message: string
   data: {

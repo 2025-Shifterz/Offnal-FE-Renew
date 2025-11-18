@@ -4,6 +4,7 @@ import { GetProfileResponse } from '../response/GetProfileResponse'
 import { PatchProfileRequest } from '../request/PatchProfileRequest'
 import { ImagePickerAssetRequest } from '../request/ImagePickerAssetRequest'
 import { PatchProfileResponse } from '../response/PatchProfileResponse'
+import { GetPresignedUrlResponse } from '../response/GetPresignedUrlResponse'
 
 export class MemberService {
   getProfile = async () => {
@@ -40,13 +41,7 @@ export class MemberService {
   updateProfileImage = async (image: ImagePickerAssetRequest) => {
     try {
       const mimeType = image.type
-      const extension = (() => {
-        try {
-          return mimeType.split('/')[1].replace('jpeg', 'jpg')
-        } catch (error) {
-          return undefined
-        }
-      })()
+      const extension = mimeType.split('/')[1]?.replace('jpeg', 'jpg')
 
       if (!extension) {
         return

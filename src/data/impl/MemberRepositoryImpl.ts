@@ -9,28 +9,26 @@ export class MemberRepositoryImpl implements MemberRepository {
   constructor(private memberService: MemberService) {}
 
   async updateUserProfile(
-    fileUrl: string,
-    fileType: string,
-    fileName: string,
-    userName: string
+    userName: string,
+    file?: {
+      url: string
+      type: string
+      name: string
+    }
   ): Promise<Profile> {
     const imageReq: ImagePickerAssetRequest = {
-      uri: fileUrl,
-      type: fileType,
-      fileName: fileName,
+      uri: file?.url ?? '',
+      type: file?.type ?? '',
+      fileName: file?.name ?? '',
     }
     const req: PatchProfileRequest = { name: userName }
 
-    try {
-      await this.memberService.updateProfileImage(imageReq)
-      const result = await this.memberService.updateProfile(req)
+    await this.memberService.updateProfileImage(imageReq)
+    const result = await this.memberService.updateProfile(req)
 
-      const profile = toProfileDomain(result)
+    const profile = toProfileDomain(result)
 
-      return profile
-    } catch (error) {
-      throw error
-    }
+    return profile
   }
 
   async withDrawMember(): Promise<void> {
