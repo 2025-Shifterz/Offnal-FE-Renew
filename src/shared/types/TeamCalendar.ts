@@ -1,13 +1,11 @@
-import { DateAndWorkTypeRecord, WorkType } from './Calendar'
+import { WorkType } from './Calendar'
 
 export interface TeamCalendarRecord {
   team: string
-  dates: DateAndWorkTypeRecord
+  workInstances: Record<string, TeamDateAndWorkType>
 }
 
 export interface TeamDateAndWorkType {
-  team: string
-
   date: string // "YYYY-MM-DD"
   workTypeName: WorkType
   startTime?: string

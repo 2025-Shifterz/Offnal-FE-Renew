@@ -31,6 +31,8 @@ import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase
 import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
 import { OrganizationService } from '../remote/api/OrganizationService'
 import { OrganizationRepositoryImpl } from '../../data/impl/OrganizationRepositoryImpl'
+import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarRepository'
+import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -46,6 +48,7 @@ export const memoService = new MemoService()
 export const authService = new AuthService()
 export const iosHealthService = new IosHealthService()
 export const androidHealthService = new AndroidHealthService()
+export const teamCalendarService = new TeamCalendarService()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
 export const todoRepository = new TodoRepositoryImpl(todoDao)
@@ -55,6 +58,9 @@ export const organizationRepository = new OrganizationRepositoryImpl(
   organizationService
 )
 export const calendarRepository = new CalendarRepositoryImpl(calendarService)
+export const teamCalendarRepository = new TeamCalendarRepositoryImpl(
+  teamCalendarService
+)
 export const homeRepository = new HomeRepositoryImpl(homeService)
 export const userRepository = new UserRepositoryImpl()
 

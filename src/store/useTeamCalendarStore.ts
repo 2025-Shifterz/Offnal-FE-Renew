@@ -9,15 +9,15 @@ import {
 const teamCalendars: TeamCalendarRecord[] = [
   {
     team: "1조",
-    dates: {
-      "2025-07-01": { workTypeName: "오후" },
-      "2025-07-02": { workTypeName: "오후" },
+    workInstances: {
+      "2025-07-01": { workTypeName: "오후", startTime: "13:00", endTime: "21:00" },
+      "2025-07-02": { workTypeName: "오후", startTime: "13:00", endTime: "21:00"},
     }
   },
   {
     team: "2조",
-    dates: {
-      "2025-07-01": { workTypeName: "주간" },
+    workInstances: {
+      "2025-07-01": { workTypeName: "주간", startTime: "09:00", endTime: "18:00"},
     }
   }
 ]
@@ -26,7 +26,9 @@ const teamCalendars: TeamCalendarRecord[] = [
 interface TeamCalendarState {
   teamCalendarData: TeamCalendarRecord[]
 
-  setTeamCalendarData: (data: TeamDateAndWorkType[]) => void
+  setTeamCalendarData: (
+    data: (TeamDateAndWorkType & { team: string })[]
+  ) => void
   updateTeamCalendarDay: (update: {
     team: string
     date: string
@@ -37,16 +39,27 @@ interface TeamCalendarState {
 
 export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
   teamCalendarData: [],
-  setTeamCalendarData: (data: TeamDateAndWorkType[]) => {
+  setTeamCalendarData: (data: (TeamDateAndWorkType & { team: string })[]) => {
     // 팀별로 묶어서 dates Record 생성
     const grouped: Record<string, TeamCalendarRecord> = {}
 
     data.forEach(item => {
-      if (!grouped[item.team]) {
-        grouped[item.team] = { team: item.team, dates: {} }
+      const { team, date, workTypeName, startTime, endTime } = item
+
+      // 팀별 초기 구조 생성
+      if (!grouped[team]) {
+        grouped[team] = {
+          team,
+          workInstances: {},
+        }
       }
-      grouped[item.team].dates[item.date] = {
-        workTypeName: item.workTypeName,
+
+      // 날짜를 key로 저장
+      grouped[team].workInstances[date] = {
+        date,
+        workTypeName,
+        startTime,
+        endTime,
       }
     })
 
@@ -58,31 +71,44 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
       const teamIndex = newData.findIndex(t => t.team === team)
 
       if (teamIndex > -1) {
-        // 팀 존재 시 날짜 업데이트
+        // 팀 존재
         const teamRecord = {
           ...newData[teamIndex],
-          dates: { ...newData[teamIndex].dates },
+          workInstances: { ...newData[teamIndex].workInstances },
         }
 
-        if (teamRecord.dates[date]?.workTypeName === workTypeName) {
+        const existing = teamRecord.workInstances[date]
+
+        if (existing && existing.workTypeName === workTypeName) {
           // 같은 근무 타입이면 삭제
-          delete teamRecord.dates[date]
+          delete teamRecord.workInstances[date]
         } else {
-          // 새 근무 타입 적용
-          teamRecord.dates[date] = { workTypeName }
+          // 새로운/다른 근무 타입 설정
+          teamRecord.workInstances[date] = {
+            date,
+            workTypeName,
+            startTime: existing?.startTime,
+            endTime: existing?.endTime,
+          }
         }
 
         newData[teamIndex] = teamRecord
       } else {
-        // 팀이 없으면 새 팀 생성
+        // 팀 없으면 새로 추가
         newData.push({
           team,
-          dates: { [date]: { workTypeName } },
+          workInstances: {
+            [date]: {
+              date,
+              workTypeName,
+            },
+          },
         })
       }
-      // teamCalendarData 업데이트
+
       return { teamCalendarData: newData }
     })
   },
+
   clearTeamCalendarData: () => set({ teamCalendarData: [] }),
 }))

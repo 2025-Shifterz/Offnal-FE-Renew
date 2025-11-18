@@ -3,8 +3,13 @@ import { View } from 'react-native'
 import TCalendarBase from './TCalendarBase'
 import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import {
+  calendarRepository,
+  teamCalendarRepository,
+} from '../../../../infrastructure/di/Dependencies'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
+import { WorkType } from '../../../types/Calendar'
+import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
 
 // 예시 데이터
 const calendarData = {
@@ -61,13 +66,24 @@ const TCalendarViewer = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await calendarRepository.getCalendar(
+        const response = await teamCalendarRepository.getTeamCalendar(
           latestOrganization.organizationName,
-          latestOrganization.team,
           monthStartDate,
           monthEndDate
         )
-        setTeamCalendarData(response)
+        // 서버 workType → 내부 WorkType 필드에 맞게 매핑 필요하면 fromShiftType 사용
+        const flattened: (TeamDateAndWorkType & { team: string })[] =
+          response.teams.flatMap(teamRecord =>
+            teamRecord.workInstances.map(wi => ({
+              team: teamRecord.team,
+              date: wi.date,
+              workTypeName: wi.workTypeName,
+              startTime: wi.startTime,
+              endTime: wi.endTime,
+            }))
+          )
+
+        setTeamCalendarData(flattened)
         console.log('캘린더 탭: 월별 근무표 조회 성공:', response)
         console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {

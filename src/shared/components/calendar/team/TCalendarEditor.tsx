@@ -92,13 +92,18 @@ const TCalendarEditor: ForwardRefRenderFunction<
 
         // 모든 팀의 날짜를 flatten
         const allDates = teamCalendarData.flatMap(teamRecord =>
-          Object.keys(teamRecord.dates)
+          Object.keys(teamRecord.workInstances)
         )
 
         // YYYY-MM 단위로 중복 제거하고 정렬
         const storedMonths = Array.from(
           new Set(allDates.map(dateStr => dayjs(dateStr).format('YYYY-MM')))
         ).sort()
+
+        if (storedMonths.length === 0) {
+          console.warn('저장된 근무 데이터가 없습니다.')
+          return
+        }
 
         // 새 캘린더 데이터 생성 (calendars의 월별 목록)
         const firstMonth = storedMonths[0]
@@ -113,7 +118,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           teamCalendarData.map(teamRecord => {
             const shifts: Record<string, string> = {}
-            Object.entries(teamRecord.dates).forEach(([date, work]) => {
+            Object.entries(teamRecord.workInstances).forEach(([date, work]) => {
               if (
                 dayjs(date).isSameOrAfter(startDate) &&
                 dayjs(date).isSameOrBefore(endDate)

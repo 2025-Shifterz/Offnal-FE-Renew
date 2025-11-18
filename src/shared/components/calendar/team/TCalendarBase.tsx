@@ -69,7 +69,7 @@ const TCalendarBase = ({
           // const time = calendarData?.[date.format('YYYY-MM-DD')]
           const time: Record<string, string> = {}
           teamCalendarData.forEach(teamRecord => {
-            const work = teamRecord.dates[dateKey]
+            const work = teamRecord.workInstances[dateKey]
             if (work) {
               time[teamRecord.team] = work.workTypeName
             }

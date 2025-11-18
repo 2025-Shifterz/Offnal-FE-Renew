@@ -1,6 +1,6 @@
 import { WorkType } from '../../shared/types/Calendar'
 
-export interface TeamCalendar {
+export interface TeamCalendarEntity {
   myTeam: string
   teams: GetTeamWorkCalendarTeamsArray[]
 }
