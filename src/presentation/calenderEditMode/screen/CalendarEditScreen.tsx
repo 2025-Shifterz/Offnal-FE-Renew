@@ -60,6 +60,7 @@ const CalendarEditScreen = () => {
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
+    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateCalendarDay(key, type)
@@ -141,6 +142,8 @@ const CalendarEditScreen = () => {
         <View className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
             <CalendarInteractive
+              currentDate={currentDate}
+              setCurrentDate={setCurrentDate}
               selectedDate={selectedDate}
               setSelectedDate={openBottomSheet}
               isEditScreen={true}

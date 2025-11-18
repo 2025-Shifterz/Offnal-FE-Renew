@@ -43,6 +43,8 @@ const CalendarEditor: ForwardRefRenderFunction<
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   let newCalendars: CreateCalendarRequest['calendars'] = []
 
+  const [currentDate, setCurrentDate] = useState(dayjs())
+
   // 처음에는 초기화//
   useEffect(() => {
     clearCalendarData()
@@ -153,6 +155,8 @@ const CalendarEditor: ForwardRefRenderFunction<
   return (
     <View>
       <CalendarBase
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         calendarData={calendarData}

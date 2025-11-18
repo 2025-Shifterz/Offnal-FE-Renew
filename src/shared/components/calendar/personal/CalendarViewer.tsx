@@ -24,6 +24,8 @@ const CalendarViewer = ({
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
+  const [curentDate, setCurrentDate] = useState(dayjs())
+
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
@@ -62,6 +64,8 @@ const CalendarViewer = ({
   return (
     <View>
       <CalendarBase
+        currentDate={curentDate}
+        setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         calendarData={calendarData}

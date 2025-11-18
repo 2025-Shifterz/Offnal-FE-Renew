@@ -1,5 +1,5 @@
 // 근무표 조회 & 저장 동시에 되는 캘린더
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
@@ -7,12 +7,16 @@ import CalendarBase from '../../../shared/components/calendar/personal/CalendarB
 import { useCalendarStore } from '../../../store/useCalendarStore'
 
 interface CalendarInteractiveProps {
+  currentDate: dayjs.Dayjs
+  setCurrentDate: (date: dayjs.Dayjs) => void
   isEditScreen: boolean
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
 }
 
 const CalendarInteractive = ({
+  currentDate,
+  setCurrentDate,
   isEditScreen,
   selectedDate,
   setSelectedDate,
@@ -22,13 +26,15 @@ const CalendarInteractive = ({
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
 
-  // '2025-11-01' 형태
-  const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
-  const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
-
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
+      // '2025-11-01' 형태
+      const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
+      const monthEndDate = dayjs(monthStartDate)
+        .endOf('month')
+        .format('YYYY-MM-DD')
+
       try {
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
@@ -45,8 +51,7 @@ const CalendarInteractive = ({
     }
     fetchData()
   }, [
-    monthStartDate,
-    monthEndDate,
+    selectedYearMonth,
     latestOrganization.organizationName,
     latestOrganization.team,
     setCalendarData,
@@ -55,6 +60,8 @@ const CalendarInteractive = ({
   return (
     <View>
       <CalendarBase
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={setSelectedDate}
         calendarData={calendarData}

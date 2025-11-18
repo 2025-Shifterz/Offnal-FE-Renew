@@ -1,5 +1,5 @@
 // 캘린더 기본 UI
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -7,6 +7,7 @@ import CalendarEditorHeader from '../header/CalendarEditorHeader'
 import CalendarViewerHeader from '../header/CalendarViewerHeader'
 import TimeFrame from '../TimeFrame'
 import { DateAndWorkTypeRecord } from '../../../types/Calendar'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
@@ -19,6 +20,8 @@ interface CalendarBaseProps {
   isViewer: boolean
   isEditScreen?: boolean
   onPressTeamIcon?: () => void
+  currentDate: dayjs.Dayjs
+  setCurrentDate: (date: dayjs.Dayjs) => void
 }
 
 const CalendarBase = ({
@@ -28,8 +31,12 @@ const CalendarBase = ({
   isViewer,
   isEditScreen,
   onPressTeamIcon,
+  currentDate,
+  setCurrentDate,
 }: CalendarBaseProps) => {
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const setSelectedYearMonth = useCalendarStore(
+    state => state.setSelectedYearMonth
+  )
 
   const startOfMonth = currentDate.startOf('month') // 2025-07-01
   // const endOfMonth = currentDate.endOf('month'); // 2025-07-31
@@ -37,10 +44,21 @@ const CalendarBase = ({
   const daysInMonth = currentDate.daysInMonth() // 그 달이 며칠까지 있는지 계산.
 
   const handlePrevMonth = () => {
-    setCurrentDate(currentDate.subtract(1, 'month'))
+    const newDate = currentDate.subtract(1, 'month')
+    setCurrentDate(newDate)
+    setSelectedYearMonth({
+      year: newDate.year(),
+      month: newDate.month() + 1,
+    })
   }
+
   const handleNextMonth = () => {
-    setCurrentDate(currentDate.add(1, 'month'))
+    const newDate = currentDate.add(1, 'month')
+    setCurrentDate(newDate)
+    setSelectedYearMonth({
+      year: newDate.year(),
+      month: newDate.month() + 1,
+    })
   }
 
   // 날짜 박스 렌더링 함수
