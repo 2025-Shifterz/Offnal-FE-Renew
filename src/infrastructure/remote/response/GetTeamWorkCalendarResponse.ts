@@ -18,7 +18,7 @@ export interface GetTeamWorkCalendarTeamsArray {
 
 export interface GetTeamWorkCalendarWorkInstancesArray {
   date: string
-  workTypeName: WorkType
+  workType: WorkType
   startTime: string
   duration: string
 }
