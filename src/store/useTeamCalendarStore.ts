@@ -25,6 +25,7 @@ const teamCalendars: TeamCalendarRecord[] = [
 
 interface TeamCalendarState {
   teamCalendarData: TeamCalendarRecord[]
+  myTeam: string
 
   setTeamCalendarData: (
     data: (TeamDateAndWorkType & { team: string })[]
@@ -34,11 +35,13 @@ interface TeamCalendarState {
     date: string
     workTypeName: string
   }) => void
+  setMyTeam: (team: string) => void
   clearTeamCalendarData: () => void
 }
 
 export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
   teamCalendarData: [],
+  myTeam: '',
   setTeamCalendarData: (data: (TeamDateAndWorkType & { team: string })[]) => {
     // 팀별로 묶어서 dates Record 생성
     const grouped: Record<string, TeamCalendarRecord> = {}
@@ -56,7 +59,6 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
 
       // 날짜를 key로 저장
       grouped[team].workInstances[date] = {
-        date,
         workTypeName,
         startTime,
         endTime,
@@ -85,10 +87,9 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
         } else {
           // 새로운/다른 근무 타입 설정
           teamRecord.workInstances[date] = {
-            date,
             workTypeName,
-            startTime: existing?.startTime,
-            endTime: existing?.endTime,
+            startTime: existing?.startTime || '',
+            endTime: existing?.endTime || '',
           }
         }
 
@@ -99,8 +100,9 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
           team,
           workInstances: {
             [date]: {
-              date,
               workTypeName,
+              startTime: '',
+              endTime: '',
             },
           },
         })
@@ -109,6 +111,6 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
       return { teamCalendarData: newData }
     })
   },
-
+  setMyTeam: (team: string) => set({ myTeam: team }),
   clearTeamCalendarData: () => set({ teamCalendarData: [] }),
 }))

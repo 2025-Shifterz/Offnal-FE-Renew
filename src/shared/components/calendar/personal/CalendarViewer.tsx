@@ -29,6 +29,7 @@ const CalendarViewer = ({
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
 
   // 근무표 조회 API (화면이 포커스될 때마다 다시 호출) -> 월별 조회
+  // TODO: 팀 근무표에서 설정한 myTeam 으로 대체해야함 !!
   useEffect(() => {
     const fetchData = async () => {
       try {

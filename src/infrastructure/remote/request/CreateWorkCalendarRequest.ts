@@ -11,6 +11,7 @@ export interface WorkTimeDetail {
 }
 
 export interface MonthlyShift {
+  // TODO: myTeam 추가 필요
   organizationName: string
   team: string
   startDate: string

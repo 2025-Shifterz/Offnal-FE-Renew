@@ -119,6 +119,7 @@ const CalendarEditor: ForwardRefRenderFunction<
 
           newCalendars = [
             {
+              // TODO: myTeam도 추가하기
               organizationName,
               team: workGroup,
               startDate,
@@ -129,6 +130,8 @@ const CalendarEditor: ForwardRefRenderFunction<
           console.log('생성된 새 calendars 데이터:', newCalendars)
         }
 
+        // TODO: 팀에서 설정한 myTeam 정보도 포함시키기
+        // 팀에서 저장하면 내가 속한 조로 다시 개인 근무표를 조회해야함!!
         const newCalendarRequest: CreateCalendarRequest = {
           workTimes: convertedWorkTimes,
           calendars: newCalendars,
