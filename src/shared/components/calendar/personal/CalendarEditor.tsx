@@ -38,16 +38,24 @@ const CalendarEditor: ForwardRefRenderFunction<
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
-  const calendarData = useCalendarStore(state => state.calendarData)
-  const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
-  const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  // const calendarData = useCalendarStore(state => state.calendarData)
+  const newCalendarData = useCalendarStore(state => state.newCalendarData)
+  const clearNewCalendarData = useCalendarStore(
+    state => state.clearNewCalendarData
+  )
+  // const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  const updateNewCalendarDay = useCalendarStore(
+    state => state.updateNewCalendarDay
+  )
+
+  // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []
 
   const [currentDate, setCurrentDate] = useState(dayjs())
 
   // 처음에는 초기화//
   useEffect(() => {
-    clearCalendarData()
+    clearNewCalendarData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -62,7 +70,7 @@ const CalendarEditor: ForwardRefRenderFunction<
     const key = selectedDate.format('YYYY-MM-DD')
 
     // 상태 업데이트
-    updateCalendarDay(key, type)
+    updateNewCalendarDay(key, type)
   }
 
   const [convertedWorkTimes, setConvertedWorkTimes] = useState<
@@ -87,7 +95,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
         const storedMonths = Array.from(
           new Set( // 중복 제거
-            Object.keys(calendarData).map(dateStr =>
+            Object.keys(newCalendarData).map(dateStr =>
               dayjs(dateStr).format('YYYY-MM')
             )
           )
@@ -110,7 +118,7 @@ const CalendarEditor: ForwardRefRenderFunction<
           seenCombinations.add(key)
 
           const shifts: Record<string, string> = {}
-          Object.entries(calendarData).forEach(([date, value]) => {
+          Object.entries(newCalendarData).forEach(([date, value]) => {
             if (
               dayjs(date).isSameOrAfter(startDate) &&
               dayjs(date).isSameOrBefore(endDate)
@@ -159,7 +167,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        calendarData={calendarData}
+        calendarData={newCalendarData}
         isViewer={false}
       />
       <TypeSelect onPress={handleTypeSelect} />
