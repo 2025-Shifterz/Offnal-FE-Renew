@@ -11,7 +11,7 @@ const HomeWorkTypeChip: React.FC<HomeWorkTypeChipProps> = ({ workType }) => {
   return (
     <View className="h-[75px] flex-row items-center justify-between rounded-[20px] bg-white">
       <View className="h-full w-full flex-[0.5] items-center justify-center">
-        <HomeChipContent chipTitle={'오늘의 근무 형태'} workType={'야간'} />
+        <HomeChipContent chipTitle={'오늘의 근무 형태'} workType={workType} />
       </View>
       <DividerLine />
       <View className="h-full w-full flex-[0.5] items-center justify-center">

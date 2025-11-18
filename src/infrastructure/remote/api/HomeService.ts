@@ -1,23 +1,46 @@
 import api from './axiosInstance'
 import axios from 'axios'
-import { HomeResponse } from '../response/homeResponse'
+import { GetScheduleResponse } from '../response/GetScheduleResponse'
+import { GetRoutineResponse } from '../response/GetRoutineResponse'
 
 export class HomeService {
-  getHome = async () => {
+  getSchedule = async () => {
     try {
-      const response = await api.get<HomeResponse>('/home')
-      return response.data.data
+      const response = await api.get<GetScheduleResponse>('/home/schedule')
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const errorCode = error.response?.data?.code
-        if (errorCode === 'WORK_INSTANCE_NOT_FOUND') {
-          console.warn('해당 일자에 근무 정보가 없음')
-          return null
-        }
-        console.error(
-          '홈 API 요청 실패:',
-          error.response?.data || error.message
-        )
+        console.error('API 요청 실패:', error.response?.data || error.message)
+      } else {
+        console.error('알 수 없는 에러:', error)
+      }
+      throw error
+    }
+  }
+
+  getRoutine = async () => {
+    try {
+      const response = await api.get<GetRoutineResponse>('/home/routine')
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('API 요청 실패:', error.response?.data || error.message)
+      } else {
+        console.error('알 수 없는 에러:', error)
+      }
+      throw error
+    }
+  }
+
+  getRoutineByDate = async (date: string) => {
+    try {
+      const response = await api.get<GetRoutineResponse>(
+        `/home/routine/${date}`
+      )
+      return response.data
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('API 요청 실패:', error.response?.data || error.message)
       } else {
         console.error('알 수 없는 에러:', error)
       }

@@ -1,18 +1,29 @@
-import { Home } from '../../domain/models/Home'
+import { Routine } from '../../domain/models/Routine'
+import { Schedule } from '../../domain/models/Schedule'
 import { HomeRepository } from '../../domain/repositories/HomeRepository'
 import { HomeService } from '../../infrastructure/remote/api/HomeService'
-import { toHomeDomain } from '../mappers/HomeMappers'
+import { toRoutineDomain, toScheduleDomain } from '../mappers/HomeMappers'
 
 export class HomeRepositoryImpl implements HomeRepository {
   constructor(private homeService: HomeService) {}
 
-  async getHomeData(): Promise<Home> {
-    const response = await this.homeService.getHome()
+  async getSchedule(): Promise<Schedule> {
+    const response = await this.homeService.getSchedule()
+    const result = toScheduleDomain(response)
 
-    if (response === null) {
-      throw new Error('해당 일자에 근무 정보가 없음')
-    }
-    const result = toHomeDomain(response)
+    return result
+  }
+
+  async getRoutine(): Promise<Routine> {
+    const response = await this.homeService.getRoutine()
+    const result = toRoutineDomain(response.data.meals, response.data.health)
+
+    return result
+  }
+
+  async getRoutineByDate(date: string): Promise<Routine> {
+    const response = await this.homeService.getRoutineByDate(date)
+    const result = toRoutineDomain(response.data.meals, response.data.health)
 
     return result
   }
