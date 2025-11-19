@@ -11,6 +11,8 @@ const textInformation = '#096AB3'
 const textDanger = '#BD2C0F'
 
 interface CalendarBaseProps {
+  currentDate: dayjs.Dayjs
+  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate?: dayjs.Dayjs | null
   onDatePress?: (date: dayjs.Dayjs) => void
   teamCalendarData: TeamCalendarRecord[]
@@ -19,28 +21,30 @@ interface CalendarBaseProps {
 }
 
 const TCalendarBase = ({
+  currentDate,
   selectedDate,
   onDatePress,
   teamCalendarData,
   isViewer,
   onPressTeamIcon,
+  setCurrentDate,
 }: CalendarBaseProps) => {
   useEffect(() => {
     console.log('teamCalendarData', teamCalendarData)
   }, [teamCalendarData])
-
-  const [currentDate, setCurrentDate] = useState(dayjs())
 
   const startOfMonth = currentDate.startOf('month')
   const startDay = startOfMonth.day()
   const daysInMonth = currentDate.daysInMonth()
 
   const handlePrevMonth = () => {
-    setCurrentDate(prev => prev.subtract(1, 'month'))
+    const newDate = currentDate.subtract(1, 'month')
+    setCurrentDate(newDate)
   }
 
   const handleNextMonth = () => {
-    setCurrentDate(prev => prev.add(1, 'month'))
+    const newDate = currentDate.add(1, 'month')
+    setCurrentDate(newDate)
   }
 
   // 한 주 단위로 구성된 날짜 + 조 표시

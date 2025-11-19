@@ -50,6 +50,8 @@ const TCalendarViewer = ({
   setSelectedDate,
   onDateSelected,
 }: TCalendarViewerProps) => {
+  const [curentDate, setCurrentDate] = useState(dayjs())
+
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
@@ -106,6 +108,10 @@ const TCalendarViewer = ({
   return (
     <View>
       <TCalendarBase
+        currentDate={curentDate}
+        setCurrentDate={setCurrentDate}
+        // selectedDate={selectedDate}
+
         onDatePress={handleDatePress}
         onPressTeamIcon={onPressTeamIcon}
         teamCalendarData={teamCalendarData}

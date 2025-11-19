@@ -1,11 +1,12 @@
 // 근무표 조회 & 저장 동시에 되는 캘린더
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
-import { useCalendarStore } from '../../../store/useCalendarStore'
-import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
+
+import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import TCalendarBase from './TCalendarBase'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -15,7 +16,7 @@ interface CalendarInteractiveProps {
   setSelectedDate: (date: dayjs.Dayjs) => void
 }
 
-const CalendarInteractive = ({
+const TCalendarInteractive = ({
   currentDate,
   setCurrentDate,
   isEditScreen,
@@ -23,7 +24,7 @@ const CalendarInteractive = ({
   setSelectedDate,
 }: CalendarInteractiveProps) => {
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  const calendarData = useCalendarStore(state => state.calendarData)
+  const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const myTeam = useTeamCalendarStore(state => state.myTeam)
@@ -61,12 +62,12 @@ const CalendarInteractive = ({
 
   return (
     <View>
-      <CalendarBase
+      <TCalendarBase
         currentDate={currentDate}
         setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={setSelectedDate}
-        calendarData={calendarData}
+        teamCalendarData={teamCalendarData}
         isViewer={false}
         isEditScreen={isEditScreen}
       />
@@ -74,4 +75,4 @@ const CalendarInteractive = ({
   )
 }
 
-export default CalendarInteractive
+export default TCalendarInteractive

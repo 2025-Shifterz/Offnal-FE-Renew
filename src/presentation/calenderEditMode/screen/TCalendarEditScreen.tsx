@@ -19,13 +19,14 @@ import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
+import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
   'EditCalendar'
 >
 
-const CalendarEditScreen = () => {
+const TCalendarEditScreen = () => {
   const navigation =
     useNavigation<NavigationProp<CalendarScreenStackParamList>>()
   const calendarData = useCalendarStore(state => state.calendarData)
@@ -144,7 +145,7 @@ const CalendarEditScreen = () => {
         {/* 캘린더 */}
         <View className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
-            <CalendarInteractive
+            <TCalendarInteractive
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
               selectedDate={selectedDate}
@@ -179,4 +180,4 @@ const CalendarEditScreen = () => {
   )
 }
 
-export default CalendarEditScreen
+export default TCalendarEditScreen
