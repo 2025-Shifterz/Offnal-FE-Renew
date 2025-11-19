@@ -81,9 +81,6 @@ const FeedBackScreen = () => {
                     textAlignVertical="top"
                   />
                   <View className="self-end">
-                    <Text className="text-text-disabled label-xs">
-                      {feedback.length}/{MAX_FEEDBACK_LENGTH}
-                    </Text>
                     <GlobalText className="text-text-disabled label-xs">
                       {feedback.length}/{MAX_FEEDBACK_LENGTH}
                     </GlobalText>

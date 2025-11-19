@@ -1,5 +1,5 @@
 import '../../../../global.css'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AlramSection from '../ui/AlramSection'
@@ -10,8 +10,8 @@ import HealthCardSection from '../ui/HealthCardSection'
 import dayjs from 'dayjs'
 import { useFocusEffect } from '@react-navigation/native'
 import {
-  todoRepository,
   getMemosByDateUseCase,
+  getToDosByDateUseCase,
 } from '../../../infrastructure/di/Dependencies'
 import { HomeResponse } from '../../../infrastructure/remote/response/homeResponse'
 import TopBanner from '../components/TopBanner'
@@ -28,7 +28,7 @@ export default function MainScreen() {
   const fetchHome = async () => {
     try {
       // const data = await homeRepository.getHome()
-      const todos = await todoRepository.getTodosByDate(dayjs())
+      const todos = await getToDosByDateUseCase.execute(dayjs())
       const memos = await getMemosByDateUseCase.execute(dayjs())
 
       // setHomeData(data)
