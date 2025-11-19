@@ -104,9 +104,12 @@ const CalendarEditScreen = () => {
     sheetRef.current?.close() // 바텀시트만 닫기
   }
 
+  // TODO: 근무표 수정할 때 캘린더 범위에 포함되지 않은 것은 어떻게 처리??
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
+      console.log('calendarData in handlePatchData:', calendarData)
+      console.log('근무표 수정 요청 데이터:', toUpdateShiftRecord(calendarData))
       await calendarRepository.updateCalendar(
         latestOrganization.organizationName,
         myTeam,
