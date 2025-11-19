@@ -5,6 +5,7 @@ import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
 interface CalendarViewerProps {
   onPressTeamIcon?: () => void
@@ -23,6 +24,7 @@ const CalendarViewer = ({
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const myTeam = useTeamCalendarStore(state => state.myTeam)
 
   const [curentDate, setCurrentDate] = useState(dayjs())
 
@@ -37,7 +39,7 @@ const CalendarViewer = ({
       try {
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
-          latestOrganization.team,
+          myTeam || latestOrganization.team, // myTeam 이 있으면 그걸로 !!
           monthStartDate,
           monthEndDate
         )

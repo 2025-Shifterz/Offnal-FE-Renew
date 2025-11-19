@@ -39,7 +39,6 @@ const TCalendarEditor: ForwardRefRenderFunction<
   const clearTeamCalendarData = useTeamCalendarStore(
     state => state.clearTeamCalendarData
   )
-
   // 처음에는 초기화//
   useEffect(() => {
     clearTeamCalendarData()
@@ -138,6 +137,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         console.log('생성된 새 팀 calendars 데이터:', newTeamCalendars)
 
         const newCalendarRequest: CreateCalendarRequest = {
+          myTeam: workGroup,
           workTimes: convertedWorkTimes,
           calendars: newTeamCalendars,
         }

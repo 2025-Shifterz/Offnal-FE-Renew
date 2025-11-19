@@ -143,6 +143,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         // TODO: 팀에서 설정한 myTeam 정보도 포함시키기
         // 팀에서 저장하면 내가 속한 조로 다시 개인 근무표를 조회해야함!!
         const newCalendarRequest: CreateCalendarRequest = {
+          myTeam: workGroup,
           workTimes: convertedWorkTimes,
           calendars: newCalendars,
         }

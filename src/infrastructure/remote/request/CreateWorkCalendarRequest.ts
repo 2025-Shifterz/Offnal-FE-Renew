@@ -22,6 +22,7 @@ export interface MonthlyShift {
 }
 
 export interface CreateCalendarRequest {
+  myTeam: string
   workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }

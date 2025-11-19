@@ -56,6 +56,7 @@ const TCalendarViewer = ({
   const setTeamCalendarData = useTeamCalendarStore(
     state => state.setTeamCalendarData
   )
+  const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
@@ -82,12 +83,14 @@ const TCalendarViewer = ({
               endTime: wi.endTime,
             }))
           )
+        // myTeam 정보도 함께 저장
+        setMyTeam(response.myTeam) // Uncomment and implement if needed
 
         setTeamCalendarData(flattened)
-        console.log('캘린더 탭: 월별 근무표 조회 성공:', response)
+        console.log('팀 캘린더 탭: 월별 근무표 조회 성공:', response)
         console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {
-        console.log('캘린더 탭: 월별 근무표 조회 실패:', error)
+        console.log('팀 캘린더 탭: 월별 근무표 조회 실패:', error)
         console.log('organization name:', latestOrganization.organizationName)
       }
     }
