@@ -25,7 +25,10 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  const [selectedYearMonth] = useState({ year: 2025, month: 11 })
+  const [selectedYearMonth] = useState({
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+  })
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 

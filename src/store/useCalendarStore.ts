@@ -40,7 +40,7 @@ interface CalendarState {
   setLoading: (loading: boolean) => void
   setLatestOrganization: (organizationName: string, team: string) => void
 
-  // 편집용
+  // 온보딩 캘린더 편집용 - CalendarEditor 에서 쓰임
   setNewCalendarData: (data: DateAndWorkTypeRecord) => void
   updateNewCalendarDay: (date: string, workTypeName: WorkType) => void
   clearNewCalendarData: () => void

@@ -37,8 +37,8 @@ const CalendarEditScreen = () => {
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: 2025,
-    month: 11,
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
   })
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)

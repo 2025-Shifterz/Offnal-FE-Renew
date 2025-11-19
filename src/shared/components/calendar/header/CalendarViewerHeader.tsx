@@ -11,6 +11,7 @@ import TeamVersion from '../../../../assets/icons/users-profiles-01.svg'
 import CalEdit from '../../../../assets/icons/file-edit-02.svg'
 import ArrowDown from '../../../../assets/icons/chevron-down.svg'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
+import dayjs from 'dayjs'
 
 interface CalendarViewerHeaderProps {
   selectedDate: Date
@@ -31,8 +32,8 @@ const CalendarViewerHeader = ({
   const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
 
   const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: 2025,
-    month: 11,
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
   })
 
   useEffect(() => {

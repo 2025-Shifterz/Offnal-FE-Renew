@@ -38,12 +38,10 @@ const CalendarEditor: ForwardRefRenderFunction<
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
-  // const calendarData = useCalendarStore(state => state.calendarData)
   const newCalendarData = useCalendarStore(state => state.newCalendarData)
   const clearNewCalendarData = useCalendarStore(
     state => state.clearNewCalendarData
   )
-  // const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   const updateNewCalendarDay = useCalendarStore(
     state => state.updateNewCalendarDay
   )
