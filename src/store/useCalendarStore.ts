@@ -21,11 +21,7 @@ const calendarData: DateAndWorkTypeRecord = {
 interface CalendarState {
   calendarData: DateAndWorkTypeRecord
   selectedDate: dayjs.Dayjs | null
-  // month selector 헤더를 위한 상태
-  selectedYearMonth: {
-    year: number
-    month: number
-  }
+
   isLoading: boolean
   // 최신 조직 정보
   latestOrganization: {
@@ -39,7 +35,6 @@ interface CalendarState {
   // setter
   setCalendarData: (data: DateAndWorkType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
-  setSelectedYearMonth: (date: { year: number; month: number }) => void
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
@@ -122,8 +117,6 @@ export const useCalendarStore = create<CalendarState>()(set => ({
     }),
 
   setSelectedDate: date => set({ selectedDate: date }),
-
-  setSelectedYearMonth: date => set({ selectedYearMonth: date }),
 
   // 캘린더 데이터 전체 삭제
   clearCalendarData: () => set({ calendarData: {} }),

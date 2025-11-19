@@ -11,7 +11,6 @@ import { useFocusEffect } from '@react-navigation/native'
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
   const [showPlus, setShowPlus] = useState(false)
-
   const setLatestOrganization = useCalendarStore(
     state => state.setLatestOrganization
   )

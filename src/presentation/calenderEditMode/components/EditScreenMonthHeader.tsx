@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { Dayjs } from 'dayjs'
 
 import ArrowLeft from '../../../assets/icons/black-arrow-l.svg'
 import ArrowRight from '../../../assets/icons/black-arrow-r.svg'
-import { useCalendarStore } from '../../../store/useCalendarStore'
 const arrowStyle =
   'size-[24px] items-center justify-center rounded-radius-max bg-surface-white'
 
@@ -12,15 +11,18 @@ const arrowStyle =
 interface EditScreenMonthHeaderProps {
   currentDate: Dayjs
   setCurrentDate: (date: Dayjs) => void
+  selectedYearMonth: { year: number; month: number }
+  setSelectedYearMonth: Dispatch<
+    SetStateAction<{ year: number; month: number }>
+  >
 }
 
 const EditScreenMonthHeader = ({
   currentDate,
   setCurrentDate,
+  selectedYearMonth,
+  setSelectedYearMonth,
 }: EditScreenMonthHeaderProps) => {
-  const setSelectedYearMonth = useCalendarStore(
-    state => state.setSelectedYearMonth
-  )
   const handlePrevMonth = () => {
     const newDate = currentDate.subtract(1, 'month')
     setCurrentDate(newDate)

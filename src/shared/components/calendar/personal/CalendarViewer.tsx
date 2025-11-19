@@ -25,9 +25,8 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
+  const [selectedYearMonth] = useState({ year: 2025, month: 11 })
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  // const myTeam = useTeamCalendarStore(state => state.myTeam)
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   const [curentDate, setCurrentDate] = useState(dayjs())
@@ -41,6 +40,11 @@ const CalendarViewer = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('요청하는 팀 근무표 조회 데이터: ', {
+          organizationName: latestOrganization.organizationName,
+          monthStartDate,
+          monthEndDate,
+        })
         // 팀 캘린더 조회 -> myTeam 조회
         const responseTeam = await teamCalendarRepository.getTeamCalendar(
           latestOrganization.organizationName,
@@ -48,7 +52,6 @@ const CalendarViewer = ({
           monthEndDate
         )
         setMyTeam(responseTeam.myTeam) // myTeam 정보 저장
-        console.log('myTeam 조회 성공:', responseTeam.myTeam)
 
         // 개인 캘린더 조회
         const response = await calendarRepository.getCalendar(

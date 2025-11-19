@@ -30,9 +30,11 @@ const CalendarViewerHeader = ({
   const [tempYear, setTempYear] = useState(selectedDate.getFullYear())
   const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
 
-  const setSelectedYearMonth = useCalendarStore(
-    state => state.setSelectedYearMonth
-  )
+  const [selectedYearMonth, setSelectedYearMonth] = useState({
+    year: 2025,
+    month: 11,
+  })
+
   useEffect(() => {
     setSelectedYearMonth({ year: tempYear, month: tempMonth })
   }, [tempYear, tempMonth, setSelectedYearMonth])

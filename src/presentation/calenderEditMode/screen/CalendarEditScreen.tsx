@@ -36,6 +36,11 @@ const CalendarEditScreen = () => {
   const route = useRoute<CalendarEditScreenRouteProp>()
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const [selectedYearMonth, setSelectedYearMonth] = useState({
+    year: 2025,
+    month: 11,
+  })
+
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
@@ -138,6 +143,8 @@ const CalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
+              selectedYearMonth={selectedYearMonth}
+              setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
           <Text className="text-text-subtle body-xs">
@@ -148,6 +155,7 @@ const CalendarEditScreen = () => {
         <View className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
             <CalendarInteractive
+              selectedYearMonth={selectedYearMonth}
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
               selectedDate={selectedDate}

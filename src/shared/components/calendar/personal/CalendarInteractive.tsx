@@ -13,6 +13,7 @@ interface CalendarInteractiveProps {
   isEditScreen: boolean
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
+  selectedYearMonth: { year: number; month: number }
 }
 
 const CalendarInteractive = ({
@@ -21,11 +22,13 @@ const CalendarInteractive = ({
   isEditScreen,
   selectedDate,
   setSelectedDate,
+  selectedYearMonth,
 }: CalendarInteractiveProps) => {
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
+  // const [selectedYearMonth] = useState({ year: 2025, month: 11 })
+
   const myTeam = useTeamCalendarStore(state => state.myTeam)
   // 근무표 조회 API
   useEffect(() => {
@@ -37,6 +40,12 @@ const CalendarInteractive = ({
         .format('YYYY-MM-DD')
 
       try {
+        console.log('요청하는 근무표 조회 데이터: ', {
+          organizationName: latestOrganization.organizationName,
+          myTeam,
+          monthStartDate,
+          monthEndDate,
+        })
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
           myTeam,

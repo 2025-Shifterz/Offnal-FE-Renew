@@ -34,10 +34,6 @@ const CalendarBase = ({
   currentDate,
   setCurrentDate,
 }: CalendarBaseProps) => {
-  const setSelectedYearMonth = useCalendarStore(
-    state => state.setSelectedYearMonth
-  )
-
   const startOfMonth = currentDate.startOf('month') // 2025-07-01
   // const endOfMonth = currentDate.endOf('month'); // 2025-07-31
   const startDay = startOfMonth.day() // 그 달의 1일의 요일 -> 달력에서 1일은 어느 칸에 둘지
@@ -46,19 +42,11 @@ const CalendarBase = ({
   const handlePrevMonth = () => {
     const newDate = currentDate.subtract(1, 'month')
     setCurrentDate(newDate)
-    setSelectedYearMonth({
-      year: newDate.year(),
-      month: newDate.month() + 1,
-    })
   }
 
   const handleNextMonth = () => {
     const newDate = currentDate.add(1, 'month')
     setCurrentDate(newDate)
-    setSelectedYearMonth({
-      year: newDate.year(),
-      month: newDate.month() + 1,
-    })
   }
 
   // 날짜 박스 렌더링 함수
