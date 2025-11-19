@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
 import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
 import { useCalendarStore } from '../../../store/useCalendarStore'
+import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -25,7 +26,7 @@ const CalendarInteractive = ({
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
-
+  const myTeam = useTeamCalendarStore(state => state.myTeam)
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
@@ -38,12 +39,13 @@ const CalendarInteractive = ({
       try {
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
-          latestOrganization.team,
+          myTeam,
           monthStartDate,
           monthEndDate
         )
 
         setCalendarData(response)
+        console.log('myTeam:', myTeam)
         console.log('근무표 수정 모드: 월별 근무표 조회 성공:', response)
       } catch (error) {
         console.log('근무표 수정 모드: 월별 근무표 조회 실패:', error)
@@ -53,7 +55,7 @@ const CalendarInteractive = ({
   }, [
     selectedYearMonth,
     latestOrganization.organizationName,
-    latestOrganization.team,
+    myTeam,
     setCalendarData,
   ])
 

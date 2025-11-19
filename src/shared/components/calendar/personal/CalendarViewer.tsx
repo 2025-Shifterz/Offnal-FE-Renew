@@ -3,7 +3,10 @@ import React, { useEffect, useState } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import {
+  calendarRepository,
+  teamCalendarRepository,
+} from '../../../../infrastructure/di/Dependencies'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
@@ -24,7 +27,8 @@ const CalendarViewer = ({
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
   const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  const myTeam = useTeamCalendarStore(state => state.myTeam)
+  // const myTeam = useTeamCalendarStore(state => state.myTeam)
+  const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   const [curentDate, setCurrentDate] = useState(dayjs())
 
@@ -37,9 +41,19 @@ const CalendarViewer = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 팀 캘린더 조회 -> myTeam 조회
+        const responseTeam = await teamCalendarRepository.getTeamCalendar(
+          latestOrganization.organizationName,
+          monthStartDate,
+          monthEndDate
+        )
+        setMyTeam(responseTeam.myTeam) // myTeam 정보 저장
+        console.log('myTeam 조회 성공:', responseTeam.myTeam)
+
+        // 개인 캘린더 조회
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
-          myTeam || latestOrganization.team, // myTeam 이 있으면 그걸로 !!
+          responseTeam.myTeam || latestOrganization.team, // myTeam 이 있으면 그걸로 !!
           monthStartDate,
           monthEndDate
         )

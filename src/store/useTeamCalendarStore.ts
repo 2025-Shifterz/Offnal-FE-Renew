@@ -112,5 +112,6 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
     })
   },
   setMyTeam: (team: string) => set({ myTeam: team }),
+
   clearTeamCalendarData: () => set({ teamCalendarData: [] }),
 }))

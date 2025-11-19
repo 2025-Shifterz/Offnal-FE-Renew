@@ -18,6 +18,7 @@ import { CalendarScreenStackParamList } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
+import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
@@ -30,6 +31,8 @@ const CalendarEditScreen = () => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const myTeam = useTeamCalendarStore(state => state.myTeam)
+
   const route = useRoute<CalendarEditScreenRouteProp>()
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
@@ -106,7 +109,7 @@ const CalendarEditScreen = () => {
     try {
       await calendarRepository.updateCalendar(
         latestOrganization.organizationName,
-        latestOrganization.team,
+        myTeam,
         toUpdateShiftRecord(calendarData)
       )
       console.log('근무표 수정 성공')
