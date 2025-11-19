@@ -40,19 +40,24 @@ export class MemberService {
 
   updateProfileImage = async (image: ImagePickerAssetRequest) => {
     try {
-      const mimeType = image.type
-      const extension = mimeType.split('/')[1]?.replace('jpeg', 'jpg')
+      let effectiveMimeType = image.type
+      let effectiveExtension = effectiveMimeType.split('/')[1]
 
-      if (!extension) {
+      if (effectiveMimeType === 'image/jpg') {
+        effectiveMimeType = 'image/jpeg'
+        effectiveExtension = 'jpeg'
+      }
+
+      if (!effectiveExtension) {
         return
       }
 
       const presignedResponse = await api.post<GetPresignedUrlResponse>(
         '/members/profile/upload-url',
-        { extension }
+        { extension: effectiveExtension }
       )
 
-      console.log('presignedResponse:', mimeType)
+      console.log('presignedResponse:', effectiveMimeType)
 
       const { uploadUrl } = presignedResponse.data.data
 
@@ -66,7 +71,7 @@ export class MemberService {
       const uploadResponse = await fetch(uploadUrl, {
         method: 'PUT',
         headers: {
-          'Content-Type': mimeType,
+          'Content-Type': effectiveMimeType,
         },
         body: fileBlob,
       })
