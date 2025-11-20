@@ -18,7 +18,6 @@ import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
-import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
 
 type CalendarEditScreenRouteProp = RouteProp<
@@ -37,6 +36,10 @@ const TCalendarEditScreen = () => {
   const route = useRoute<CalendarEditScreenRouteProp>()
   const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const [selectedYearMonth, setSelectedYearMonth] = useState({
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+  })
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
@@ -68,8 +71,6 @@ const TCalendarEditScreen = () => {
 
     // 상태 업데이트
     updateCalendarDay(key, type)
-
-    // sheetRef.current?.close(); // 이 줄을 주석 처리하거나 삭제합니다.
   }
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
@@ -134,6 +135,8 @@ const TCalendarEditScreen = () => {
               근무표 수정 모드
             </Text>
             <EditScreenHeader
+              selectedYearMonth={selectedYearMonth}
+              setSelectedYearMonth={setSelectedYearMonth}
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
             />
@@ -146,11 +149,10 @@ const TCalendarEditScreen = () => {
         <View className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
             <TCalendarInteractive
+              selectedYearMonth={selectedYearMonth}
               currentDate={currentDate}
-              setCurrentDate={setCurrentDate}
               selectedDate={selectedDate}
               setSelectedDate={openBottomSheet}
-              isEditScreen={true}
             />
           </View>
         </View>

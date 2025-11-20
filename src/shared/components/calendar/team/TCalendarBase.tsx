@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import CalendarEditorHeader from '../header/CalendarEditorHeader'
-import CalendarViewerHeader from '../header/CalendarViewerHeader'
 import TimeFrame from '../TimeFrame'
 import { TeamCalendarRecord } from '../../../types/TeamCalendar'
 
@@ -12,12 +10,9 @@ const textDanger = '#BD2C0F'
 
 interface CalendarBaseProps {
   currentDate: dayjs.Dayjs
-  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate?: dayjs.Dayjs | null
   onDatePress?: (date: dayjs.Dayjs) => void
   teamCalendarData: TeamCalendarRecord[]
-  isViewer: boolean
-  onPressTeamIcon?: () => void
 }
 
 const TCalendarBase = ({
@@ -25,9 +20,6 @@ const TCalendarBase = ({
   selectedDate,
   onDatePress,
   teamCalendarData,
-  isViewer,
-  onPressTeamIcon,
-  setCurrentDate,
 }: CalendarBaseProps) => {
   useEffect(() => {
     console.log('teamCalendarData', teamCalendarData)
@@ -36,16 +28,6 @@ const TCalendarBase = ({
   const startOfMonth = currentDate.startOf('month')
   const startDay = startOfMonth.day()
   const daysInMonth = currentDate.daysInMonth()
-
-  const handlePrevMonth = () => {
-    const newDate = currentDate.subtract(1, 'month')
-    setCurrentDate(newDate)
-  }
-
-  const handleNextMonth = () => {
-    const newDate = currentDate.add(1, 'month')
-    setCurrentDate(newDate)
-  }
 
   // 한 주 단위로 구성된 날짜 + 조 표시
   const renderWeeks = () => {
@@ -143,21 +125,6 @@ const TCalendarBase = ({
 
   return (
     <View className="rounded-t-radius-m2 bg-surface-white">
-      {/* 헤더 */}
-      {isViewer ? (
-        <CalendarViewerHeader
-          onPressTeamIcon={onPressTeamIcon}
-          selectedDate={currentDate.toDate()}
-          onChange={newDate => setCurrentDate(dayjs(newDate))}
-        />
-      ) : (
-        <CalendarEditorHeader
-          currentDate={currentDate}
-          onPrevMonth={handlePrevMonth}
-          onNextMonth={handleNextMonth}
-        />
-      )}
-
       {/* 요일 라벨 */}
       <View className="mt-2 flex-row">
         <View className="ml-[34px] h-[30px] flex-1 flex-row items-center justify-between">

@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'

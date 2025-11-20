@@ -9,8 +9,6 @@ import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
-  setCurrentDate: (date: dayjs.Dayjs) => void
-  isEditScreen: boolean
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
   selectedYearMonth: { year: number; month: number }
@@ -18,8 +16,6 @@ interface CalendarInteractiveProps {
 
 const CalendarInteractive = ({
   currentDate,
-  setCurrentDate,
-  isEditScreen,
   selectedDate,
   setSelectedDate,
   selectedYearMonth,
@@ -70,12 +66,9 @@ const CalendarInteractive = ({
     <View>
       <CalendarBase
         currentDate={currentDate}
-        setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={setSelectedDate}
         calendarData={calendarData}
-        isViewer={false}
-        isEditScreen={isEditScreen}
       />
     </View>
   )

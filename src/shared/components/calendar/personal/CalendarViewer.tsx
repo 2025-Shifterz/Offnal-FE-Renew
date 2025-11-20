@@ -11,14 +11,18 @@ import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
 interface CalendarViewerProps {
-  onPressTeamIcon?: () => void
+  // onPressTeamIcon?: () => void
+  currentDate: dayjs.Dayjs
+  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   onDateSelected?: (date: dayjs.Dayjs) => void // ✅ 콜백 추가
 }
 
 const CalendarViewer = ({
-  onPressTeamIcon,
+  // onPressTeamIcon,
+  currentDate,
+  setCurrentDate,
   selectedDate,
   setSelectedDate,
   onDateSelected,
@@ -32,7 +36,7 @@ const CalendarViewer = ({
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
-  const [curentDate, setCurrentDate] = useState(dayjs())
+  // const [currentDate, setCurrentDate] = useState(dayjs())
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
@@ -86,13 +90,10 @@ const CalendarViewer = ({
   return (
     <View>
       <CalendarBase
-        currentDate={curentDate}
-        setCurrentDate={setCurrentDate}
+        currentDate={currentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         calendarData={calendarData}
-        onPressTeamIcon={onPressTeamIcon}
-        isViewer
       />
     </View>
   )

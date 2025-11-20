@@ -3,56 +3,29 @@ import { View } from 'react-native'
 import TCalendarBase from './TCalendarBase'
 import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import {
-  calendarRepository,
-  teamCalendarRepository,
-} from '../../../../infrastructure/di/Dependencies'
+import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
-import { WorkType } from '../../../types/Calendar'
 import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
 
-// 예시 데이터
-const calendarData = {
-  '2025-07-15': {
-    '1조': '주간',
-    '2조': '야간',
-    '3조': '오후',
-    '4조': '휴일',
-  },
-  '2025-07-16': {
-    '1조': '오후',
-    '2조': '오후',
-    '3조': '주간',
-  },
-  '2025-07-17': {
-    '2조': '야간',
-    '4조': '주간',
-  },
-  '2025-07-18': {
-    '1조': '주간',
-  },
-  '2025-07-19': {
-    '3조': '휴일',
-    '4조': '야간',
-  },
-} as const
-
 interface TCalendarViewerProps {
-  onPressTeamIcon: () => void
+  currentDate: dayjs.Dayjs
+  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   onDateSelected?: (date: dayjs.Dayjs) => void
 }
 
 const TCalendarViewer = ({
-  onPressTeamIcon,
+  currentDate,
+  setCurrentDate,
   selectedDate,
   setSelectedDate,
   onDateSelected,
 }: TCalendarViewerProps) => {
-  const [curentDate, setCurrentDate] = useState(dayjs())
-
-  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
+  const [selectedYearMonth] = useState({
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+  })
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const setTeamCalendarData = useTeamCalendarStore(
@@ -108,14 +81,9 @@ const TCalendarViewer = ({
   return (
     <View>
       <TCalendarBase
-        currentDate={curentDate}
-        setCurrentDate={setCurrentDate}
-        // selectedDate={selectedDate}
-
+        currentDate={currentDate}
         onDatePress={handleDatePress}
-        onPressTeamIcon={onPressTeamIcon}
         teamCalendarData={teamCalendarData}
-        isViewer
       />
     </View>
   )

@@ -1,6 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { calendarNavigation } from '../../../navigation/types'
 import { useEffect, useRef, useState } from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
@@ -18,16 +16,16 @@ import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 import { WorkType } from '../../../shared/types/Calendar'
 import { Memo } from '../../../domain/models/Memo'
 import { Todo } from '../../../domain/models/Todo'
+import CalendarViewerHeader from '../../../shared/components/calendar/header/CalendarViewerHeader'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
 }
 
 const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
-  const navigation = useNavigation<calendarNavigation>()
   const [isTeamView, setIsTeamView] = useState(false)
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
-  // console.log('calendarData', calendarData);
+  const [currentDate, setCurrentDate] = useState(dayjs())
 
   // 노트
   const [memos, setMemo] = useState<Memo[]>()
@@ -71,34 +69,35 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
     }
 
     initializeTodosbyDate()
-    // console.log('calendarData.size', calendarData.size);
   }, [selectedDate])
 
   return (
     <View className="h-full flex-1 px-[16px]">
+      <CalendarViewerHeader
+        onPressTeamIcon={() => {
+          setIsTeamView(!isTeamView)
+          console.log('클릭됨')
+        }}
+        selectedDate={currentDate.toDate()}
+        onChange={newDate => setCurrentDate(dayjs(newDate))}
+      />
       <ScrollView className="h-full flex-1">
         {/* 팀 캘린더인지 */}
         {isTeamView ? (
           <TCalendarViewer
-            onPressTeamIcon={() => {
-              setIsTeamView(!isTeamView)
-              console.log('클릭됨')
-            }}
-            onPressEditIcon={() => {
-              navigation.navigate('CalendarInfoEdit')
-            }}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            onDateSelected={openBottomSheet}
           />
         ) : (
           <CalendarViewer
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             onDateSelected={openBottomSheet} // ✅ 날짜 선택 시 바텀시트 열기
-            onPressTeamIcon={() => {
-              setIsTeamView(!isTeamView)
-            }}
-            onPressEditIcon={() => {
-              navigation.navigate('CalendarInfoEdit')
-            }}
           />
         )}
       </ScrollView>

@@ -72,8 +72,6 @@ const CalendarEditScreen = () => {
 
     // 상태 업데이트
     updateCalendarDay(key, type)
-
-    // sheetRef.current?.close(); // 이 줄을 주석 처리하거나 삭제합니다.
   }
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
@@ -157,10 +155,8 @@ const CalendarEditScreen = () => {
             <CalendarInteractive
               selectedYearMonth={selectedYearMonth}
               currentDate={currentDate}
-              setCurrentDate={setCurrentDate}
               selectedDate={selectedDate}
               setSelectedDate={openBottomSheet}
-              isEditScreen={true}
             />
           </View>
         </View>
