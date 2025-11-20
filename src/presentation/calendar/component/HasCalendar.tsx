@@ -30,6 +30,10 @@ const HasCalendar = ({
   setIsTeamView,
 }: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
+  const [selectedYearMonth, setSelectedYearMonth] = useState({
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+  })
   const [currentDate, setCurrentDate] = useState(dayjs())
   // 노트
   const [memos, setMemo] = useState<Memo[]>()
@@ -84,6 +88,7 @@ const HasCalendar = ({
         }}
         selectedDate={currentDate.toDate()}
         onChange={newDate => setCurrentDate(dayjs(newDate))}
+        setSelectedYearMonth={setSelectedYearMonth}
       />
       <ScrollView className="h-full flex-1">
         {/* 팀 캘린더인지 */}
@@ -96,6 +101,8 @@ const HasCalendar = ({
           />
         ) : (
           <CalendarViewer
+            selectedYearMonth={selectedYearMonth}
+            // setSelectedYearMonth={setSelectedYearMonth}
             currentDate={currentDate}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}

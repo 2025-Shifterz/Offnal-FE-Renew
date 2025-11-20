@@ -11,6 +11,7 @@ import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
 interface CalendarViewerProps {
+  selectedYearMonth: { year: number; month: number }
   currentDate: dayjs.Dayjs
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
@@ -18,6 +19,7 @@ interface CalendarViewerProps {
 }
 
 const CalendarViewer = ({
+  selectedYearMonth,
   currentDate,
   selectedDate,
   setSelectedDate,
@@ -25,10 +27,10 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  const [selectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
-  })
+  // const [selectedYearMonth] = useState({
+  //   year: dayjs().year(),
+  //   month: dayjs().month() + 1,
+  // })
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
