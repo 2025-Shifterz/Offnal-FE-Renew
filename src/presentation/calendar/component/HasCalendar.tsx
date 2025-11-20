@@ -31,7 +31,6 @@ const HasCalendar = ({
 }: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
   const [currentDate, setCurrentDate] = useState(dayjs())
-
   // 노트
   const [memos, setMemo] = useState<Memo[]>()
   const [todos, setTodo] = useState<Todo[]>()

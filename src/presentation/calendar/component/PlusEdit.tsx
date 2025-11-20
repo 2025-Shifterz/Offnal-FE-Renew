@@ -44,6 +44,25 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
       useNativeDriver: true,
     }).start()
   }, [fadeAnim])
+  const navigateToEditModeScreen = () => {
+    if (isTeamView) {
+      navigation.navigate('Tabs', {
+        screen: 'Calendar',
+        params: {
+          screen: 'TeamEditCalendar',
+          params: { workTimes: workTimes },
+        },
+      })
+    } else {
+      navigation.navigate('Tabs', {
+        screen: 'Calendar',
+        params: {
+          screen: 'EditCalendar',
+          params: { workTimes: workTimes },
+        },
+      })
+    }
+  }
 
   return (
     <Animated.View
@@ -66,15 +85,7 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('Tabs', {
-              screen: 'Calendar',
-              params: {
-                screen: 'EditCalendar',
-                params: { workTimes: workTimes, isTeamView: isTeamView },
-              },
-            })
-          }
+          onPress={navigateToEditModeScreen}
           className="flex-row items-center gap-[10px]"
         >
           <TextButton text="근무표 추가 입력 및 수정" />

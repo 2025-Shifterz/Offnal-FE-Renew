@@ -14,6 +14,7 @@ const CalendarScreen = () => {
   const setLatestOrganization = useCalendarStore(
     state => state.setLatestOrganization
   )
+  // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
   const [isTeamView, setIsTeamView] = useState(false)
 
   // 캘린더 탭에 포커스 될 때마다 실행
