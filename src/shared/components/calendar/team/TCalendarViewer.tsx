@@ -8,6 +8,8 @@ import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
 
 interface TCalendarViewerProps {
+  selectedYearMonth: { year: number; month: number }
+
   currentDate: dayjs.Dayjs
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
@@ -15,15 +17,12 @@ interface TCalendarViewerProps {
 }
 
 const TCalendarViewer = ({
+  selectedYearMonth,
   currentDate,
   selectedDate,
   setSelectedDate,
   onDateSelected,
 }: TCalendarViewerProps) => {
-  const [selectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
-  })
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const setTeamCalendarData = useTeamCalendarStore(
@@ -66,8 +65,12 @@ const TCalendarViewer = ({
       }
     }
     fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [
+    latestOrganization.organizationName,
+    monthStartDate,
+    monthEndDate,
+    setTeamCalendarData,
+  ])
 
   // ----------
 

@@ -94,6 +94,7 @@ const HasCalendar = ({
         {/* 팀 캘린더인지 */}
         {isTeamView ? (
           <TCalendarViewer
+            selectedYearMonth={selectedYearMonth}
             currentDate={currentDate}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -102,7 +103,6 @@ const HasCalendar = ({
         ) : (
           <CalendarViewer
             selectedYearMonth={selectedYearMonth}
-            // setSelectedYearMonth={setSelectedYearMonth}
             currentDate={currentDate}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
