@@ -39,6 +39,7 @@ const CalendarScreen = () => {
           console.log('조직 조회 실패:', error)
         }
       }
+
       fetchData()
     }, [setLatestOrganization])
   )

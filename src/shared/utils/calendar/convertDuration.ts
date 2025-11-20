@@ -53,7 +53,7 @@ export function convertDurationToEndTime(
   duration: string
 ): string {
   if (!duration) {
-    console.log('duration is null') // 휴일인 경우
+    // 휴일인 경우
     return ''
   }
   // const [hour, min] = startTime.split(':').map(Number)

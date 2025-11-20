@@ -63,14 +63,14 @@ const CalendarViewer = ({
         )
         setCalendarData(response)
         console.log('캘린더 탭: 월별 근무표 조회 성공:', response)
-        console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {
         console.log('캘린더 탭: 월별 근무표 조회 실패:', error)
-        console.log('organization name:', latestOrganization.organizationName)
       }
     }
+    // organizationName 이 아직 셋팅되지 않은 경우 호출을 막음
+    if (latestOrganization.organizationName.trim() === '') return
     fetchData()
-  }, [latestOrganization, monthStartDate, monthEndDate])
+  }, [latestOrganization.organizationName, monthStartDate, monthEndDate])
 
   // ----------
 
