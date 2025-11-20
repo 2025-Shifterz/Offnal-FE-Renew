@@ -6,19 +6,12 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
-import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
 import SelectGroupBox from './SelectGroupBox'
 dayjs.locale('ko') // 한글 locale 적용
 
-// 근무형태 선택 박스 map 데이터
-const shiftTypes: { id: number; text: WorkType }[] = [
-  { id: 1, text: '주간' },
-  { id: 2, text: '오후' },
-  { id: 3, text: '야간' },
-  { id: 4, text: '휴일' },
-]
-
 interface TEditBottomSheetProps {
+  selectedGroup: number
+  setSelectedGroup: (group: number) => void
   selectedDate: dayjs.Dayjs | null
   handleTypeSelect: (type: WorkType) => void
   handleCancel: () => void
@@ -31,6 +24,8 @@ interface TEditBottomSheetProps {
 const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
   (
     {
+      selectedGroup,
+      setSelectedGroup,
       selectedDate,
       handleTypeSelect,
       handleCancel,
@@ -68,27 +63,18 @@ const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
             </View>
             <View className="gap-[5px]">
               <Text className="text-text-subtle heading-xxs">조 입력</Text>
-              <SelectGroupBox />
+              <SelectGroupBox
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+              />
             </View>
 
-            <View className="gap-[7px]">
-              {shiftTypes.map(({ id, text }) => {
-                const key = fromShiftType(text)
-                const time = workTimes[key]
-                return (
-                  <SelectShiftBox
-                    handleTypeSelect={() => handleTypeSelect(text)}
-                    key={id}
-                    typeText={text}
-                    boxId={id}
-                    isSelected={selectedBoxId === id}
-                    onSelect={() => setSelectedBoxId(id)}
-                    startTime={time?.startTime}
-                    endTime={time?.endTime}
-                  />
-                )
-              })}
-            </View>
+            <SelectShiftBox
+              selectedBoxId={selectedBoxId}
+              setSelectedBoxId={setSelectedBoxId}
+              handleTypeSelect={handleTypeSelect}
+              workTimes={workTimes}
+            />
 
             <View className="h-[46px] w-full flex-row items-center gap-[10px]">
               <TouchableOpacity

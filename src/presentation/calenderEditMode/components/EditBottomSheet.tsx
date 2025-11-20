@@ -67,24 +67,12 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
             </View>
             <View className="gap-[11px]">
               <Text className="text-text-subtle heading-xxs">간격</Text>
-              <View className="gap-[7px]">
-                {shiftTypes.map(({ id, text }) => {
-                  const key = fromShiftType(text)
-                  const time = workTimes[key]
-                  return (
-                    <SelectShiftBox
-                      handleTypeSelect={() => handleTypeSelect(text)}
-                      key={id}
-                      typeText={text}
-                      boxId={id}
-                      isSelected={selectedBoxId === id}
-                      onSelect={() => setSelectedBoxId(id)}
-                      startTime={time?.startTime}
-                      endTime={time?.endTime}
-                    />
-                  )
-                })}
-              </View>
+              <SelectShiftBox
+                selectedBoxId={selectedBoxId}
+                setSelectedBoxId={setSelectedBoxId}
+                handleTypeSelect={handleTypeSelect}
+                workTimes={workTimes}
+              />
             </View>
             <View className="h-[46px] w-full flex-row items-center gap-[10px]">
               <TouchableOpacity

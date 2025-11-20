@@ -33,7 +33,9 @@ const TCalendarEditScreen = () => {
   const { workTimes } = route.params
 
   const calendarData = useCalendarStore(state => state.calendarData)
-  const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  const updateTeamCalendarDay = useTeamCalendarStore(
+    state => state.updateTeamCalendarDay
+  )
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const myTeam = useTeamCalendarStore(state => state.myTeam)
 
@@ -47,6 +49,7 @@ const TCalendarEditScreen = () => {
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
   const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
+  const [selectedGroup, setSelectedGroup] = useState(1)
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
   const sheetRef = useRef<BottomSheet>(null)
@@ -73,7 +76,13 @@ const TCalendarEditScreen = () => {
     console.log('선택된 날짜:', key)
 
     // 상태 업데이트
-    updateCalendarDay(key, type)
+    updateTeamCalendarDay({
+      team: `${selectedGroup}조`, // 선택된 조 추가
+      date: key,
+      workTypeName: type,
+    })
+
+    setSelectedBoxId(shiftTypeToId(type))
   }
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
@@ -93,12 +102,20 @@ const TCalendarEditScreen = () => {
 
       // 상태 업데이트
       if (backupType !== null) {
-        updateCalendarDay(key, backupType)
+        updateTeamCalendarDay({
+          team: `${selectedGroup}조`, // 선택된 조 추가
+          date: key,
+          workTypeName: backupType,
+        })
       } else {
         // 이전에 근무 형태가 없었으면 삭제
         const existing = calendarData[key]?.workTypeName
         if (existing) {
-          updateCalendarDay(key, existing)
+          updateTeamCalendarDay({
+            team: `${selectedGroup}조`, // 선택된 조 추가
+            date: key,
+            workTypeName: backupType || '',
+          })
         }
       }
     }
@@ -174,6 +191,8 @@ const TCalendarEditScreen = () => {
       {/* 근무표 수정 바텀시트 */}
       <>
         <TEditBottomSheet
+          selectedGroup={selectedGroup}
+          setSelectedGroup={setSelectedGroup}
           handleTypeSelect={handleTypeSelect}
           handleCancel={handleCancel}
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결

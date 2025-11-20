@@ -1,9 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 
-const SelectGroupBox = () => {
+interface SelectGroupBoxProps {
+  selectedGroup: number
+  setSelectedGroup: (group: number) => void
+}
+
+const SelectGroupBox = ({
+  selectedGroup,
+  setSelectedGroup,
+}: SelectGroupBoxProps) => {
   const groups = [1, 2, 3, 4]
-  const [selectedGroup, setSelectedGroup] = useState(1)
   return (
     <View className="flex-row gap-2">
       {groups.map(group => {
