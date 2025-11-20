@@ -33,8 +33,9 @@ const CalendarEditor: ForwardRefRenderFunction<
     workTimes: Record<string, InputWorkTimeDetail>
     organizationName: string
     workGroup: string
+    currentDate: dayjs.Dayjs
   }
-> = ({ workTimes, organizationName, workGroup }, ref) => {
+> = ({ workTimes, organizationName, workGroup, currentDate }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
@@ -48,8 +49,6 @@ const CalendarEditor: ForwardRefRenderFunction<
 
   // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []
-
-  const [currentDate, setCurrentDate] = useState(dayjs())
 
   // 처음에는 초기화//
   useEffect(() => {

@@ -29,10 +29,10 @@ const TCalendarEditor: ForwardRefRenderFunction<
     workTimes: Record<string, InputWorkTimeDetail>
     workGroup: string
     organizationName: string
+    currentDate: dayjs.Dayjs
   }
-> = ({ workTimes, workGroup, organizationName }, ref) => {
+> = ({ workTimes, workGroup, organizationName, currentDate }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
-  const [currentDate, setCurrentDate] = useState(dayjs())
 
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const updateTeamCalendarDay = useTeamCalendarStore(
