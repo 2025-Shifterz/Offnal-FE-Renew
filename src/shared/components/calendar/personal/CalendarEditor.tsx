@@ -163,11 +163,9 @@ const CalendarEditor: ForwardRefRenderFunction<
     <View>
       <CalendarBase
         currentDate={currentDate}
-        setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         calendarData={newCalendarData}
-        isViewer={false}
       />
       <TypeSelect onPress={handleTypeSelect} />
     </View>
