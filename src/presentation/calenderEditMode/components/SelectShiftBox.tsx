@@ -49,7 +49,7 @@ const SelectShiftBox = ({
         <Text
           className={twMerge('text-text-disabled label-xs', selectedTextStyle)}
         >
-          {startTime ?? '--:--'}~{endTime ?? '--:--'}
+          {startTime ?? '--:-- '}~{endTime ?? ' --:--'}
         </Text>
       </View>
       <TimeFrame text={typeText} />

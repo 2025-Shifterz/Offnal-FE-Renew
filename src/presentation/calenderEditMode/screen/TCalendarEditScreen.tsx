@@ -8,7 +8,6 @@ import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
-import EditBottomSheet from '../components/EditBottomSheet'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -19,6 +18,7 @@ import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
+import TEditBottomSheet from '../components/TEditBottomSheet'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
@@ -173,7 +173,7 @@ const TCalendarEditScreen = () => {
 
       {/* 근무표 수정 바텀시트 */}
       <>
-        <EditBottomSheet
+        <TEditBottomSheet
           handleTypeSelect={handleTypeSelect}
           handleCancel={handleCancel}
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결
