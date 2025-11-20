@@ -9,7 +9,6 @@ import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
 
 interface TCalendarViewerProps {
   currentDate: dayjs.Dayjs
-  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   onDateSelected?: (date: dayjs.Dayjs) => void
@@ -17,7 +16,6 @@ interface TCalendarViewerProps {
 
 const TCalendarViewer = ({
   currentDate,
-  setCurrentDate,
   selectedDate,
   setSelectedDate,
   onDateSelected,

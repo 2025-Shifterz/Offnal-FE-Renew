@@ -86,7 +86,6 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
         {isTeamView ? (
           <TCalendarViewer
             currentDate={currentDate}
-            setCurrentDate={setCurrentDate}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             onDateSelected={openBottomSheet}
@@ -94,7 +93,6 @@ const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
         ) : (
           <CalendarViewer
             currentDate={currentDate}
-            setCurrentDate={setCurrentDate}
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             onDateSelected={openBottomSheet} // ✅ 날짜 선택 시 바텀시트 열기
