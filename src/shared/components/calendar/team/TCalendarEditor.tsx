@@ -163,6 +163,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         teamCalendarData={teamCalendarData}
+        myTeam={workGroup}
       />
       <TeamTypeSelect onPressSelect={handleTypeSelect} />
     </View>

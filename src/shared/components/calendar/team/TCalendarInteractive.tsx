@@ -64,6 +64,7 @@ const TCalendarInteractive = ({
         selectedDate={selectedDate}
         onDatePress={setSelectedDate}
         teamCalendarData={teamCalendarData}
+        myTeam={myTeam}
       />
     </View>
   )

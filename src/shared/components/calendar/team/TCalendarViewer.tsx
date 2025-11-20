@@ -29,7 +29,7 @@ const TCalendarViewer = ({
   const setTeamCalendarData = useTeamCalendarStore(
     state => state.setTeamCalendarData
   )
-
+  const [myTeam, setMyTeam] = useState('')
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
@@ -55,6 +55,7 @@ const TCalendarViewer = ({
               endTime: wi.endTime,
             }))
           )
+        setMyTeam(response.myTeam)
 
         setTeamCalendarData(flattened)
         console.log('팀 캘린더 탭: 월별 근무표 조회 성공:', response)
@@ -82,6 +83,7 @@ const TCalendarViewer = ({
         currentDate={currentDate}
         onDatePress={handleDatePress}
         teamCalendarData={teamCalendarData}
+        myTeam={myTeam}
       />
     </View>
   )
