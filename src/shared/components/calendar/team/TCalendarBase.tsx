@@ -85,8 +85,12 @@ const TCalendarBase = ({
               <View className="flex items-center gap-[3px]">
                 <View
                   className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max ${
-                    isToday ? 'bg-surface-gray-subtle1' : ''
-                  } ${isSelected ? 'bg-border-primary' : ''}`}
+                    isSelected
+                      ? 'bg-border-primary'
+                      : isToday
+                        ? 'bg-surface-gray-subtle1'
+                        : ''
+                  } `}
                 >
                   <Text
                     className={`heading-xxxs`}
