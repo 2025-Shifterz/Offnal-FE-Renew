@@ -81,6 +81,7 @@ const TCalendarViewer = ({
     <View>
       <TCalendarBase
         currentDate={currentDate}
+        selectedDate={selectedDate}
         onDatePress={handleDatePress}
         teamCalendarData={teamCalendarData}
         myTeam={myTeam}

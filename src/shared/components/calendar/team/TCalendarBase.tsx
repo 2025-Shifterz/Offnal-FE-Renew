@@ -55,10 +55,12 @@ const TCalendarBase = ({
         } else {
           const date = startOfMonth.date(dayCounter)
           const weekDay = date.day()
+
           const isToday = dayjs().isSame(date, 'day')
           const isSelected = selectedDate
             ? selectedDate.isSame(date, 'day')
             : false
+
           const dateKey = date.format('YYYY-MM-DD')
           // const time = calendarData?.[date.format('YYYY-MM-DD')]
           const time: Record<string, string> = {}
