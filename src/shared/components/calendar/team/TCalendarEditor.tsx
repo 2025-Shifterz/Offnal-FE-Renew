@@ -160,11 +160,9 @@ const TCalendarEditor: ForwardRefRenderFunction<
     <View>
       <TCalendarBase
         currentDate={currentDate}
-        setCurrentDate={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         teamCalendarData={teamCalendarData}
-        isViewer={false}
       />
       <TeamTypeSelect onPressSelect={handleTypeSelect} />
     </View>

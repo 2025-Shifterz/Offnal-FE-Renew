@@ -5,7 +5,7 @@ import {
   NavigationProp,
 } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
 import EditBottomSheet from '../components/EditBottomSheet'
@@ -19,6 +19,7 @@ import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
+import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
@@ -28,13 +29,16 @@ type CalendarEditScreenRouteProp = RouteProp<
 const CalendarEditScreen = () => {
   const navigation =
     useNavigation<NavigationProp<CalendarScreenStackParamList>>()
+  // isTeamView를 params로 받기 !!
+  const route = useRoute<CalendarEditScreenRouteProp>()
+  const { workTimes } = route.params // route.params에서 workTimes 받기
+  const { isTeamView } = route.params
+
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const myTeam = useTeamCalendarStore(state => state.myTeam)
 
-  const route = useRoute<CalendarEditScreenRouteProp>()
-  const { workTimes } = route.params // route.params에서 workTimes 받기
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
     year: dayjs().year(),
@@ -150,16 +154,25 @@ const CalendarEditScreen = () => {
           </Text>
         </View>
         {/* 캘린더 */}
-        <View className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
+        <ScrollView className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
-            <CalendarInteractive
-              selectedYearMonth={selectedYearMonth}
-              currentDate={currentDate}
-              selectedDate={selectedDate}
-              setSelectedDate={openBottomSheet}
-            />
+            {isTeamView ? (
+              <TCalendarInteractive
+                selectedYearMonth={selectedYearMonth}
+                currentDate={currentDate}
+                selectedDate={selectedDate}
+                setSelectedDate={openBottomSheet}
+              />
+            ) : (
+              <CalendarInteractive
+                selectedYearMonth={selectedYearMonth}
+                currentDate={currentDate}
+                selectedDate={selectedDate}
+                setSelectedDate={openBottomSheet}
+              />
+            )}
           </View>
-        </View>
+        </ScrollView>
         {/* 모든 저장 버튼 -> 근무표에 저장되어야함. post 요청!! */}
         <TouchableOpacity
           onPress={handlePatchData}

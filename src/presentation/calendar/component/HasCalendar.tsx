@@ -20,10 +20,15 @@ import CalendarViewerHeader from '../../../shared/components/calendar/header/Cal
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
+  isTeamView: boolean
+  setIsTeamView: (value: boolean) => void
 }
 
-const HasCalendar = ({ setShowPlus }: HasCalendarProps) => {
-  const [isTeamView, setIsTeamView] = useState(false)
+const HasCalendar = ({
+  setShowPlus,
+  isTeamView,
+  setIsTeamView,
+}: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
   const [currentDate, setCurrentDate] = useState(dayjs())
 

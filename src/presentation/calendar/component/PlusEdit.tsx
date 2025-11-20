@@ -28,9 +28,10 @@ const TextButton = ({ text }: TextButtonProps) => {
 // 전체 화면
 type PlusEditProps = {
   setShowPlus: (show: boolean) => void
+  isTeamView: boolean
 }
 
-const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
+const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const { workTimes } = useWorkTime()
@@ -70,7 +71,7 @@ const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
               screen: 'Calendar',
               params: {
                 screen: 'EditCalendar',
-                params: { workTimes: workTimes },
+                params: { workTimes: workTimes, isTeamView: isTeamView },
               },
             })
           }

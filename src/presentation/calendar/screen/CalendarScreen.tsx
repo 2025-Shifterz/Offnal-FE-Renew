@@ -14,6 +14,7 @@ const CalendarScreen = () => {
   const setLatestOrganization = useCalendarStore(
     state => state.setLatestOrganization
   )
+  const [isTeamView, setIsTeamView] = useState(false)
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(
@@ -54,9 +55,15 @@ const CalendarScreen = () => {
         className="relative h-full flex-1 bg-surface-white"
       >
         {/* 등록된 캘린더가 있고, 팀 캘린더인지 */}
-        <HasCalendar setShowPlus={setShowPlus} />
+        <HasCalendar
+          setShowPlus={setShowPlus}
+          isTeamView={isTeamView}
+          setIsTeamView={setIsTeamView}
+        />
       </SafeAreaView>
-      {showPlus && <PlusEdit setShowPlus={setShowPlus} />}
+      {showPlus && (
+        <PlusEdit setShowPlus={setShowPlus} isTeamView={isTeamView} />
+      )}
     </View>
   )
 }

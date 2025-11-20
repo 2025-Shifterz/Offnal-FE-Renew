@@ -134,6 +134,7 @@ export type OnboardingOCRStackParamList = {
 export type CalendarScreenStackParamList = {
   CalendarScreen: undefined
   EditCalendar: {
+    isTeamView: boolean
     workTimes: {
       D: { startTime: string; endTime: string }
       E: { startTime: string; endTime: string }
