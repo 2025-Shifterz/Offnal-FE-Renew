@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Login from '../presentation/login/screen/Login'
-import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
 import KakaoLoginWebView from '../presentation/login/screen/KakaoLoginWebView'
 import PrivacyPolicy from '../presentation/policy/screen/PrivacyPolicy'
 import ServiceTerm from '../presentation/policy/screen/ServiceTerm'

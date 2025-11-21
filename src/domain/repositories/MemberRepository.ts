@@ -1,5 +1,14 @@
+import { Profile } from '../models/Profile'
+
 export interface MemberRepository {
-  isMemberScheduleRegistered(): Promise<boolean>
+  updateUserProfile(
+    userName: string,
+    file?: {
+      url: string
+      type: string
+      name: string
+    }
+  ): Promise<Profile>
 
   withDrawMember(): Promise<void>
 }

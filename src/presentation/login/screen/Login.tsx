@@ -7,6 +7,8 @@ import { onboardingList } from '../constants/onboardingList'
 import { loginNavigation } from '../../../navigation/types'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
+import { AppleButton } from '@invertase/react-native-apple-authentication'
+import { onAppleButtonPress } from '../../../shared/components/LoginWithAppleButton'
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
@@ -53,6 +55,15 @@ const Login = () => {
 
       <View className="h-[170px] items-center ">
         <KaKaoLoginBtn />
+        {/* <AppleButton
+          buttonStyle={AppleButton.Style.BLACK}
+          buttonType={AppleButton.Type.SIGN_IN}
+          style={{
+            width: 160,
+            height: 45,
+          }}
+          onPress={() => onAppleButtonPress()}
+        /> */}
         <TouchableOpacity onPress={() => navigation.navigate('ServiceTerm')}>
           <GlobalText className="mb-number-3 text-text-subtle label-xs">
             이용약관 확인하기

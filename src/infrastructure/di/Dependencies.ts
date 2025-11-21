@@ -63,10 +63,7 @@ export const teamCalendarRepository = new TeamCalendarRepositoryImpl(
   teamCalendarService
 )
 export const homeRepository = new HomeRepositoryImpl(homeService)
-export const memberRepository = new MemberRepositoryImpl(
-  homeService,
-  memberService
-)
+export const memberRepository = new MemberRepositoryImpl(memberService)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
