@@ -7,7 +7,14 @@ export const api = axios.create({
   baseURL: API_URL,
   timeout: 10000,
 })
-// console.log('API_URL:', API_URL)
+
+// 요청 URL 보고싶을 때!! -- 주석 삭제하지 말 것
+// api.interceptors.request.use(config => {
+//   console.log('요청 URL:', config.url)
+//   console.log('Query params:', config.params)
+//   return config
+// })
+
 // 요청 인터셉터
 api.interceptors.request.use(
   config => {

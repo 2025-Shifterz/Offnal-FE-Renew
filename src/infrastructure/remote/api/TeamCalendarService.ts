@@ -40,11 +40,8 @@ export class TeamCalendarService {
     teamShiftsData: UpdateTeamShiftsRequest
   ) => {
     try {
-      const response = await api.patch('works/calendar/group', {
-        teamShiftsData,
-        params: {
-          organizationName,
-        },
+      const response = await api.patch('works/calendar/group', teamShiftsData, {
+        params: { organizationName },
       })
       return response.data
     } catch (error) {
