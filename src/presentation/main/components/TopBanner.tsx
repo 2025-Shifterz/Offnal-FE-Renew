@@ -2,12 +2,15 @@ import React, { useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import GlobalText from '../../../shared/components/GlobalText'
 import HomeWorkTypeChip from './HomeWorkTypeChip'
-import { HomeResponse } from '../../../infrastructure/remote/response/homeResponse'
 import SealImg from '../../../assets/images/seal-character.svg'
 import BellIcon from '../../../assets/icons/ic_home_bell_24.svg'
+import { Schedule } from '../../../domain/models/Schedule'
 
-const TopBanner = () => {
-  const [homeData, setHomeData] = useState<HomeResponse['data'] | null>(null)
+interface TopBannerProps {
+  schdule: Schedule | null
+}
+
+const TopBanner = ({ schdule }: TopBannerProps) => {
   const today = new Date()
   const formattedDate = `${today.getMonth() + 1}월 ${today.getDate()}일 (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`
 
@@ -57,8 +60,8 @@ const TopBanner = () => {
       <View className="">
         <HomeWorkTypeChip
           workType={
-            homeData && homeData.todayType
-              ? translateWorkType(homeData.todayType)
+            schdule && schdule.todayType
+              ? translateWorkType(schdule.todayType)
               : '미등록'
           }
         />

@@ -1,21 +1,21 @@
+import { Health } from '../../domain/models/Health'
+import { Meal } from '../../domain/models/Meal'
+import { Routine } from '../../domain/models/Routine'
+import { Schedule } from '../../domain/models/Schedule'
 import {
-  Health,
-  HomeResponse,
-  Meal,
-} from '../../infrastructure/remote/response/homeResponse'
-import { Health as HealthDomain } from '../../domain/models/Health'
-import { Home as HomeDomain } from '../../domain/models/Home'
-import { Meal as MealDomain } from '../../domain/models/Meal'
-import { Routine as RoutineDomain } from '../../domain/models/Routine'
+  HealthResponse,
+  MealResponse,
+} from '../../infrastructure/remote/response/GetRoutineResponse'
+import { GetScheduleResponse } from '../../infrastructure/remote/response/GetScheduleResponse'
 
-export const toMealDomain = (response: Meal): MealDomain => ({
+export const toMealDomain = (response: MealResponse): Meal => ({
   label: response.label,
   time: response.time,
   description: response.description,
   items: response.items,
 })
 
-export const toHealthDomain = (response: Health): HealthDomain => ({
+export const toHealthDomain = (response: HealthResponse): Health => ({
   fastingComment: response.fastingComment,
   fastingSchedule: response.fastingSchedule,
   sleepGuide: response.sleepGuide,
@@ -23,19 +23,15 @@ export const toHealthDomain = (response: Health): HealthDomain => ({
 })
 
 export const toRoutineDomain = (
-  mealResponse: Meal[],
-  healthResponse: Health
-): RoutineDomain => ({
+  mealResponse: MealResponse[],
+  healthResponse: HealthResponse
+): Routine => ({
   meals: mealResponse.map(toMealDomain),
   health: toHealthDomain(healthResponse),
 })
 
-export const toHomeDomain = (response: HomeResponse['data']): HomeDomain => ({
-  yesterdayType: response.yesterdayType,
-  todayType: response.todayType,
-  tomorrowType: response.tomorrowType,
-  todayRoutine: toRoutineDomain(
-    response.todayRoutine.meals,
-    response.todayRoutine.health
-  ),
+export const toScheduleDomain = (response: GetScheduleResponse): Schedule => ({
+  yesterdayType: response.data.yesterdayType,
+  todayType: response.data.todayType,
+  tomorrowType: response.data.tomorrowType,
 })
