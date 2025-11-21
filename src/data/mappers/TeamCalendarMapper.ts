@@ -1,18 +1,19 @@
 import { TeamCalendar } from '../../domain/models/TeamCalendar'
-import { TeamCalendarEntity } from '../models/TeamCalendarEntity'
+import { GetTeamWorkCalendarResponseData } from '../../infrastructure/remote/response/GetTeamWorkCalendarResponse'
+import { convertDurationToEndTime } from '../../shared/utils/calendar/convertDuration'
 
 export const toTeamCalendarDomain = (
-  entity: TeamCalendarEntity
+  response: GetTeamWorkCalendarResponseData
 ): TeamCalendar => {
   return {
-    myTeam: entity.myTeam,
-    teams: entity.teams.map(team => ({
+    myTeam: response.myTeam,
+    teams: response.teams.map(team => ({
       team: team.team,
-      workInstances: team.workInstances.map(workInstance => ({
-        date: workInstance.date,
-        workTypeName: workInstance.workTypeName,
-        startTime: workInstance.startTime,
-        endTime: workInstance.endTime,
+      workInstances: team.workInstances.map(wi => ({
+        date: wi.date,
+        workTypeName: wi.workType,
+        startTime: wi.startTime ?? '',
+        endTime: convertDurationToEndTime(wi.startTime, wi.duration) ?? '',
       })),
     })),
   }

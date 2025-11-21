@@ -32,7 +32,7 @@ import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCa
 import { OrganizationService } from '../remote/api/OrganizationService'
 import { OrganizationRepositoryImpl } from '../../data/impl/OrganizationRepositoryImpl'
 import { UpdateTodoUseCase } from '../../domain/usecases/todos/UpdateTodoUseCase'
-import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarRepository'
+import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarRepositoryImpl'
 import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
