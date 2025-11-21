@@ -8,10 +8,7 @@ import {
   FlatList,
 } from 'react-native'
 import TeamVersion from '../../../../assets/icons/users-profiles-01.svg'
-import CalEdit from '../../../../assets/icons/file-edit-02.svg'
 import ArrowDown from '../../../../assets/icons/chevron-down.svg'
-import { useCalendarStore } from '../../../../store/useCalendarStore'
-import dayjs from 'dayjs'
 
 interface CalendarViewerHeaderProps {
   selectedDate: Date

@@ -69,6 +69,7 @@ const TCalendarViewer = ({
     latestOrganization.organizationName,
     monthStartDate,
     monthEndDate,
+    setMyTeam,
     setTeamCalendarData,
   ])
 
