@@ -107,32 +107,32 @@ const TCalendarEditor: ForwardRefRenderFunction<
         }
 
         // 새 캘린더 데이터 생성 (calendars의 월별 목록)
-        const firstMonth = storedMonths[0]
-        const lastMonth = storedMonths[storedMonths.length - 1]
+        // const firstMonth = storedMonths[0]
+        // const lastMonth = storedMonths[storedMonths.length - 1]
 
-        const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
-        const endDate = dayjs(lastMonth + '-01')
-          .endOf('month')
-          .format('YYYY-MM-DD')
+        // const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
+        // const endDate = dayjs(lastMonth + '-01')
+        //   .endOf('month')
+        //   .format('YYYY-MM-DD')
 
         // 팀별로 shifts 생성
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           teamCalendarData.map(teamRecord => {
             const shifts: Record<string, string> = {}
             Object.entries(teamRecord.workInstances).forEach(([date, work]) => {
-              if (
-                dayjs(date).isSameOrAfter(startDate) &&
-                dayjs(date).isSameOrBefore(endDate)
-              ) {
-                shifts[date] = fromShiftType(work.workTypeName)
-              }
+              // if (
+              //   dayjs(date).isSameOrAfter(startDate) &&
+              //   dayjs(date).isSameOrBefore(endDate)
+              // ) {
+              shifts[date] = fromShiftType(work.workTypeName)
+              // }
             })
 
             return {
               organizationName,
               team: teamRecord.team,
-              startDate,
-              endDate,
+              // startDate,
+              // endDate,
               shifts,
             }
           })

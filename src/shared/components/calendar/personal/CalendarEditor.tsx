@@ -99,43 +99,21 @@ const CalendarEditor: ForwardRefRenderFunction<
         ).sort()
         console.log('저장된 calendarData의 년/월 목록:', storedMonths)
 
-        // 새 캘린더 데이터 생성 (calendars의 월별 목록)
-        const firstMonth = storedMonths[0]
-        const lastMonth = storedMonths[storedMonths.length - 1]
+        // 새 캘린더 데이터 생성
+        const shifts: Record<string, string> = {}
+        Object.entries(newCalendarData).forEach(([date, value]) => {
+          shifts[date] = fromShiftType(value.workTypeName)
+        })
 
-        const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
-        const endDate = dayjs(lastMonth + '-01')
-          .endOf('month')
-          .format('YYYY-MM-DD')
-
-        const seenCombinations = new Set<string>()
-        const key = `${organizationName}_${workGroup}`
-
-        if (!seenCombinations.has(key)) {
-          seenCombinations.add(key)
-
-          const shifts: Record<string, string> = {}
-          Object.entries(newCalendarData).forEach(([date, value]) => {
-            if (
-              dayjs(date).isSameOrAfter(startDate) &&
-              dayjs(date).isSameOrBefore(endDate)
-            ) {
-              shifts[date] = fromShiftType(value.workTypeName)
-            }
-          })
-
-          newCalendars = [
-            {
-              // TODO: myTeam도 추가하기
-              organizationName,
-              team: workGroup,
-              startDate,
-              endDate,
-              shifts,
-            },
-          ]
-          console.log('생성된 새 calendars 데이터:', newCalendars)
-        }
+        newCalendars = [
+          {
+            // TODO: myTeam도 추가하기
+            organizationName,
+            team: workGroup,
+            shifts,
+          },
+        ]
+        console.log('생성된 새 calendars 데이터:', newCalendars)
 
         // TODO: 팀에서 설정한 myTeam 정보도 포함시키기
         // 팀에서 저장하면 내가 속한 조로 다시 개인 근무표를 조회해야함!!
