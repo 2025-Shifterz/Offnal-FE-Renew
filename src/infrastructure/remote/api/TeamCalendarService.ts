@@ -41,10 +41,10 @@ export class TeamCalendarService {
   ) => {
     try {
       const response = await api.patch('works/calendar/group', {
+        teamShiftsData,
         params: {
           organizationName,
         },
-        teamShiftsData,
       })
       return response.data
     } catch (error) {
