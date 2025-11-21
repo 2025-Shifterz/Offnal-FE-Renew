@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.2.6",
+    "@invertase/react-native-apple-authentication": "^2.5.0",
     "@kingstinct/react-native-healthkit": "^11.1.1",
     "@react-native/new-app-screen": "0.81.4",
     "@react-navigation/bottom-tabs": "^7.4.8",

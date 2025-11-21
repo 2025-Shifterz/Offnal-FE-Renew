@@ -18,7 +18,15 @@ export interface UserState {
 
   // fetch
   fetchProfile: () => Promise<void>
-  updateProfile: (profile: User) => Promise<void>
+
+  updateProfile: (
+    name: string,
+    image?: {
+      uri: string
+      type: string
+      fileName: string
+    } | null
+  ) => Promise<void>
 
   // withdraw
   onWithdraw: () => Promise<void>
@@ -40,8 +48,21 @@ export const useUserStore = create<UserState>()(
         }))
       },
 
-      updateProfile: async (profile: User) => {
-        const data = await memberService.updateProfile(profile)
+      updateProfile: async (
+        name: string,
+        image?: {
+          uri: string
+          type: string
+          fileName: string
+        } | null
+      ) => {
+        await memberRepository.updateUserProfile(name, {
+          url: image?.uri ?? '',
+          type: image?.type ?? '',
+          name: image?.fileName ?? '',
+        })
+
+        const data = await memberService.getProfile()
         set(() => ({
           user: data,
         }))

@@ -9,9 +9,9 @@ import HealthCardSection from '../ui/HealthCardSection'
 import dayjs from 'dayjs'
 import { useFocusEffect } from '@react-navigation/native'
 import {
-  todoRepository,
   getMemosByDateUseCase,
   homeRepository,
+  todoRepository,
 } from '../../../infrastructure/di/Dependencies'
 import TopBanner from '../components/TopBanner'
 import { Todo } from '../../../domain/models/Todo'
