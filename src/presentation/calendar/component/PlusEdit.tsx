@@ -9,7 +9,7 @@ import CancelIcon from '../../../assets/icons/w-cancel.svg'
 import CameraIcon from '../../../assets/icons/pr-cam.svg'
 import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { calendarNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
 import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 
@@ -17,6 +17,7 @@ import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 type TextButtonProps = {
   text: string
 }
+
 const TextButton = ({ text }: TextButtonProps) => {
   return (
     <View className="rounded-radius-max bg-surface-white px-[9px] py-[6px]">
@@ -32,7 +33,7 @@ type PlusEditProps = {
 }
 
 const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
-  const navigation = useNavigation<rootNavigation>()
+  const navigation = useNavigation<calendarNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const { workTimes } = useWorkTime()
 
@@ -46,21 +47,9 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   }, [fadeAnim])
   const navigateToEditModeScreen = () => {
     if (isTeamView) {
-      navigation.navigate('Tabs', {
-        screen: 'Calendar',
-        params: {
-          screen: 'TeamEditCalendar',
-          params: { workTimes: workTimes },
-        },
-      })
+      navigation.navigate('TeamEditCalendar', { workTimes: workTimes })
     } else {
-      navigation.navigate('Tabs', {
-        screen: 'Calendar',
-        params: {
-          screen: 'EditCalendar',
-          params: { workTimes: workTimes },
-        },
-      })
+      navigation.navigate('EditCalendar', { workTimes: workTimes })
     }
   }
 
