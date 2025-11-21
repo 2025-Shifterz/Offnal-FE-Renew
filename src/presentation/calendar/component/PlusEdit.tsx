@@ -9,7 +9,7 @@ import CancelIcon from '../../../assets/icons/w-cancel.svg'
 import CameraIcon from '../../../assets/icons/pr-cam.svg'
 import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { calendarNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
 import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 
@@ -17,6 +17,7 @@ import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 type TextButtonProps = {
   text: string
 }
+
 const TextButton = ({ text }: TextButtonProps) => {
   return (
     <View className="rounded-radius-max bg-surface-white px-[9px] py-[6px]">
@@ -28,10 +29,11 @@ const TextButton = ({ text }: TextButtonProps) => {
 // 전체 화면
 type PlusEditProps = {
   setShowPlus: (show: boolean) => void
+  isTeamView: boolean
 }
 
-const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
-  const navigation = useNavigation<rootNavigation>()
+const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
+  const navigation = useNavigation<calendarNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const { workTimes } = useWorkTime()
 
@@ -43,6 +45,13 @@ const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
       useNativeDriver: true,
     }).start()
   }, [fadeAnim])
+  const navigateToEditModeScreen = () => {
+    if (isTeamView) {
+      navigation.navigate('TeamEditCalendar', { workTimes: workTimes })
+    } else {
+      navigation.navigate('EditCalendar', { workTimes: workTimes })
+    }
+  }
 
   return (
     <Animated.View
@@ -65,15 +74,7 @@ const PlusEdit = ({ setShowPlus }: PlusEditProps) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('Tabs', {
-              screen: 'Calendar',
-              params: {
-                screen: 'EditCalendar',
-                params: { workTimes: workTimes },
-              },
-            })
-          }
+          onPress={navigateToEditModeScreen}
           className="flex-row items-center gap-[10px]"
         >
           <TextButton text="근무표 추가 입력 및 수정" />

@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'
@@ -11,10 +11,11 @@ import { useFocusEffect } from '@react-navigation/native'
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
   const [showPlus, setShowPlus] = useState(false)
-
   const setLatestOrganization = useCalendarStore(
     state => state.setLatestOrganization
   )
+  // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
+  const [isTeamView, setIsTeamView] = useState(false)
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(
@@ -38,6 +39,7 @@ const CalendarScreen = () => {
           console.log('조직 조회 실패:', error)
         }
       }
+
       fetchData()
     }, [setLatestOrganization])
   )
@@ -55,9 +57,15 @@ const CalendarScreen = () => {
         className="relative h-full flex-1 bg-surface-white"
       >
         {/* 등록된 캘린더가 있고, 팀 캘린더인지 */}
-        <HasCalendar setShowPlus={setShowPlus} />
+        <HasCalendar
+          setShowPlus={setShowPlus}
+          isTeamView={isTeamView}
+          setIsTeamView={setIsTeamView}
+        />
       </SafeAreaView>
-      {showPlus && <PlusEdit setShowPlus={setShowPlus} />}
+      {showPlus && (
+        <PlusEdit setShowPlus={setShowPlus} isTeamView={isTeamView} />
+      )}
     </View>
   )
 }

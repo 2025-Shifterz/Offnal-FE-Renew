@@ -25,7 +25,7 @@ const InputScheduleOCRScreen = () => {
   const navigation = useNavigation<onboardingOCRNavigation>()
 
   // 필수 입력 값을 작성해야 넘어가도록
-  const [calendarName, setCalendarName] = useState('') // 근무표 이름
+  const [organizationName, setOrganizationName] = useState('') // 근무표 이름
   const [workGroup, setWorkGroup] = useState('1조') // 직접 입력 시 팀 이름
   const [workTimes, setWorkTimes] = useState({
     D: { startTime: '08:00', endTime: '16:00' },
@@ -38,7 +38,7 @@ const InputScheduleOCRScreen = () => {
   const handleNext = () => {
     navigation.navigate('SelectMonthOCR', {
       selectedScheduleScopeType,
-      calendarName,
+      organizationName,
       workGroup,
       workTimes,
     })
@@ -54,8 +54,8 @@ const InputScheduleOCRScreen = () => {
 
         <View className="flex gap-[26px]">
           <ScheduleNameInput
-            calendarName={calendarName}
-            setCalendarName={setCalendarName}
+            organizationName={organizationName}
+            setOrganizationName={setOrganizationName}
           />
           <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
             <TimeInput />

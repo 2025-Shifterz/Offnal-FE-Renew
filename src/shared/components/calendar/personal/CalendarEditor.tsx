@@ -33,19 +33,26 @@ const CalendarEditor: ForwardRefRenderFunction<
     workTimes: Record<string, InputWorkTimeDetail>
     organizationName: string
     workGroup: string
+    currentDate: dayjs.Dayjs
   }
-> = ({ workTimes, organizationName, workGroup }, ref) => {
+> = ({ workTimes, organizationName, workGroup, currentDate }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
-  const calendarData = useCalendarStore(state => state.calendarData)
-  const clearCalendarData = useCalendarStore(state => state.clearCalendarData)
-  const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  const newCalendarData = useCalendarStore(state => state.newCalendarData)
+  const clearNewCalendarData = useCalendarStore(
+    state => state.clearNewCalendarData
+  )
+  const updateNewCalendarDay = useCalendarStore(
+    state => state.updateNewCalendarDay
+  )
+
+  // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []
 
   // 처음에는 초기화//
   useEffect(() => {
-    clearCalendarData()
+    clearNewCalendarData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -60,7 +67,7 @@ const CalendarEditor: ForwardRefRenderFunction<
     const key = selectedDate.format('YYYY-MM-DD')
 
     // 상태 업데이트
-    updateCalendarDay(key, type)
+    updateNewCalendarDay(key, type)
   }
 
   const [convertedWorkTimes, setConvertedWorkTimes] = useState<
@@ -85,51 +92,33 @@ const CalendarEditor: ForwardRefRenderFunction<
         // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
         const storedMonths = Array.from(
           new Set( // 중복 제거
-            Object.keys(calendarData).map(dateStr =>
+            Object.keys(newCalendarData).map(dateStr =>
               dayjs(dateStr).format('YYYY-MM')
             )
           )
         ).sort()
         console.log('저장된 calendarData의 년/월 목록:', storedMonths)
 
-        // 새 캘린더 데이터 생성 (calendars의 월별 목록)
-        const firstMonth = storedMonths[0]
-        const lastMonth = storedMonths[storedMonths.length - 1]
+        // 새 캘린더 데이터 생성
+        const shifts: Record<string, string> = {}
+        Object.entries(newCalendarData).forEach(([date, value]) => {
+          shifts[date] = fromShiftType(value.workTypeName)
+        })
 
-        const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
-        const endDate = dayjs(lastMonth + '-01')
-          .endOf('month')
-          .format('YYYY-MM-DD')
+        newCalendars = [
+          {
+            // TODO: myTeam도 추가하기
+            organizationName,
+            team: workGroup,
+            shifts,
+          },
+        ]
+        console.log('생성된 새 calendars 데이터:', newCalendars)
 
-        const seenCombinations = new Set<string>()
-        const key = `${organizationName}_${workGroup}`
-
-        if (!seenCombinations.has(key)) {
-          seenCombinations.add(key)
-
-          const shifts: Record<string, string> = {}
-          Object.entries(calendarData).forEach(([date, value]) => {
-            if (
-              dayjs(date).isSameOrAfter(startDate) &&
-              dayjs(date).isSameOrBefore(endDate)
-            ) {
-              shifts[date] = fromShiftType(value.workTypeName)
-            }
-          })
-
-          newCalendars = [
-            {
-              organizationName,
-              team: workGroup,
-              startDate,
-              endDate,
-              shifts,
-            },
-          ]
-          console.log('생성된 새 calendars 데이터:', newCalendars)
-        }
-
+        // TODO: 팀에서 설정한 myTeam 정보도 포함시키기
+        // 팀에서 저장하면 내가 속한 조로 다시 개인 근무표를 조회해야함!!
         const newCalendarRequest: CreateCalendarRequest = {
+          myTeam: workGroup,
           workTimes: convertedWorkTimes,
           calendars: newCalendars,
         }
@@ -146,17 +135,14 @@ const CalendarEditor: ForwardRefRenderFunction<
       }
     },
   }))
-  const [currentDate, setCurrentDate] = useState(dayjs()) // 달력의 현재 표시되는 달
 
   return (
     <View>
       <CalendarBase
         currentDate={currentDate}
-        onChangeMonth={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        calendarData={calendarData}
-        isViewer={false}
+        calendarData={newCalendarData}
       />
       <TypeSelect onPress={handleTypeSelect} />
     </View>

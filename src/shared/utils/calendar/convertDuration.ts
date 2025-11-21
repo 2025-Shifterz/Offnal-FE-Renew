@@ -53,13 +53,9 @@ export function convertDurationToEndTime(
   duration: string
 ): string {
   if (!duration) {
-    console.log('duration is null') // 휴일인 경우
+    // 휴일인 경우
     return ''
   }
-  // const [hour, min] = startTime.split(':').map(Number)
-  // const hoursToAdd = parseInt(duration.replace('PT', '').replace('H', ''), 10)
-  // const endHour = hour + hoursToAdd
-  // return `${endHour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`
 
   // 시작시간 파싱
   const [hour, min] = startTime.split(':').map(Number)

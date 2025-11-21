@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react'
+// 근무표 조회 & 저장 동시에 되는 캘린더
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
-import TCalendarBase from './TCalendarBase'
 import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
+
+import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
+import TCalendarBase from './TCalendarBase'
 import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
 
-interface TCalendarViewerProps {
-  selectedYearMonth: { year: number; month: number }
-
+interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
   selectedDate: dayjs.Dayjs | null
-  setSelectedDate: (date: dayjs.Dayjs | null) => void
-  onDateSelected?: (date: dayjs.Dayjs) => void
+  setSelectedDate: (date: dayjs.Dayjs) => void
+  selectedYearMonth: { year: number; month: number }
 }
 
-const TCalendarViewer = ({
-  selectedYearMonth,
+const TCalendarInteractive = ({
   currentDate,
   selectedDate,
   setSelectedDate,
-  onDateSelected,
-}: TCalendarViewerProps) => {
+  selectedYearMonth,
+}: CalendarInteractiveProps) => {
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const setTeamCalendarData = useTeamCalendarStore(
     state => state.setTeamCalendarData
   )
-  const [myTeam, setMyTeam] = useState('')
+  const myTeam = useTeamCalendarStore(state => state.myTeam)
+  // 근무표 조회 API
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
@@ -54,7 +54,6 @@ const TCalendarViewer = ({
               endTime: wi.endTime,
             }))
           )
-        setMyTeam(response.myTeam)
 
         setTeamCalendarData(flattened)
         console.log('팀 캘린더 탭: 월별 근무표 조회 성공:', response)
@@ -69,24 +68,15 @@ const TCalendarViewer = ({
     latestOrganization.organizationName,
     monthStartDate,
     monthEndDate,
-    setMyTeam,
     setTeamCalendarData,
   ])
 
-  // ----------
-
-  // 날짜 선택
-  const handleDatePress = (date: dayjs.Dayjs) => {
-    setSelectedDate(date)
-    console.log('selectedDate:', selectedDate)
-    onDateSelected?.(date) // ✅ 날짜 선택 시 콜백 실행
-  }
   return (
     <View>
       <TCalendarBase
         currentDate={currentDate}
         selectedDate={selectedDate}
-        onDatePress={handleDatePress}
+        onDatePress={setSelectedDate}
         teamCalendarData={teamCalendarData}
         myTeam={myTeam}
       />
@@ -94,4 +84,4 @@ const TCalendarViewer = ({
   )
 }
 
-export default TCalendarViewer
+export default TCalendarInteractive

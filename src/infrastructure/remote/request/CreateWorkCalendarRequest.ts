@@ -13,14 +13,13 @@ export interface WorkTimeDetail {
 export interface MonthlyShift {
   organizationName: string
   team: string
-  startDate: string
-  endDate: string
   shifts: {
     [date: string]: string
   }
 }
 
 export interface CreateCalendarRequest {
+  myTeam: string
   workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }

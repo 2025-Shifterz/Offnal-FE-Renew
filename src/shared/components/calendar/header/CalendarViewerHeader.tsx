@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import {
   Modal,
   Text,
@@ -8,14 +8,15 @@ import {
   FlatList,
 } from 'react-native'
 import TeamVersion from '../../../../assets/icons/users-profiles-01.svg'
-import CalEdit from '../../../../assets/icons/file-edit-02.svg'
 import ArrowDown from '../../../../assets/icons/chevron-down.svg'
-import { useCalendarStore } from '../../../../store/useCalendarStore'
 
 interface CalendarViewerHeaderProps {
   selectedDate: Date
   onChange: (date: Date) => void
   onPressTeamIcon?: () => void
+  setSelectedYearMonth: Dispatch<
+    SetStateAction<{ year: number; month: number }>
+  >
 }
 
 const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() + i)
@@ -25,14 +26,12 @@ const CalendarViewerHeader = ({
   selectedDate,
   onChange,
   onPressTeamIcon,
+  setSelectedYearMonth,
 }: CalendarViewerHeaderProps) => {
   const [visible, setVisible] = useState(false)
   const [tempYear, setTempYear] = useState(selectedDate.getFullYear())
   const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
 
-  const setSelectedYearMonth = useCalendarStore(
-    state => state.setSelectedYearMonth
-  )
   useEffect(() => {
     setSelectedYearMonth({ year: tempYear, month: tempMonth })
   }, [tempYear, tempMonth, setSelectedYearMonth])

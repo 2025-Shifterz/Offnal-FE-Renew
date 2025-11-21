@@ -1,44 +1,41 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import CalendarEditorHeader from '../header/CalendarEditorHeader'
-import CalendarViewerHeader from '../header/CalendarViewerHeader'
-import TimeFrame, { TimeFrameChildren } from '../TimeFrame'
+import TimeFrame from '../TimeFrame'
+import { TeamCalendarRecord } from '../../../types/TeamCalendar'
+import { twMerge } from 'tailwind-merge'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
 const textDanger = '#BD2C0F'
+const LineByTeamStyle = 'absolute  h-[28px] w-full'
 
 interface CalendarBaseProps {
+  currentDate: dayjs.Dayjs
   selectedDate?: dayjs.Dayjs | null
   onDatePress?: (date: dayjs.Dayjs) => void
-  calendarData: Record<string, Record<string, TimeFrameChildren>>
-  isViewer: boolean
-  onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
+  teamCalendarData: TeamCalendarRecord[]
+  myTeam: string
 }
 
 const TCalendarBase = ({
+  currentDate,
   selectedDate,
   onDatePress,
-  calendarData,
-  isViewer,
-  onPressTeamIcon,
-  onPressEditIcon,
+  teamCalendarData,
+  myTeam,
 }: CalendarBaseProps) => {
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  // myTeam을 props로 받는다.
+  const highlightedMyTeamStyle = (team: string) =>
+    team === myTeam ? 'bg-surface-primary-light' : ''
+
+  useEffect(() => {
+    console.log('teamCalendarData', teamCalendarData)
+  }, [teamCalendarData])
 
   const startOfMonth = currentDate.startOf('month')
   const startDay = startOfMonth.day()
   const daysInMonth = currentDate.daysInMonth()
-
-  const handlePrevMonth = () => {
-    setCurrentDate(prev => prev.subtract(1, 'month'))
-  }
-
-  const handleNextMonth = () => {
-    setCurrentDate(prev => prev.add(1, 'month'))
-  }
 
   // 한 주 단위로 구성된 날짜 + 조 표시
   const renderWeeks = () => {
@@ -58,11 +55,21 @@ const TCalendarBase = ({
         } else {
           const date = startOfMonth.date(dayCounter)
           const weekDay = date.day()
+
           const isToday = dayjs().isSame(date, 'day')
           const isSelected = selectedDate
             ? selectedDate.isSame(date, 'day')
             : false
-          const time = calendarData?.[date.format('YYYY-MM-DD')]
+
+          const dateKey = date.format('YYYY-MM-DD')
+          // const time = calendarData?.[date.format('YYYY-MM-DD')]
+          const time: Record<string, string> = {}
+          teamCalendarData.forEach(teamRecord => {
+            const work = teamRecord.workInstances[dateKey]
+            if (work) {
+              time[teamRecord.team] = work.workTypeName
+            }
+          })
 
           let textColor = '#000'
           if (weekDay === 0) textColor = textDanger
@@ -78,8 +85,12 @@ const TCalendarBase = ({
               <View className="flex items-center gap-[3px]">
                 <View
                   className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max ${
-                    isToday ? 'bg-surface-gray-subtle1' : ''
-                  } ${isSelected ? 'bg-border-primary' : ''}`}
+                    isSelected
+                      ? 'bg-border-primary'
+                      : isToday
+                        ? 'bg-surface-gray-subtle1'
+                        : ''
+                  } `}
                 >
                   <Text
                     className={`heading-xxxs`}
@@ -91,13 +102,51 @@ const TCalendarBase = ({
                     {dayCounter}
                   </Text>
                 </View>
-                <View className="flex h-[110px] gap-1">
+                {/* 1조 */}
+                <View
+                  className={twMerge(
+                    LineByTeamStyle,
+                    highlightedMyTeamStyle('1조'),
+                    'bottom-[103px]'
+                  )}
+                />
+                {/* 2조 */}
+                <View
+                  className={twMerge(
+                    LineByTeamStyle,
+                    highlightedMyTeamStyle('2조'),
+                    'bottom-[73px]'
+                  )}
+                />
+                {/* 3조 */}
+                <View
+                  className={twMerge(
+                    LineByTeamStyle,
+                    highlightedMyTeamStyle('3조'),
+                    'bottom-[44px]'
+                  )}
+                />
+                {/* 4조 */}
+                <View
+                  className={twMerge(
+                    LineByTeamStyle,
+                    highlightedMyTeamStyle('4조'),
+                    'bottom-[14px]'
+                  )}
+                />
+                <View className="flex h-[130px] gap-1 ">
                   {['1조', '2조', '3조', '4조'].map(team => {
                     const teamTime = time?.[team]
-                    return teamTime ? (
-                      <TimeFrame key={team} text={teamTime} />
-                    ) : (
-                      <View key={team} style={{ height: 23 }} />
+                    // const isMyTeam = team === '3조'
+                    return (
+                      <View
+                        key={team}
+                        style={{
+                          minHeight: 26, // 빈 View도 높이 유지하려면 필요
+                        }}
+                      >
+                        {teamTime ? <TimeFrame text={teamTime} /> : <View />}
+                      </View>
                     )
                   })}
                 </View>
@@ -110,7 +159,7 @@ const TCalendarBase = ({
 
       weeks.push(
         <View className="flex-row" key={`week-${row}`}>
-          <View className="mt-8 w-[35px] flex-col items-center justify-center gap-4">
+          <View className="mt-6 w-[35px] flex-col items-center justify-center gap-[18px]">
             <Text style={styles.groupText}>1조</Text>
             <Text style={styles.groupText}>2조</Text>
             <Text style={styles.groupText}>3조</Text>
@@ -128,25 +177,9 @@ const TCalendarBase = ({
 
   return (
     <View className="rounded-t-radius-m2 bg-surface-white">
-      {/* 헤더 */}
-      {isViewer ? (
-        <CalendarViewerHeader
-          onPressTeamIcon={onPressTeamIcon}
-          onPressEditIcon={onPressEditIcon}
-          selectedDate={currentDate.toDate()}
-          onChange={newDate => setCurrentDate(dayjs(newDate))}
-        />
-      ) : (
-        <CalendarEditorHeader
-          currentDate={currentDate}
-          onPrevMonth={handlePrevMonth}
-          onNextMonth={handleNextMonth}
-        />
-      )}
-
       {/* 요일 라벨 */}
       <View className="mt-2 flex-row">
-        <View className="ml-[34px] h-[30px] flex-1 flex-row items-center justify-between">
+        <View className="ml-[34px] h-[30px] flex-1 flex-row items-center justify-between ">
           {daysOfWeek.map((day, index) => (
             <Text
               className="text-text-disabled body-xxs"
@@ -164,7 +197,7 @@ const TCalendarBase = ({
       </View>
 
       {/* 날짜 + 조 */}
-      <View className="pb-[10px]">{renderWeeks()}</View>
+      <View className="pb-[10px] ">{renderWeeks()}</View>
     </View>
   )
 }

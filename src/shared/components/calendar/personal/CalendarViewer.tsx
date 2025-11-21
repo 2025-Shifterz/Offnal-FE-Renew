@@ -3,56 +3,73 @@ import React, { useEffect, useState } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import {
+  calendarRepository,
+  teamCalendarRepository,
+} from '../../../../infrastructure/di/Dependencies'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
 interface CalendarViewerProps {
-  onPressTeamIcon?: () => void
-  onPressEditIcon?: () => void
+  selectedYearMonth: { year: number; month: number }
+  currentDate: dayjs.Dayjs
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs | null) => void
   onDateSelected?: (date: dayjs.Dayjs) => void // ✅ 콜백 추가
 }
 
 const CalendarViewer = ({
-  onPressTeamIcon,
-  onPressEditIcon,
+  selectedYearMonth,
+  currentDate,
   selectedDate,
   setSelectedDate,
   onDateSelected,
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
-  // current date  -> 선택한 달로 바꾸기 !!!!!!!!!!!!
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
 
   // 근무표 조회 API (화면이 포커스될 때마다 다시 호출) -> 월별 조회
+  // TODO: 팀 근무표에서 설정한 myTeam 으로 대체해야함 !!
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('요청하는 팀 근무표 조회 데이터: ', {
+          organizationName: latestOrganization.organizationName,
+          monthStartDate,
+          monthEndDate,
+        })
+        // 팀 캘린더 조회 -> myTeam 조회
+        const responseTeam = await teamCalendarRepository.getTeamCalendar(
+          latestOrganization.organizationName,
+          monthStartDate,
+          monthEndDate
+        )
+        setMyTeam(responseTeam.myTeam) // myTeam 정보 저장
+
+        // 개인 캘린더 조회
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
-          latestOrganization.team,
+          responseTeam.myTeam || latestOrganization.team, // myTeam 이 있으면 그걸로 !!
           monthStartDate,
           monthEndDate
         )
         setCalendarData(response)
         console.log('캘린더 탭: 월별 근무표 조회 성공:', response)
-        console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {
         console.log('캘린더 탭: 월별 근무표 조회 실패:', error)
-        console.log('organization name:', latestOrganization.organizationName)
       }
     }
+    // organizationName 이 아직 셋팅되지 않은 경우 호출을 막음
+    if (latestOrganization.organizationName.trim() === '') return
     fetchData()
-  }, [latestOrganization, monthStartDate, monthEndDate])
+  }, [latestOrganization.organizationName, monthStartDate, monthEndDate])
 
   // ----------
 
@@ -66,13 +83,10 @@ const CalendarViewer = ({
   return (
     <View>
       <CalendarBase
+        currentDate={currentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        currentDate={currentDate}
-        onChangeMonth={setCurrentDate}
         calendarData={calendarData}
-        onPressTeamIcon={onPressTeamIcon}
-        isViewer
       />
     </View>
   )

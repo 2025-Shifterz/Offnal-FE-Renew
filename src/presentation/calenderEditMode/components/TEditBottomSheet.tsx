@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import SelectShiftBox from './SelectShiftBox'
@@ -6,18 +6,12 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
-import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
+import SelectGroupBox from './SelectGroupBox'
 dayjs.locale('ko') // 한글 locale 적용
 
-// 근무형태 선택 박스 map 데이터
-const shiftTypes: { id: number; text: WorkType }[] = [
-  { id: 1, text: '주간' },
-  { id: 2, text: '오후' },
-  { id: 3, text: '야간' },
-  { id: 4, text: '휴일' },
-]
-
-interface EditBottomSheetProps {
+interface TEditBottomSheetProps {
+  selectedGroup: number
+  setSelectedGroup: (group: number) => void
   selectedDate: dayjs.Dayjs | null
   handleTypeSelect: (type: WorkType) => void
   handleCancel: () => void
@@ -27,9 +21,11 @@ interface EditBottomSheetProps {
   workTimes: { [key: string]: { startTime: string; endTime: string } }
 }
 
-const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
+const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
   (
     {
+      selectedGroup,
+      setSelectedGroup,
       selectedDate,
       handleTypeSelect,
       handleCancel,
@@ -65,15 +61,21 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
                 <Text className="text-text-primary label-s">{`선택된 날짜: ${formattedDate}`}</Text>
               </View>
             </View>
-            <View className="gap-[11px]">
-              <Text className="text-text-subtle heading-xxs">간격</Text>
-              <SelectShiftBox
-                selectedBoxId={selectedBoxId}
-                setSelectedBoxId={setSelectedBoxId}
-                handleTypeSelect={handleTypeSelect}
-                workTimes={workTimes}
+            <View className="gap-[5px]">
+              <Text className="text-text-subtle heading-xxs">조 입력</Text>
+              <SelectGroupBox
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
               />
             </View>
+
+            <SelectShiftBox
+              selectedBoxId={selectedBoxId}
+              setSelectedBoxId={setSelectedBoxId}
+              handleTypeSelect={handleTypeSelect}
+              workTimes={workTimes}
+            />
+
             <View className="h-[46px] w-full flex-row items-center gap-[10px]">
               <TouchableOpacity
                 onPress={handleCancel}
@@ -95,4 +97,4 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
   }
 )
 
-export default EditBottomSheet
+export default TEditBottomSheet

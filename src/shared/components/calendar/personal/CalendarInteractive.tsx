@@ -2,41 +2,48 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import CalendarBase from '../../../shared/components/calendar/personal/CalendarBase'
-import { useCalendarStore } from '../../../store/useCalendarStore'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
+import CalendarBase from './CalendarBase'
+import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 
 interface CalendarInteractiveProps {
-  isEditScreen: boolean
   currentDate: dayjs.Dayjs
-  setCurrentDate: (date: dayjs.Dayjs) => void
   selectedDate: dayjs.Dayjs | null
   setSelectedDate: (date: dayjs.Dayjs) => void
+  selectedYearMonth: { year: number; month: number }
 }
 
 const CalendarInteractive = ({
-  isEditScreen,
   currentDate,
-  setCurrentDate,
   selectedDate,
   setSelectedDate,
+  selectedYearMonth,
 }: CalendarInteractiveProps) => {
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const calendarData = useCalendarStore(state => state.calendarData)
   const setCalendarData = useCalendarStore(state => state.setCalendarData)
-  const selectedYearMonth = useCalendarStore(state => state.selectedYearMonth)
 
-  // '2025-11-01' 형태
-  const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
-  const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
-
+  const myTeam = useTeamCalendarStore(state => state.myTeam)
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
+      // '2025-11-01' 형태
+      const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
+      const monthEndDate = dayjs(monthStartDate)
+        .endOf('month')
+        .format('YYYY-MM-DD')
+
       try {
+        console.log('요청하는 근무표 조회 데이터: ', {
+          organizationName: latestOrganization.organizationName,
+          myTeam,
+          monthStartDate,
+          monthEndDate,
+        })
         const response = await calendarRepository.getCalendar(
           latestOrganization.organizationName,
-          latestOrganization.team,
+          myTeam,
           monthStartDate,
           monthEndDate
         )
@@ -49,10 +56,9 @@ const CalendarInteractive = ({
     }
     fetchData()
   }, [
-    monthStartDate,
-    monthEndDate,
+    selectedYearMonth,
     latestOrganization.organizationName,
-    latestOrganization.team,
+    myTeam,
     setCalendarData,
   ])
 
@@ -60,12 +66,9 @@ const CalendarInteractive = ({
     <View>
       <CalendarBase
         currentDate={currentDate}
-        onChangeMonth={setCurrentDate}
         selectedDate={selectedDate}
         onDatePress={setSelectedDate}
         calendarData={calendarData}
-        isViewer={false}
-        isEditScreen={isEditScreen}
       />
     </View>
   )

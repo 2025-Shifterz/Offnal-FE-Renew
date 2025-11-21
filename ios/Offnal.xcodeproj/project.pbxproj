@@ -305,7 +305,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Offnal/Offnal.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8CG24965GX;
+				DEVELOPMENT_TEAM = 689SW53SN9;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Offnal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Offnal;
@@ -320,7 +320,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin;
 				PRODUCT_NAME = Offnal;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -340,7 +340,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Offnal/Offnal.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8CG24965GX;
+				DEVELOPMENT_TEAM = 689SW53SN9;
 				INFOPLIST_FILE = Offnal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Offnal;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -354,7 +354,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin;
 				PRODUCT_NAME = Offnal;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

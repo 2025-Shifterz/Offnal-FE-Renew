@@ -91,7 +91,7 @@ export type OnboardingOCRStackParamList = {
   }
   SelectMonthOCR: {
     selectedScheduleScopeType: ScheduleScopeType
-    calendarName: string
+    organizationName: string
     workGroup: string
     workTimes: {
       D: { startTime: string; endTime: string }
@@ -132,7 +132,15 @@ export type OnboardingOCRStackParamList = {
 
 // 캘린더 탭 네비게이터
 export type CalendarScreenStackParamList = {
+  OnboardingSchedules: undefined // 캘린더 탭에서 PlusEdit 버튼을 통해 근무표 등록하려고 할때
   CalendarScreen: undefined
+  TeamEditCalendar: {
+    workTimes: {
+      D: { startTime: string; endTime: string }
+      E: { startTime: string; endTime: string }
+      N: { startTime: string; endTime: string }
+    }
+  }
   EditCalendar: {
     workTimes: {
       D: { startTime: string; endTime: string }

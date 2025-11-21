@@ -64,7 +64,6 @@ export class IosHealthService {
           },
         }
       )
-      console.log('stepData:', stepData)
 
       const totalSteps =
         stepData?.reduce((sum, sample) => sum + sample.quantity, 0) ?? 0
@@ -74,7 +73,6 @@ export class IosHealthService {
         'HKQuantityTypeIdentifierBodyMass'
       )
       const weight = weightData?.quantity ?? 0
-      console.log('weightData:', weightData)
 
       // BMI 가져오기
       const bmiData = await getMostRecentQuantitySample(
@@ -85,12 +83,12 @@ export class IosHealthService {
       // 걸음 수 % 계산 (9000걸음 목표 대비)
       const stepPercentage = (totalSteps / STEP_GOAL) * 100
 
-      console.log('ios Health Data :', {
-        totalSteps,
-        weight,
-        bmi,
-        stepPercentage,
-      })
+      // console.log('ios Health Data :', {
+      //   totalSteps,
+      //   weight,
+      //   bmi,
+      //   stepPercentage,
+      // })
 
       return {
         steps: totalSteps,

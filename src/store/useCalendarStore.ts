@@ -21,28 +21,29 @@ const calendarData: DateAndWorkTypeRecord = {
 interface CalendarState {
   calendarData: DateAndWorkTypeRecord
   selectedDate: dayjs.Dayjs | null
-  // month selector 헤더를 위한 상태
-  selectedYearMonth: {
-    year: number
-    month: number
-  }
 
   isLoading: boolean
-
   // 최신 조직 정보
   latestOrganization: {
     organizationName: string
     team: string
   }
 
+  // 편집용
+  newCalendarData: DateAndWorkTypeRecord
+
   // setter
   setCalendarData: (data: DateAndWorkType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
-  setSelectedYearMonth: (date: { year: number; month: number }) => void
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
   setLatestOrganization: (organizationName: string, team: string) => void
+
+  // 온보딩 캘린더 편집용 - CalendarEditor 에서 쓰임
+  setNewCalendarData: (data: DateAndWorkTypeRecord) => void
+  updateNewCalendarDay: (date: string, workTypeName: WorkType) => void
+  clearNewCalendarData: () => void
 
   // fetch
   fetchCalendarData: (
@@ -55,6 +56,7 @@ interface CalendarState {
 
 export const useCalendarStore = create<CalendarState>()(set => ({
   calendarData: {},
+  newCalendarData: {},
   selectedDate: null,
   selectedYearMonth: {
     year: dayjs().year(),
@@ -86,6 +88,7 @@ export const useCalendarStore = create<CalendarState>()(set => ({
       })
       return { calendarData: mapped }
     }),
+  setNewCalendarData: data => set({ newCalendarData: data }),
 
   // 특정 날짜의 근무 형태 수정
   updateCalendarDay: (date, workTypeName) =>
@@ -100,13 +103,24 @@ export const useCalendarStore = create<CalendarState>()(set => ({
       }
       return { calendarData: updated }
     }),
+  updateNewCalendarDay: (date, workTypeName) =>
+    set(state => {
+      const updated = { ...state.newCalendarData }
+      const existing = updated[date]?.workTypeName
+      if (existing === workTypeName) {
+        // 같은 날짜를 다시 클릭하면 제거 (같은 타입이면 삭제)
+        delete updated[date]
+      } else {
+        updated[date] = { workTypeName }
+      }
+      return { newCalendarData: updated }
+    }),
 
   setSelectedDate: date => set({ selectedDate: date }),
 
-  setSelectedYearMonth: date => set({ selectedYearMonth: date }),
-
   // 캘린더 데이터 전체 삭제
   clearCalendarData: () => set({ calendarData: {} }),
+  clearNewCalendarData: () => set({ newCalendarData: {} }),
 
   setLoading: loading => set({ isLoading: loading }),
 

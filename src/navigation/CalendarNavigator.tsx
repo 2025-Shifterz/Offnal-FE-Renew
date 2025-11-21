@@ -4,6 +4,7 @@ import CalendarEditScreen from '../presentation/calenderEditMode/screen/Calendar
 import { CalendarScreenStackParamList } from './types'
 import CustomBackButton from '../shared/components/CustomBackButton'
 import CalendarInfoEditScreen from '../presentation/calendarInfoEdit/screen/CalendarInfoEditScreen'
+import TCalendarEditScreen from '../presentation/calenderEditMode/screen/TCalendarEditScreen'
 
 // 탭2. 캘린더 탭에 사용되는 스택 네비게이터
 const Stack = createNativeStackNavigator<CalendarScreenStackParamList>()
@@ -27,6 +28,11 @@ const CalendarNavigator = () => {
         name="EditCalendar"
         options={{ headerShown: false }}
         component={CalendarEditScreen}
+      />
+      <Stack.Screen
+        name="TeamEditCalendar"
+        options={{ headerShown: false }}
+        component={TCalendarEditScreen}
       />
       <Stack.Screen
         name="CalendarInfoEdit"

@@ -2,9 +2,6 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-
-import CalendarEditorHeader from '../header/CalendarEditorHeader'
-import CalendarViewerHeader from '../header/CalendarViewerHeader'
 import TimeFrame from '../TimeFrame'
 import { DateAndWorkTypeRecord } from '../../../types/Calendar'
 
@@ -13,37 +10,21 @@ const textInformation = '#096AB3'
 const textDanger = '#BD2C0F'
 
 interface CalendarBaseProps {
-  selectedDate?: dayjs.Dayjs | null
-  onDatePress?: (date: dayjs.Dayjs) => void
+  selectedDate: dayjs.Dayjs | null
+  onDatePress: (date: dayjs.Dayjs) => void
   calendarData: DateAndWorkTypeRecord
-  isViewer: boolean
-  isEditScreen?: boolean
-  onPressTeamIcon?: () => void
   currentDate: dayjs.Dayjs
-  onChangeMonth: (newDate: dayjs.Dayjs) => void
 }
 
 const CalendarBase = ({
   selectedDate,
   onDatePress,
   calendarData,
-  isViewer,
-  isEditScreen,
-  onPressTeamIcon,
   currentDate,
-  onChangeMonth,
 }: CalendarBaseProps) => {
   const startOfMonth = currentDate.startOf('month') // 2025-07-01
-  // const endOfMonth = currentDate.endOf('month'); // 2025-07-31
   const startDay = startOfMonth.day() // 그 달의 1일의 요일 -> 달력에서 1일은 어느 칸에 둘지
   const daysInMonth = currentDate.daysInMonth() // 그 달이 며칠까지 있는지 계산.
-
-  const handlePrevMonth = () => {
-    onChangeMonth(currentDate.subtract(1, 'month'))
-  }
-  const handleNextMonth = () => {
-    onChangeMonth(currentDate.add(1, 'month'))
-  }
 
   // 날짜 박스 렌더링 함수
   const renderDays = () => {
@@ -103,12 +84,12 @@ const CalendarBase = ({
   return (
     <View className="rounded-t-radius-xl bg-surface-white">
       {/* 헤더 */}
-      {!isEditScreen &&
+      {/* {!isEditScreen &&
         (isViewer ? (
           <CalendarViewerHeader
             onPressTeamIcon={onPressTeamIcon}
             selectedDate={currentDate.toDate()}
-            onChange={newDate => onChangeMonth(dayjs(newDate))}
+            onChange={newDate => setCurrentDate(dayjs(newDate))}
           />
         ) : (
           <CalendarEditorHeader
@@ -116,7 +97,7 @@ const CalendarBase = ({
             onPrevMonth={handlePrevMonth}
             onNextMonth={handleNextMonth}
           />
-        ))}
+        ))} */}
 
       {/* 일 월 화 수 .. */}
       <View className="mt-2 h-[30px] flex-row items-center justify-between">

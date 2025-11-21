@@ -8,7 +8,6 @@ import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
-import EditBottomSheet from '../components/EditBottomSheet'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -18,14 +17,15 @@ import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
-import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
+import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
+import TEditBottomSheet from '../components/TEditBottomSheet'
 
 type CalendarEditScreenRouteProp = RouteProp<
   CalendarScreenStackParamList,
   'EditCalendar'
 >
 
-const CalendarEditScreen = () => {
+const TCalendarEditScreen = () => {
   const navigation =
     useNavigation<NavigationProp<CalendarScreenStackParamList>>()
   const route = useRoute<CalendarEditScreenRouteProp>()
@@ -33,7 +33,9 @@ const CalendarEditScreen = () => {
   const { workTimes } = route.params
 
   const calendarData = useCalendarStore(state => state.calendarData)
-  const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
+  const updateTeamCalendarDay = useTeamCalendarStore(
+    state => state.updateTeamCalendarDay
+  )
   const latestOrganization = useCalendarStore(state => state.latestOrganization)
   const myTeam = useTeamCalendarStore(state => state.myTeam)
 
@@ -47,6 +49,7 @@ const CalendarEditScreen = () => {
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
   const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
+  const [selectedGroup, setSelectedGroup] = useState(1)
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
   const sheetRef = useRef<BottomSheet>(null)
@@ -73,7 +76,13 @@ const CalendarEditScreen = () => {
     console.log('선택된 날짜:', key)
 
     // 상태 업데이트
-    updateCalendarDay(key, type)
+    updateTeamCalendarDay({
+      team: `${selectedGroup}조`, // 선택된 조 추가
+      date: key,
+      workTypeName: type,
+    })
+
+    setSelectedBoxId(shiftTypeToId(type))
   }
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
@@ -93,12 +102,20 @@ const CalendarEditScreen = () => {
 
       // 상태 업데이트
       if (backupType !== null) {
-        updateCalendarDay(key, backupType)
+        updateTeamCalendarDay({
+          team: `${selectedGroup}조`, // 선택된 조 추가
+          date: key,
+          workTypeName: backupType,
+        })
       } else {
         // 이전에 근무 형태가 없었으면 삭제
         const existing = calendarData[key]?.workTypeName
         if (existing) {
-          updateCalendarDay(key, existing)
+          updateTeamCalendarDay({
+            team: `${selectedGroup}조`, // 선택된 조 추가
+            date: key,
+            workTypeName: backupType || '',
+          })
         }
       }
     }
@@ -154,7 +171,7 @@ const CalendarEditScreen = () => {
         {/* 캘린더 */}
         <ScrollView className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
-            <CalendarInteractive
+            <TCalendarInteractive
               selectedYearMonth={selectedYearMonth}
               currentDate={currentDate}
               selectedDate={selectedDate}
@@ -173,7 +190,9 @@ const CalendarEditScreen = () => {
 
       {/* 근무표 수정 바텀시트 */}
       <>
-        <EditBottomSheet
+        <TEditBottomSheet
+          selectedGroup={selectedGroup}
+          setSelectedGroup={setSelectedGroup}
           handleTypeSelect={handleTypeSelect}
           handleCancel={handleCancel}
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결
@@ -188,4 +207,4 @@ const CalendarEditScreen = () => {
   )
 }
 
-export default CalendarEditScreen
+export default TCalendarEditScreen
