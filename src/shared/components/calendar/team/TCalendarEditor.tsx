@@ -86,11 +86,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
-      // let newTeamCalendars: CreateCalendarRequest['calendars'] = []
-
       try {
-        // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
-
         // 모든 팀의 날짜를 flatten
         const allDates = teamCalendarData.flatMap(teamRecord =>
           Object.keys(teamRecord.workInstances)
@@ -106,33 +102,17 @@ const TCalendarEditor: ForwardRefRenderFunction<
           return
         }
 
-        // 새 캘린더 데이터 생성 (calendars의 월별 목록)
-        // const firstMonth = storedMonths[0]
-        // const lastMonth = storedMonths[storedMonths.length - 1]
-
-        // const startDate = dayjs(firstMonth + '-01').format('YYYY-MM-DD')
-        // const endDate = dayjs(lastMonth + '-01')
-        //   .endOf('month')
-        //   .format('YYYY-MM-DD')
-
         // 팀별로 shifts 생성
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           teamCalendarData.map(teamRecord => {
             const shifts: Record<string, string> = {}
             Object.entries(teamRecord.workInstances).forEach(([date, work]) => {
-              // if (
-              //   dayjs(date).isSameOrAfter(startDate) &&
-              //   dayjs(date).isSameOrBefore(endDate)
-              // ) {
               shifts[date] = fromShiftType(work.workTypeName)
-              // }
             })
 
             return {
               organizationName,
               team: teamRecord.team,
-              // startDate,
-              // endDate,
               shifts,
             }
           })
@@ -146,8 +126,8 @@ const TCalendarEditor: ForwardRefRenderFunction<
         console.log('요청하는 팀 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
-        const res = await calendarRepository.createCalendar(newCalendarRequest)
-        console.log('근무표 저장 성공', res)
+        await calendarRepository.createCalendar(newCalendarRequest)
+        console.log('근무표 저장 성공')
 
         console.log('저장된 teamCalendarData의 년/월 목록:', storedMonths)
       } catch (error) {

@@ -34,10 +34,15 @@ const TCalendarInteractive = ({
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
 
   // 팀 근무표 조회 API (화면이 포커스될 때마다 다시 호출) -> 월별 조회
-  // 벡엔드 측 API 수정 필요
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('팀 근무표 조회 request: ', {
+          organizationName: latestOrganization.organizationName,
+          myTeam,
+          monthStartDate,
+          monthEndDate,
+        })
         const response = await teamCalendarRepository.getTeamCalendar(
           latestOrganization.organizationName,
           monthStartDate,
@@ -56,10 +61,10 @@ const TCalendarInteractive = ({
           )
 
         setTeamCalendarData(flattened)
-        console.log('팀 캘린더 탭: 월별 근무표 조회 성공:', response)
+        console.log('팀 근무표 수정 모드: 월별 근무표 조회 성공:', response)
         console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {
-        console.log('팀 캘린더 탭: 월별 근무표 조회 실패:', error)
+        console.log('팀 근무표 수정 모드: 월별 근무표 조회 실패:', error)
         console.log('organization name:', latestOrganization.organizationName)
       }
     }
@@ -69,6 +74,7 @@ const TCalendarInteractive = ({
     monthStartDate,
     monthEndDate,
     setTeamCalendarData,
+    myTeam,
   ])
 
   return (
