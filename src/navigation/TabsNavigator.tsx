@@ -3,7 +3,6 @@ import BottomNavigationBar from '../presentation/main/components/BottomNavigatio
 import MainNavigator from './MainNavigator'
 import CalendarNavigator from './CalendarNavigator'
 import MyInfoNavigator from './MyInfoNavigator'
-import AutoAlarmNavigator from './AutoAlarmNavigator'
 
 const Tab = createBottomTabNavigator()
 

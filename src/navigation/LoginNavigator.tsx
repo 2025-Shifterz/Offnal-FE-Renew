@@ -1,9 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Login from '../presentation/login/screen/Login'
+import LoginScreen from '../presentation/login/screen/LoginScreen'
 import KakaoLoginWebView from '../presentation/login/screen/KakaoLoginWebView'
-import PrivacyPolicy from '../presentation/policy/screen/PrivacyPolicy'
-import ServiceTerm from '../presentation/policy/screen/ServiceTerm'
 import { LoginStackParamList } from './types'
+import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 
 const Stack = createNativeStackNavigator<LoginStackParamList>()
 
@@ -15,10 +14,9 @@ const LoginNavigator = () => {
       initialRouteName="Login"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="KakaoWebView" component={KakaoLoginWebView} />
-      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
-      <Stack.Screen name="ServiceTerm" component={ServiceTerm} />
+      <Stack.Screen name="TermsWebViewScreen" component={TermsWebViewScreen} />
     </Stack.Navigator>
   )
 }

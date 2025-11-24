@@ -22,9 +22,8 @@ const KakaoLoginWebView = () => {
     const fetchLoginUrl = async () => {
       try {
         const data = await authService.getLoginUrl()
-
-        // 서버에서 http로 내려오는 경우가 있어 https로 강제 변환
         const secureLoginUrl = data?.replace('http://', 'https://')
+
         setLoginUrl(secureLoginUrl)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')
@@ -35,9 +34,6 @@ const KakaoLoginWebView = () => {
 
     fetchLoginUrl()
   }, [navigation])
-
-  console.log('KakaoLoginWebView - API_URL:', API_URL)
-  console.log('KakaoLoginWebView - loginUrl:', loginUrl)
 
   const injectedJS = `
     if (window.location.href.startsWith('${REDIRECT_URI}')) {
