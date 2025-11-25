@@ -3,7 +3,7 @@ import Swiper from 'react-native-swiper'
 import { View, Dimensions, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import KaKaoLoginBtn from '../components/KakaoLoginBtn'
-import { onboardingList } from '../constants/onboardingList'
+import { onboardingList } from '../constants/OnboardingList'
 import { loginNavigation } from '../../../navigation/types'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
@@ -16,13 +16,14 @@ const LoginScreen = () => {
   const [slideTime] = useState(4)
 
   return (
-    <SafeAreaView className="w-full flex-1 items-center bg-background-gray-subtle1">
-      <View className="flex-1">
+    <SafeAreaView className="w-full flex-1 items-center bg-background-white">
+      <View className="mt-[67px] flex-1 items-center">
         <Swiper
           autoplay
-          showsPagination={false}
+          showsPagination={true}
           width={SCREEN_WIDTH}
           autoplayTimeout={slideTime}
+          paginationStyle={{ bottom: 60 }}
         >
           {onboardingList.map((onboarding, index) => {
             const Icon = onboarding.image
@@ -30,21 +31,31 @@ const LoginScreen = () => {
             return (
               <View
                 key={index}
-                className="mb-[66px] flex-1  items-center pt-[70px]"
-                style={{ width: SCREEN_WIDTH }}
+                className="flex-1 items-center justify-center pb-[60px]"
               >
-                <GlobalText className="mb-number-8 h-fit w-fit gap-number-6 rounded-radius-m border-border-width-static-regular border-border-gray-light bg-surface-white p-p-3 text-center text-text-subtle body-xxs">
-                  {onboarding.keyword}
-                </GlobalText>
-                <GlobalText className="mb-number-4 h-fit w-fit text-center heading-s">
-                  {onboarding.title}
+                <GlobalText className="mb-number-4 text-center font-pretSemiBold text-heading-m">
+                  {onboarding.title
+                    .split(onboarding.highlight)
+                    .map((part, i, arr) => (
+                      <GlobalText
+                        key={i}
+                        className="font-pretSemiBold text-heading-m"
+                      >
+                        {part}
+                        {i < arr.length - 1 && (
+                          <GlobalText className="font-pretSemiBold text-heading-m text-text-primary">
+                            {onboarding.highlight}
+                          </GlobalText>
+                        )}
+                      </GlobalText>
+                    ))}
                 </GlobalText>
 
-                <View className="flex-1 items-center justify-center rounded-radius-l  ">
+                <View className="flex-1 items-center justify-center rounded-radius-l">
                   <Icon />
                 </View>
 
-                <GlobalText className=" h-fit w-fit text-center text-text-subtle body-xs">
+                <GlobalText className="mb-[80px] text-center text-body-xs text-text-subtle">
                   {onboarding.subtitle}
                 </GlobalText>
               </View>
@@ -53,7 +64,7 @@ const LoginScreen = () => {
         </Swiper>
       </View>
 
-      <View className="h-[170px] items-center">
+      <View className="mt-[15px] flex-col items-center">
         <KaKaoLoginBtn />
         {/* <AppleButton
           buttonStyle={AppleButton.Style.BLACK}
@@ -65,7 +76,7 @@ const LoginScreen = () => {
           onPress={() => onAppleButtonPress()}
         /> */}
 
-        <View className="flex-row justify-center">
+        <View className="mt-[16px] flex-row justify-center">
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('TermsWebViewScreen', {
