@@ -82,23 +82,7 @@ const CalendarBase = ({
   }
 
   return (
-    <View className="rounded-t-radius-xl bg-surface-white">
-      {/* 헤더 */}
-      {/* {!isEditScreen &&
-        (isViewer ? (
-          <CalendarViewerHeader
-            onPressTeamIcon={onPressTeamIcon}
-            selectedDate={currentDate.toDate()}
-            onChange={newDate => setCurrentDate(dayjs(newDate))}
-          />
-        ) : (
-          <CalendarEditorHeader
-            currentDate={currentDate}
-            onPrevMonth={handlePrevMonth}
-            onNextMonth={handleNextMonth}
-          />
-        ))} */}
-
+    <View className="rounded-t-radius-xl border-[0.5px] border-white bg-surface-white">
       {/* 일 월 화 수 .. */}
       <View className="mt-2 h-[30px] flex-row items-center justify-between">
         {daysOfWeek.map((day, index) => (
