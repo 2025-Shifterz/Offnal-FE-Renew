@@ -51,8 +51,7 @@ export type MainStackParamList = {
 export type LoginStackParamList = {
   Login: undefined
   KakaoWebView: undefined
-  PrivacyPolicy: undefined
-  ServiceTerm: undefined
+  TermsWebViewScreen: { title: string; url: string }
 }
 
 // 온보딩 캘린더
