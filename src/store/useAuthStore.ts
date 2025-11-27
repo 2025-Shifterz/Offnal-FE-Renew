@@ -5,6 +5,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { authService } from '../infrastructure/di/Dependencies'
+import appleAuth from '@invertase/react-native-apple-authentication'
 
 interface AuthState {
   accessToken: string | null
@@ -12,6 +13,7 @@ interface AuthState {
 
   isLoggedIn: () => boolean
   login: (user: User, accessToken: string, refreshToken: string) => void
+  loginWithApple: () => Promise<boolean | undefined>
   logout: () => void
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
@@ -24,7 +26,10 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
 
       // 로그인 여부
-      isLoggedIn: () => !!get().refreshToken,
+      isLoggedIn: () => {
+        const { accessToken, refreshToken } = get()
+        return !!accessToken && !!refreshToken
+      },
 
       // 로그인 시
       login: (user, accessToken, refreshToken) => {
@@ -42,6 +47,59 @@ export const useAuthStore = create<AuthState>()(
           refreshToken,
         })
       },
+
+      loginWithApple: async () => {
+        try {
+          const appleAuthRequestResponse = await appleAuth.performRequest({
+            requestedOperation: appleAuth.Operation.LOGIN,
+            requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+          })
+
+          const { user, email, fullName, identityToken } =
+            appleAuthRequestResponse
+          const credentialState =
+            await appleAuth.getCredentialStateForUser(user)
+
+          if (credentialState === appleAuth.State.AUTHORIZED) {
+            if (!identityToken) {
+              throw new Error('Identity Token is missing')
+            }
+            if (!user) {
+              throw new Error('User is missing')
+            }
+
+            const response = await authService.loginWithApple(
+              identityToken,
+              user,
+              email ?? null,
+              fullName
+                ? {
+                    givenName: fullName.givenName ?? null,
+                    familyName: fullName.familyName ?? null,
+                  }
+                : null
+            )
+
+            const { setUser } = useUserStore.getState()
+            setUser({
+              memberName: response.memberName,
+              email: response.email,
+              phoneNumber: response.phoneNumber,
+              profileImageUrl: response.profileImageKey,
+            })
+
+            set({
+              accessToken: response.accessToken,
+              refreshToken: response.refreshToken,
+            })
+
+            return response.isNewMember
+          }
+        } catch (error) {
+          console.error('Apple Login Failed', error)
+        }
+      },
+
       // 로그아웃 시
       logout: async () => {
         const { clearUser } = useUserStore.getState()

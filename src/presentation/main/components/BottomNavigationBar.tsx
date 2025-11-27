@@ -2,6 +2,7 @@ import { Text } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { ReactNode } from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import HomeGrayIcon from '../../../assets/icons/ic_home_24_gray.svg'
 import AlarmGrayIcon from '../../../assets/icons/ic_alarm_24_gray.svg'
@@ -16,6 +17,8 @@ import MyInfoBkIcon from '../../../assets/icons/ic_myinfo_24_bk.svg'
 export const Tab = createBottomTabNavigator()
 
 const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
+  const insets = useSafeAreaInsets()
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -71,8 +74,8 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
           backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
           borderTopColor: '#e0e0e0',
-          height: 65,
-          paddingBottom: 5,
+          height: 65 + insets.bottom,
+          paddingBottom: insets.bottom + 5,
           paddingTop: 5,
         },
         headerShown: false,
