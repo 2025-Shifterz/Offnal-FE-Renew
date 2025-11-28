@@ -47,7 +47,7 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
         <WorkTimeProvider>
-          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
+          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
             <RootNavigator />
           </SafeAreaView>
         </WorkTimeProvider>

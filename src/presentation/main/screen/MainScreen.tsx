@@ -88,7 +88,10 @@ export default function MainScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-surface-disabled-inverse">
+    <SafeAreaView
+      className="flex-1 bg-surface-disabled-inverse"
+      edges={['left', 'right', 'top']}
+    >
       <ScrollView className="flex-1" bounces={false}>
         {/* <TopCard /> */}
         <TopBanner schdule={schedule ?? null} />
