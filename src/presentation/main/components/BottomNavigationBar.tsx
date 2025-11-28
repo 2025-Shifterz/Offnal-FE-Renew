@@ -75,7 +75,7 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
           borderTopWidth: 1,
           borderTopColor: '#e0e0e0',
           height: 65 + insets.bottom,
-          paddingBottom: insets.bottom,
+          paddingBottom: 5 + insets.bottom,
           paddingTop: 5,
         },
         headerShown: false,
