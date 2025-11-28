@@ -5,12 +5,13 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { authService } from '../infrastructure/di/Dependencies'
+import CookieManager from '@react-native-cookies/cookies'
 
 interface AuthState {
   accessToken: string | null
   refreshToken: string | null
 
-  isLoggedIn: () => boolean
+  isLoggedIn: () => Promise<boolean>
   login: (user: User, accessToken: string, refreshToken: string) => void
   logout: () => void
   setAccessToken: (token: string) => void
@@ -24,7 +25,22 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
 
       // 로그인 여부
-      isLoggedIn: () => !!get().refreshToken,
+      isLoggedIn: async () => {
+        const refreshToken = get().refreshToken
+        if (!refreshToken) return false
+
+        try {
+          const res = await authService.tokenReissue(refreshToken)
+          set({
+            accessToken: res.accessToken,
+            refreshToken: res.refreshToken,
+          })
+          return true
+        } catch (error) {
+          console.error('Token reissue failed:', error)
+          return false
+        }
+      },
 
       // 로그인 시
       login: (user, accessToken, refreshToken) => {
@@ -46,15 +62,17 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         const { clearUser } = useUserStore.getState()
         const { clearCalendarData } = useCalendarStore.getState()
+        await authService.tokenLogOut()
 
-        clearUser() // 유저 정보 초기화
-        clearCalendarData() // 캘린더 데이터 초기화
+        clearUser()
+        clearCalendarData()
         set({
           accessToken: null,
           refreshToken: null,
         })
 
-        await authService.tokenLogOut()
+        await CookieManager.removeSessionCookies()
+        await CookieManager.clearAll()
       },
 
       // 토큰만 업데이트
