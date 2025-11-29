@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import {
-  authService,
   memberRepository,
   memberService,
 } from '../infrastructure/di/Dependencies'
@@ -10,6 +9,7 @@ import EncryptedStorage from 'react-native-encrypted-storage'
 import { useCalendarStore } from './useCalendarStore'
 import { localMemoStore } from './useLocalMemoStore'
 import { useAuthStore } from './useAuthStore'
+import CookieManager from '@react-native-cookies/cookies'
 
 export interface UserState {
   user: User | null
@@ -72,15 +72,19 @@ export const useUserStore = create<UserState>()(
 
       onWithdraw: async () => {
         await memberRepository.withDrawMember()
-        await authService.tokenLogOut()
 
         const { clearCalendarData } = useCalendarStore.getState()
         const { deleteAllMemos } = localMemoStore.getState()
-
-        useAuthStore.setState({ accessToken: null, refreshToken: null })
+        useAuthStore.setState({
+          accessToken: null,
+          refreshToken: null,
+        })
 
         clearCalendarData()
         deleteAllMemos()
+
+        await CookieManager.removeSessionCookies()
+        await CookieManager.clearAll()
 
         set(() => ({ user: null }))
       },

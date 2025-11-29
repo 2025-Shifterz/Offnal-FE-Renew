@@ -2,7 +2,6 @@ import { Text } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { ReactNode } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import HomeGrayIcon from '../../../assets/icons/ic_home_24_gray.svg'
 import AlarmGrayIcon from '../../../assets/icons/ic_alarm_24_gray.svg'
@@ -13,6 +12,7 @@ import HomeBkIcon from '../../../assets/icons/ic_home_24_bk.svg'
 import AlarmBkIcon from '../../../assets/icons/ic_alarm_24_bk.svg'
 import CalendarBkIcon from '../../../assets/icons/ic_calendar_24_bk.svg'
 import MyInfoBkIcon from '../../../assets/icons/ic_myinfo_24_bk.svg'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const Tab = createBottomTabNavigator()
 
@@ -75,7 +75,7 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
           borderTopWidth: 1,
           borderTopColor: '#e0e0e0',
           height: 65 + insets.bottom,
-          paddingBottom: insets.bottom + 5,
+          paddingBottom: 5 + insets.bottom,
           paddingTop: 5,
         },
         headerShown: false,

@@ -10,7 +10,8 @@ const SplashScreen = () => {
 
   const handleAnimationFinish = async () => {
     try {
-      const targetRoute = isLoggedIn() ? 'Tabs' : 'LoginScreens'
+      const session = await isLoggedIn()
+      const targetRoute = session ? 'Tabs' : 'LoginScreens'
 
       navigation.reset({
         index: 0,

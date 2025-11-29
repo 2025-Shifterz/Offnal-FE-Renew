@@ -176,7 +176,10 @@ const TCalendarBase = ({
   }
 
   return (
-    <View className="rounded-t-radius-m2 bg-surface-white">
+    <View
+      className="rounded-t-radius-m2 bg-surface-white"
+      style={{ borderWidth: StyleSheet.hairlineWidth, borderColor: 'white' }}
+    >
       {/* 요일 라벨 */}
       <View className="mt-2 flex-row">
         <View className="ml-[34px] h-[30px] flex-1 flex-row items-center justify-between ">

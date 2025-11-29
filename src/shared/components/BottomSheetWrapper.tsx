@@ -10,7 +10,7 @@ type BottomSheetWrapperProps = {
 }
 
 const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
-  ({ children, snapPoints = ['25%', '70%'], onChange, handleStyle }, ref) => {
+  ({ children, snapPoints = ['25%', '80%'], onChange, handleStyle }, ref) => {
     const memoSnapPoints = useMemo(() => snapPoints, [snapPoints])
 
     return (
