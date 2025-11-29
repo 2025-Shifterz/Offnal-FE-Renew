@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Swiper from 'react-native-swiper'
-import { View, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Dimensions, TouchableOpacity, Platform } from 'react-native'
 import {
   useNavigation,
   CompositeNavigationProp,
@@ -78,30 +78,32 @@ const LoginScreen = () => {
       <View className="mt-[15px] flex-col items-center">
         <KaKaoLoginBtn />
 
-        <AppleButton
-          buttonStyle={AppleButton.Style.BLACK}
-          buttonType={AppleButton.Type.SIGN_IN}
-          style={{ width: 300, height: 45 }}
-          onPress={async () => {
-            const isNewMember = await loginWithApple()
-            if (isNewMember) {
-              navigation.getParent<rootNavigation>()?.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: 'OnboardingSchedules',
-                    params: { screen: 'SelectScheduleReg' },
-                  },
-                ],
-              })
-            } else {
-              navigation.getParent<rootNavigation>()?.reset({
-                index: 0,
-                routes: [{ name: 'Tabs' }],
-              })
-            }
-          }}
-        />
+        {Platform.OS === 'ios' && (
+          <AppleButton
+            buttonStyle={AppleButton.Style.BLACK}
+            buttonType={AppleButton.Type.SIGN_IN}
+            style={{ width: 300, height: 45 }}
+            onPress={async () => {
+              const isNewMember = await loginWithApple()
+              if (isNewMember) {
+                navigation.getParent<rootNavigation>()?.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'OnboardingSchedules',
+                      params: { screen: 'SelectScheduleReg' },
+                    },
+                  ],
+                })
+              } else {
+                navigation.getParent<rootNavigation>()?.reset({
+                  index: 0,
+                  routes: [{ name: 'Tabs' }],
+                })
+              }
+            }}
+          />
+        )}
 
         <View className="mt-[16px] flex-row justify-center">
           <TouchableOpacity

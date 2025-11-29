@@ -5,12 +5,11 @@ export interface PostLoginWithAppleResponse {
 }
 
 export interface PostLoginWithAppleResponseData {
-  data: any
+  phoneNumber: string
   memberName: string
   email: string
-  phoneNumber: string
   profileImageKey: string
-  isNewMember: boolean
+  newMember: boolean
   accessToken: string
   refreshToken: string
 }

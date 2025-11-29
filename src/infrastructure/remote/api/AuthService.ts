@@ -1,4 +1,6 @@
+import { PostLoginWithAppleRequest } from '../request/PostLoginWithAppleRequest'
 import { PostLoginWithAppleResponse } from '../response/PostLoginWithAppleResponse'
+import { PostRefreshTokenResponse } from '../response/PostRefreshTokenResponse'
 import api from './axiosInstance'
 
 export class AuthService {
@@ -11,24 +13,14 @@ export class AuthService {
     }
   }
 
-  loginWithApple = async (
-    identityToken: string,
-    user: string | null,
-    email: string | null,
-    fullName: {
-      givenName: string | null
-      familyName: string | null
-    } | null
-  ) => {
+  loginWithApple = async (requestDto: PostLoginWithAppleRequest) => {
+    console.log('loginWithApple requestDto:', requestDto)
+    console.log('loginWithApple requestDto fullName:', requestDto.fullName)
+
     try {
       const response = await api.post<PostLoginWithAppleResponse>(
         '/login/apple',
-        {
-          identityToken,
-          user,
-          email,
-          fullName,
-        }
+        requestDto
       )
       console.log('/login/apple 응답:', response)
       return response.data.data
@@ -40,11 +32,16 @@ export class AuthService {
 
   tokenReissue = async (refreshToken: string) => {
     try {
-      const response = await api.post('/tokens/reissue', { refreshToken })
+      console.log('refreshToken:', refreshToken)
+
+      const response = await api.post<PostRefreshTokenResponse>(
+        '/tokens/reissue',
+        { refreshToken }
+      )
       console.log('/tokens/reissue 응답:', response)
       return response.data.data
     } catch (error) {
-      console.error('/tokens/reissue API 요청 실패:', error)
+      // console.error('/tokens/reissue API 요청 실패:', error)
       throw error
     }
   }
