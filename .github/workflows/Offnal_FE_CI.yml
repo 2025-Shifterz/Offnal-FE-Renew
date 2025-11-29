@@ -114,8 +114,8 @@ jobs:
       - name: Build Offnal iOS (Debug)
         run: |
           cd ios
-          xcodebuild -workspace ShifterzNew.xcworkspace \
-                     -scheme ShifterzNew \
+          xcodebuild -workspace Offnal.xcworkspace \
+                     -scheme Offnal \
                      -sdk iphonesimulator \
                      -configuration Debug \
                      clean build
