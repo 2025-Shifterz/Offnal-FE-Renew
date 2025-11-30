@@ -18,7 +18,12 @@ const SplashScreen = () => {
         routes: [{ name: targetRoute }],
       })
     } catch (error) {
-      console.error('Token 확인 중 오류 발생:', error)
+      console.error('Token 확인 중 오류 또는 타임아웃 발생:', error)
+      // 에러 발생 시에도 로그인 화면으로 이동 안전장치
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoginScreens' }],
+      })
     }
   }
 
