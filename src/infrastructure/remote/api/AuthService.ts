@@ -1,5 +1,5 @@
 import api from './axiosInstance'
-import { noInterceptorApi } from './noIntercetorAxiosInstance'
+import { noInterceptorApi } from './noInterceptorAxiosInstance'
 
 export class AuthService {
   getLoginUrl = async () => {

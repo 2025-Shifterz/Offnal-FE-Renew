@@ -19,6 +19,10 @@ const SplashScreen = () => {
       })
     } catch (error) {
       console.error('Token 확인 중 오류 또는 타임아웃 발생:', error)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoginScreens' }],
+      })
     }
   }
 
