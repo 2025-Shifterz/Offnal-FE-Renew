@@ -30,7 +30,9 @@ export const useAuthStore = create<AuthState>()(
         if (!refreshToken) return false
 
         try {
-          const res = await authService.tokenReissue(refreshToken)
+          // 기존 api instance 사용 금지 - 요청 인터셉터에서 다시 토큰 재발급하므로 무한 루프 발생
+          const res =
+            await authService.tokenReissueWithNoInterceptor(refreshToken)
           set({
             accessToken: res.accessToken,
             refreshToken: res.refreshToken,
