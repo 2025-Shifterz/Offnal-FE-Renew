@@ -11,35 +11,38 @@ export class AuthService {
     }
   }
 
-  tokenReissue = async (refreshToken: string) => {
+  // private
+  private tokenReissueHelper = async (
+    axiosInstance: typeof api,
+    refreshToken: string,
+    instanceName: string
+  ): Promise<{ accessToken: string; refreshToken: string }> => {
     try {
-      const response = await api.post('/tokens/reissue', { refreshToken })
-      console.log('/tokens/reissue 응답:', response.data)
+      const response = await axiosInstance.post('/tokens/reissue', {
+        refreshToken,
+      })
+      console.log(`/tokens/reissue (${instanceName}) 응답:`, response.data)
       return response.data.data
     } catch (error: any) {
-      console.error('/tokens/reissue API 요청 실패:', error)
-      console.log('/tokens/reissue 응답:', error.response?.data)
+      console.error(`/tokens/reissue (${instanceName}) API 요청 실패:`, error)
+      console.log(
+        `/tokens/reissue (${instanceName}) 응답:`,
+        error.response?.data
+      )
       throw error
     }
   }
 
-  tokenReissueWithNoInterceptor = async (refreshToken: string) => {
-    try {
-      // 인터셉터 없는 axios 인스턴스 사용
-      const response = await noInterceptorApi.post('/tokens/reissue', {
-        refreshToken,
-      })
-      console.log('/tokens/reissue (no interceptor) 응답:', response.data)
-      return response.data.data
-    } catch (error: any) {
-      console.error('/tokens/reissue (no interceptor) API 요청 실패:', error)
-      console.log(
-        '/tokens/reissue (no interceptor) 응답:',
-        error.response?.data
-      )
+  tokenReissue = async (refreshToken: string) => {
+    return this.tokenReissueHelper(api, refreshToken, 'with interceptor')
+  }
 
-      throw error
-    }
+  tokenReissueWithNoInterceptor = async (refreshToken: string) => {
+    return this.tokenReissueHelper(
+      noInterceptorApi,
+      refreshToken,
+      'no interceptor'
+    )
   }
 
   tokenLogOut = async () => {
