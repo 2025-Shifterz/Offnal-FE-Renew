@@ -91,4 +91,6 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# secret settings
 android/gradle.properties
