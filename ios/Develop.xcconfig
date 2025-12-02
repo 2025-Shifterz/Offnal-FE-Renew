@@ -1,0 +1,12 @@
+//
+//  Develop.xcconfig
+//  Offnal
+//
+//  Created by yujin on 12/2/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+DEVELOPMENT_TEAM = 689SW53SN9
+PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin
