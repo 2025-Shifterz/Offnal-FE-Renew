@@ -345,7 +345,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal;
 				PRODUCT_NAME = Offnal;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -384,7 +384,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal;
 				PRODUCT_NAME = Offnal;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
