@@ -8,8 +8,8 @@ interface TooltipBubbleProps {
 
 const TooltipBubble = ({ children, style }: TooltipBubbleProps) => {
   return (
-    <View style={style}>
-      <View className="relative bottom-9 left-20 shadow-md">
+    <View className="absolute">
+      <View className="shadow-shadow1" style={style}>
         <View
           className=" z-10 items-center rounded-radius-m bg-surface-white px-number-6 py-number-3 "
           style={{

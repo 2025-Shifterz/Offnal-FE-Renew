@@ -18,8 +18,8 @@
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		77376EB695604070950ECBC2 /* Pretendard-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 944F958818334CAFB5598392 /* Pretendard-Black.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		9FEAD6822EDF118E00861100 /* Develop.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9FEAD6812EDF118E00861100 /* Develop.xcconfig */; };
 		9FEAD6862EDF15E900861100 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9FEAD6852EDF15E900861100 /* Release.xcconfig */; };
+		9FEAD6892EE0965E00861100 /* Develop.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 9FEAD6882EE0965E00861100 /* Develop.xcconfig */; };
 		EFF20CA724E24E3F8664C9A4 /* Pretendard-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FA15D662925452283D1A7DD /* Pretendard-Medium.ttf */; };
 		F54B46466E5A43DDBA07CAFE /* Pretendard-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3EF57285B76C41BFA9D9F8DE /* Pretendard-Bold.ttf */; };
 		F5C89A148CA743A58A80656B /* Pretendard-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5606FFC7A1E44CE9B8DAFC74 /* Pretendard-ExtraBold.ttf */; };
@@ -41,8 +41,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Offnal/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8EB5427DA7D74B4C83592EAC /* Pretendard-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraLight.ttf"; path = "../src/assets/fonts/Pretendard-ExtraLight.ttf"; sourceTree = "<group>"; };
 		944F958818334CAFB5598392 /* Pretendard-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Black.ttf"; path = "../src/assets/fonts/Pretendard-Black.ttf"; sourceTree = "<group>"; };
-		9FEAD6812EDF118E00861100 /* Develop.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Develop.xcconfig; sourceTree = "<group>"; };
 		9FEAD6852EDF15E900861100 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		9FEAD6882EE0965E00861100 /* Develop.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Develop.xcconfig; sourceTree = "<group>"; };
 		A2BBA207A2FF4D63BD0D6960 /* Pretendard-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Thin.ttf"; path = "../src/assets/fonts/Pretendard-Thin.ttf"; sourceTree = "<group>"; };
 		B1C611A04AE58A9662C60D1D /* Pods-Offnal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Offnal.release.xcconfig"; path = "Target Support Files/Pods-Offnal/Pods-Offnal.release.xcconfig"; sourceTree = "<group>"; };
 		C7F572B493204D12A6C8547B /* Pretendard-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-SemiBold.ttf"; path = "../src/assets/fonts/Pretendard-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -64,13 +64,13 @@
 		13B07FAE1A68108700A75B9A /* Offnal */ = {
 			isa = PBXGroup;
 			children = (
-				9FEAD6812EDF118E00861100 /* Develop.xcconfig */,
 				9FEAD6852EDF15E900861100 /* Release.xcconfig */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				9FEAD6882EE0965E00861100 /* Develop.xcconfig */,
 			);
 			name = Offnal;
 			sourceTree = "<group>";
@@ -204,10 +204,10 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				1187CBAD127B363DA72DEB1C /* PrivacyInfo.xcprivacy in Resources */,
-				9FEAD6822EDF118E00861100 /* Develop.xcconfig in Resources */,
 				77376EB695604070950ECBC2 /* Pretendard-Black.ttf in Resources */,
 				F54B46466E5A43DDBA07CAFE /* Pretendard-Bold.ttf in Resources */,
 				F5C89A148CA743A58A80656B /* Pretendard-ExtraBold.ttf in Resources */,
+				9FEAD6892EE0965E00861100 /* Develop.xcconfig in Resources */,
 				6FC5EC9E2E8446868A58F50D /* Pretendard-ExtraLight.ttf in Resources */,
 				63E657B71FF6418FB46E3D3C /* Pretendard-Light.ttf in Resources */,
 				EFF20CA724E24E3F8664C9A4 /* Pretendard-Medium.ttf in Resources */,
@@ -412,7 +412,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9FEAD6812EDF118E00861100 /* Develop.xcconfig */;
+			baseConfigurationReference = 9FEAD6882EE0965E00861100 /* Develop.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -442,7 +442,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 689SW53SN9;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -522,7 +522,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				DEVELOPMENT_TEAM = 689SW53SN9;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
