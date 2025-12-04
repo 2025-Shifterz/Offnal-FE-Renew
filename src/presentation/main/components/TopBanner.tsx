@@ -47,10 +47,16 @@ const TopBanner = ({ schdule }: TopBannerProps) => {
             지금은 집중력이 떨어질 수 있어요.
           </GlobalText>
 
-          <GlobalText className="mb-[2px] text-surface-primary heading-s">{`가벼운 스트레칭과`}</GlobalText>
+          <GlobalText className="mb-[2px] text-surface-primary heading-s">
+            가벼운 스트레칭과
+          </GlobalText>
           <View className="flex-row">
-            <GlobalText className="mb-[2px] text-surface-primary heading-s">{`물 한잔`}</GlobalText>
-            <GlobalText className="text-surface-gray-subtle1 heading-s">{`을 추천드려요!`}</GlobalText>
+            <GlobalText className="mb-[2px] text-surface-primary heading-s">
+              물 한잔
+            </GlobalText>
+            <GlobalText className="text-surface-gray-subtle1 heading-s">
+              을 추천드려요!
+            </GlobalText>
           </View>
         </View>
         <View className=" ">

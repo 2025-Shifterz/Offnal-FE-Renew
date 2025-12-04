@@ -19,7 +19,15 @@ module.exports = {
     'react-native/no-unused-styles': 'warn',
     'react-native/no-inline-styles': 'off',
     'react-native/no-color-literals': 'off',
-    'react-native/no-raw-text': 'off',
+    'react-native/no-raw-text': [
+      'error', // 또는 "warn"
+      {
+        skip: ['GlobalText'],
+      },
+    ],
+
+    // eslint 적용되는지 시험용
+    //  'no-console': 'error',
   },
   settings: {
     react: {

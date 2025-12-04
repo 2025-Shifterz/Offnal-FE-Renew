@@ -23,8 +23,13 @@ import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { MainStackParamList } from '../../../navigation/types'
 
 const TodoScreen = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
   const sheetRef = useRef<BottomSheetMethods>(null)
   const changeTodoDateBottomSheetRef =
     useRef<ChangeTodoDateBottomSheetMethods>(null)
@@ -141,7 +146,13 @@ const TodoScreen = () => {
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
       <SafeAreaView className="flex-1">
-        <TopAppBar title="할 일" showBackButton={true} />
+        <TopAppBar
+          title="할 일"
+          showBackButton={true}
+          onPressBackButton={() => {
+            navigation.goBack()
+          }}
+        />
 
         <ScrollView>
           <DayBoxHeader
