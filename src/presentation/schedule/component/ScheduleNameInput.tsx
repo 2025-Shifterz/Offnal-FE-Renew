@@ -13,7 +13,7 @@ const ScheduleNameInput = ({
   return (
     <View className="mt-[20px] flex gap-[9px]">
       <Text className="text-text-subtle heading-xxxs">조직 이름</Text>
-      <View className="h-[48px] flex-row justify-between rounded-lg bg-white px-[16px] py-[14px]">
+      <View className="h-[48px] flex-row justify-between rounded-lg bg-white px-[16px]">
         <TextInput
           value={organizationName}
           onChangeText={setOrganizationName}
