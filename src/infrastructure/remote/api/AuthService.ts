@@ -2,6 +2,7 @@ import { PostLoginWithAppleRequest } from '../request/PostLoginWithAppleRequest'
 import { PostLoginWithAppleResponse } from '../response/PostLoginWithAppleResponse'
 import { PostRefreshTokenResponse } from '../response/PostRefreshTokenResponse'
 import api from './axiosInstance'
+import { noInterceptorApi } from './noInterceptorAxiosInstance'
 
 export class AuthService {
   getLoginUrl = async () => {
@@ -30,20 +31,38 @@ export class AuthService {
     }
   }
 
-  tokenReissue = async (refreshToken: string) => {
+  // private
+  private tokenReissueHelper = async (
+    axiosInstance: typeof api,
+    refreshToken: string,
+    instanceName: string
+  ): Promise<{ accessToken: string; refreshToken: string }> => {
     try {
-      console.log('refreshToken:', refreshToken)
-
-      const response = await api.post<PostRefreshTokenResponse>(
-        '/tokens/reissue',
-        { refreshToken }
-      )
-      console.log('/tokens/reissue 응답:', response)
+      const response = await axiosInstance.post('/tokens/reissue', {
+        refreshToken,
+      })
+      console.log(`/tokens/reissue (${instanceName}) 응답:`, response.data)
       return response.data.data
-    } catch (error) {
-      // console.error('/tokens/reissue API 요청 실패:', error)
+    } catch (error: any) {
+      console.error(`/tokens/reissue (${instanceName}) API 요청 실패:`, error)
+      console.log(
+        `/tokens/reissue (${instanceName}) 응답:`,
+        error.response?.data
+      )
       throw error
     }
+  }
+
+  tokenReissue = async (refreshToken: string) => {
+    return this.tokenReissueHelper(api, refreshToken, 'with interceptor')
+  }
+
+  tokenReissueWithNoInterceptor = async (refreshToken: string) => {
+    return this.tokenReissueHelper(
+      noInterceptorApi,
+      refreshToken,
+      'no interceptor'
+    )
   }
 
   tokenLogOut = async () => {

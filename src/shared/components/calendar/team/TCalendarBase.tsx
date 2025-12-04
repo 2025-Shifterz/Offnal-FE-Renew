@@ -165,7 +165,7 @@ const TCalendarBase = ({
             <Text style={styles.groupText}>3조</Text>
             <Text style={styles.groupText}>4조</Text>
           </View>
-          <View className="flex-row flex-wrap" style={{ flex: 1 }}>
+          <View className="flex-row" style={{ flex: 1 }}>
             {weekDays}
           </View>
         </View>
@@ -210,6 +210,7 @@ export default TCalendarBase
 const styles = StyleSheet.create({
   dayBox: {
     justifyContent: 'center',
+    minHeight: 1,
     width: `${100 / 7}%`,
   },
   groupText: {
