@@ -84,7 +84,8 @@ const TCalendarBase = ({
             >
               <View className="flex items-center gap-[3px]">
                 <View
-                  className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max ${
+                  style={{ overflow: 'hidden' }}
+                  className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max  ${
                     isSelected
                       ? 'bg-border-primary'
                       : isToday
