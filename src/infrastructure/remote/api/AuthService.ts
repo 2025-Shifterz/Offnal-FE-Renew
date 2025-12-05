@@ -23,10 +23,8 @@ export class AuthService {
         '/login/apple',
         requestDto
       )
-      console.log('/login/apple 응답:', response)
       return response.data.data
     } catch (error) {
-      console.error('/login/apple API 요청 실패:', error)
       throw error
     }
   }

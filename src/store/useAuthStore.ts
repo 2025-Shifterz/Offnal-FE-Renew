@@ -48,14 +48,11 @@ export const useAuthStore = create<AuthState>()(
       },
 
       loginWithApple: async () => {
-        console.log('loginWithApple started')
         try {
           const appleAuthRequestResponse = await appleAuth.performRequest({
             requestedOperation: appleAuth.Operation.LOGIN,
             requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
           })
-
-          console.log('appleAuthRequestResponse:', appleAuthRequestResponse)
 
           const { identityToken, authorizationCode, user, email, fullName } =
             appleAuthRequestResponse
@@ -64,7 +61,6 @@ export const useAuthStore = create<AuthState>()(
             throw new Error('Apple Identity Token is missing')
           }
 
-          console.log('Calling authService.loginWithApple...')
           const res = await authService.loginWithApple({
             identityToken,
             authorizationCode: authorizationCode ?? '',
@@ -75,7 +71,6 @@ export const useAuthStore = create<AuthState>()(
               familyName: fullName?.familyName ?? '',
             },
           })
-          console.log('authService.loginWithApple response:', res)
 
           const { setUser } = useUserStore.getState()
           setUser({
@@ -92,7 +87,6 @@ export const useAuthStore = create<AuthState>()(
 
           return res.newMember
         } catch (error) {
-          console.error('Apple Login Failed:', error)
           throw error
         }
       },
