@@ -1,19 +1,38 @@
 import { useState } from 'react'
 import Swiper from 'react-native-swiper'
-import { View, Dimensions, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import {
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from 'react-native'
+import {
+  useNavigation,
+  CompositeNavigationProp,
+} from '@react-navigation/native'
 import KaKaoLoginBtn from '../components/KakaoLoginBtn'
 import { onboardingList } from '../constants/OnboardingList'
-import { loginNavigation } from '../../../navigation/types'
+import { loginNavigation, rootNavigation } from '../../../navigation/types'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
+import appleAuth, {
+  AppleButton,
+} from '@invertase/react-native-apple-authentication'
+import { useAuthStore } from '../../../store/useAuthStore'
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
+const { width: SCREEN_WIDTH } = Dimensions.get('window')
+
+type LoginScreenNavigationProp = CompositeNavigationProp<
+  loginNavigation,
+  rootNavigation
+>
 
 const LoginScreen = () => {
-  const navigation = useNavigation<loginNavigation>()
+  const navigation = useNavigation<LoginScreenNavigationProp>()
   const [slideTime] = useState(4)
+  const { loginWithApple } = useAuthStore.getState()
 
   return (
     <SafeAreaView className="w-full flex-1 items-center bg-background-white">
@@ -66,15 +85,43 @@ const LoginScreen = () => {
 
       <View className="mt-[15px] flex-col items-center">
         <KaKaoLoginBtn />
-        {/* <AppleButton
-          buttonStyle={AppleButton.Style.BLACK}
-          buttonType={AppleButton.Type.SIGN_IN}
-          style={{
-            width: 160,
-            height: 45,
-          }}
-          onPress={() => onAppleButtonPress()}
-        /> */}
+
+        {Platform.OS === 'ios' && (
+          <AppleButton
+            buttonStyle={AppleButton.Style.BLACK}
+            buttonType={AppleButton.Type.SIGN_IN}
+            style={{ width: 300, height: 45 }}
+            onPress={async () => {
+              try {
+                const isNewMember = await loginWithApple()
+
+                if (isNewMember) {
+                  navigation.getParent<rootNavigation>()?.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: 'OnboardingSchedules',
+                        params: { screen: 'SelectScheduleReg' },
+                      },
+                    ],
+                  })
+                } else {
+                  navigation.getParent<rootNavigation>()?.reset({
+                    index: 0,
+                    routes: [{ name: 'Tabs' }],
+                  })
+                }
+              } catch (error: any) {
+                if (error?.code === appleAuth.Error.CANCELED) return
+
+                Alert.alert(
+                  '로그인 실패',
+                  '로그인에 실패했습니다. 다시 시도해주세요.'
+                )
+              }
+            }}
+          />
+        )}
 
         <View className="mt-[16px] flex-row justify-center">
           <TouchableOpacity

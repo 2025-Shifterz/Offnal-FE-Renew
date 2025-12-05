@@ -308,7 +308,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = 689SW53SN9;
+				DEVELOPMENT_TEAM = 8CG24965GX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Offnal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Offnal;
@@ -325,7 +325,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal;
 				PRODUCT_NAME = Offnal;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -348,7 +348,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
-				DEVELOPMENT_TEAM = 689SW53SN9;
+				DEVELOPMENT_TEAM = 8CG24965GX;
 				INFOPLIST_FILE = Offnal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Offnal;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
@@ -364,7 +364,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal.yujin;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shifterz.offnal;
 				PRODUCT_NAME = Offnal;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -1,3 +1,6 @@
+import { PostLoginWithAppleRequest } from '../request/PostLoginWithAppleRequest'
+import { PostLoginWithAppleResponse } from '../response/PostLoginWithAppleResponse'
+import { PostRefreshTokenResponse } from '../response/PostRefreshTokenResponse'
 import api from './axiosInstance'
 import { noInterceptorApi } from './noInterceptorAxiosInstance'
 
@@ -8,6 +11,21 @@ export class AuthService {
       return response.data.location
     } catch (error) {
       console.error('login/page API 요청 실패:', error)
+    }
+  }
+
+  loginWithApple = async (requestDto: PostLoginWithAppleRequest) => {
+    console.log('loginWithApple requestDto:', requestDto)
+    console.log('loginWithApple requestDto fullName:', requestDto.fullName)
+
+    try {
+      const response = await api.post<PostLoginWithAppleResponse>(
+        '/login/apple',
+        requestDto
+      )
+      return response.data.data
+    } catch (error) {
+      throw error
     }
   }
 

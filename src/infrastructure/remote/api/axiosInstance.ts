@@ -76,8 +76,14 @@ api.interceptors.response.use(
       isRefreshing = true
       try {
         const refreshToken = useAuthStore.getState().refreshToken
-        const data = await authService.tokenReissue(refreshToken!)
-        console.log('/tokens/reissue 응답:', data)
+
+        if (!refreshToken) {
+          isRefreshing = false
+          return Promise.reject(error)
+        }
+
+        const data = await authService.tokenReissue(refreshToken)
+
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
           data
 
@@ -95,7 +101,7 @@ api.interceptors.response.use(
         // 재발급 시도했으나 실패한 경우
         // 리프레시 토큰도 만료된 경우 로그아웃 처리
         processQueue(err, null)
-        console.log('토큰 재발급 실패:', err)
+        // console.log('토큰 재발급 실패:', err)
         useAuthStore.getState().logout()
 
         return Promise.reject(err)
