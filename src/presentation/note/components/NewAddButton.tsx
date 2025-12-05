@@ -16,7 +16,7 @@ const NewAddButton = ({ handleAdd, text }: NewAddButtonProps) => {
     >
       <PlusIcon />
       <GlobalText className="items-center text-text-inverse-static body-m">
-        새 ${text} 추가하기
+        {`새 ${text} 추가하기`}
       </GlobalText>
     </TouchableOpacity>
   )
