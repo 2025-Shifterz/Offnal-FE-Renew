@@ -57,6 +57,7 @@ const CalendarBasic = ({
         >
           <View className="flex gap-[3px]">
             <View
+              style={{ overflow: 'hidden' }}
               className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max ${
                 isSelected
                   ? 'bg-border-primary'
