@@ -31,7 +31,7 @@ const ChangeTodoDateBottomSheet = forwardRef<
 >(({ date, onChangeDate }, ref) => {
   const bottomSheetRef = useRef<BottomSheet>(null)
   const [calendarMonth, setCalendarMonth] = useState(dayjs()) // Renamed currentDate to calendarMonth for clarity
-  const calendarData = useCalendarStore(state => state.calendarData)
+  const calendarData = useState({})[0] // 빈 객체로 초기화
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
 
