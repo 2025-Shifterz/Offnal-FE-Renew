@@ -77,13 +77,13 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
             <View className="h-[46px] w-full flex-row items-center gap-[10px]">
               <TouchableOpacity
                 onPress={handleCancel}
-                className="rounded-radius-m2 h-full flex-[3] items-center justify-center bg-surface-gray-subtle1"
+                className="h-full flex-[3] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
               >
                 <Text className="text-text-basic body-m">취소</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSave} // 저장 버튼에 handleSave 연결
-                className="rounded-radius-m2 h-full flex-[7] items-center justify-center bg-surface-inverse"
+                className="h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse"
               >
                 <Text className="text-text-bolder-inverse body-m">저장</Text>
               </TouchableOpacity>
