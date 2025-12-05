@@ -33,9 +33,10 @@ const RecommnedMealSection = ({ meals }: RecommendMealSectionProps) => {
           onPressIcon={toggleTooltip}
         />
         {showTooltip && (
-          <TooltipBubble style={{ position: 'relative', bottom: 30, left: 71 }}>
-            식사 추천은 근무 형태에 맞춤으로 제공돼요.
-          </TooltipBubble>
+          <TooltipBubble
+            style={{ position: 'relative', bottom: 30, left: 71 }}
+            children="식사 추천은 근무 형태에 맞춤으로 제공돼요."
+          />
         )}
       </View>
 

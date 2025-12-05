@@ -10,7 +10,7 @@ const NewCalButton = ({ onCreateSchedule }: NewCalButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onCreateSchedule}
-      className="h-[40px] flex-row items-center justify-center gap-[5px] rounded-radius-m1 bg-surface-primary px-[10px] py-[8px]"
+      className="h-[40px] flex-row items-center gap-[5px] rounded-radius-s bg-surface-primary px-number-6"
     >
       <PlusIcon />
       <Text className="items-center text-text-inverse-static body-m">

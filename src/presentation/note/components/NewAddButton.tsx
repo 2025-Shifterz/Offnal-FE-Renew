@@ -12,10 +12,12 @@ const NewAddButton = ({ handleAdd, text }: NewAddButtonProps) => {
   return (
     <TouchableOpacity
       onPress={handleAdd}
-      className="rounded-radius-m1 h-[40px] flex-row items-center justify-center gap-[5px] bg-surface-primary px-[10px] py-[8px]"
+      className="h-[40px] flex-row items-center justify-center gap-[5px] rounded-radius-s bg-surface-primary px-[10px] py-[8px]"
     >
       <PlusIcon />
-      <GlobalText className="items-center text-text-inverse-static body-m">{`새 ${text} 추가하기`}</GlobalText>
+      <GlobalText className="items-center text-text-inverse-static body-m">
+        {`새 ${text} 추가하기`}
+      </GlobalText>
     </TouchableOpacity>
   )
 }

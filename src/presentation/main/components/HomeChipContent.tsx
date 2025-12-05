@@ -1,9 +1,9 @@
 import React from 'react'
 import { View } from 'react-native'
-// import DayWorkIcon from '../../../assets/icons/day-work-icon.svg'
-// import EveningWorkIcon from '../../../assets/icons/evening-work-icon.svg' // 추가 필요
+import DayWorkIcon from '../../../assets/icons/ic_night-work.svg' // 추가 필요
+import EveningWorkIcon from '../../../assets/icons/ic_night-work.svg' // 추가 필요
 import NightWorkIcon from '../../../assets/icons/ic_night-work.svg'
-// import NoWorkIcon from '../../../assets/icons/no-work-icon.svg' // 추가 필요
+import NoWorkIcon from '../../../assets/icons/ic_night-work.svg' // 추가 필요
 
 import AlarmIcon from '../../../assets/icons/ic_home_alarm.svg'
 import { Text } from 'react-native'
@@ -22,15 +22,15 @@ const HomeChipContent = ({
   const WorkTypeIconComponent = () => {
     switch (workType) {
       case '주간':
-        return '<DayWorkIcon />'
+        return <DayWorkIcon />
       case '오후':
-        return '<EveningWorkIcon />'
+        return <EveningWorkIcon />
       case '야간':
         return <NightWorkIcon />
       case '휴무':
-        return '<NoWorkIcon />'
+        return <NoWorkIcon />
       default:
-        return '<NoWorkIcon />'
+        return <NoWorkIcon />
     }
   }
   return (
