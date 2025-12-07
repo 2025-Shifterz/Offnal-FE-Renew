@@ -25,7 +25,7 @@ jobs:
           cache: 'npm'
 
       - name: Install JS dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run ESLint
         continue-on-error: true
@@ -71,7 +71,7 @@ jobs:
           java-version: '17'
 
       - name: Install JS dependencies
-        run: npm ci
+        run: npm install
 
       - name: Create gradle.properties from Base64
         run: |
@@ -114,7 +114,7 @@ jobs:
             ${{ runner.os }}-pods-
 
       - name: Install JS dependencies
-        run: npm ci
+        run: npm install
 
       - name: Create .env from Base64
         run: |
