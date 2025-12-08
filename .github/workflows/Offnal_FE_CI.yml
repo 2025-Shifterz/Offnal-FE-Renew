@@ -5,36 +5,36 @@ name: Offnal FE CI (Develop)
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ['develop']
   pull_request:
-    branches: [ "develop" ]
+    branches: ['develop']
 
 jobs:
-  validate: 
+  validate:
     name: Lint & Test
     runs-on: ubuntu-latest
 
-    steps: 
-      - name: Checkout 
+    steps:
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: '24'
           cache: 'npm'
 
       - name: Install JS dependencies
-        run: npm ci 
+        run: npm install
 
       - name: Run ESLint
         continue-on-error: true
         run: npm run lint
 
-      - name: Upload ESLint Report 
+      - name: Upload ESLint Report
         uses: actions/upload-artifact@v4
         if: failure()
-        with: 
+        with:
           name: eslint-report
           path: eslint-report.html
 
@@ -49,18 +49,18 @@ jobs:
           name: test-report
           path: html-report/
 
-  build_android: 
+  build_android:
     name: Build Android
     needs: validate
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: '24'
           cache: 'npm'
 
@@ -71,7 +71,15 @@ jobs:
           java-version: '17'
 
       - name: Install JS dependencies
-        run: npm ci 
+        run: npm install
+
+      - name: Create gradle.properties from Base64
+        run: |
+          echo "${{ secrets.GRADLE_PROPERTIES_BASE_64 }}" | base64 --decode > android/gradle.properties
+
+      - name: Create .env from Base64
+        run: |
+          echo "${{ secrets.ENV_BASE_64 }}" | base64 --decode > .env
 
       - name: Build Offnal Android (Debug)
         run: cd android && ./gradlew assembleDebug
@@ -87,13 +95,13 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: '24'
-          cache: npm 
+          cache: npm
 
       - name: Set up Ruby (with cache)
         uses: ruby/setup-ruby@v1
-        with: 
+        with:
           ruby-version: '3.4.4'
           bundler-cache: true
 
@@ -106,17 +114,20 @@ jobs:
             ${{ runner.os }}-pods-
 
       - name: Install JS dependencies
-        run: npm ci
-      
+        run: npm install
+
+      - name: Create .env from Base64
+        run: |
+          echo "${{ secrets.ENV_BASE_64 }}" | base64 --decode > .env
+
       - name: Install iOS dependencies (with CocoaPods)
         run: cd ios && bundle exec pod install
 
       - name: Build Offnal iOS (Debug)
         run: |
           cd ios
-          xcodebuild -workspace ShifterzNew.xcworkspace \
-                     -scheme ShifterzNew \
+          xcodebuild -workspace Offnal.xcworkspace \
+                     -scheme Offnal \
                      -sdk iphonesimulator \
                      -configuration Debug \
                      clean build
-
