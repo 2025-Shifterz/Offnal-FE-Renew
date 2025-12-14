@@ -100,7 +100,7 @@ export type OnboardingOCRStackParamList = {
   }
   SelectPhotoOCR: {
     selectedScheduleScopeType: ScheduleScopeType
-    calendarName: string
+    organizationName: string
     workGroup: string
     workTimes: {
       D: { startTime: string; endTime: string }
@@ -113,7 +113,7 @@ export type OnboardingOCRStackParamList = {
   }
   EditScheduleOCR: {
     selectedScheduleScopeType: ScheduleScopeType
-    calendarName: string
+    organizationName: string
     workGroup: string
     workTimes: {
       D: { startTime: string; endTime: string }

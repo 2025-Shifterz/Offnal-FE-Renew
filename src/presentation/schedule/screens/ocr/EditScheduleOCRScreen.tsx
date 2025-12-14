@@ -1,22 +1,26 @@
-import { View, Text, Alert, ScrollView } from 'react-native'
-import { useRef } from 'react'
+import { View, Text, ScrollView, InteractionManager } from 'react-native'
+import { useEffect, useRef, useState } from 'react'
 import {
   onboardingOCRNavigation,
   OnboardingOCRStackParamList,
 } from '../../../../navigation/types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { toShiftType } from '../../../../data/mappers/ShiftTypeMapper'
-
-import { MonthlySchedule, NewCalendar } from '../../../../data/model/Calendar'
-import { convertOCRResultToPersonalSchduleData } from '../../mapper/calendarDataMapper'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import {
+  convertOCRResultToPersonalSchduleData,
+  convertOCRResultToTeamScheduleData,
+} from '../../mapper/calendarDataMapper'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CalendarEditor, {
   CalendarEditorRef,
 } from '../../../../shared/components/calendar/personal/CalendarEditor'
-import TCalendarEditor from '../../../../shared/components/calendar/team/TCalendarEditor'
-import { WorkType } from '../../../../shared/types/Calendar'
+import TCalendarEditor, {
+  TCalendarEditorRef,
+} from '../../../../shared/components/calendar/team/TCalendarEditor'
+import dayjs from 'dayjs'
+import CalendarEditorHeader from '../../../../shared/components/calendar/header/CalendarEditorHeader'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingOCRStackParamList,
@@ -28,7 +32,7 @@ const EditScheduleOCRScreen = () => {
   const navigation = useNavigation<onboardingOCRNavigation>()
   const {
     selectedScheduleScopeType,
-    calendarName,
+    organizationName,
     workGroup,
     workTimes,
     ocrResult,
@@ -36,125 +40,127 @@ const EditScheduleOCRScreen = () => {
     month,
   } = route.params
 
-  const myWorkSheet = (() => {
-    if (
-      selectedScheduleScopeType === 'MY' &&
-      ocrResult &&
-      Array.isArray(ocrResult)
-    ) {
-      const foundSheet = ocrResult.find(([workGroupNumber]) => {
-        const cleanWorkGroup = workGroup.replace('조', '')
-        return workGroupNumber === cleanWorkGroup
-      })
-      return foundSheet
-    }
-    return undefined
-  })()
+  const [currentDate, setCurrentDate] = useState(dayjs)
+  const calendarEditorRef = useRef<CalendarEditorRef>(null)
+  const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
+
+  // Stores
+  const setNewCalendarData = useCalendarStore(state => state.setNewCalendarData)
+  const setTeamCalendarData = useTeamCalendarStore(
+    state => state.setTeamCalendarData
+  )
+
+  const isProcessedRef = useRef(false)
+
+  // OCR 데이터를 스토어에 주입
+  useEffect(() => {
+    if (isProcessedRef.current) return
+
+    const task = InteractionManager.runAfterInteractions(() => {
+      isProcessedRef.current = true
+
+      if (selectedScheduleScopeType === 'MY') {
+        const scheduleData = convertOCRResultToPersonalSchduleData(
+          year,
+          month,
+          workGroup,
+          ocrResult as [string, Record<string, string>][]
+        )
+
+        const calendarRecord: Record<
+          string,
+          { workTypeName: string; startTime?: string; endTime?: string }
+        > = {}
+
+        scheduleData.forEach((workType, dateString) => {
+          calendarRecord[dateString] = { workTypeName: workType }
+        })
+
+        setNewCalendarData(calendarRecord)
+      } else if (selectedScheduleScopeType === 'ALL') {
+        const teamScheduleData = convertOCRResultToTeamScheduleData(
+          year,
+          month,
+          ocrResult as [string, Record<string, string>][]
+        )
+
+        const formattedData = teamScheduleData.map(
+          ({ team, date, workType }) => ({
+            team,
+            date,
+            workTypeName: workType,
+            startTime: '',
+            endTime: '',
+          })
+        )
+
+        setTeamCalendarData(formattedData)
+      }
+    })
+
+    return () => task.cancel()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    const initialDate = dayjs()
+      .year(year)
+      .month(month - 1)
+      .date(1)
+    setCurrentDate(initialDate)
+  }, [year, month])
 
   const handleNext = () => {
-    try {
-      const shiftTimesMap = new Map<
-        WorkType,
-        { startTime: string; endTime: string }
-      >()
-
-      Object.entries(workTimes).forEach(([type, time]) => {
-        const shiftType = toShiftType(type)
-        if (shiftType) {
-          shiftTimesMap.set(shiftType, time)
-        }
-      })
-
-      const monthlySchedules: MonthlySchedule[] = []
-
-      if (ocrResult && Array.isArray(ocrResult)) {
-        if (selectedScheduleScopeType === 'MY') {
-          if (myWorkSheet && myWorkSheet.length === 2) {
-            const [, shiftsByDay]: [string, Record<string, string>] =
-              myWorkSheet
-            const shiftsMap = new Map<number, ShiftType>()
-
-            Object.entries(shiftsByDay).forEach(([dayStr, ocrShiftType]) => {
-              const day = parseInt(dayStr, 10)
-              const shift = toShiftType(ocrShiftType)
-              if (!isNaN(day) && shift) {
-                shiftsMap.set(day, shift)
-              }
-            })
-
-            monthlySchedules.push({
-              year,
-              month,
-              shifts: shiftsMap,
-            })
-          } else {
-            Alert.alert(
-              '오류',
-              `선택된 조 (${workGroup})의 근무표 데이터를 OCR 결과에서 찾을 수 없습니다.`
-            )
-            return
-          }
-        }
-
-        if (selectedScheduleScopeType === 'ALL') {
-          // 전체 근무조인 경우 로직 추가 예정
-        }
+    if (selectedScheduleScopeType === 'ALL') {
+      if (tCalendarEditorRef.current) {
+        tCalendarEditorRef.current.postData()
       }
-
-      const newCalendar: NewCalendar = {
-        name: calendarName,
-        group: workGroup,
-        shiftTimes: shiftTimesMap,
-        schedules: monthlySchedules,
+    } else {
+      if (calendarEditorRef.current) {
+        calendarEditorRef.current.postData()
       }
-
-      calendarRepository.createWorkCalendar(newCalendar)
-
-      navigation.navigate('CompleteScheduleOCR')
-    } catch (error) {
-      Alert.alert(
-        '오류',
-        '근무표 생성 중 오류가 발생했습니다. 다시 시도해주세요.'
-      )
     }
+    navigation.navigate('CompleteScheduleOCR')
   }
-
-  const calendarEditorRef = useRef<CalendarEditorRef>(null)
-  const scheduleData = convertOCRResultToPersonalSchduleData(
-    year,
-    month,
-    workGroup,
-    ocrResult
-  )
 
   return (
     <SafeAreaView
+      className="flex-1 bg-background-gray-subtle1 px-[16px]"
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-number-8"
     >
-      <ScrollView>
+      <ScrollView
+        className="mb-[100px] w-full flex-1"
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
         <Text className="mt-[5px] text-text-subtle heading-m">
           AI 근무표 인식이 완료되었어요
         </Text>
         <Text className="pt-number-7 text-text-subtle label-xs">
           정확히 인식되지 않은 부분을 수정해 주세요
         </Text>
-        <View className="mt-[20px]">
+        <View className="mt-[20px] rounded-radius-xl bg-white">
+          <CalendarEditorHeader
+            currentDate={currentDate}
+            onPrevMonth={() =>
+              setCurrentDate(prev => prev.subtract(1, 'month'))
+            }
+            onNextMonth={() => setCurrentDate(prev => prev.add(1, 'month'))}
+          />
           {selectedScheduleScopeType === 'ALL' ? (
             <TCalendarEditor
-              calendarName={calendarName}
+              currentDate={currentDate}
+              ref={tCalendarEditorRef}
+              organizationName={organizationName}
               workGroup={workGroup}
               workTimes={workTimes}
             />
           ) : (
             <CalendarEditor
               ref={calendarEditorRef}
-              calendarName={calendarName}
+              currentDate={currentDate}
+              organizationName={organizationName}
               workGroup={workGroup}
               workTimes={workTimes}
-              year={year}
-              month={month}
-              scheduleData={scheduleData}
             />
           )}
         </View>
