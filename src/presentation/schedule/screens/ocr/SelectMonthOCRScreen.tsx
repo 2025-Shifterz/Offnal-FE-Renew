@@ -19,7 +19,7 @@ const SelectMonthOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
   const navigation = useNavigation<onboardingOCRNavigation>()
 
-  const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
+  const { selectedScheduleScopeType, organizationName, workGroup, workTimes } =
     route.params
   console.log('SelectMonthWithOCRScreen params:', route.params)
 
@@ -38,7 +38,7 @@ const SelectMonthOCRScreen = () => {
         year: date.year,
         month: date.month,
         selectedScheduleScopeType,
-        calendarName,
+        organizationName,
         workGroup,
         workTimes,
       })

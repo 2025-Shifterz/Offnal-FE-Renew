@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   onboardingOCRNavigation,
@@ -11,9 +10,13 @@ import { useWorkTime } from '../../../../shared/context/WorkTimeContext'
 import CalendarEditor, {
   CalendarEditorRef,
 } from '../../../../shared/components/calendar/personal/CalendarEditor'
+import TCalendarEditor, {
+  TCalendarEditorRef,
+} from '../../../../shared/components/calendar/team/TCalendarEditor'
 import TitleMessage from '../../../../shared/components/TitleMessage'
-import TCalendarEditor from '../../../../shared/components/calendar/team/TCalendarEditor'
 import BottomButton from '../../../../shared/components/BottomButton'
+import dayjs from 'dayjs'
+import CalendarEditorHeader from '../../../../shared/components/calendar/header/CalendarEditorHeader'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingOCRStackParamList,
@@ -24,12 +27,9 @@ const InputCalendarTypeOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
   const { selectedScheduleScopeType, calendarName, workGroup, workTimes } =
     route.params
-  console.log(selectedScheduleScopeType)
-  console.log(calendarName)
-  console.log(workGroup)
-  console.log(workTimes)
 
   const { setWorkTimes } = useWorkTime()
+  const [currentDate, setCurrentDate] = useState(dayjs)
 
   useEffect(() => {
     if (workTimes) {
@@ -41,9 +41,17 @@ const InputCalendarTypeOCRScreen = () => {
 
   // 자식의 postData 호출
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
+  const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
+
   const handleNext = () => {
-    if (calendarEditorRef.current) {
-      calendarEditorRef.current.postData() // 근무표 저장 요청
+    if (selectedScheduleScopeType === 'ALL') {
+      if (tCalendarEditorRef.current) {
+        tCalendarEditorRef.current.postData() // 팀 근무표 저장 요청
+      }
+    } else {
+      if (calendarEditorRef.current) {
+        calendarEditorRef.current.postData() // 근무표 저장 요청
+      }
     }
     navigation.navigate('CompleteScheduleOCR', { selectedScheduleScopeType })
   }
@@ -58,17 +66,27 @@ const InputCalendarTypeOCRScreen = () => {
           title="달력에 근무 형태를 입력해주세요."
           subTitle="각 날짜에 해당하는 근무 유형을 선택해주세요."
         />
-        <View className="mt-[20px]">
+        <View className="mt-[20px] rounded-radius-xl bg-white">
+          <CalendarEditorHeader
+            currentDate={currentDate}
+            onPrevMonth={() =>
+              setCurrentDate(prev => prev.subtract(1, 'month'))
+            }
+            onNextMonth={() => setCurrentDate(prev => prev.add(1, 'month'))}
+          />
           {selectedScheduleScopeType === 'ALL' ? (
             <TCalendarEditor
-              calendarName={calendarName}
+              currentDate={currentDate}
+              ref={tCalendarEditorRef}
+              organizationName={calendarName}
               workGroup={workGroup}
               workTimes={workTimes}
             />
           ) : (
             <CalendarEditor
+              currentDate={currentDate}
               ref={calendarEditorRef}
-              calendarName={calendarName}
+              organizationName={calendarName}
               workGroup={workGroup}
               workTimes={workTimes}
             />

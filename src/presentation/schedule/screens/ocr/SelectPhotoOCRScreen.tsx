@@ -43,7 +43,7 @@ const SelectPhotoOCRScreen = () => {
 
   const {
     selectedScheduleScopeType,
-    calendarName,
+    organizationName,
     workGroup,
     workTimes,
     year,
@@ -195,7 +195,7 @@ const SelectPhotoOCRScreen = () => {
 
       navigation.navigate('EditScheduleOCR', {
         selectedScheduleScopeType,
-        calendarName,
+        organizationName,
         workGroup,
         workTimes,
         year,
