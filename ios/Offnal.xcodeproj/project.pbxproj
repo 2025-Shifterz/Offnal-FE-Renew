@@ -308,7 +308,7 @@
 				CODE_SIGN_ENTITLEMENTS = Offnal/Offnal.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 8CG24965GX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Offnal/Info.plist;
@@ -348,7 +348,7 @@
 				CODE_SIGN_ENTITLEMENTS = Offnal/Offnal.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 8CG24965GX;
 				INFOPLIST_FILE = Offnal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Offnal;
