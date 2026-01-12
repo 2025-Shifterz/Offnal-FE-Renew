@@ -241,9 +241,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Offnal/Pods-Offnal-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Offnal/Pods-Offnal-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -258,9 +262,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Offnal/Pods-Offnal-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Offnal/Pods-Offnal-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -307,6 +315,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7801D64AF105AE7727B36579 /* Pods-Offnal.debug.xcconfig */;
 			buildSettings = {
+				APP_DISPLAY_NAME = "[Dev] Offnal";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Offnal/Offnal.entitlements;
@@ -347,6 +356,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B1C611A04AE58A9662C60D1D /* Pods-Offnal.release.xcconfig */;
 			buildSettings = {
+				APP_DISPLAY_NAME = Offnal;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Offnal/Offnal.entitlements;
