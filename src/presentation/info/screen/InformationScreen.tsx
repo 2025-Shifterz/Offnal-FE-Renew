@@ -6,7 +6,7 @@ import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
 import { useCallback, useMemo } from 'react'
-import { infoNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import {
   CommonActions,
   useFocusEffect,
@@ -17,7 +17,7 @@ import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
 import { useUserStore } from '../../../store/useUserStore'
 
 const InformationScreen = () => {
-  const navigation = useNavigation<infoNavigation>()
+  const navigation = useNavigation<rootNavigation>()
 
   const user = useUserStore(state => state.user)
   const fetchProfile = useUserStore(state => state.fetchProfile)

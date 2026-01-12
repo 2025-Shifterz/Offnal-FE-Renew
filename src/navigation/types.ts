@@ -28,14 +28,26 @@ export type RootStackParamList = {
   OnboardingSchedulesOCR:
     | NavigatorScreenParams<OnboardingOCRStackParamList>
     | undefined
+
+  // Migrate from MainNavigator.tsx
+  AutoAlarm: undefined
+  Todo: undefined
+  Memo: undefined
+  AddMemo: { memo?: Memo; date?: string } | undefined
+
+  // Migrate from MyInforNavigator.tsx
+  EditProfileScreen: undefined
+  FeedbackScreen: undefined
+  TermsWebViewScreen: { title: string; url: string }
+  WithdrawBeforeScreen: undefined
+  WithdrawScreen: undefined
 }
 
 // 탭 네비게이터
 export type TabParamList = {
-  Home: NavigatorScreenParams<MainStackParamList>
-  Calendar: NavigatorScreenParams<CalendarScreenStackParamList>
-  MyInfo: undefined
-  AutoAlarm: NavigatorScreenParams<AutoAlarmScreenStackParamList>
+  Home: undefined
+  Calendar: undefined
+  MyInformation: undefined
 }
 
 // main 네비게이터 - "Home"
@@ -156,15 +168,3 @@ export type AutoAlarmScreenStackParamList = {
   CreateAlarm: undefined
   EditAutoAlarm: { alarmId: string }
 }
-
-// Infomation Navigator
-export type InfoStackParamList = {
-  InformationScreen: undefined
-  EditProfileScreen: undefined
-  TermsWebViewScreen: { title: string; url: string }
-  FeedbackScreen: undefined
-  WithdrawBeforeScreen: undefined
-  WithdrawScreen: undefined
-}
-
-export type infoNavigation = NativeStackNavigationProp<InfoStackParamList>

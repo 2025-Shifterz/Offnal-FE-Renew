@@ -8,9 +8,27 @@ import LoginNavigator from './LoginNavigator'
 import OnBoardingScheduleOCRNavigator from './OnbordingScheduleOCRNavigator'
 import { RootStackParamList } from './types'
 
+// Migrate from MainNavigator.tsx
+import TodoScreen from '../presentation/note/screens/TodoScreen'
+import MemoScreen from '../presentation/note/screens/MemoScreen'
+import AutoAlarm from '../presentation/alarm/screen/AutoAlarmScreen'
+import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
+
+// Migrate from CalendarNavigator.tsx
+import CalendarScreen from '../presentation/calendar/screen/CalendarScreen'
+import CalendarEditScreen from '../presentation/calenderEditMode/screen/CalendarEditScreen'
+import TCalendarEditScreen from '../presentation/calenderEditMode/screen/TCalendarEditScreen'
+import CalendarInfoEditScreen from '../presentation/calendarInfoEdit/screen/CalendarInfoEditScreen'
+
+// Migrate from MyInfoNavigator.tsx
+import EditProfileScreen from '../presentation/info/screen/EditProfileScreen'
+import FeedBackScreen from '../presentation/info/screen/FeedBackScreen'
+import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
+import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
+import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
+
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
-// 주석 복구해야함
 const RootNavigator = () => {
   return (
     <NavigationContainer>
@@ -26,6 +44,29 @@ const RootNavigator = () => {
           name="OnboardingSchedulesOCR"
           component={OnBoardingScheduleOCRNavigator}
         />
+        {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
+        <RootStack.Screen name="AutoAlarm" component={AutoAlarm} />
+        <RootStack.Screen name="Todo" component={TodoScreen} />
+        <RootStack.Screen name="Memo" component={MemoScreen} />
+        <RootStack.Screen name="AddMemo" component={AddMemoScreen} />
+
+        {/* Migrate from CalendarNavigator.tsx - Flattened for Tab Bar Hiding */}
+
+        {/* Migrate from MyInfoNavigator.tsx - Flattened for Tab Bar Hiding */}
+        <RootStack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
+        />
+        <RootStack.Screen name="FeedbackScreen" component={FeedBackScreen} />
+        <RootStack.Screen
+          name="TermsWebViewScreen"
+          component={TermsWebViewScreen}
+        />
+        <RootStack.Screen
+          name="WithdrawBeforeScreen"
+          component={WithdrawBeforeScreen}
+        />
+        <RootStack.Screen name="WithdrawScreen" component={WithdrawScreen} />
       </RootStack.Navigator>
     </NavigationContainer>
   )

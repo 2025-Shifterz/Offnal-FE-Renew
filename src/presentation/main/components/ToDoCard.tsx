@@ -31,14 +31,7 @@ const Container = ({ todos }: TodoCardProps) => {
         <TitleSection.WithAddableBtn
           title="할 일"
           btnContent="할 일 추가"
-          onPressIcon={() =>
-            navigation.navigate('Tabs', {
-              screen: 'Home',
-              params: {
-                screen: 'Todo',
-              },
-            })
-          }
+          onPressIcon={() => navigation.navigate('Todo')}
         />
       </View>
       {hasTodos ? (
