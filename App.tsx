@@ -14,8 +14,12 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
 import { enableScreens } from 'react-native-screens'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Config from 'react-native-config'
 
 enableScreens()
+
+// Dev, Prod 환경에 따라 다른 API_URL이 설정되는지 확인
+console.log('🔎 API_URL:', Config.API_URL)
 
 function App() {
   const [isReady, setIsReady] = useState(false)
