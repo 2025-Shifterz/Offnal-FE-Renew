@@ -15,7 +15,7 @@ import TCalendarInteractive from '../../../shared/components/calendar/team/TCale
 import TEditBottomSheet from '../components/TEditBottomSheet'
 import { toUpdateTeamShiftRecord } from '../mapper/UpdateTeamShiftMapper'
 
-type RootNavigationRouteProp = RouteProp<RootStackParamList, 'EditCalendar'>
+type RootNavigationRouteProp = RouteProp<RootStackParamList, 'TeamEditCalendar'>
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()

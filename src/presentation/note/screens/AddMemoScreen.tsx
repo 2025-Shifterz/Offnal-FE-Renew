@@ -11,15 +11,13 @@ import TopAppBar from '../../../shared/components/TopAppBar'
 import GlobalText from '../../../shared/components/GlobalText'
 import { useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MainStackParamList } from '../../../navigation/types'
+import { rootNavigation, RootStackParamList } from '../../../navigation/types'
 import dayjs from 'dayjs'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 const AddMemoScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
-  const route = useRoute<RouteProp<MainStackParamList, 'AddMemo'>>()
+  const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'AddMemo'>>()
   const memoToUpdate = route.params?.memo
   const dateString = route.params?.date
   const date = dateString ? dayjs(dateString) : dayjs()

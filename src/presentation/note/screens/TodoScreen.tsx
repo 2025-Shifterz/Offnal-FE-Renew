@@ -24,12 +24,10 @@ import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
 import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MainStackParamList } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 
 const TodoScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const navigation = useNavigation<rootNavigation>()
   const sheetRef = useRef<BottomSheetMethods>(null)
   const changeTodoDateBottomSheetRef =
     useRef<ChangeTodoDateBottomSheetMethods>(null)

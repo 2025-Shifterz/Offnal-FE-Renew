@@ -9,7 +9,6 @@ export type onboardingNavigation =
 export type onboardingOCRNavigation =
   NativeStackNavigationProp<OnboardingOCRStackParamList>
 export type loginNavigation = NativeStackNavigationProp<LoginStackParamList>
-export type mainNavigation = NativeStackNavigationProp<MainStackParamList>
 export type tabNavigation = NativeStackNavigationProp<TabParamList>
 export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
 export type autoAlarmNavigation =
@@ -63,15 +62,6 @@ export type TabParamList = {
   Home: undefined
   Calendar: undefined
   MyInformation: undefined
-}
-
-// main 네비게이터 - "Home"
-export type MainStackParamList = {
-  MainScreen: undefined
-  AutoAlarm: undefined
-  Todo: undefined
-  Memo: undefined
-  AddMemo: { memo?: Memo; date?: string } | undefined
 }
 
 // 로그인

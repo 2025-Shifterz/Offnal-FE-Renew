@@ -3,13 +3,13 @@ import TopAppBar from '../../../shared/components/TopAppBar'
 import { ActivityIndicator, Alert, View } from 'react-native'
 import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'
-import { infoNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import { useUserStore } from '../../../store/useUserStore'
 
 const WithdrawScreen = () => {
-  const navigation = useNavigation<infoNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleWithdraw = async () => {

@@ -11,12 +11,12 @@ import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'
 import CheckBoxMenuItem from '../component/CheckBoxMenuItem'
 import CheckBoxWithTextInput from '../component/CheckBoxWithTextInput'
-import { infoNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 
 const WithdrawBeforeScreen = () => {
-  const navigation = useNavigation<infoNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const [checkedState, setCheckedState] = useState({
     no_longer_used: false,
     error: false,
