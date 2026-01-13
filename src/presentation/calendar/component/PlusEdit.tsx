@@ -9,7 +9,7 @@ import CancelIcon from '../../../assets/icons/w-cancel.svg'
 import CameraIcon from '../../../assets/icons/pr-cam.svg'
 import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
-import { calendarNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
 import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 
@@ -33,7 +33,7 @@ type PlusEditProps = {
 }
 
 const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
-  const navigation = useNavigation<calendarNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const { workTimes } = useWorkTime()
 

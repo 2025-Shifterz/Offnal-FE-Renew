@@ -1,9 +1,4 @@
-import {
-  useNavigation,
-  useRoute,
-  RouteProp,
-  NavigationProp,
-} from '@react-navigation/native'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -11,28 +6,20 @@ import EditScreenHeader from '../components/EditScreenMonthHeader'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import {
-  calendarRepository,
-  teamCalendarRepository,
-} from '../../../infrastructure/di/Dependencies'
-import { CalendarScreenStackParamList } from '../../../navigation/types'
+import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
+import { rootNavigation, RootStackParamList } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
-import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
 import TEditBottomSheet from '../components/TEditBottomSheet'
 import { toUpdateTeamShiftRecord } from '../mapper/UpdateTeamShiftMapper'
 
-type CalendarEditScreenRouteProp = RouteProp<
-  CalendarScreenStackParamList,
-  'EditCalendar'
->
+type RootNavigationRouteProp = RouteProp<RootStackParamList, 'EditCalendar'>
 
 const TCalendarEditScreen = () => {
-  const navigation =
-    useNavigation<NavigationProp<CalendarScreenStackParamList>>()
-  const route = useRoute<CalendarEditScreenRouteProp>()
+  const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RootNavigationRouteProp>()
 
   const { workTimes } = route.params
 
@@ -151,7 +138,11 @@ const TCalendarEditScreen = () => {
         payload
       )
       console.log('팀 근무표 수정 성공')
-      navigation.navigate('CalendarScreen') // 저장 성공 후 이전 화면으로 이동
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Tabs', params: { screen: 'Calendar' } }],
+      })
     } catch (error) {
       console.log('팀 근무표 수정 실패:', error)
     }

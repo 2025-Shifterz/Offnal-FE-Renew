@@ -9,8 +9,6 @@ export type onboardingNavigation =
 export type onboardingOCRNavigation =
   NativeStackNavigationProp<OnboardingOCRStackParamList>
 export type loginNavigation = NativeStackNavigationProp<LoginStackParamList>
-export type calendarNavigation =
-  NativeStackNavigationProp<CalendarScreenStackParamList>
 export type mainNavigation = NativeStackNavigationProp<MainStackParamList>
 export type tabNavigation = NativeStackNavigationProp<TabParamList>
 export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
@@ -34,6 +32,23 @@ export type RootStackParamList = {
   Todo: undefined
   Memo: undefined
   AddMemo: { memo?: Memo; date?: string } | undefined
+
+  //Migrate from CalendarNavigator.tsx
+  TeamEditCalendar: {
+    workTimes: {
+      D: { startTime: string; endTime: string }
+      E: { startTime: string; endTime: string }
+      N: { startTime: string; endTime: string }
+    }
+  }
+  EditCalendar: {
+    workTimes: {
+      D: { startTime: string; endTime: string }
+      E: { startTime: string; endTime: string }
+      N: { startTime: string; endTime: string }
+    }
+  }
+  CalendarInfoEdit: undefined
 
   // Migrate from MyInforNavigator.tsx
   EditProfileScreen: undefined
@@ -139,27 +154,6 @@ export type OnboardingOCRStackParamList = {
   CompleteScheduleOCR:
     | { selectedScheduleScopeType: ScheduleScopeType }
     | undefined
-}
-
-// 캘린더 탭 네비게이터
-export type CalendarScreenStackParamList = {
-  OnboardingSchedules: undefined // 캘린더 탭에서 PlusEdit 버튼을 통해 근무표 등록하려고 할때
-  CalendarScreen: undefined
-  TeamEditCalendar: {
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
-  }
-  EditCalendar: {
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
-  }
-  CalendarInfoEdit: undefined
 }
 
 // 오토알람 탭 네비게이터

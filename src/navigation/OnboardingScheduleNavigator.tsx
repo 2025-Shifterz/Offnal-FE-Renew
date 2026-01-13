@@ -1,8 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import SelectScheduleScope from '../presentation/schedule/screens/SelectScheduleScopeScreen'
-
 import { OnboardingStackParamList } from './types'
-import InfoEditScreen from '../presentation/calendarInfoEdit/screen/CalendarInfoEditScreen'
+import SelectScheduleScope from '../presentation/schedule/screens/SelectScheduleScopeScreen'
 import StepBar from '../shared/components/StepBar'
 import CustomBackButton from '../shared/components/CustomBackButton'
 import CompleteScheduleScreen from '../presentation/schedule/screens/CompleteScheduleScreen'

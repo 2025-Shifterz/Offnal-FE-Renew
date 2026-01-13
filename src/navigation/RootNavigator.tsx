@@ -15,7 +15,6 @@ import AutoAlarm from '../presentation/alarm/screen/AutoAlarmScreen'
 import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
 
 // Migrate from CalendarNavigator.tsx
-import CalendarScreen from '../presentation/calendar/screen/CalendarScreen'
 import CalendarEditScreen from '../presentation/calenderEditMode/screen/CalendarEditScreen'
 import TCalendarEditScreen from '../presentation/calenderEditMode/screen/TCalendarEditScreen'
 import CalendarInfoEditScreen from '../presentation/calendarInfoEdit/screen/CalendarInfoEditScreen'
@@ -35,7 +34,6 @@ const RootNavigator = () => {
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         <RootStack.Screen name="SplashScreen" component={SplashScreen} />
         <RootStack.Screen name="LoginScreens" component={LoginNavigator} />
-        <RootStack.Screen name="Tabs" component={TabsNavigator} />
         <RootStack.Screen
           name="OnboardingSchedules"
           component={OnBoardingScheduleNavigator}
@@ -44,6 +42,8 @@ const RootNavigator = () => {
           name="OnboardingSchedulesOCR"
           component={OnBoardingScheduleOCRNavigator}
         />
+        <RootStack.Screen name="Tabs" component={TabsNavigator} />
+
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
         <RootStack.Screen name="AutoAlarm" component={AutoAlarm} />
         <RootStack.Screen name="Todo" component={TodoScreen} />
@@ -51,6 +51,15 @@ const RootNavigator = () => {
         <RootStack.Screen name="AddMemo" component={AddMemoScreen} />
 
         {/* Migrate from CalendarNavigator.tsx - Flattened for Tab Bar Hiding */}
+        <RootStack.Screen name="EditCalendar" component={CalendarEditScreen} />
+        <RootStack.Screen
+          name="TeamEditCalendar"
+          component={TCalendarEditScreen}
+        />
+        <RootStack.Screen
+          name="CalendarInfoEdit"
+          component={CalendarInfoEditScreen}
+        />
 
         {/* Migrate from MyInfoNavigator.tsx - Flattened for Tab Bar Hiding */}
         <RootStack.Screen
