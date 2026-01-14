@@ -8,7 +8,7 @@ import {
   Image,
   Alert,
 } from 'react-native'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
 import { useUserStore } from '../../../store/useUserStore'
 import { useNavigation } from '@react-navigation/native'

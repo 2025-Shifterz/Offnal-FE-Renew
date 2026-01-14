@@ -10,6 +10,10 @@ import StepBar from '../shared/components/StepBar'
 import CompleteScheduleOCRScreen from '../presentation/schedule/screens/ocr/CompleteScheduleOCRScreen'
 import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
 import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
+import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
+import { TouchableOpacity } from 'react-native'
+import ArrowLeft from '../assets/icons/arrow-left.svg'
+import React from 'react'
 
 const Stack = createNativeStackNavigator<OnboardingOCRStackParamList>()
 
@@ -20,8 +24,6 @@ const OnBoardingScheduleWithOCRNavigator = () => {
       screenOptions={{
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
-        headerLeft: () => <CustomBackButton />,
-        headerTitleAlign: 'center',
       }}
     >
       <Stack.Screen
@@ -33,21 +35,51 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="SelectScheduleScopeOCR"
         component={SelectScheduleScopeOCR}
         options={{
-          headerTitle: () => <StepBar currentStep={0} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={0} totalSteps={6} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
       <Stack.Screen
         name="InputScheduleOCR"
         component={InputScheduleOCR}
         options={{
-          headerTitle: () => <StepBar currentStep={1} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={1} totalSteps={6} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
       <Stack.Screen
         name="SelectMonthOCR"
         component={SelectMonthOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={2} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={2} totalSteps={6} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
 
@@ -55,7 +87,17 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="SelectPhotoOCR"
         component={SelectPhotoOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={3} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={3} totalSteps={6} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
 
@@ -63,7 +105,17 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="EditScheduleOCR"
         component={EditScheduleOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={4} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={4} totalSteps={6} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
 
@@ -71,7 +123,17 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="CompleteScheduleOCR"
         component={CompleteScheduleOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={5} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={5} totalSteps={6} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
     </Stack.Navigator>

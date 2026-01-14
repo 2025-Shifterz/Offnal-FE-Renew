@@ -7,6 +7,10 @@ import CompleteScheduleScreen from '../presentation/schedule/screens/CompleteSch
 import InputScheduleScreen from '../presentation/schedule/screens/InputScheduleScreen'
 import InputCalendarTypeScreen from '../presentation/schedule/screens/InputCalendarTypeScreen'
 import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
+import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
+import { TouchableOpacity } from 'react-native'
+import ArrowLeft from '../assets/icons/arrow-left.svg'
+import React from 'react'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
@@ -17,8 +21,6 @@ const OnBoardingScheduleNavigator = () => {
       screenOptions={{
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
-        headerLeft: () => <CustomBackButton />,
-        headerTitleAlign: 'center',
       }}
     >
       <Stack.Screen
@@ -31,7 +33,17 @@ const OnBoardingScheduleNavigator = () => {
         name="SelectScheduleScope"
         component={SelectScheduleScope}
         options={{
-          headerTitle: () => <StepBar currentStep={0} totalSteps={4} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={0} totalSteps={4} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -39,7 +51,17 @@ const OnBoardingScheduleNavigator = () => {
         name="InputSchedule"
         component={InputScheduleScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={1} totalSteps={4} />,
+          header: ({ navigation }) => (
+            <CenterAlignedTopAppBar
+              navigationIcon={
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <ArrowLeft width={24} height={24} />
+                </TouchableOpacity>
+              }
+              title={<StepBar currentStep={1} totalSteps={4} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -47,14 +69,26 @@ const OnBoardingScheduleNavigator = () => {
         name="InputCalendarType"
         component={InputCalendarTypeScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={2} totalSteps={4} />,
+          header: () => (
+            <CenterAlignedTopAppBar
+              navigationIcon={<CustomBackButton />}
+              title={<StepBar currentStep={2} totalSteps={4} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
       <Stack.Screen
         name="CompleteSchedule"
         component={CompleteScheduleScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={3} totalSteps={4} />,
+          header: () => (
+            <CenterAlignedTopAppBar
+              navigationIcon={<CustomBackButton />}
+              title={<StepBar currentStep={3} totalSteps={4} />}
+              applySafeArea={true}
+            />
+          ),
         }}
       />
     </Stack.Navigator>
