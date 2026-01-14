@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "android:dev": "react-native run-android --mode=developdebug",
-    "android:pro": "react-native run-android --mode=productrelease",
+    "android:prod": "react-native run-android --mode=productrelease",
     "ios:dev": "react-native run-ios --scheme Development",
     "ios:prod": "react-native run-ios --scheme Production",
     "lint": "eslint .",
