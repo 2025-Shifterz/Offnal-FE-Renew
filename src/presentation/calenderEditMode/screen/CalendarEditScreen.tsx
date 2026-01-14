@@ -1,9 +1,4 @@
-import {
-  useNavigation,
-  useRoute,
-  RouteProp,
-  NavigationProp,
-} from '@react-navigation/native'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -13,22 +8,17 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { CalendarScreenStackParamList } from '../../../navigation/types'
+import { RootStackParamList, rootNavigation } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
 
-type CalendarEditScreenRouteProp = RouteProp<
-  CalendarScreenStackParamList,
-  'EditCalendar'
->
-
+type RootNavigationRouteProp = RouteProp<RootStackParamList, 'EditCalendar'>
 const CalendarEditScreen = () => {
-  const navigation =
-    useNavigation<NavigationProp<CalendarScreenStackParamList>>()
-  const route = useRoute<CalendarEditScreenRouteProp>()
+  const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RootNavigationRouteProp>()
 
   const { workTimes } = route.params
 
@@ -115,13 +105,19 @@ const CalendarEditScreen = () => {
     try {
       console.log('calendarData in handlePatchData:', calendarData)
       console.log('근무표 수정 요청 데이터:', toUpdateShiftRecord(calendarData))
+
       await calendarRepository.updateCalendar(
         latestOrganization.organizationName,
         myTeam,
         toUpdateShiftRecord(calendarData)
       )
+
       console.log('근무표 수정 성공')
-      navigation.navigate('CalendarScreen') // 저장 성공 후 이전 화면으로 이동
+      // 저장 성공 후 스택을 초기화하여 캘린더 탭으로 이동 (뒤로가기 방지)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Tabs', params: { screen: 'Calendar' } }],
+      })
     } catch (error) {
       console.log('근무표 수정 실패:', error)
     }

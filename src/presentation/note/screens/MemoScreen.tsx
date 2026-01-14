@@ -1,7 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/TopAppBar'
 import { View, TouchableOpacity, Alert } from 'react-native'
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
+import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import EmptyMessage from '../components/EmptyMessage'
@@ -12,13 +12,11 @@ import { Fragment, useCallback, useRef, useState } from 'react'
 import OneAddButton from '../components/OneAddButton'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useEffect } from 'react'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MainStackParamList } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 const MemoScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const navigation = useNavigation<rootNavigation>()
   const swipeListViewRef = useRef<SwipeListView<any>>(null)
 
   const memos = localMemoStore(state => state.memos)

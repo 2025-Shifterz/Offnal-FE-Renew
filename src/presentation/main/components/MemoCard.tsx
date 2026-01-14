@@ -29,14 +29,7 @@ const Container = ({ memos }: MemoCardProps) => {
         <TitleSection.WithAddableBtn
           title="메모"
           btnContent="메모 추가"
-          onPressIcon={() =>
-            navigation.navigate('Tabs', {
-              screen: 'Home',
-              params: {
-                screen: 'Memo',
-              },
-            })
-          }
+          onPressIcon={() => navigation.navigate('Memo')}
         />
       </View>
       {hasMemos ? (

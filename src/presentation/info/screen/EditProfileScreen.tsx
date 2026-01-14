@@ -12,13 +12,13 @@ import TopAppBar from '../../../shared/components/TopAppBar'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
 import { useUserStore } from '../../../store/useUserStore'
 import { useNavigation } from '@react-navigation/native'
-import { infoNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { Asset, launchImageLibrary } from 'react-native-image-picker'
 
 const MAX_NAME_LENGTH = 10
 
 const EditProfileScreen = () => {
-  const navigation = useNavigation<infoNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const { user, updateProfile } = useUserStore()
   const [name, setName] = useState(user?.memberName ?? '')
 
