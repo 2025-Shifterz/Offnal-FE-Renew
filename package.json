@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "android:dev": "react-native run-android --variant=debug",
-    "android:prod": "react-native run-android --variant=product",
+    "android:dev": "react-native run-android --mode=developdebug",
+    "android:pro": "react-native run-android --mode=productrelease",
     "ios:dev": "react-native run-ios --scheme Development",
     "ios:prod": "react-native run-ios --scheme Production",
     "lint": "eslint .",
@@ -37,6 +37,7 @@
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.1.0",
     "react-native": "0.81.4",
+    "react-native-config": "^1.6.1",
     "react-native-encrypted-storage": "^4.0.3",
     "react-native-gesture-handler": "^2.28.0",
     "react-native-health-connect": "^3.4.0",

@@ -9,6 +9,16 @@ react {
 def enableProguardInReleaseBuilds = false
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
+project.ext.envConfigFiles = [
+    developdebug: "env/.env.development",
+    developrelease: "env/.env.development",
+    productdebug: "env/.env.production",
+    productrelease: "env/.env.production",
+    anothercustombuild: ".env",
+]
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -49,11 +59,18 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    flavorDimensions "version"
+    productFlavors {
+        develop {
+        }
+        product {
+        }
+    }
 }
 
 dependencies {
     implementation("com.facebook.react:react-android")
-
+    
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {
