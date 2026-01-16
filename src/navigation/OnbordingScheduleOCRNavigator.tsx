@@ -1,17 +1,39 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
+import { ParamListBase } from '@react-navigation/native'
 import SelectMonthOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthOCRScreen'
 import EditScheduleOCRScreen from '../presentation/schedule/screens/ocr/EditScheduleOCRScreen'
 import { OnboardingOCRStackParamList } from './types'
 import SelectScheduleScopeOCR from '../presentation/schedule/screens/ocr/SelectScheduleScopeOCRScreen'
 import InputScheduleOCR from '../presentation/schedule/screens/ocr/InputScheduleOCRScreen'
-import CustomBackButton from '../shared/components/CustomBackButton'
 import StepBar from '../shared/components/StepBar'
 import CompleteScheduleOCRScreen from '../presentation/schedule/screens/ocr/CompleteScheduleOCRScreen'
 import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
 import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
+import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
+import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
 
 const Stack = createNativeStackNavigator<OnboardingOCRStackParamList>()
+
+const OnBoardingScheduleOCRHeader = ({
+  navigation,
+  currentStep,
+}: {
+  navigation: NativeStackNavigationProp<ParamListBase>
+  currentStep: number
+}) => {
+  return (
+    <CenterAlignedTopAppBar
+      navigationIcon={
+        <TopAppBarBackButton onPress={() => navigation.goBack()} />
+      }
+      title={<StepBar currentStep={currentStep} totalSteps={6} />}
+      applySafeArea={true}
+    />
+  )
+}
 
 // + 온보딩 화면들
 const OnBoardingScheduleWithOCRNavigator = () => {
@@ -20,8 +42,6 @@ const OnBoardingScheduleWithOCRNavigator = () => {
       screenOptions={{
         headerShadowVisible: false,
         headerStyle: { backgroundColor: '#F4F5F6' },
-        headerLeft: () => <CustomBackButton />,
-        headerTitleAlign: 'center',
       }}
     >
       <Stack.Screen
@@ -33,21 +53,36 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="SelectScheduleScopeOCR"
         component={SelectScheduleScopeOCR}
         options={{
-          headerTitle: () => <StepBar currentStep={0} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <OnBoardingScheduleOCRHeader
+              navigation={navigation}
+              currentStep={0}
+            />
+          ),
         }}
       />
       <Stack.Screen
         name="InputScheduleOCR"
         component={InputScheduleOCR}
         options={{
-          headerTitle: () => <StepBar currentStep={1} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <OnBoardingScheduleOCRHeader
+              navigation={navigation}
+              currentStep={1}
+            />
+          ),
         }}
       />
       <Stack.Screen
         name="SelectMonthOCR"
         component={SelectMonthOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={2} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <OnBoardingScheduleOCRHeader
+              navigation={navigation}
+              currentStep={2}
+            />
+          ),
         }}
       />
 
@@ -55,7 +90,12 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="SelectPhotoOCR"
         component={SelectPhotoOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={3} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <OnBoardingScheduleOCRHeader
+              navigation={navigation}
+              currentStep={3}
+            />
+          ),
         }}
       />
 
@@ -63,7 +103,12 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="EditScheduleOCR"
         component={EditScheduleOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={4} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <OnBoardingScheduleOCRHeader
+              navigation={navigation}
+              currentStep={4}
+            />
+          ),
         }}
       />
 
@@ -71,7 +116,12 @@ const OnBoardingScheduleWithOCRNavigator = () => {
         name="CompleteScheduleOCR"
         component={CompleteScheduleOCRScreen}
         options={{
-          headerTitle: () => <StepBar currentStep={5} totalSteps={6} />,
+          header: ({ navigation }) => (
+            <OnBoardingScheduleOCRHeader
+              navigation={navigation}
+              currentStep={5}
+            />
+          ),
         }}
       />
     </Stack.Navigator>

@@ -1,4 +1,4 @@
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import { Alert, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MyInformationCard from '../component/MyInformationCard'

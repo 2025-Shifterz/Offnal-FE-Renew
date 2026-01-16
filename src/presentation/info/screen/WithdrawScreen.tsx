@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import { ActivityIndicator, Alert, View } from 'react-native'
 import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'

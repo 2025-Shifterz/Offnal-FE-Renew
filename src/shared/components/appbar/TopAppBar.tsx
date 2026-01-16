@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import GlobalText from './GlobalText'
-import ArrowLeft from '../../assets/icons/arrow-left.svg'
+import GlobalText from '../GlobalText'
+import ArrowLeft from '../../../assets/icons/arrow-left.svg'
 
 /**
  * ### TopAppBarProps

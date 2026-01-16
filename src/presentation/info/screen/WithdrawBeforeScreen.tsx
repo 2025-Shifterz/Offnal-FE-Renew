@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'
 import CheckBoxMenuItem from '../component/CheckBoxMenuItem'
