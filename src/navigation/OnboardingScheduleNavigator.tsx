@@ -1,18 +1,37 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from './types'
 import SelectScheduleScope from '../presentation/schedule/screens/SelectScheduleScopeScreen'
 import StepBar from '../shared/components/StepBar'
-import CustomBackButton from '../shared/components/CustomBackButton'
 import CompleteScheduleScreen from '../presentation/schedule/screens/CompleteScheduleScreen'
 import InputScheduleScreen from '../presentation/schedule/screens/InputScheduleScreen'
 import InputCalendarTypeScreen from '../presentation/schedule/screens/InputCalendarTypeScreen'
 import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
-import { TouchableOpacity } from 'react-native'
-import ArrowLeft from '../assets/icons/arrow-left.svg'
-import React from 'react'
+import { ParamListBase } from '@react-navigation/routers'
+import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
+
+const OnBoardingScheduleHeader = ({
+  navigation,
+  currentStep,
+}: {
+  navigation: NativeStackNavigationProp<ParamListBase>
+  currentStep: number
+}) => {
+  return (
+    <CenterAlignedTopAppBar
+      navigationIcon={
+        <TopAppBarBackButton onPress={() => navigation.goBack()} />
+      }
+      title={<StepBar currentStep={currentStep} totalSteps={4} />}
+      applySafeArea={true}
+    />
+  )
+}
 
 // + 온보딩 화면들
 const OnBoardingScheduleNavigator = () => {
@@ -34,15 +53,7 @@ const OnBoardingScheduleNavigator = () => {
         component={SelectScheduleScope}
         options={{
           header: ({ navigation }) => (
-            <CenterAlignedTopAppBar
-              navigationIcon={
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                  <ArrowLeft width={24} height={24} />
-                </TouchableOpacity>
-              }
-              title={<StepBar currentStep={0} totalSteps={4} />}
-              applySafeArea={true}
-            />
+            <OnBoardingScheduleHeader navigation={navigation} currentStep={0} />
           ),
         }}
       />
@@ -52,15 +63,7 @@ const OnBoardingScheduleNavigator = () => {
         component={InputScheduleScreen}
         options={{
           header: ({ navigation }) => (
-            <CenterAlignedTopAppBar
-              navigationIcon={
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                  <ArrowLeft width={24} height={24} />
-                </TouchableOpacity>
-              }
-              title={<StepBar currentStep={1} totalSteps={4} />}
-              applySafeArea={true}
-            />
+            <OnBoardingScheduleHeader navigation={navigation} currentStep={1} />
           ),
         }}
       />
@@ -69,12 +72,8 @@ const OnBoardingScheduleNavigator = () => {
         name="InputCalendarType"
         component={InputCalendarTypeScreen}
         options={{
-          header: () => (
-            <CenterAlignedTopAppBar
-              navigationIcon={<CustomBackButton />}
-              title={<StepBar currentStep={2} totalSteps={4} />}
-              applySafeArea={true}
-            />
+          header: ({ navigation }) => (
+            <OnBoardingScheduleHeader navigation={navigation} currentStep={2} />
           ),
         }}
       />
@@ -82,12 +81,8 @@ const OnBoardingScheduleNavigator = () => {
         name="CompleteSchedule"
         component={CompleteScheduleScreen}
         options={{
-          header: () => (
-            <CenterAlignedTopAppBar
-              navigationIcon={<CustomBackButton />}
-              title={<StepBar currentStep={3} totalSteps={4} />}
-              applySafeArea={true}
-            />
+          header: ({ navigation }) => (
+            <OnBoardingScheduleHeader navigation={navigation} currentStep={3} />
           ),
         }}
       />
