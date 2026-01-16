@@ -9,11 +9,11 @@ import GlobalText from '../../../shared/components/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
-import OneAddButton from '../components/OneAddButton'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useEffect } from 'react'
 import { rootNavigation } from '../../../navigation/types'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
+import ButtonChip from '../../../shared/components/chip/AddOneTouchableChip'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -120,14 +120,16 @@ const MemoScreen = () => {
             )}
           </View>
 
-          <OneAddButton
-            addOneTodo={() =>
-              navigation.navigate('AddMemo', {
-                date: currentDate.toISOString(),
-              })
-            }
-            text="메모 작성"
-          />
+          <View className="mt-[8px] items-center">
+            <ButtonChip
+              text="메모 추가"
+              onPress={() =>
+                navigation.navigate('AddMemo', {
+                  date: currentDate.toISOString(),
+                })
+              }
+            />
+          </View>
         </View>
       </SafeAreaView>
     </View>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Text, TextInput, TouchableOpacity, View } from 'react-native'
-import TeamItem from './TeamItem'
 import { twMerge } from 'tailwind-merge'
+import DefaultChip from '../../../shared/components/chip/DefaultChip'
 
 interface TeamInputProps {
   workGroup: string
@@ -31,7 +31,7 @@ const TeamInput = ({
       <View className="flex h-[102px] gap-4 rounded-lg bg-white px-[15px] py-[11px]">
         <View className="flex-row gap-[8px]">
           {[1, 2, 3, 4].map(id => (
-            <TeamItem
+            <DefaultChip
               key={id}
               id={id}
               onPress={() => {

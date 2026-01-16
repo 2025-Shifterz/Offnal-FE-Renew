@@ -2,7 +2,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
   TextInput,
   View,
 } from 'react-native'
@@ -14,16 +13,7 @@ import StarRating from '../../../shared/components/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types'
-
-type RatingInfo = { emoji: string; text: string }
-
-const RATING_DATA: { [key: number]: RatingInfo } = {
-  1: { emoji: '😞', text: '매우 불만족' },
-  2: { emoji: '😕', text: '불만족' },
-  3: { emoji: '🙂', text: '보통' },
-  4: { emoji: '😊', text: '만족' },
-  5: { emoji: '🥰', text: '매우 만족' },
-}
+import RatingChip from '../../../shared/components/chip/RatingChip'
 
 const MAX_FEEDBACK_LENGTH = 100
 
@@ -32,8 +22,6 @@ const FeedBackScreen = () => {
 
   const [rating, setRating] = useState(1)
   const [feedback, setFeedback] = useState('')
-
-  const currentRatingData = RATING_DATA[rating]
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
@@ -54,15 +42,10 @@ const FeedBackScreen = () => {
               <GlobalText className="my-[8.5px] font-pretMedium text-body-xs">
                 오프날에서의 경험이 만족스러우신가요?
               </GlobalText>
-              <View className="flex-col items-center gap-g-2 ">
+              <View className="flex-col items-center gap-g-2">
                 <StarRating rating={rating} onRatingChange={setRating} />
-                {currentRatingData && (
-                  <View className="mt-[5px] rounded-radius-max border border-[#F05F424D] bg-surface-danger-subtle px-number-6 py-number-3">
-                    <GlobalText className="font-pretMedium text-body-xxs">
-                      {currentRatingData.emoji} {currentRatingData.text}
-                    </GlobalText>
-                  </View>
-                )}
+                <View className="mt-[5px]" />
+                <RatingChip rating={rating} />
               </View>
 
               <View className="flex-col">

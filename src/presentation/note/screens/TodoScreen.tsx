@@ -14,7 +14,6 @@ import { Todo } from '../../../domain/models/Todo'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import EmptyMessage from '../components/EmptyMessage'
 import GlobalText from '../../../shared/components/GlobalText'
-import OneAddButton from '../components/OneAddButton'
 import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 import TodoOptionBottomSheet, {
   BottomSheetMethods,
@@ -25,6 +24,7 @@ import ChangeTodoDateBottomSheet, {
 } from '../components/sheet/ChangeTodoDateBottomSheet'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types'
+import ButtonChip from '../../../shared/components/chip/AddOneTouchableChip'
 
 const TodoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -244,26 +244,28 @@ const TodoScreen = () => {
             )}
           </View>
 
-          <OneAddButton
-            addOneTodo={async () => {
-              if (editingTodoId) {
-                setEditingTodoId(null)
-                setEditingTodoText('')
-              }
+          <View className="mt-[8px] items-center">
+            <ButtonChip
+              text="할 일 추가"
+              onPress={() => {
+                if (editingTodoId) {
+                  setEditingTodoId(null)
+                  setEditingTodoText('')
+                }
 
-              if (!showInput) {
-                setShowInput(true)
-              } else {
-                if (todo.trim()) {
-                  await handleAddTodo()
+                if (!showInput) {
                   setShowInput(true)
                 } else {
-                  setShowInput(false)
+                  if (todo.trim()) {
+                    handleAddTodo()
+                    setShowInput(true)
+                  } else {
+                    setShowInput(false)
+                  }
                 }
-              }
-            }}
-            text="할 일 추가"
-          />
+              }}
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
 
