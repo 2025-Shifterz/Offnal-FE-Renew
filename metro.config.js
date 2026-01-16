@@ -1,5 +1,8 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config')
 const { withNativeWind } = require('nativewind/metro')
+const {
+  wrapWithReanimatedMetroConfig,
+} = require('react-native-reanimated/metro-config')
 
 /**
  * Metro configuration
@@ -23,4 +26,9 @@ const svgConfig = {
 let config = mergeConfig(defaultConfig, svgConfig)
 
 // Nativewind 적용
-module.exports = withNativeWind(config, { input: './global.css' })
+config = withNativeWind(config, { input: './global.css' })
+
+// Reanimated 적용 (가장 마지막에!)
+config = wrapWithReanimatedMetroConfig(config)
+
+module.exports = config

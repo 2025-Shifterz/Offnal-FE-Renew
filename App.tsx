@@ -5,50 +5,55 @@
  * @format
  */
 import './global.css'
-import { StyleSheet, Text, View } from 'react-native'
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context'
-import MyPage from './src/presentation/MyPage/screen/MyPage'
-import TodoScreen from './src/presentation/Note/screens/TodoScreen'
-import MemoScreen from './src/presentation/Note/screens/MemoScreen'
+import { useEffect, useState } from 'react'
+import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
+import { ActivityIndicator, View } from 'react-native'
+import RootNavigator from './src/navigation/RootNavigator'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
+import { WorkTimeProvider } from './src/shared/context/WorkTimeContext'
+import { enableScreens } from 'react-native-screens'
+import { SafeAreaView } from 'react-native-safe-area-context'
+
+enableScreens()
 
 function App() {
+  const [isReady, setIsReady] = useState(false)
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await initializeDataBaseTables()
+        console.log('DB tables created')
+      } catch (error) {
+        console.error('Error creating DB tables', error)
+      } finally {
+        setIsReady(true)
+      }
+    }
+
+    init()
+  }, [])
+
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    )
+  }
+
   return (
-    <SafeAreaProvider>
-      <AppContent />
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <WorkTimeProvider>
+          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
+            <RootNavigator />
+          </SafeAreaView>
+        </WorkTimeProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   )
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets()
-
-  return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: safeAreaInsets.top, // 상단 노치 만큼 padding
-          paddingBottom: safeAreaInsets.bottom, // 하단 홈 인디케이터 만큼 padding
-          paddingLeft: safeAreaInsets.left,
-          paddingRight: safeAreaInsets.right,
-        },
-      ]}
-    >
-      <MyPage />
-      {/* <TodoScreen /> */}
-      {/* <PlusIcon /> */}
-      {/* <MemoScreen /> */}
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})
 
 export default App

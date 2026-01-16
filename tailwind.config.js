@@ -511,8 +511,7 @@ module.exports = {
       borderRadius: {
         'radius-xs': 'var(--border-radius-xs)',
         'radius-s': 'var(--border-radius-s)',
-        'radius-m1': 'var(--border-radius-m1)',
-        'radius-m2': 'var(--border-radius-m2)',
+        'radius-m': 'var(--border-radius-m)',
         'radius-l': 'var(--border-radius-l)',
         'radius-xl': 'var(--border-radius-xl)',
         'radius-max': 'var(--border-radius-max)',

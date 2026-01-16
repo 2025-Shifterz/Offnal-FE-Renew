@@ -1,16 +1,27 @@
-import { Todo } from "../entities/Todo";
-import dayjs from "dayjs";
+import dayjs from 'dayjs'
+import { Memo } from '../models/Memo'
 
 export interface MemoRepository {
-  getAllMemos(): Promise<Todo[]>;
+  getAllMemos(): Promise<Memo[]>
 
-  getMemosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]>;
+  getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]>
 
-  addMemo(memo: Omit<Todo, "id">, targetDate?: dayjs.Dayjs): Promise<Todo>;
+  getMemoById(id: number): Promise<Memo | undefined>
 
-  updateMemoComplete(id: number, completed: boolean): Promise<boolean>;
+  addMemo(
+    title: string,
+    content: string,
+    targetDate: dayjs.Dayjs
+  ): Promise<Memo>
 
-  deleteMemo(id: number): Promise<boolean>;
+  updateMemo(
+    id: number,
+    title: string,
+    content: string,
+    targetDate: dayjs.Dayjs
+  ): Promise<void>
 
-  deleteMemoAll(): Promise<void>;
+  deleteMemo(id: number): Promise<void>
+
+  deleteMemoAll(): Promise<void>
 }

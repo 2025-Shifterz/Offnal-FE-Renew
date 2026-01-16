@@ -1,14 +1,23 @@
-import { Todo, TodoType } from "../entities/Todo";
-import dayjs from "dayjs";
+import dayjs from 'dayjs'
+import { Todo } from '../models/Todo'
 
 export interface TodoRepository {
-  addTodo(todo: Omit<Todo, "id">): Promise<number>;
+  createTodo(content: string, targetDate: dayjs.Dayjs): Promise<Todo>
 
-  getTodos(type: TodoType): Promise<Todo[]>;
+  getAllTodos(): Promise<Todo[]>
 
-  getToDosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]>;
+  getTodoById(id: number): Promise<Todo | null>
 
-  todoCompleted(id: number, completed: boolean, type: TodoType): Promise<void>;
+  getTodosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]>
 
-  deleteTodo(id: number, type: TodoType): Promise<void>;
+  updateTodo(
+    id: number,
+    content?: string,
+    targetDate?: dayjs.Dayjs,
+    completed?: boolean
+  ): Promise<void>
+
+  deleteTodoById(id: number): Promise<void>
+
+  deleteAllTodos(): Promise<void>
 }

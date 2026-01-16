@@ -1,0 +1,18 @@
+import React from 'react'
+import { View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import TopAppBar from '../../../shared/components/TopAppBar'
+import GlobalText from '../../../shared/components/GlobalText'
+
+const CreateAlarmScreen = () => {
+  return (
+    <View className="flex-1 ">
+      <SafeAreaView className="flex-1">
+        <TopAppBar title="자동 알람 생성" showBackButton={true} />
+        <GlobalText>자동 알람 생성 화면</GlobalText>
+      </SafeAreaView>
+    </View>
+  )
+}
+
+export default CreateAlarmScreen
