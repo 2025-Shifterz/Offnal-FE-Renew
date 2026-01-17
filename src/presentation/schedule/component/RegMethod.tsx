@@ -2,10 +2,10 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
-import { ScheduleRegMethod } from '../../../shared/types/ScheduleRegMethod'
+import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
 import { SchedulePhotoType } from '../../../shared/types/SchedulePhotoType'
 
-type RegMethodProps<T extends ScheduleRegMethod | SchedulePhotoType> = {
+type RegMethodProps<T extends OnboardingMethod | SchedulePhotoType> = {
   type: T
   isSelected: boolean
   Icon: React.FC<SvgProps>
@@ -14,7 +14,7 @@ type RegMethodProps<T extends ScheduleRegMethod | SchedulePhotoType> = {
   onPress: (type: T) => void
 }
 
-const RegMethod = <T extends ScheduleRegMethod | SchedulePhotoType>({
+const RegMethod = <T extends OnboardingMethod | SchedulePhotoType>({
   type,
   isSelected,
   Icon,

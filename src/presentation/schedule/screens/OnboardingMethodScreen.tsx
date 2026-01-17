@@ -7,26 +7,25 @@ import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
-import { useState } from 'react'
 import BottomButton from '../../../shared/components/BottomButton'
-import { ScheduleRegMethod } from '../../../shared/types/ScheduleRegMethod'
+import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
+import { useOnboardingStore } from '../../../store/useOnboardingState'
 
-const SelectScheduleRegScreen = () => {
+const OnboardingMethodScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const [selectedScheduleRegMethod, setSelectedScheduleRegMethod] =
-    useState<ScheduleRegMethod>('OCR')
+  const { onboardingMethod, setOnboardingMethod } = useOnboardingStore()
 
   // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
-  const handleBoxClick = (type: ScheduleRegMethod) => {
-    setSelectedScheduleRegMethod(type)
+  const handleBoxClick = (type: OnboardingMethod) => {
+    setOnboardingMethod(type)
     console.log(`선택된 근무표 등록 방법: ${type}`)
   }
 
   const handleNext = () => {
-    switch (selectedScheduleRegMethod) {
+    switch (onboardingMethod) {
       case 'OCR':
-        navigation.navigate('OnboardingSchedulesOCR', {
-          screen: 'SelectScheduleScopeOCR', // 첫 화면으로 이동
+        navigation.navigate('OnboardingSchedules', {
+          screen: 'SelectScheduleScope', // 첫 화면으로 이동
         })
         break
       case 'NEW':
@@ -51,27 +50,27 @@ const SelectScheduleRegScreen = () => {
           회사 근무표 검색 기능은 추후 추가될 예정이에요.
         </GlobalText>
 
-        <RegMethod<ScheduleRegMethod>
+        <RegMethod<OnboardingMethod>
           type="OCR"
-          isSelected={selectedScheduleRegMethod === 'OCR'}
+          isSelected={onboardingMethod === 'OCR'}
           Icon={Camera}
           title="근무표 사진 찍어서 자동 등록하기"
           subtitle="AI로 근무표를 자동 등록해요"
           onPress={handleBoxClick}
         />
 
-        <RegMethod<ScheduleRegMethod>
+        <RegMethod<OnboardingMethod>
           type="NEW"
-          isSelected={selectedScheduleRegMethod === 'NEW'}
+          isSelected={onboardingMethod === 'NEW'}
           Icon={CalendarYellow}
           title="근무표 새로 만들기"
           subtitle="지금 바로 직접 근무표를 만들고 시작해요"
           onPress={handleBoxClick}
         />
 
-        <RegMethod<ScheduleRegMethod>
+        <RegMethod<OnboardingMethod>
           type="DIRECT"
-          isSelected={selectedScheduleRegMethod === 'DIRECT'}
+          isSelected={onboardingMethod === 'DIRECT'}
           Icon={CalendarBlue}
           title="근무표 없이 시작하기"
           subtitle="지금은 근무표 없이 시작하고, 나중에 등록할 수 있어요"
@@ -83,4 +82,4 @@ const SelectScheduleRegScreen = () => {
   )
 }
 
-export default SelectScheduleRegScreen
+export default OnboardingMethodScreen

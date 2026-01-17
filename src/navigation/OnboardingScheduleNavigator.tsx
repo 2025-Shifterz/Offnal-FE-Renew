@@ -8,10 +8,12 @@ import StepBar from '../shared/components/StepBar'
 import CompleteScheduleScreen from '../presentation/schedule/screens/CompleteScheduleScreen'
 import InputScheduleScreen from '../presentation/schedule/screens/InputScheduleScreen'
 import InputCalendarTypeScreen from '../presentation/schedule/screens/InputCalendarTypeScreen'
-import SelectScheduleRegScreen from '../presentation/schedule/screens/SelectScheduleRegScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
 import { ParamListBase } from '@react-navigation/routers'
 import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
+import EditScheduleOCRScreen from '../presentation/schedule/screens/ocr/EditScheduleOCRScreen'
+import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
+import SelectMonthOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthOCRScreen'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
@@ -43,11 +45,6 @@ const OnBoardingScheduleNavigator = () => {
       }}
     >
       <Stack.Screen
-        name="SelectScheduleReg"
-        component={SelectScheduleRegScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         // 근무표 범위 선택 - 전체 / 개인
         name="SelectScheduleScope"
         component={SelectScheduleScope}
@@ -67,6 +64,12 @@ const OnBoardingScheduleNavigator = () => {
           ),
         }}
       />
+
+      {/* OCR 화면 -- */}
+      <Stack.Screen name="SelectMonthOCR" component={SelectMonthOCRScreen} />
+      <Stack.Screen name="SelectPhotoOCR" component={SelectPhotoOCRScreen} />
+      <Stack.Screen name="EditScheduleOCR" component={EditScheduleOCRScreen} />
+      {/* -- */}
       <Stack.Screen
         // 달력에 근무 형태 입력
         name="InputCalendarType"

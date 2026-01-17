@@ -5,7 +5,6 @@ import SplashScreen from '../presentation/splash/SplashScreen'
 import TabsNavigator from './TabsNavigator'
 import OnBoardingScheduleNavigator from './OnboardingScheduleNavigator'
 import LoginNavigator from './LoginNavigator'
-import OnBoardingScheduleOCRNavigator from './OnbordingScheduleOCRNavigator'
 import { RootStackParamList } from './types'
 
 // Migrate from MainNavigator.tsx
@@ -25,6 +24,7 @@ import FeedBackScreen from '../presentation/info/screen/FeedBackScreen'
 import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
 import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
+import OnboardingMethodScreen from '../presentation/schedule/screens/OnboardingMethodScreen'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -35,13 +35,16 @@ const RootNavigator = () => {
         <RootStack.Screen name="SplashScreen" component={SplashScreen} />
         <RootStack.Screen name="LoginScreens" component={LoginNavigator} />
         <RootStack.Screen
+          // OCR / 수동 등록 선택 화면
+          name="OnboardingMethodScreen"
+          component={OnboardingMethodScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
           name="OnboardingSchedules"
           component={OnBoardingScheduleNavigator}
         />
-        <RootStack.Screen
-          name="OnboardingSchedulesOCR"
-          component={OnBoardingScheduleOCRNavigator}
-        />
+
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
 
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}

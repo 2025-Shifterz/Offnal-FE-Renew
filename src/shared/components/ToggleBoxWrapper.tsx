@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { twMerge } from 'tailwind-merge'
-import { ScheduleRegMethod } from '../types/ScheduleRegMethod'
+import { ScheduleRegMethod } from '../types/OnboardingMethod'
 import { ScheduleScopeType } from '../types/ScheduleScopeType'
 import { SchedulePhotoType } from '../types/SchedulePhotoType'
 

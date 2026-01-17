@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
@@ -12,17 +12,13 @@ import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
-type ScheduleInfoInputRouteProp = RouteProp<
-  OnboardingStackParamList,
-  'InputSchedule'
->
+import { useOnboardingStore } from '../../../store/useOnboardingState'
+import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
+import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 
 const InputScheduleScreen = () => {
-  const route = useRoute<ScheduleInfoInputRouteProp>()
-  const { selectedScheduleScopeType } = route.params
-
   const navigation = useNavigation<onboardingNavigation>()
+  const { onboardingMethod } = useOnboardingStore()
 
   // states
   const [organizationName, setOrganizationName] = useState('') // 조직 이름
@@ -40,8 +36,19 @@ const InputScheduleScreen = () => {
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = async () => {
-    navigation.navigate('InputCalendarType', {
-      selectedScheduleScopeType,
+    const nextStep = goNextOnboadingScreen(
+      onboardingMethod,
+      OnboardingStep.InputSchedule
+    )
+    console.log('다음 온보딩 스텝:', nextStep)
+    navigation.navigate(nextStep, {
+      method: onboardingMethod,
+      organizationName,
+      workGroup,
+      workTimes,
+    })
+    console.log('근무표 기본 정보 입력 params:', {
+      method: onboardingMethod,
       organizationName,
       workGroup,
       workTimes,
