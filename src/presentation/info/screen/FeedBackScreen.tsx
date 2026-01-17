@@ -40,7 +40,7 @@ const FeedBackScreen = () => {
     Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
       {
         text: '확인',
-        onPress: () => navigation.pop(),
+        onPress: navigation.pop,
       },
     ])
   }
