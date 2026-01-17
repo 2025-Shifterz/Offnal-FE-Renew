@@ -16,11 +16,7 @@ const NoCalendar = () => {
           {` 아직 생성된 근무표가 없어요.\n근무표를 캘린더에 등록하여\n오프날의 여러 기능을 이용해보세요.`}
         </Text>
         <NewCalButton
-          onCreateSchedule={() =>
-            navigation.navigate('OnboardingSchedules', {
-              screen: 'SelectScheduleReg',
-            })
-          }
+          onCreateSchedule={() => navigation.navigate('OnboardingMethodScreen')}
         />
       </View>
     </View>
