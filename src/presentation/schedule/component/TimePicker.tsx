@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Text, View } from 'react-native'
 import ArrowUp from '../../../assets/icons/arrow-up.svg'
 import ArrowDown from '../../../assets/icons/arrow-down.svg'
-import { useWorkTime } from '../../../shared/context/WorkTimeContext'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const pickerTextStyle = 'text-text-basic body-s font-[500px]'
 
@@ -34,8 +34,8 @@ const parseTimeString = (time: string) => {
 }
 
 const TimePicker = ({ type, mode }: TimePickerProps) => {
-  const { workTimes, setWorkTimes } = useWorkTime()
-  const workTimeString = workTimes[type]?.[mode] || '08:00'
+  const { workTimes, setWorkTimes } = useScheduleInfoStore()
+  const workTimeString = workTimes[type][mode] || '08:00'
   const {
     hour: initHour,
     minute: initMinute,
@@ -66,13 +66,7 @@ const TimePicker = ({ type, mode }: TimePickerProps) => {
     }
     const selectedTime = `${convertedHour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
 
-    setWorkTimes(prev => ({
-      ...prev,
-      [type]: {
-        ...prev[type], // 기존의 startTime과 endTime을 보존
-        [mode]: selectedTime, // mode: 'startTime' | 'endTime'
-      },
-    }))
+    setWorkTimes(type, mode, selectedTime)
   }
 
   // 시가 바뀔 때 자동으로 오전/오후가 바뀌도록 반영

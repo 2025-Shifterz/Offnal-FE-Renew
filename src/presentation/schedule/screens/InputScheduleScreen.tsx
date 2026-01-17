@@ -1,58 +1,43 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
 import ScheduleNameInput from '../component/ScheduleNameInput'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import {
-  onboardingNavigation,
-  OnboardingStackParamList,
-} from '../../../navigation/types'
-import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
+import { useNavigation } from '@react-navigation/native'
+import { onboardingNavigation } from '../../../navigation/types'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useOnboardingStore } from '../../../store/useOnboardingState'
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const InputScheduleScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
   const { onboardingMethod } = useOnboardingStore()
-
-  // states
-  const [organizationName, setOrganizationName] = useState('') // 조직 이름
-  const [workGroup, setWorkGroup] = useState('1조') // 직접 입력 시 팀 이름
-  const [workTimes, setWorkTimes] = useState({
-    D: { startTime: '08:00', endTime: '16:00' },
-    E: { startTime: '16:00', endTime: '00:00' },
-    N: { startTime: '00:00', endTime: '08:00' },
-  })
-  // organizationId from store
-  // const organizationId = useCalendarStore(state => state.organizationId)
-  //
-  // console.log('organizationId in InputScheduleScreen: ', organizationId)
+  const {
+    organizationName,
+    workGroup,
+    workTimes,
+    setOrganizationName,
+    setWorkGroup,
+  } = useScheduleInfoStore()
 
   const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = async () => {
+    console.log('InputScheduleScreen 상태:', {
+      organizationName,
+      workGroup,
+      workTimes,
+    })
     const nextStep = goNextOnboadingScreen(
       onboardingMethod,
       OnboardingStep.InputSchedule
     )
     console.log('다음 온보딩 스텝:', nextStep)
-    navigation.navigate(nextStep, {
-      method: onboardingMethod,
-      organizationName,
-      workGroup,
-      workTimes,
-    })
-    console.log('근무표 기본 정보 입력 params:', {
-      method: onboardingMethod,
-      organizationName,
-      workGroup,
-      workTimes,
-    })
+    navigation.navigate(nextStep)
   }
 
   return (
@@ -68,9 +53,7 @@ const InputScheduleScreen = () => {
             organizationName={organizationName}
             setOrganizationName={setOrganizationName}
           />
-          <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
-            <TimeInput />
-          </WorkTimeContext.Provider>
+          <TimeInput />
           <TeamInput
             workGroup={workGroup}
             setWorkGroup={setWorkGroup}

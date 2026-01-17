@@ -11,13 +11,12 @@ import TCalendarBase from './TCalendarBase'
 import TeamTypeSelect from './TeamTypeSelect'
 import { TimeFrameChildren } from '../TimeFrame'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
-import {
-  convertEndTimeToDuration,
-  InputWorkTimeDetail,
-} from '../../../utils/calendar/convertDuration'
+import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
+import { WorkTime } from '../../../types/WorkTime'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 export interface TCalendarEditorRef {
   postData: () => void
@@ -25,13 +24,10 @@ export interface TCalendarEditorRef {
 
 const TCalendarEditor: ForwardRefRenderFunction<
   TCalendarEditorRef,
-  Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
-    workTimes: Record<string, InputWorkTimeDetail>
-    workGroup: string
-    organizationName: string
+  {
     currentDate: dayjs.Dayjs
   }
-> = ({ workTimes, workGroup, organizationName, currentDate }, ref) => {
+> = ({ currentDate }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
 
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
@@ -41,6 +37,8 @@ const TCalendarEditor: ForwardRefRenderFunction<
   const clearTeamCalendarData = useTeamCalendarStore(
     state => state.clearTeamCalendarData
   )
+  const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
+
   // 처음에는 초기화//
   useEffect(() => {
     clearTeamCalendarData()

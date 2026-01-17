@@ -11,7 +11,7 @@ import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
-import { useWorkTime } from '../../../shared/context/WorkTimeContext'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 // 컴포넌트
 type TextButtonProps = {
@@ -35,7 +35,7 @@ type PlusEditProps = {
 const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
-  const { workTimes } = useWorkTime()
+  const { workTimes } = useScheduleInfoStore()
 
   // 페이드 인 애니메이션
   useEffect(() => {

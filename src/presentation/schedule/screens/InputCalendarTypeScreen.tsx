@@ -1,11 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import {
-  onboardingNavigation,
-  OnboardingStackParamList,
-} from '../../../navigation/types'
-import { useWorkTime } from '../../../shared/context/WorkTimeContext'
+import { useNavigation } from '@react-navigation/native'
+import { onboardingNavigation } from '../../../navigation/types'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -17,34 +13,13 @@ import TCalendarEditor, {
 } from '../../../shared/components/calendar/team/TCalendarEditor'
 import CalendarEditorHeader from '../../../shared/components/calendar/header/CalendarEditorHeader'
 import dayjs from 'dayjs'
-
-type ScheduleTypeRouteProp = RouteProp<
-  OnboardingStackParamList,
-  'InputCalendarType'
->
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
+import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
+import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 
 const InputCalendarTypeScreen = () => {
-  const route = useRoute<ScheduleTypeRouteProp>()
-  const { selectedScheduleScopeType, organizationName, workGroup, workTimes } =
-    route.params
+  const { scheduleScope, onboardingMethod } = useOnboardingStore()
   const [currentDate, setCurrentDate] = useState(dayjs)
-
-  useEffect(() => {
-    console.log('넘어온 근무표 기본정보 입력: ', {
-      selectedScheduleScopeType,
-      organizationName,
-      workGroup,
-      workTimes,
-    })
-  }, [selectedScheduleScopeType, organizationName, workGroup, workTimes])
-
-  const { setWorkTimes } = useWorkTime()
-
-  useEffect(() => {
-    if (workTimes) {
-      setWorkTimes(workTimes)
-    }
-  }, [workTimes, setWorkTimes])
 
   const navigation = useNavigation<onboardingNavigation>()
 
@@ -52,7 +27,7 @@ const InputCalendarTypeScreen = () => {
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
   const handleNext = () => {
-    if (selectedScheduleScopeType === 'ALL') {
+    if (scheduleScope === 'ALL') {
       if (tCalendarEditorRef.current) {
         console.log('팀 근무표 저장 요청 실행')
         tCalendarEditorRef.current.postData() // 팀 근무표 저장 요청
@@ -64,7 +39,11 @@ const InputCalendarTypeScreen = () => {
       }
     }
 
-    navigation.navigate('CompleteSchedule', { selectedScheduleScopeType })
+    const nextStep = goNextOnboadingScreen(
+      onboardingMethod,
+      OnboardingStep.EditScheduleOCR
+    )
+    navigation.navigate(nextStep)
   }
 
   return (
@@ -85,22 +64,13 @@ const InputCalendarTypeScreen = () => {
             }
             onNextMonth={() => setCurrentDate(prev => prev.add(1, 'month'))}
           />
-          {selectedScheduleScopeType === 'ALL' ? (
+          {scheduleScope === 'ALL' ? (
             <TCalendarEditor
               currentDate={currentDate}
               ref={tCalendarEditorRef}
-              organizationName={organizationName}
-              workGroup={workGroup}
-              workTimes={workTimes}
             />
           ) : (
-            <CalendarEditor
-              currentDate={currentDate}
-              ref={calendarEditorRef}
-              workTimes={workTimes}
-              organizationName={organizationName}
-              workGroup={workGroup}
-            />
+            <CalendarEditor currentDate={currentDate} ref={calendarEditorRef} />
           )}
         </View>
       </ScrollView>

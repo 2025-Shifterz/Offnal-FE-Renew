@@ -4,7 +4,6 @@ import { View } from 'react-native'
 import TeamInput from '../components/TeamInput'
 import TimeInput from '../../schedule/component/TimeInput'
 import ScheduleNameInput from '../../schedule/component/ScheduleNameInput'
-import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
 import BottomButton from '../../../shared/components/BottomButton'
 
 const CalendarInfoEditScreen = () => {
@@ -26,9 +25,7 @@ const CalendarInfoEditScreen = () => {
               calendarName={calendarName}
               setCalendarName={setCalendarName}
             />
-            <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
-              <TimeInput />
-            </WorkTimeContext.Provider>
+            <TimeInput />
             <TeamInput setWorkGroup={setWorkGroup} />
           </View>
 
