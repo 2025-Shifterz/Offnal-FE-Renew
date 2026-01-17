@@ -8,9 +8,11 @@ import React from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../navigation/types'
 import { Todo } from '../../../domain/models/Todo'
+import dayjs from 'dayjs'
 
 interface TodoCardProps {
   todos: Todo[]
+  selectedDate: dayjs.Dayjs | null
 }
 
 interface TodoItemProps {
@@ -19,7 +21,7 @@ interface TodoItemProps {
   isLast: boolean
 }
 
-const Container = ({ todos }: TodoCardProps) => {
+const Container = ({ todos, selectedDate }: TodoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasTodos = todos && todos.length > 0
@@ -31,7 +33,7 @@ const Container = ({ todos }: TodoCardProps) => {
         <TitleSection.WithAddableBtn
           title="할 일"
           btnContent="할 일 추가"
-          onPressIcon={() => navigation.navigate('Todo')}
+          onPressIcon={() => navigation.navigate('Todo', { selectedDate })}
         />
       </View>
       {hasTodos ? (

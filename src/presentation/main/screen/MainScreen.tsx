@@ -100,7 +100,7 @@ export default function MainScreen() {
           <RecommnedMealSection meals={(routine?.meals as any) ?? []} />
           <HealthGuideSection health={(routine?.health as any) ?? null} />
           <HealthCardSection />
-          <NoteSection todos={todos} memos={memos} />
+          <NoteSection todos={todos} memos={memos} selectedDate={dayjs()} />
         </View>
       </ScrollView>
     </SafeAreaView>
