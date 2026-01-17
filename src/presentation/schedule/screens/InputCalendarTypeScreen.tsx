@@ -41,7 +41,7 @@ const InputCalendarTypeScreen = () => {
 
     const nextStep = goNextOnboadingScreen(
       onboardingMethod,
-      OnboardingStep.EditScheduleOCR
+      OnboardingStep.InputCalendarType
     )
     navigation.navigate(nextStep)
   }

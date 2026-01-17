@@ -14,22 +14,35 @@ import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton
 import EditScheduleOCRScreen from '../presentation/schedule/screens/ocr/EditScheduleOCRScreen'
 import SelectPhotoOCRScreen from '../presentation/schedule/screens/ocr/SelectPhotoOCRScreen'
 import SelectMonthOCRScreen from '../presentation/schedule/screens/ocr/SelectMonthOCRScreen'
+import { OnboardingStep } from '../shared/types/OnboardingStep'
+import { OnboardingMethod } from '../shared/types/OnboardingMethod'
+import { goNextOnboadingHeader } from '../presentation/schedule/flow/goNextOnboardingHeader'
+import { useOnboardingStore } from '../store/useOnboardingStore'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
-const OnBoardingScheduleHeader = ({
+const OnBoardingHeader = ({
   navigation,
-  currentStep,
+  method,
+  step,
 }: {
   navigation: NativeStackNavigationProp<ParamListBase>
-  currentStep: number
+  method: OnboardingMethod
+  step: OnboardingStep
 }) => {
+  const stepInfo = goNextOnboadingHeader(method, step)
+  if (!stepInfo) return null
   return (
     <CenterAlignedTopAppBar
       navigationIcon={
         <TopAppBarBackButton onPress={() => navigation.goBack()} />
       }
-      title={<StepBar currentStep={currentStep} totalSteps={4} />}
+      title={
+        <StepBar
+          currentStep={stepInfo.currentStep}
+          totalSteps={stepInfo.totalSteps}
+        />
+      }
       applySafeArea={true}
     />
   )
@@ -37,32 +50,33 @@ const OnBoardingScheduleHeader = ({
 
 // + 온보딩 화면들
 const OnBoardingScheduleNavigator = () => {
+  const { onboardingMethod } = useOnboardingStore()
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerShadowVisible: false,
-        headerStyle: { backgroundColor: '#F4F5F6' },
+      screenOptions={({ navigation, route }) => {
+        const step = route.name as OnboardingStep
+        return {
+          header: () => (
+            <OnBoardingHeader
+              navigation={navigation}
+              method={onboardingMethod}
+              step={step}
+            />
+          ),
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: '#F4F5F6' },
+        }
       }}
     >
       <Stack.Screen
         // 근무표 범위 선택 - 전체 / 개인
         name="SelectScheduleScope"
         component={SelectScheduleScope}
-        options={{
-          header: ({ navigation }) => (
-            <OnBoardingScheduleHeader navigation={navigation} currentStep={0} />
-          ),
-        }}
       />
       <Stack.Screen
         // 근무표 기본 정보 입력
         name="InputSchedule"
         component={InputScheduleScreen}
-        options={{
-          header: ({ navigation }) => (
-            <OnBoardingScheduleHeader navigation={navigation} currentStep={1} />
-          ),
-        }}
       />
 
       {/* OCR 화면 -- */}
@@ -70,24 +84,15 @@ const OnBoardingScheduleNavigator = () => {
       <Stack.Screen name="SelectPhotoOCR" component={SelectPhotoOCRScreen} />
       <Stack.Screen name="EditScheduleOCR" component={EditScheduleOCRScreen} />
       {/* -- */}
+
       <Stack.Screen
         // 달력에 근무 형태 입력
         name="InputCalendarType"
         component={InputCalendarTypeScreen}
-        options={{
-          header: ({ navigation }) => (
-            <OnBoardingScheduleHeader navigation={navigation} currentStep={2} />
-          ),
-        }}
       />
       <Stack.Screen
         name="CompleteSchedule"
         component={CompleteScheduleScreen}
-        options={{
-          header: ({ navigation }) => (
-            <OnBoardingScheduleHeader navigation={navigation} currentStep={3} />
-          ),
-        }}
       />
     </Stack.Navigator>
   )
