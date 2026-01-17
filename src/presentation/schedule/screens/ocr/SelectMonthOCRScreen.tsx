@@ -4,23 +4,25 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
-  onboardingOCRNavigation,
-  OnboardingOCRStackParamList,
+  onboardingNavigation,
+  OnboardingStackParamList,
 } from '../../../../navigation/types'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
+import { useOnboardingStore } from '../../../../store/useOnboardingStore'
+import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
+import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 
 type ScheduleTypeRouteProp = RouteProp<
-  OnboardingOCRStackParamList,
+  OnboardingStackParamList,
   'SelectMonthOCR'
 >
 
 const SelectMonthOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const navigation = useNavigation<onboardingOCRNavigation>()
+  const navigation = useNavigation<onboardingNavigation>()
+  const { onboardingMethod } = useOnboardingStore()
 
-  const { selectedScheduleScopeType, organizationName, workGroup, workTimes } =
-    route.params
   console.log('SelectMonthWithOCRScreen params:', route.params)
 
   const [date, setDate] = useState<{ year: number; month: number | null }>({
@@ -33,14 +35,15 @@ const SelectMonthOCRScreen = () => {
   }, [])
 
   const handleNext = () => {
+    const nextStep = goNextOnboadingScreen(
+      onboardingMethod,
+      OnboardingStep.SelectMonthOCR
+    )
+    console.log('다음 온보딩 스텝:', nextStep)
     if (date.month) {
-      navigation.navigate('SelectPhotoOCR', {
+      navigation.navigate(nextStep, {
         year: date.year,
         month: date.month,
-        selectedScheduleScopeType,
-        organizationName,
-        workGroup,
-        workTimes,
       })
     } else {
       Alert.alert(

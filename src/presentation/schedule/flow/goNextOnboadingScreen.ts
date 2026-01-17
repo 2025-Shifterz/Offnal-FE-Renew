@@ -3,6 +3,8 @@ import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { NEW_FLOW, OCR_FLOW } from '../constant/flow'
 import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
 
+// 현재 step 기준으로 다음 온보딩 스텝을 반환하는 함수
+
 const FLOW_BY_METHOD: Record<
   OnboardingStepByMethod['method'],
   OnboardingStep[]

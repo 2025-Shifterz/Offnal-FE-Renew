@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
 import EntirePerson from '../../../assets/icons/entire-p.svg'
 import OnePerson from '../../../assets/icons/one-p.svg'
-import { ScheduleScopeType } from '../../../shared/types/ScheduleScopeType'
+import { ScheduleScopeType } from '../../../shared/types/ScheduleScope'
 
 interface SelectBoxProps {
   type: ScheduleScopeType

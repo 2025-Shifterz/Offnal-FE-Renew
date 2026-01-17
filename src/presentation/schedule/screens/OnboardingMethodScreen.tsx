@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
 import BottomButton from '../../../shared/components/BottomButton'
 import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
-import { useOnboardingStore } from '../../../store/useOnboardingState'
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
 
 const OnboardingMethodScreen = () => {
   const navigation = useNavigation<rootNavigation>()

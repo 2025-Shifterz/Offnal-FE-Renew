@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, InteractionManager } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import {
-  onboardingOCRNavigation,
-  OnboardingOCRStackParamList,
+  onboardingNavigation,
+  OnboardingStackParamList,
 } from '../../../../navigation/types'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
@@ -21,24 +21,22 @@ import dayjs from 'dayjs'
 import CalendarEditorHeader from '../../../../shared/components/calendar/header/CalendarEditorHeader'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
+import { useOnboardingStore } from '../../../../store/useOnboardingStore'
+import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
+import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 type ScheduleTypeRouteProp = RouteProp<
-  OnboardingOCRStackParamList,
+  OnboardingStackParamList,
   'EditScheduleOCR'
 >
 
 const EditScheduleOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const navigation = useNavigation<onboardingOCRNavigation>()
-  const {
-    selectedScheduleScopeType,
-    organizationName,
-    workGroup,
-    workTimes,
-    ocrResult,
-    year,
-    month,
-  } = route.params
+  const navigation = useNavigation<onboardingNavigation>()
+  const { onboardingMethod, scheduleScope } = useOnboardingStore()
+  const { ocrResult, year, month } = route.params
+  const { workGroup } = useScheduleInfoStore()
 
   const [currentDate, setCurrentDate] = useState(dayjs)
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
@@ -59,7 +57,7 @@ const EditScheduleOCRScreen = () => {
     const task = InteractionManager.runAfterInteractions(() => {
       isProcessedRef.current = true
 
-      if (selectedScheduleScopeType === 'MY') {
+      if (scheduleScope === 'MY') {
         const scheduleData = convertOCRResultToPersonalSchduleData(
           year,
           month,
@@ -77,7 +75,7 @@ const EditScheduleOCRScreen = () => {
         })
 
         setNewCalendarData(calendarRecord)
-      } else if (selectedScheduleScopeType === 'ALL') {
+      } else if (scheduleScope === 'ALL') {
         const teamScheduleData = convertOCRResultToTeamScheduleData(
           year,
           month,
@@ -111,7 +109,7 @@ const EditScheduleOCRScreen = () => {
   }, [year, month])
 
   const handleNext = () => {
-    if (selectedScheduleScopeType === 'ALL') {
+    if (scheduleScope === 'ALL') {
       if (tCalendarEditorRef.current) {
         tCalendarEditorRef.current.postData()
       }
@@ -120,7 +118,11 @@ const EditScheduleOCRScreen = () => {
         calendarEditorRef.current.postData()
       }
     }
-    navigation.navigate('CompleteScheduleOCR')
+    const nextStep = goNextOnboadingScreen(
+      onboardingMethod,
+      OnboardingStep.EditScheduleOCR
+    )
+    navigation.navigate(nextStep)
   }
 
   return (
@@ -146,22 +148,13 @@ const EditScheduleOCRScreen = () => {
             }
             onNextMonth={() => setCurrentDate(prev => prev.add(1, 'month'))}
           />
-          {selectedScheduleScopeType === 'ALL' ? (
+          {scheduleScope === 'ALL' ? (
             <TCalendarEditor
               currentDate={currentDate}
               ref={tCalendarEditorRef}
-              organizationName={organizationName}
-              workGroup={workGroup}
-              workTimes={workTimes}
             />
           ) : (
-            <CalendarEditor
-              ref={calendarEditorRef}
-              currentDate={currentDate}
-              organizationName={organizationName}
-              workGroup={workGroup}
-              workTimes={workTimes}
-            />
+            <CalendarEditor ref={calendarEditorRef} currentDate={currentDate} />
           )}
         </View>
       </ScrollView>

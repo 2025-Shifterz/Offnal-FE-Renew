@@ -1,6 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { ScheduleScopeType } from '../shared/types/ScheduleScopeType'
 import { Memo } from '../domain/models/Memo'
 
 // 네비게이션
@@ -23,9 +22,6 @@ export type RootStackParamList = {
   OnboardingSchedules:
     | NavigatorScreenParams<OnboardingStackParamList>
     | undefined
-  // OnboardingSchedulesOCR:
-  //   | NavigatorScreenParams<OnboardingOCRStackParamList>
-  //   | undefined
 
   // Migrate from MainNavigator.tsx
   AutoAlarm: undefined
@@ -75,41 +71,15 @@ export type LoginStackParamList = {
 // 온보딩 캘린더
 export type OnboardingStackParamList = {
   SelectScheduleScope: undefined
-  InputSchedule: { selectedScheduleScopeType: ScheduleScopeType }
-
+  InputSchedule: undefined
   // OCR 관련 화면들 --
-  SelectMonthOCR: {
-    selectedScheduleScopeType: ScheduleScopeType
-    organizationName: string
-    workGroup: string
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
-  }
+  SelectMonthOCR: undefined
   SelectPhotoOCR: {
-    selectedScheduleScopeType: ScheduleScopeType
-    organizationName: string
-    workGroup: string
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
     year: number
     month: number
     ocrResult?: unknown
   }
   EditScheduleOCR: {
-    selectedScheduleScopeType: ScheduleScopeType
-    organizationName: string
-    workGroup: string
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
     year: number
     month: number
     ocrResult?: unknown
@@ -117,7 +87,6 @@ export type OnboardingStackParamList = {
   // --
 
   InputCalendarType: {
-    selectedScheduleScopeType: ScheduleScopeType
     organizationName: string
     workGroup: string
     workTimes: {
@@ -126,64 +95,8 @@ export type OnboardingStackParamList = {
       N: { startTime: string; endTime: string }
     }
   }
-  CompleteSchedule: { selectedScheduleScopeType: ScheduleScopeType }
+  CompleteSchedule: undefined
 }
-
-// // 온보딩 OCR 캘린더
-// export type OnboardingOCRStackParamList = {
-//   SelectScheduleReg: undefined
-//   SelectScheduleScopeOCR: undefined
-//   InputScheduleOCR: { selectedScheduleScopeType: ScheduleScopeType }
-//   InputCalendarTypeOCR: {
-//     selectedScheduleScopeType: ScheduleScopeType
-//     calendarName: string
-//     workGroup: string
-//     workTimes: {
-//       D: { startTime: string; endTime: string }
-//       E: { startTime: string; endTime: string }
-//       N: { startTime: string; endTime: string }
-//     }
-//   }
-//   // SelectMonthOCR: {
-//   //   selectedScheduleScopeType: ScheduleScopeType
-//   //   organizationName: string
-//   //   workGroup: string
-//   //   workTimes: {
-//   //     D: { startTime: string; endTime: string }
-//   //     E: { startTime: string; endTime: string }
-//   //     N: { startTime: string; endTime: string }
-//   //   }
-//   // }
-//   // SelectPhotoOCR: {
-//   //   selectedScheduleScopeType: ScheduleScopeType
-//   //   organizationName: string
-//   //   workGroup: string
-//   //   workTimes: {
-//   //     D: { startTime: string; endTime: string }
-//   //     E: { startTime: string; endTime: string }
-//   //     N: { startTime: string; endTime: string }
-//   //   }
-//   //   year: number
-//   //   month: number
-//   //   ocrResult?: unknown
-//   // }
-//   // EditScheduleOCR: {
-//   //   selectedScheduleScopeType: ScheduleScopeType
-//   //   organizationName: string
-//   //   workGroup: string
-//   //   workTimes: {
-//   //     D: { startTime: string; endTime: string }
-//   //     E: { startTime: string; endTime: string }
-//   //     N: { startTime: string; endTime: string }
-//   //   }
-//   //   year: number
-//   //   month: number
-//   //   ocrResult?: unknown
-//   // }
-//   CompleteScheduleOCR:
-//     | { selectedScheduleScopeType: ScheduleScopeType }
-//     | undefined
-// }
 
 // 오토알람 탭 네비게이터
 export type AutoAlarmScreenStackParamList = {

@@ -12,16 +12,14 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
-import {
-  CreateCalendarRequest,
-  InputWorkTimeDetail,
-} from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
+import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { WorkType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { View } from 'react-native'
 import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 export interface CalendarEditorRef {
   postData: () => void
@@ -29,13 +27,10 @@ export interface CalendarEditorRef {
 
 const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
-  Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
-    workTimes: Record<string, InputWorkTimeDetail>
-    organizationName: string
-    workGroup: string
+  {
     currentDate: dayjs.Dayjs
   }
-> = ({ workTimes, organizationName, workGroup, currentDate }, ref) => {
+> = ({ currentDate }, ref) => {
   // stores
   const selectedDate = useCalendarStore(state => state.selectedDate)
   const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
@@ -46,6 +41,7 @@ const CalendarEditor: ForwardRefRenderFunction<
   const updateNewCalendarDay = useCalendarStore(
     state => state.updateNewCalendarDay
   )
+  const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
 
   // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []

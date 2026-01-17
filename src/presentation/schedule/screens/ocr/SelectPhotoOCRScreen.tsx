@@ -21,34 +21,31 @@ import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { OnboardingOCRStackParamList } from '../../../../navigation/types'
+import { OnboardingStackParamList } from '../../../../navigation/types'
 import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { SchedulePhotoType } from '../../../../shared/types/SchedulePhotoType'
+import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
+import { useOnboardingStore } from '../../../../store/useOnboardingStore'
+import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
 
 type ScheduleInfoInputRouteProp = RouteProp<
-  OnboardingOCRStackParamList,
+  OnboardingStackParamList,
   'SelectPhotoOCR'
 >
 
 const SelectPhotoOCRScreen = () => {
   const route = useRoute<ScheduleInfoInputRouteProp>()
   const navigation =
-    useNavigation<NativeStackNavigationProp<OnboardingOCRStackParamList>>()
+    useNavigation<NativeStackNavigationProp<OnboardingStackParamList>>()
+  const { onboardingMethod } = useOnboardingStore()
 
-  const {
-    selectedScheduleScopeType,
-    organizationName,
-    workGroup,
-    workTimes,
-    year,
-    month,
-  } = route.params
+  const { year, month } = route.params
 
   const [imageUri, setImageUri] = useState<string | null | undefined>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -193,11 +190,11 @@ const SelectPhotoOCRScreen = () => {
         console.log(`첫 번째 근무조의 15일자 근무: ${day15Shift}`) // 예: "N"
       }
 
-      navigation.navigate('EditScheduleOCR', {
-        selectedScheduleScopeType,
-        organizationName,
-        workGroup,
-        workTimes,
+      const nextStep = goNextOnboadingScreen(
+        onboardingMethod,
+        OnboardingStep.SelectPhotoOCR
+      )
+      navigation.navigate(nextStep, {
         year,
         month,
         ocrResult,

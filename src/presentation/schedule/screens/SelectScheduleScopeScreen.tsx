@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View } from 'react-native'
 import SelectScheduleBox from '../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
@@ -6,17 +6,30 @@ import { onboardingNavigation } from '../../../navigation/types'
 import BottomButton from '../../../shared/components/BottomButton'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ScheduleScopeType } from '../../../shared/types/ScheduleScopeType'
+import { ScheduleScope } from '../../../shared/types/ScheduleScope'
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
+import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
+import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 
 const SelectScheduleScopeScreen = () => {
   const navigation = useNavigation<onboardingNavigation>()
-  const [selectedScheduleScopeType, setSelectedScheduleScopeType] =
-    useState<ScheduleScopeType>('ALL')
+  const { onboardingMethod } = useOnboardingStore()
+  const { scheduleScope, setScheduleScope } = useOnboardingStore()
 
   // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
-  const handleBoxClick = (type: ScheduleScopeType) => {
-    setSelectedScheduleScopeType(type)
+  const handleBoxClick = (type: ScheduleScope) => {
+    setScheduleScope(type)
     console.log(`선택된 전체 | 개인 근무표 방식: ${type}`)
+  }
+
+  const handleNext = () => {
+    console.log('handleNext called')
+    const nextStep = goNextOnboadingScreen(
+      onboardingMethod,
+      OnboardingStep.SelectScheduleScope
+    )
+    console.log('다음 온보딩 스텝:', nextStep)
+    navigation.navigate(nextStep)
   }
 
   return (
@@ -33,26 +46,19 @@ const SelectScheduleScopeScreen = () => {
           <SelectScheduleBox
             type="ALL"
             onPress={handleBoxClick}
-            isSelected={selectedScheduleScopeType === 'ALL'}
+            isSelected={scheduleScope === 'ALL'}
             title="전체 근무표 등록"
             subTitle={`여러 조의 스케줄이 담긴\n근무표를 등록할 수 있어요`}
           />
           <SelectScheduleBox
             type="MY"
             onPress={handleBoxClick}
-            isSelected={selectedScheduleScopeType === 'MY'}
+            isSelected={scheduleScope === 'MY'}
             title="내 근무표만 등록"
             subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
           />
         </View>
-        <BottomButton
-          text="다음"
-          onPress={() => {
-            navigation.navigate('InputSchedule', {
-              selectedScheduleScopeType,
-            })
-          }}
-        />
+        <BottomButton text="다음" onPress={handleNext} />
       </View>
     </SafeAreaView>
   )
