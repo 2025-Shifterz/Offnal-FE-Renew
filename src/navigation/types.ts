@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { ScheduleScopeType } from '../shared/types/ScheduleScopeType'
 import { Memo } from '../domain/models/Memo'
+import dayjs from 'dayjs'
 
 // 네비게이션
 export type onboardingNavigation =
@@ -28,8 +29,8 @@ export type RootStackParamList = {
 
   // Migrate from MainNavigator.tsx
   AutoAlarm: undefined
-  Todo: undefined
-  Memo: undefined
+  Todo: { selectedDate: dayjs.Dayjs | null }
+  Memo: { selectedDate: dayjs.Dayjs | null }
   AddMemo: { memo?: Memo; date?: string } | undefined
 
   //Migrate from CalendarNavigator.tsx

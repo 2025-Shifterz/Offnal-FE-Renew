@@ -38,11 +38,9 @@ const DayBoxHeader = ({ currentDate, setCurrentDate }: DayBoxHeaderProps) => {
         </GlobalText>
       </View>
       <View className="w-[24px]">
-        {!isToday && (
-          <TouchableOpacity onPress={handleNextDate} className={arrowStyle}>
-            <ArrowRight />
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity onPress={handleNextDate} className={arrowStyle}>
+          <ArrowRight />
+        </TouchableOpacity>
       </View>
     </View>
   )

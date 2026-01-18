@@ -130,9 +130,15 @@ const HasCalendar = ({
             )}
           </View>
           <ScrollView>
-            <ToDoCard.Container todos={todos ?? []} />
+            <ToDoCard.Container
+              todos={todos ?? []}
+              selectedDate={selectedDate}
+            />
             <View className="mt-[-20px]">
-              <MemoCard.Container memos={memos ?? []} />
+              <MemoCard.Container
+                memos={memos ?? []}
+                selectedDate={selectedDate}
+              />
             </View>
           </ScrollView>
         </View>
