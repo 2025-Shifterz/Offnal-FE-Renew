@@ -3,6 +3,8 @@ import {
   TeamCalendarRecord,
   TeamDateAndWorkType,
 } from '../shared/types/TeamCalendar'
+import { useScheduleInfoStore } from './useScheduleInfoStore'
+import { teamCalendarRepository } from '../infrastructure/di/Dependencies'
 /*
 <---- teamCalendarData 형태 ----> 
 
@@ -37,6 +39,13 @@ interface TeamCalendarState {
   }) => void
   setMyTeam: (team: string) => void
   clearTeamCalendarData: () => void
+
+  // 서버에서 데이터 불러오기 & 저장
+  fetchTeamCalendarData: (
+    organizationName: string,
+    startDate: string,
+    endDate: string
+  ) => Promise<void>
 }
 
 export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
@@ -111,7 +120,42 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
       return { teamCalendarData: newData }
     })
   },
-  setMyTeam: (team: string) => set({ myTeam: team }),
+  setMyTeam: (team: string) => {
+    set(() => ({ myTeam: team }))
+    useScheduleInfoStore.getState().setWorkGroup(team)
+  },
 
   clearTeamCalendarData: () => set({ teamCalendarData: [] }),
+
+  // 서버에서 데이터 불러오기 & 저장
+  fetchTeamCalendarData: async (
+    organizationName: string,
+    startDate: string,
+    endDate: string
+  ) => {
+    try {
+      const response = await teamCalendarRepository.getTeamCalendar(
+        organizationName,
+        startDate,
+        endDate
+      )
+      // 서버 workType → 내부 WorkType 필드에 맞게 매핑 필요하면 fromShiftType 사용
+      const flattened: (TeamDateAndWorkType & { team: string })[] =
+        response.teams.flatMap(teamRecord =>
+          teamRecord.workInstances.map(wi => ({
+            team: teamRecord.team,
+            date: wi.date,
+            workTypeName: wi.workTypeName,
+            startTime: wi.startTime,
+            endTime: wi.endTime,
+          }))
+        )
+      set({ myTeam: response.myTeam })
+
+      useTeamCalendarStore.getState().setTeamCalendarData(flattened)
+      console.log('팀 캘린더 fetch 성공:', response)
+    } catch (error) {
+      throw error
+    }
+  },
 }))

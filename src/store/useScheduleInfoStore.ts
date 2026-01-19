@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 import { WorkTime } from '../shared/types/WorkTime'
-import { scheduleInfoRepository } from '../infrastructure/di/Dependencies'
+import {
+  organizationRepository,
+  scheduleInfoRepository,
+} from '../infrastructure/di/Dependencies'
+import { Organization } from '../domain/models/Organization'
 
 interface ScheduleInfoState {
   organizationName: string
@@ -17,6 +21,7 @@ interface ScheduleInfoState {
   setAllWorkTimes: (workTimes: WorkTime) => void
 
   fetchScheduleInfo: (organizationName: string, team: string) => Promise<void>
+  fetchOrganization: () => Promise<Organization>
 }
 
 export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
@@ -44,6 +49,7 @@ export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
     })),
   setAllWorkTimes: (workTimes: WorkTime) => set(() => ({ workTimes })),
 
+  // 서버에서 불러오기 & 저장
   fetchScheduleInfo: async (organizationName: string, team: string) => {
     try {
       const data = await scheduleInfoRepository.getScheduleInfo(
@@ -53,6 +59,21 @@ export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
       useScheduleInfoStore.getState().setAllWorkTimes(data)
     } catch (error) {
       console.error('Failed to fetch schedule info:', error)
+    }
+  },
+  fetchOrganization: async () => {
+    try {
+      const organization = await organizationRepository.getOrganization()
+      set(() => ({
+        organizationName: organization.organizationName,
+      }))
+      set(() => ({
+        workGroup: organization.team,
+      }))
+      return organization
+    } catch (error) {
+      console.error('Failed to fetch organization:', error)
+      throw error
     }
   },
 }))

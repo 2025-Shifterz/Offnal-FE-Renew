@@ -2,12 +2,12 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 
 import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
 import TCalendarBase from './TCalendarBase'
 import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -22,7 +22,7 @@ const TCalendarInteractive = ({
   setSelectedDate,
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const { organizationName } = useScheduleInfoStore()
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const setTeamCalendarData = useTeamCalendarStore(
     state => state.setTeamCalendarData
@@ -38,13 +38,13 @@ const TCalendarInteractive = ({
     const fetchData = async () => {
       try {
         console.log('팀 근무표 조회 request: ', {
-          organizationName: latestOrganization.organizationName,
+          organizationName,
           myTeam,
           monthStartDate,
           monthEndDate,
         })
         const response = await teamCalendarRepository.getTeamCalendar(
-          latestOrganization.organizationName,
+          organizationName,
           monthStartDate,
           monthEndDate
         )
@@ -62,15 +62,15 @@ const TCalendarInteractive = ({
 
         setTeamCalendarData(flattened)
         console.log('팀 근무표 수정 모드: 월별 근무표 조회 성공:', response)
-        console.log('organization name:', latestOrganization.organizationName)
+        console.log('organization name:', organizationName)
       } catch (error) {
         console.log('팀 근무표 수정 모드: 월별 근무표 조회 실패:', error)
-        console.log('organization name:', latestOrganization.organizationName)
+        console.log('organization name:', organizationName)
       }
     }
     fetchData()
   }, [
-    latestOrganization.organizationName,
+    organizationName,
     monthStartDate,
     monthEndDate,
     setTeamCalendarData,

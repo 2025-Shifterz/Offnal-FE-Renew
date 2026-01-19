@@ -12,7 +12,6 @@ import { rootNavigation } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
-import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
@@ -22,8 +21,8 @@ const CalendarEditScreen = () => {
   const workTimes = useScheduleInfoStore(state => state.workTimes)
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  const myTeam = useTeamCalendarStore(state => state.myTeam)
+
+  const { organizationName, workGroup } = useScheduleInfoStore()
 
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
@@ -105,8 +104,8 @@ const CalendarEditScreen = () => {
       console.log('근무표 수정 요청 데이터:', toUpdateShiftRecord(calendarData))
 
       await calendarRepository.updateCalendar(
-        latestOrganization.organizationName,
-        myTeam,
+        organizationName,
+        workGroup,
         toUpdateShiftRecord(calendarData)
       )
 

@@ -3,9 +3,8 @@ import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import CalendarBase from './CalendarBase'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -20,11 +19,10 @@ const CalendarInteractive = ({
   setSelectedDate,
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const { organizationName, workGroup } = useScheduleInfoStore()
   const calendarData = useCalendarStore(state => state.calendarData)
   const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
 
-  const myTeam = useTeamCalendarStore(state => state.myTeam)
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
@@ -36,14 +34,14 @@ const CalendarInteractive = ({
 
       try {
         console.log('요청하는 근무표 조회 데이터: ', {
-          organizationName: latestOrganization.organizationName,
-          myTeam,
+          organizationName,
+          workGroup,
           monthStartDate,
           monthEndDate,
         })
         const response = await fetchCalendarData(
-          latestOrganization.organizationName,
-          myTeam,
+          organizationName,
+          workGroup,
           monthStartDate,
           monthEndDate
         )
@@ -54,12 +52,7 @@ const CalendarInteractive = ({
       }
     }
     fetchData()
-  }, [
-    selectedYearMonth,
-    latestOrganization.organizationName,
-    myTeam,
-    fetchCalendarData,
-  ])
+  }, [selectedYearMonth, organizationName, workGroup, fetchCalendarData])
 
   return (
     <View>

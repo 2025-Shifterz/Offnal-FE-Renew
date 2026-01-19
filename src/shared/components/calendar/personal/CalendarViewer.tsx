@@ -1,14 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import {
-  calendarRepository,
-  teamCalendarRepository,
-} from '../../../../infrastructure/di/Dependencies'
+import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 interface CalendarViewerProps {
   selectedYearMonth: { year: number; month: number }
@@ -28,7 +26,7 @@ const CalendarViewer = ({
   const calendarData = useCalendarStore(state => state.calendarData)
   const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
 
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const { organizationName, workGroup } = useScheduleInfoStore()
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   // '2025-11-01' 형태
@@ -41,13 +39,13 @@ const CalendarViewer = ({
     const fetchData = async () => {
       try {
         console.log('요청하는 팀 근무표 조회 데이터: ', {
-          organizationName: latestOrganization.organizationName,
+          organizationName,
           monthStartDate,
           monthEndDate,
         })
         // 팀 캘린더 조회 -> myTeam 조회
         const responseTeam = await teamCalendarRepository.getTeamCalendar(
-          latestOrganization.organizationName,
+          organizationName,
           monthStartDate,
           monthEndDate
         )
@@ -55,14 +53,14 @@ const CalendarViewer = ({
 
         // 개인 캘린더 조회
         console.log('요청하는 개인 근무표 조회 데이터: ', {
-          organizationName: latestOrganization.organizationName,
-          team: responseTeam.myTeam || latestOrganization.team,
+          organizationName,
+          team: responseTeam.myTeam || workGroup,
           monthStartDate,
           monthEndDate,
         })
         const response = await fetchCalendarData(
-          latestOrganization.organizationName,
-          responseTeam.myTeam || latestOrganization.team, // myTeam 이 있으면 그걸로 !!
+          organizationName,
+          responseTeam.myTeam || workGroup, // myTeam 이 있으면 그걸로 !!
           monthStartDate,
           monthEndDate
         )
@@ -72,9 +70,9 @@ const CalendarViewer = ({
       }
     }
     // organizationName 이 아직 셋팅되지 않은 경우 호출을 막음
-    if (latestOrganization.organizationName.trim() === '') return
+    if (organizationName.trim() === '') return
     fetchData()
-  }, [latestOrganization.organizationName, monthStartDate, monthEndDate])
+  }, [organizationName, monthStartDate, monthEndDate])
 
   // ----------
   useEffect(() => {

@@ -4,18 +4,16 @@ import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'
 import PlusEdit from '../component/PlusEdit'
-import { useCalendarStore } from '../../../store/useCalendarStore'
-import { organizationRepository } from '../../../infrastructure/di/Dependencies'
 import { useFocusEffect } from '@react-navigation/native'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
   const [showPlus, setShowPlus] = useState(false)
-  const setLatestOrganization = useCalendarStore(
-    state => state.setLatestOrganization
-  )
+
   // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
   const [isTeamView, setIsTeamView] = useState(false)
+  const { fetchOrganization } = useScheduleInfoStore()
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(
@@ -24,24 +22,17 @@ const CalendarScreen = () => {
       // 전체 조직 조회: 하나라도 있으면 캘린더가 있다고 판단
       const fetchData = async () => {
         try {
-          const res = await organizationRepository.getAllOrganizations()
+          const res = await fetchOrganization()
 
           console.log('조직 조회 성공:', res)
-          if (res.length === 0) setNoCalendar(true)
-
-          // 가장 마지막 조직 데이터를 저장
-          const organizations = res
-          if (organizations && organizations.length > 0) {
-            const latestItem = organizations[organizations.length - 1]
-            setLatestOrganization(latestItem.organizationName, latestItem.team)
-          }
+          if (!res) setNoCalendar(true)
         } catch (error) {
           console.log('조직 조회 실패:', error)
         }
       }
 
       fetchData()
-    }, [setLatestOrganization])
+    }, [fetchOrganization])
   )
 
   if (noCalendar === null) {

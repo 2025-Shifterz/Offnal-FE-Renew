@@ -23,11 +23,6 @@ interface CalendarState {
   selectedDate: dayjs.Dayjs | null
 
   isLoading: boolean
-  // 최신 조직 정보
-  latestOrganization: {
-    organizationName: string
-    team: string
-  }
 
   // 편집용
   newCalendarData: DateAndWorkTypeRecord
@@ -38,7 +33,6 @@ interface CalendarState {
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
-  setLatestOrganization: (organizationName: string, team: string) => void
 
   // 온보딩 캘린더 편집용 - CalendarEditor 에서 쓰임
   setNewCalendarData: (data: DateAndWorkTypeRecord) => void
@@ -70,11 +64,6 @@ export const useCalendarStore = create<CalendarState>()(set => ({
     currentEndDate: dayjs().endOf('month').format('YYYY-MM-DD'),
   },
   isLoading: false,
-
-  latestOrganization: {
-    organizationName: '',
-    team: '',
-  },
 
   setCalendarData: data =>
     set(() => {
@@ -149,9 +138,4 @@ export const useCalendarStore = create<CalendarState>()(set => ({
       console.error('scheduleInfo fetch failed', e)
     }
   },
-
-  setLatestOrganization: (organizationName, team) =>
-    set(() => ({
-      latestOrganization: { organizationName, team },
-    })),
 }))

@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import TCalendarBase from './TCalendarBase'
 import dayjs from 'dayjs'
-import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
-import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 interface TCalendarViewerProps {
   selectedYearMonth: { year: number; month: number }
@@ -23,12 +21,10 @@ const TCalendarViewer = ({
   setSelectedDate,
   onDateSelected,
 }: TCalendarViewerProps) => {
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
-  const setTeamCalendarData = useTeamCalendarStore(
-    state => state.setTeamCalendarData
-  )
-  const [myTeam, setMyTeam] = useState('')
+  const { organizationName } = useScheduleInfoStore()
+  const { teamCalendarData, fetchTeamCalendarData, myTeam } =
+    useTeamCalendarStore()
+
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
@@ -38,40 +34,17 @@ const TCalendarViewer = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await teamCalendarRepository.getTeamCalendar(
-          latestOrganization.organizationName,
+        await fetchTeamCalendarData(
+          organizationName,
           monthStartDate,
           monthEndDate
         )
-        // 서버 workType → 내부 WorkType 필드에 맞게 매핑 필요하면 fromShiftType 사용
-        const flattened: (TeamDateAndWorkType & { team: string })[] =
-          response.teams.flatMap(teamRecord =>
-            teamRecord.workInstances.map(wi => ({
-              team: teamRecord.team,
-              date: wi.date,
-              workTypeName: wi.workTypeName,
-              startTime: wi.startTime,
-              endTime: wi.endTime,
-            }))
-          )
-        setMyTeam(response.myTeam)
-
-        setTeamCalendarData(flattened)
-        console.log('팀 캘린더 탭: 월별 근무표 조회 성공:', response)
-        console.log('organization name:', latestOrganization.organizationName)
       } catch (error) {
         console.log('팀 캘린더 탭: 월별 근무표 조회 실패:', error)
-        console.log('organization name:', latestOrganization.organizationName)
       }
     }
     fetchData()
-  }, [
-    latestOrganization.organizationName,
-    monthStartDate,
-    monthEndDate,
-    setMyTeam,
-    setTeamCalendarData,
-  ])
+  }, [organizationName, monthStartDate, monthEndDate, fetchTeamCalendarData])
 
   // ----------
 
