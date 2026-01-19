@@ -5,7 +5,7 @@ import SplashScreen from '../presentation/splash/SplashScreen'
 import TabsNavigator from './TabsNavigator'
 import OnBoardingScheduleNavigator from './OnboardingScheduleNavigator'
 import LoginNavigator from './LoginNavigator'
-import { RootStackParamList } from './types'
+import { RootStackParamList } from './types/StackTypes'
 
 // Migrate from MainNavigator.tsx
 import TodoScreen from '../presentation/note/screens/TodoScreen'
@@ -24,8 +24,15 @@ import FeedBackScreen from '../presentation/info/screen/FeedBackScreen'
 import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
 import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
+
+// Migrate from OnboardingNavigator.tsx
 import OnboardingMethodScreen from '../presentation/onboarding/screens/OnboardingMethodScreen'
+
+// Migrate from AutoAlarmNavigator.tsx
 import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
+
+// Onboarding Navigation Error Screen
+import NavigationErrorScreen from '../presentation/error/screen/NavigationError'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -81,8 +88,15 @@ const RootNavigator = () => {
         />
         <RootStack.Screen name="WithdrawScreen" component={WithdrawScreen} />
 
+        {/* Migrate from AutoAlarmNavigator.tsx */}
         <RootStack.Screen name="CreateAlarm" component={CreateAlarmScreen} />
         {/* <RootStack.Screen name="EditAutoAlarm" component={} /> */}
+
+        {/* 온보딩 중 네비게이션 에러 화면 */}
+        <RootStack.Screen
+          name="NavigationError"
+          component={NavigationErrorScreen}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   )

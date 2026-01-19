@@ -12,7 +12,7 @@ import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
 import { useUserStore } from '../../../store/useUserStore'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { Asset, launchImageLibrary } from 'react-native-image-picker'
 
 const MAX_NAME_LENGTH = 10

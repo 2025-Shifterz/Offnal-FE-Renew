@@ -13,7 +13,7 @@ import GlobalText from '../../../shared/components/GlobalText'
 import StarRating from '../../../shared/components/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 
 type RatingInfo = { emoji: string; text: string }
 

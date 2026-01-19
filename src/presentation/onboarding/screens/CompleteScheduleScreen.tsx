@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { RootStackParamList } from '../../../navigation/types'
+import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'

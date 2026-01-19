@@ -4,7 +4,7 @@ import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
 import ScheduleNameInput from '../component/ScheduleNameInput'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../navigation/types'
+import { onboardingNavigation } from '../../../navigation/types/StackTypes'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -12,9 +12,12 @@ import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 
 const InputScheduleScreen = () => {
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<{
+    navigate: (route: OnboardingRoute) => void
+  }>()
   const { onboardingMethod } = useOnboardingStore()
   const {
     organizationName,
@@ -37,7 +40,7 @@ const InputScheduleScreen = () => {
       OnboardingStep.InputSchedule
     )
     console.log('다음 온보딩 스텝:', nextStep)
-    navigation.navigate(nextStep)
+    navigation.navigate({ name: nextStep } as OnboardingRoute)
   }
 
   return (

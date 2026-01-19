@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import {
   onboardingNavigation,
   OnboardingStackParamList,
-} from '../../../../navigation/types'
+} from '../../../../navigation/types/StackTypes'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
   convertOCRResultToPersonalSchduleData,
@@ -25,6 +25,7 @@ import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
+import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -33,7 +34,9 @@ type ScheduleTypeRouteProp = RouteProp<
 
 const EditScheduleOCRScreen = () => {
   const route = useRoute<ScheduleTypeRouteProp>()
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<{
+    navigate: (route: OnboardingRoute) => void
+  }>()
   const { onboardingMethod, scheduleScope } = useOnboardingStore()
   const { ocrResult, year, month } = route.params
   const { workGroup } = useScheduleInfoStore()
@@ -122,7 +125,7 @@ const EditScheduleOCRScreen = () => {
       onboardingMethod,
       OnboardingStep.EditScheduleOCR
     )
-    navigation.navigate(nextStep)
+    navigation.navigate({ name: nextStep } as OnboardingRoute)
   }
 
   return (

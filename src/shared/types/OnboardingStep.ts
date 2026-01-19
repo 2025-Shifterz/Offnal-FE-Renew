@@ -10,4 +10,5 @@ export enum OnboardingStep {
 
   InputCalendarType = 'InputCalendarType', // 달력에 근무 형태 입력
   CompleteSchedule = 'CompleteSchedule', // 근무표 등록 완료
+  NavigationError = 'NavigationError', // 에러 화면
 }

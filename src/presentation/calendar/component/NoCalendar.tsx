@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 import NoCalendarIcon from '../../../assets/icons/noCalendar.svg'
 
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import NewCalButton from './NewCalButton'
 
 const NoCalendar = () => {

@@ -1,6 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Memo } from '../domain/models/Memo'
+import { Memo } from '../../domain/models/Memo'
 
 // 네비게이션
 export type onboardingNavigation =
@@ -52,8 +52,10 @@ export type RootStackParamList = {
   // Migrate from AutoAlarmNavigator.tsx
   CreateAlarm: undefined
   EditAutoAlarm: { alarmId: string }
-}
 
+  // 에러 화면
+  NavigationError: undefined
+}
 // 탭 네비게이터
 export type TabParamList = {
   Home: undefined
@@ -87,14 +89,6 @@ export type OnboardingStackParamList = {
   }
   // --
 
-  InputCalendarType: {
-    organizationName: string
-    workGroup: string
-    workTimes: {
-      D: { startTime: string; endTime: string }
-      E: { startTime: string; endTime: string }
-      N: { startTime: string; endTime: string }
-    }
-  }
+  InputCalendarType: undefined
   CompleteSchedule: undefined
 }

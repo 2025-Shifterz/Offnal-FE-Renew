@@ -12,7 +12,7 @@ import { Fragment, useCallback, useRef, useState } from 'react'
 import OneAddButton from '../components/OneAddButton'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useEffect } from 'react'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 const MemoScreen = () => {

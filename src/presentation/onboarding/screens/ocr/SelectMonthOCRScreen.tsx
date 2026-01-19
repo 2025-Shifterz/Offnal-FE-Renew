@@ -3,15 +3,13 @@ import { View, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import {
-  onboardingNavigation,
-  OnboardingStackParamList,
-} from '../../../../navigation/types'
+import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
+import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -19,8 +17,10 @@ type ScheduleTypeRouteProp = RouteProp<
 >
 
 const SelectMonthOCRScreen = () => {
+  const navigation = useNavigation<{
+    navigate: (route: OnboardingRoute) => void
+  }>()
   const route = useRoute<ScheduleTypeRouteProp>()
-  const navigation = useNavigation<onboardingNavigation>()
   const { onboardingMethod } = useOnboardingStore()
 
   console.log('SelectMonthWithOCRScreen params:', route.params)
@@ -41,10 +41,13 @@ const SelectMonthOCRScreen = () => {
     )
     console.log('다음 온보딩 스텝:', nextStep)
     if (date.month) {
-      navigation.navigate(nextStep, {
-        year: date.year,
-        month: date.month,
-      })
+      navigation.navigate({
+        name: nextStep,
+        params: {
+          year: date.year,
+          month: date.month,
+        },
+      } as OnboardingRoute)
     } else {
       Alert.alert(
         '월을 선택해주세요',

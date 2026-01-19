@@ -7,15 +7,15 @@ import { FLOW_BY_METHOD } from '../constant/flow'
 const goNextOnboadingScreen = (
   onboardingMethod: OnboardingMethod,
   currentStep: OnboardingStep
-): OnboardingStep | null => {
+): OnboardingStep => {
   const flow = FLOW_BY_METHOD[onboardingMethod]
-  if (!flow) return null
+  if (!flow) return OnboardingStep.Error
 
   const currentStepIndex = flow.indexOf(currentStep)
-  if (currentStepIndex === -1) return null
+  if (currentStepIndex === -1) return OnboardingStep.Error
 
   const nextStepIndex = currentStepIndex + 1
-  return flow[nextStepIndex] ?? null
+  return flow[nextStepIndex] ?? OnboardingStep.Error
 }
 
 export default goNextOnboadingScreen

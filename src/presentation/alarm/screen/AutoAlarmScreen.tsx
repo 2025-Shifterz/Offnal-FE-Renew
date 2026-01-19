@@ -7,7 +7,7 @@ import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import PlusIcon from '../../../assets/icons/alarm_plus_24.svg'
 import SettingsIcon from '../../../assets/icons/alarm_three-dot_24.svg'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 
 const AutoAlarmScreen = () => {
   const [showAlarmList, setShowAlarmList] = useState(false) // 알람 없음

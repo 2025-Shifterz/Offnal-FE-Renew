@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import GlobalText from '../../../shared/components/GlobalText'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { useNavigation } from '@react-navigation/native'
 
 const CreateAlarmScreen = () => {

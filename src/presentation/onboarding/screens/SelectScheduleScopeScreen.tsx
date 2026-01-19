@@ -2,7 +2,6 @@ import React from 'react'
 import { View } from 'react-native'
 import SelectScheduleBox from '../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../navigation/types'
 import BottomButton from '../../../shared/components/BottomButton'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -10,9 +9,12 @@ import { ScheduleScope } from '../../../shared/types/ScheduleScope'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
+import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 
 const SelectScheduleScopeScreen = () => {
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<{
+    navigate: (route: OnboardingRoute) => void
+  }>()
   const { onboardingMethod } = useOnboardingStore()
   const { scheduleScope, setScheduleScope } = useOnboardingStore()
 
@@ -29,7 +31,7 @@ const SelectScheduleScopeScreen = () => {
       OnboardingStep.SelectScheduleScope
     )
     console.log('다음 온보딩 스텝:', nextStep)
-    navigation.navigate(nextStep)
+    navigation.navigate({ name: nextStep } as OnboardingRoute)
   }
 
   return (

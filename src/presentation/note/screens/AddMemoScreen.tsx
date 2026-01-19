@@ -11,7 +11,10 @@ import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import GlobalText from '../../../shared/components/GlobalText'
 import { useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { rootNavigation, RootStackParamList } from '../../../navigation/types'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import dayjs from 'dayjs'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 

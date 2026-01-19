@@ -21,7 +21,7 @@ import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { OnboardingStackParamList } from '../../../../navigation/types'
+import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
 import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
@@ -30,6 +30,7 @@ import { SchedulePhotoType } from '../../../../shared/types/SchedulePhotoType'
 import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
+import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
@@ -40,9 +41,10 @@ type ScheduleInfoInputRouteProp = RouteProp<
 >
 
 const SelectPhotoOCRScreen = () => {
+  const navigation = useNavigation<{
+    navigate: (route: OnboardingRoute) => void
+  }>()
   const route = useRoute<ScheduleInfoInputRouteProp>()
-  const navigation =
-    useNavigation<NativeStackNavigationProp<OnboardingStackParamList>>()
   const { onboardingMethod } = useOnboardingStore()
 
   const { year, month } = route.params
@@ -194,11 +196,14 @@ const SelectPhotoOCRScreen = () => {
         onboardingMethod,
         OnboardingStep.SelectPhotoOCR
       )
-      navigation.navigate(nextStep, {
-        year,
-        month,
-        ocrResult,
-      })
+      navigation.navigate({
+        name: nextStep,
+        params: {
+          year,
+          month,
+          ocrResult,
+        },
+      } as OnboardingRoute)
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : String(e)
       Alert.alert('Analysis Error', errorMessage)

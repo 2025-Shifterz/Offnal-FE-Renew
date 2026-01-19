@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../navigation/types'
+import { onboardingNavigation } from '../../../navigation/types/StackTypes'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -16,12 +16,15 @@ import dayjs from 'dayjs'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
+import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 
 const InputCalendarTypeScreen = () => {
   const { scheduleScope, onboardingMethod } = useOnboardingStore()
   const [currentDate, setCurrentDate] = useState(dayjs)
 
-  const navigation = useNavigation<onboardingNavigation>()
+  const navigation = useNavigation<{
+    navigate: (route: OnboardingRoute) => void
+  }>()
 
   // 자식의 postData 호출
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
@@ -43,7 +46,8 @@ const InputCalendarTypeScreen = () => {
       onboardingMethod,
       OnboardingStep.InputCalendarType
     )
-    navigation.navigate(nextStep)
+
+    navigation.navigate({ name: nextStep } as OnboardingRoute)
   }
 
   return (
