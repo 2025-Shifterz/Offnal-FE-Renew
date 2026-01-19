@@ -25,6 +25,7 @@ import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
 import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
 import OnboardingMethodScreen from '../presentation/onboarding/screens/OnboardingMethodScreen'
+import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -79,6 +80,9 @@ const RootNavigator = () => {
           component={WithdrawBeforeScreen}
         />
         <RootStack.Screen name="WithdrawScreen" component={WithdrawScreen} />
+
+        <RootStack.Screen name="CreateAlarm" component={CreateAlarmScreen} />
+        {/* <RootStack.Screen name="EditAutoAlarm" component={} /> */}
       </RootStack.Navigator>
     </NavigationContainer>
   )

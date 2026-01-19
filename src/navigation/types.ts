@@ -5,13 +5,9 @@ import { Memo } from '../domain/models/Memo'
 // 네비게이션
 export type onboardingNavigation =
   NativeStackNavigationProp<OnboardingStackParamList>
-// export type onboardingOCRNavigation =
-//   NativeStackNavigationProp<OnboardingOCRStackParamList>
 export type loginNavigation = NativeStackNavigationProp<LoginStackParamList>
 export type tabNavigation = NativeStackNavigationProp<TabParamList>
 export type rootNavigation = NativeStackNavigationProp<RootStackParamList>
-export type autoAlarmNavigation =
-  NativeStackNavigationProp<AutoAlarmScreenStackParamList>
 
 // 루트 네비게이터
 export type RootStackParamList = {
@@ -52,6 +48,10 @@ export type RootStackParamList = {
   TermsWebViewScreen: { title: string; url: string }
   WithdrawBeforeScreen: undefined
   WithdrawScreen: undefined
+
+  // Migrate from AutoAlarmNavigator.tsx
+  CreateAlarm: undefined
+  EditAutoAlarm: { alarmId: string }
 }
 
 // 탭 네비게이터
@@ -59,6 +59,7 @@ export type TabParamList = {
   Home: undefined
   Calendar: undefined
   MyInformation: undefined
+  AutoAlarm: undefined
 }
 
 // 로그인
@@ -96,11 +97,4 @@ export type OnboardingStackParamList = {
     }
   }
   CompleteSchedule: undefined
-}
-
-// 오토알람 탭 네비게이터
-export type AutoAlarmScreenStackParamList = {
-  AutoAlarm: undefined
-  CreateAlarm: undefined
-  EditAutoAlarm: { alarmId: string }
 }
