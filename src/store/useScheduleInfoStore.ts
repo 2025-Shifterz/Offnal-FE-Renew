@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { WorkTime } from '../shared/types/WorkTime'
+import { scheduleInfoRepository } from '../infrastructure/di/Dependencies'
 
 interface ScheduleInfoState {
   organizationName: string
@@ -13,6 +14,9 @@ interface ScheduleInfoState {
     mode: 'startTime' | 'endTime',
     value: string
   ) => void
+  setAllWorkTimes: (workTimes: WorkTime) => void
+
+  fetchScheduleInfo: (organizationName: string, team: string) => Promise<void>
 }
 
 export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
@@ -22,6 +26,7 @@ export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
     D: { startTime: '08:00', endTime: '16:00' },
     E: { startTime: '16:00', endTime: '00:00' },
     N: { startTime: '00:00', endTime: '08:00' },
+    '-': { startTime: '', endTime: '' },
   },
 
   setOrganizationName: (name: string) =>
@@ -37,4 +42,17 @@ export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
         },
       },
     })),
+  setAllWorkTimes: (workTimes: WorkTime) => set(() => ({ workTimes })),
+
+  fetchScheduleInfo: async (organizationName: string, team: string) => {
+    try {
+      const data = await scheduleInfoRepository.getScheduleInfo(
+        organizationName,
+        team
+      )
+      useScheduleInfoStore.getState().setAllWorkTimes(data)
+    } catch (error) {
+      console.error('Failed to fetch schedule info:', error)
+    }
+  },
 }))

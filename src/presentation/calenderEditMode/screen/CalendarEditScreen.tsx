@@ -1,4 +1,4 @@
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -8,20 +8,18 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { RootStackParamList, rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
-type RootNavigationRouteProp = RouteProp<RootStackParamList, 'EditCalendar'>
 const CalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const route = useRoute<RootNavigationRouteProp>()
 
-  const { workTimes } = route.params
-
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
   const latestOrganization = useCalendarStore(state => state.latestOrganization)

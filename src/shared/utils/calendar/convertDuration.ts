@@ -1,10 +1,6 @@
 import dayjs from 'dayjs'
 import { WorkTime } from '../../types/WorkTime'
-
-export interface WorkTimeDuration {
-  startTime: string
-  duration: string
-}
+import { WorkTimeDuration } from '../../../infrastructure/remote/response/GetScheduleInfoResponse'
 
 // PT 형식 duration 예: PT1H30M
 // PT30M, PT8H, PT8H30M 가능

@@ -1,16 +1,16 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-
 import { twMerge } from 'tailwind-merge'
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 import { WorkType } from '../../../shared/types/Calendar'
 import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
+import { WorkTime } from '../../../shared/types/WorkTime'
 
 interface SelectShiftBoxProps {
   selectedBoxId: number
   setSelectedBoxId: (id: number) => void
   handleTypeSelect: (type: WorkType) => void
-  workTimes: { [key: string]: { startTime: string; endTime: string } }
+  workTimes: WorkTime
 }
 
 // 근무형태 선택 박스 map 데이터
@@ -32,6 +32,7 @@ const SelectShiftBox = ({
       {shiftTypes.map(({ id, text }) => {
         const key = fromShiftType(text)
         const time = workTimes[key]
+        console.log('근무시간 정보:', time)
         const isSelected = selectedBoxId === id
         const selectedDivStyle = isSelected
           ? 'border-border-primary bg-surface-primary-light'
@@ -65,7 +66,7 @@ const SelectShiftBox = ({
                   selectedTextStyle
                 )}
               >
-                {time?.startTime ?? '--:-- '}~{time?.endTime ?? ' --:--'}
+                {`${time.startTime}~${time.endTime}`}
               </Text>
             </View>
             <TimeFrame text={text} />
