@@ -6,6 +6,7 @@ import { View } from 'react-native'
 import PlusEdit from '../component/PlusEdit'
 import { useFocusEffect } from '@react-navigation/native'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import { Organization } from '../../../domain/models/Organization'
 
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
@@ -23,9 +24,9 @@ const CalendarScreen = () => {
       const fetchData = async () => {
         try {
           const res = await fetchOrganization()
-
-          console.log('조직 조회 성공:', res)
-          if (!res) setNoCalendar(true)
+          if (res) console.log('조직 조회 성공:', res)
+          console.log(res === ({} as Organization))
+          if (Object.keys(res).length === 0) setNoCalendar(true)
         } catch (error) {
           console.log('조직 조회 실패:', error)
         }

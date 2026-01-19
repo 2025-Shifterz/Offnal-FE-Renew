@@ -13,7 +13,7 @@ export class OrganizationRepositoryImpl implements OrganizationRepository {
       const response = await this.organizationService.getOrganization()
       // 배열 중 마지막 조직을 반환
       if (response.length === 0) {
-        throw new Error('No organizations found')
+        return {} as Organization
       }
       return response[response.length - 1] // TODO : 단일 조직 반환으로 바꾸기 -> 객체 형태로
     } catch (error) {

@@ -32,8 +32,9 @@ const TCalendarEditor: ForwardRefRenderFunction<
   TCalendarEditorRef,
   {
     currentDate: dayjs.Dayjs
+    myTeam: string
   }
-> = ({ currentDate }, ref) => {
+> = ({ currentDate, myTeam }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
 
   const {
@@ -45,7 +46,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
   } = useTeamCalendarStore()
 
   const { onboardingMethod } = useOnboardingStore()
-  const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
+  const { workTimes, organizationName } = useScheduleInfoStore()
 
   const startDate = `${currentDate.year()}-${String(currentDate.month() + 1).padStart(2, '0')}-01`
   const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
@@ -140,7 +141,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         console.log('생성된 새 팀 calendars 데이터:', newTeamCalendars)
 
         const newCalendarRequest: CreateCalendarRequest = {
-          myTeam: workGroup,
+          myTeam: myTeam,
           workTimes: convertedWorkTimes,
           calendars: newTeamCalendars,
         }
@@ -185,7 +186,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
         teamCalendarData={allTeamCalendarData}
-        myTeam={workGroup}
+        myTeam={myTeam}
       />
       <TeamTypeSelect onPressSelect={handleTypeSelect} />
     </View>

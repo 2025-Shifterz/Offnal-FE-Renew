@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
 import ScheduleNameInput from '../component/ScheduleNameInput'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../navigation/types/StackTypes'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -19,15 +18,15 @@ const InputScheduleScreen = () => {
     navigate: (route: OnboardingRoute) => void
   }>()
   const { onboardingMethod } = useOnboardingStore()
+
+  // 처음에 organizationName 초기화
   const {
-    organizationName,
-    workGroup,
+    workGroup = '1조',
     workTimes,
+    organizationName = '',
     setOrganizationName,
     setWorkGroup,
   } = useScheduleInfoStore()
-
-  const [isDirect, setIsDirect] = useState(false) // 직접 입력인지 여부
 
   const handleNext = async () => {
     console.log('InputScheduleScreen 상태:', {
@@ -57,12 +56,7 @@ const InputScheduleScreen = () => {
             setOrganizationName={setOrganizationName}
           />
           <TimeInput />
-          <TeamInput
-            workGroup={workGroup}
-            setWorkGroup={setWorkGroup}
-            isDirect={isDirect}
-            setIsDirect={setIsDirect}
-          />
+          <TeamInput setWorkGroup={setWorkGroup} />
         </View>
 
         <BottomButton text="다음" onPress={handleNext} />

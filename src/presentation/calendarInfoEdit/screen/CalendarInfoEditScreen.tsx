@@ -6,6 +6,8 @@ import TimeInput from '../../onboarding/component/TimeInput'
 import ScheduleNameInput from '../../onboarding/component/ScheduleNameInput'
 import BottomButton from '../../../shared/components/BottomButton'
 
+// 현재 안쓰이는 페이지 !!
+
 const CalendarInfoEditScreen = () => {
   const [calendarName, setCalendarName] = useState('') // 근무표 이름
   const [workGroup, setWorkGroup] = useState('1조')

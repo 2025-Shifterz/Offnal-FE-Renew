@@ -3,6 +3,7 @@ import { Button, Text, View } from 'react-native'
 import ArrowUp from '../../../assets/icons/arrow-up.svg'
 import ArrowDown from '../../../assets/icons/arrow-down.svg'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import { WorkTime } from '../../../shared/types/WorkTime'
 
 const pickerTextStyle = 'text-text-basic body-s font-[500px]'
 
@@ -34,7 +35,13 @@ const parseTimeString = (time: string) => {
 }
 
 const TimePicker = ({ type, mode }: TimePickerProps) => {
-  const { workTimes, setWorkTimes } = useScheduleInfoStore()
+  const [workTimes] = useState<WorkTime>({
+    D: { startTime: '08:00', endTime: '16:00' },
+    E: { startTime: '16:00', endTime: '00:00' },
+    N: { startTime: '00:00', endTime: '08:00' },
+    '-': { startTime: '', endTime: '' },
+  })
+  const { setWorkTimes } = useScheduleInfoStore()
   const workTimeString = workTimes[type][mode] || '08:00'
   const {
     hour: initHour,
