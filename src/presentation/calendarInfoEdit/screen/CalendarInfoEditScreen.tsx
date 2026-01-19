@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { View } from 'react-native'
 import TeamInput from '../components/TeamInput'
-import TimeInput from '../../schedule/component/TimeInput'
-import ScheduleNameInput from '../../schedule/component/ScheduleNameInput'
+import TimeInput from '../../onboarding/component/TimeInput'
+import ScheduleNameInput from '../../onboarding/component/ScheduleNameInput'
 import BottomButton from '../../../shared/components/BottomButton'
 
 const CalendarInfoEditScreen = () => {

@@ -24,7 +24,7 @@ import FeedBackScreen from '../presentation/info/screen/FeedBackScreen'
 import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
 import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
-import OnboardingMethodScreen from '../presentation/schedule/screens/OnboardingMethodScreen'
+import OnboardingMethodScreen from '../presentation/onboarding/screens/OnboardingMethodScreen'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
