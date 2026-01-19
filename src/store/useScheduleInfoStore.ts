@@ -57,6 +57,7 @@ export const useScheduleInfoStore = create<ScheduleInfoState>(set => ({
         team
       )
       useScheduleInfoStore.getState().setAllWorkTimes(data)
+      set(() => ({ organizationName, workGroup: team }))
     } catch (error) {
       console.error('Failed to fetch schedule info:', error)
     }

@@ -27,9 +27,13 @@ const teamCalendars: TeamCalendarRecord[] = [
 
 interface TeamCalendarState {
   teamCalendarData: TeamCalendarRecord[]
+  newTeamCalendarData: TeamCalendarRecord[] // 편집용
   myTeam: string
 
   setTeamCalendarData: (
+    data: (TeamDateAndWorkType & { team: string })[]
+  ) => void
+  setNewTeamCalendarData: (
     data: (TeamDateAndWorkType & { team: string })[]
   ) => void
   updateTeamCalendarDay: (update: {
@@ -39,6 +43,7 @@ interface TeamCalendarState {
   }) => void
   setMyTeam: (team: string) => void
   clearTeamCalendarData: () => void
+  clearNewTeamCalendarData: () => void
 
   // 서버에서 데이터 불러오기 & 저장
   fetchTeamCalendarData: (
@@ -50,8 +55,36 @@ interface TeamCalendarState {
 
 export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
   teamCalendarData: [],
+  newTeamCalendarData: [],
   myTeam: '',
   setTeamCalendarData: (data: (TeamDateAndWorkType & { team: string })[]) => {
+    // 팀별로 묶어서 dates Record 생성
+    const grouped: Record<string, TeamCalendarRecord> = {}
+
+    data.forEach(item => {
+      const { team, date, workTypeName, startTime, endTime } = item
+
+      // 팀별 초기 구조 생성
+      if (!grouped[team]) {
+        grouped[team] = {
+          team,
+          workInstances: {},
+        }
+      }
+
+      // 날짜를 key로 저장
+      grouped[team].workInstances[date] = {
+        workTypeName,
+        startTime,
+        endTime,
+      }
+    })
+
+    set({ teamCalendarData: Object.values(grouped) })
+  },
+  setNewTeamCalendarData: (
+    data: (TeamDateAndWorkType & { team: string })[]
+  ) => {
     // 팀별로 묶어서 dates Record 생성
     const grouped: Record<string, TeamCalendarRecord> = {}
 
@@ -126,7 +159,7 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
   },
 
   clearTeamCalendarData: () => set({ teamCalendarData: [] }),
-
+  clearNewTeamCalendarData: () => set({ newTeamCalendarData: [] }),
   // 서버에서 데이터 불러오기 & 저장
   fetchTeamCalendarData: async (
     organizationName: string,
@@ -153,7 +186,7 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
       set({ myTeam: response.myTeam })
 
       useTeamCalendarStore.getState().setTeamCalendarData(flattened)
-      console.log('팀 캘린더 fetch 성공:', response)
+      console.log('Fetched team calendar data:', flattened)
     } catch (error) {
       throw error
     }

@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
 
 // 컴포넌트
 type TextButtonProps = {
@@ -36,6 +37,7 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const { workTimes } = useScheduleInfoStore()
+  const { setOnboardingMethod } = useOnboardingStore()
 
   // 페이드 인 애니메이션
   useEffect(() => {
@@ -65,7 +67,10 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
       <View className="absolute bottom-[13px] right-[13px] w-[189px] flex-col items-end gap-[13px]">
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('OnboardingMethodScreen')
+            navigation.navigate('OnboardingSchedules', {
+              screen: 'SelectScheduleScope',
+            })
+            setOnboardingMethod('EXISTING_OCR')
           }}
           className="flex-row items-center gap-[10px]"
         >

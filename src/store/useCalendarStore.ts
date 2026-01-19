@@ -125,6 +125,7 @@ export const useCalendarStore = create<CalendarState>()(set => ({
       )
 
       useCalendarStore.getState().setCalendarData(data)
+      console.log('Fetched calendar data:', data)
     } catch (error) {
       console.error('Error fetching calendar data:', error)
     } finally {

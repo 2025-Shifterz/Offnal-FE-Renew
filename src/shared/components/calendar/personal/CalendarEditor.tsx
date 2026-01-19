@@ -20,6 +20,7 @@ import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
+import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 
 export interface CalendarEditorRef {
   postData: () => void
@@ -32,25 +33,37 @@ const CalendarEditor: ForwardRefRenderFunction<
   }
 > = ({ currentDate }, ref) => {
   // stores
-  const selectedDate = useCalendarStore(state => state.selectedDate)
-  const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
-  const newCalendarData = useCalendarStore(state => state.newCalendarData)
-  const clearNewCalendarData = useCalendarStore(
-    state => state.clearNewCalendarData
-  )
-  const updateNewCalendarDay = useCalendarStore(
-    state => state.updateNewCalendarDay
-  )
+  const {
+    calendarData,
+    newCalendarData,
+    setSelectedDate,
+    selectedDate,
+    clearNewCalendarData,
+    updateNewCalendarDay,
+    fetchCalendarData,
+  } = useCalendarStore()
+
+  const { onboardingMethod } = useOnboardingStore()
   const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
 
   // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []
 
-  // 처음에는 초기화//
+  const startDate = `${currentDate.year()}-${String(currentDate.month() + 1).padStart(2, '0')}-01`
+  const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
+  // 처음에 기존 값 조회//
   useEffect(() => {
-    clearNewCalendarData()
+    if (onboardingMethod === 'OCR') {
+      clearNewCalendarData()
+    } else if (onboardingMethod === 'EXISTING_OCR') {
+      // 기존 근무표가 있는 경우, 기존 근무표로 초기화
+      async function fetchData() {
+        await fetchCalendarData(organizationName, workGroup, startDate, endDate)
+      }
+      fetchData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [startDate, endDate])
 
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
@@ -66,9 +79,7 @@ const CalendarEditor: ForwardRefRenderFunction<
     updateNewCalendarDay(key, type)
   }
 
-  const [convertedWorkTimes, setConvertedWorkTimes] = useState<
-    Record<string, { startTime: string; duration: string }>
-  >({
+  const [convertedWorkTimes, setConvertedWorkTimes] = useState({
     D: { startTime: '08:00', duration: 'PT8H' },
     E: { startTime: '16:00', duration: 'PT8H' },
     N: { startTime: '00:00', duration: 'PT8H' },
@@ -81,6 +92,9 @@ const CalendarEditor: ForwardRefRenderFunction<
     setConvertedWorkTimes(converted)
   }, [workTimes])
 
+  // 기존 + 새로 편집한 데이터 합치기
+  const allCalendarData = { ...calendarData, ...newCalendarData }
+
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
@@ -88,7 +102,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
         const storedMonths = Array.from(
           new Set( // 중복 제거
-            Object.keys(newCalendarData).map(dateStr =>
+            Object.keys(allCalendarData).map(dateStr =>
               dayjs(dateStr).format('YYYY-MM')
             )
           )
@@ -97,7 +111,7 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         // 새 캘린더 데이터 생성
         const shifts: Record<string, string> = {}
-        Object.entries(newCalendarData).forEach(([date, value]) => {
+        Object.entries(allCalendarData).forEach(([date, value]) => {
           shifts[date] = fromShiftType(value.workTypeName)
         })
 
@@ -113,6 +127,7 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         // TODO: 팀에서 설정한 myTeam 정보도 포함시키기
         // 팀에서 저장하면 내가 속한 조로 다시 개인 근무표를 조회해야함!!
+        console.log('workGroup:', workGroup)
         const newCalendarRequest: CreateCalendarRequest = {
           myTeam: workGroup,
           workTimes: convertedWorkTimes,
@@ -138,7 +153,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         currentDate={currentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        calendarData={newCalendarData}
+        calendarData={allCalendarData}
       />
       <TypeSelect onPress={handleTypeSelect} />
     </View>

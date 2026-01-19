@@ -15,6 +15,6 @@ export interface GetScheduleInfoResponseData {
 }
 
 export interface WorkTimeDuration {
-  startTime: string | null
-  duration: string | null
+  startTime: string
+  duration: string
 }

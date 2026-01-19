@@ -1,25 +1,35 @@
 import dayjs from 'dayjs'
-import { WorkTime } from '../../types/WorkTime'
 import { WorkTimeDuration } from '../../../infrastructure/remote/response/GetScheduleInfoResponse'
+import { WorkTime } from '../../types/WorkTime'
 
 // PT 형식 duration 예: PT1H30M
 // PT30M, PT8H, PT8H30M 가능
 
+type WorkTimeRequest = {
+  D: { startTime: string; duration: string }
+  E: { startTime: string; duration: string }
+  N: { startTime: string; duration: string }
+}
+
 // startTime과 endTime을 받아 PT형식 duration으로 변환
 export function convertEndTimeToDuration(
   workTimes: WorkTime
-): Record<keyof WorkTime, WorkTimeDuration> {
+): Record<keyof WorkTimeRequest, WorkTimeDuration> {
   const todayStr = dayjs().format('YYYY-MM-DD')
 
-  const converted: Record<keyof WorkTime, WorkTimeDuration> = {
+  const converted: Record<keyof WorkTimeRequest, WorkTimeDuration> = {
     D: { startTime: '', duration: '' },
     E: { startTime: '', duration: '' },
     N: { startTime: '', duration: '' },
   }
 
   ;(
-    Object.entries(workTimes) as [keyof WorkTime, WorkTime[keyof WorkTime]][]
+    Object.entries(workTimes) as [
+      keyof WorkTimeRequest,
+      WorkTime[keyof WorkTimeRequest],
+    ][]
   ).forEach(([key, value]) => {
+    if (!['D', 'E', 'N'].includes(key)) return
     const { startTime, endTime } = value
 
     const start = dayjs(`${todayStr} ${startTime}`, 'YYYY-MM-DD HH:mm')

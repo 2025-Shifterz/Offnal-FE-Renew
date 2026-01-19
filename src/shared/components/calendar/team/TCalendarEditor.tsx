@@ -15,8 +15,10 @@ import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuratio
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
-import { WorkTime } from '../../../types/WorkTime'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
+import { all } from 'axios'
+import { useOnboardingStore } from '../../../../store/useOnboardingStore'
+import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
 
 export interface TCalendarEditorRef {
   postData: () => void
@@ -30,20 +32,32 @@ const TCalendarEditor: ForwardRefRenderFunction<
 > = ({ currentDate }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
 
-  const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
-  const updateTeamCalendarDay = useTeamCalendarStore(
-    state => state.updateTeamCalendarDay
-  )
-  const clearTeamCalendarData = useTeamCalendarStore(
-    state => state.clearTeamCalendarData
-  )
+  const {
+    teamCalendarData,
+    newTeamCalendarData,
+    updateTeamCalendarDay,
+    clearNewTeamCalendarData,
+    fetchTeamCalendarData,
+  } = useTeamCalendarStore()
+
+  const { onboardingMethod } = useOnboardingStore()
   const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
 
-  // 처음에는 초기화//
+  const startDate = `${currentDate.year()}-${String(currentDate.month() + 1).padStart(2, '0')}-01`
+  const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
+  // 처음에 기존 값 조회//
   useEffect(() => {
-    clearTeamCalendarData()
+    if (onboardingMethod === 'OCR') {
+      clearNewTeamCalendarData()
+    } else if (onboardingMethod === 'EXISTING_OCR') {
+      // 기존 근무표가 있는 경우, 기존 근무표로 초기화
+      async function fetchData() {
+        await fetchTeamCalendarData(organizationName, startDate, endDate)
+      }
+      fetchData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [startDate, endDate])
 
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
@@ -64,9 +78,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
   }
 
   // CalendarEditor와 동일 - 커스텀 훅으로 빼야 할 듯
-  const [convertedWorkTimes, setConvertedWorkTimes] = useState<
-    Record<string, { startTime: string; duration: string }>
-  >({
+  const [convertedWorkTimes, setConvertedWorkTimes] = useState({
     D: { startTime: '08:00', duration: 'PT8H' },
     E: { startTime: '16:00', duration: 'PT8H' },
     N: { startTime: '00:00', duration: 'PT8H' },
@@ -81,12 +93,19 @@ const TCalendarEditor: ForwardRefRenderFunction<
 
   // --------------
 
+  // 기존 + 새로 편집한 데이터 합치기
+  const allTeamCalendarData = mergeTeamCalendars(
+    teamCalendarData,
+    newTeamCalendarData
+  )
+  console.log('합쳐진 allTeamCalendarData:', allTeamCalendarData)
+
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
         // 모든 팀의 날짜를 flatten
-        const allDates = teamCalendarData.flatMap(teamRecord =>
+        const allDates = allTeamCalendarData.flatMap(teamRecord =>
           Object.keys(teamRecord.workInstances)
         )
 
@@ -102,7 +121,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
 
         // 팀별로 shifts 생성
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
-          teamCalendarData.map(teamRecord => {
+          allTeamCalendarData.map(teamRecord => {
             const shifts: Record<string, string> = {}
             Object.entries(teamRecord.workInstances).forEach(([date, work]) => {
               shifts[date] = fromShiftType(work.workTypeName)
@@ -140,7 +159,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         currentDate={currentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        teamCalendarData={teamCalendarData}
+        teamCalendarData={allTeamCalendarData}
         myTeam={workGroup}
       />
       <TeamTypeSelect onPressSelect={handleTypeSelect} />

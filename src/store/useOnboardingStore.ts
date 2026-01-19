@@ -4,7 +4,7 @@ import { OnboardingStep } from '../shared/types/OnboardingStep'
 import { ScheduleScope } from '../shared/types/ScheduleScope'
 
 interface OnboardingState {
-  // 온보딩 방식 - OCR, NEW, DIRECT
+  // 온보딩 방식 - OCR, NEW, DIRECT, EXISTING_OCR(근무표가 이미 있는 경우 OCR)
   onboardingMethod: OnboardingMethod
   currentStep: OnboardingStep
 
@@ -22,6 +22,7 @@ export const useOnboardingStore = create<OnboardingState>(set => ({
   currentStep: OnboardingStep.SelectScheduleScope,
 
   scheduleScope: 'ALL',
+  existingSchedule: false,
 
   setOnboardingMethod: (method: OnboardingMethod) =>
     set(() => ({
