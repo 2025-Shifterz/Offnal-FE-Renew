@@ -13,12 +13,16 @@ import { TimeFrameChildren } from '../TimeFrame'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import {
+  calendarRepository,
+  teamCalendarRepository,
+} from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { all } from 'axios'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
+import { UpdateTeamShiftsRequest } from '../../../../infrastructure/remote/request/PatchTeamWorkCalendarRequest'
 
 export interface TCalendarEditorRef {
   postData: () => void
@@ -140,11 +144,32 @@ const TCalendarEditor: ForwardRefRenderFunction<
           workTimes: convertedWorkTimes,
           calendars: newTeamCalendars,
         }
-        console.log('요청하는 팀 근무표 등록 데이터:', newCalendarRequest)
+        const updatedRequest: UpdateTeamShiftsRequest = {
+          calendars: allTeamCalendarData.map(cal => ({
+            team: cal.team,
+            shifts: Object.fromEntries(
+              Object.entries(cal.workInstances).map(([date, work]) => [
+                date,
+                fromShiftType(work.workTypeName), // string으로 변환
+              ])
+            ),
+          })),
+        }
 
         // API 호출
-        await calendarRepository.createCalendar(newCalendarRequest)
-        console.log('근무표 저장 성공')
+        let res
+        if (onboardingMethod === 'EXISTING_OCR') {
+          console.log('요청하는 팀 근무표 수정 데이터:', updatedRequest)
+          console.log('organization name:', organizationName)
+          res = await teamCalendarRepository.updateTeamCalendar(
+            organizationName,
+            updatedRequest
+          )
+        } else {
+          console.log('요청하는 팀 근무표 등록 데이터:', newCalendarRequest)
+          res = await calendarRepository.createCalendar(newCalendarRequest)
+        }
+        console.log('근무표 저장 성공:', res)
 
         console.log('저장된 teamCalendarData의 년/월 목록:', storedMonths)
       } catch (error) {

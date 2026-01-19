@@ -136,8 +136,16 @@ const CalendarEditor: ForwardRefRenderFunction<
         console.log('요청하는 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
-
-        const res = await calendarRepository.createCalendar(newCalendarRequest)
+        let res
+        if (onboardingMethod === 'EXISTING_OCR') {
+          res = await calendarRepository.updateCalendar(
+            organizationName,
+            workGroup,
+            { shifts }
+          )
+        } else {
+          res = await calendarRepository.createCalendar(newCalendarRequest)
+        }
 
         console.log('근무표 저장 성공', res)
       } catch (error) {
