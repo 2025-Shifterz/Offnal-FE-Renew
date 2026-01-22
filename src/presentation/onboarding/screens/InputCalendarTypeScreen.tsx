@@ -33,12 +33,10 @@ const InputCalendarTypeScreen = () => {
   const handleNext = () => {
     if (scheduleScope === 'ALL') {
       if (tCalendarEditorRef.current) {
-        console.log('팀 근무표 저장 요청 실행')
         tCalendarEditorRef.current.postData() // 팀 근무표 저장 요청
       }
     } else {
       if (calendarEditorRef.current) {
-        console.log('개인 근무표 저장 요청 실행')
         calendarEditorRef.current.postData() // 근무표 저장 요청
       }
     }

@@ -8,6 +8,7 @@ import { teamCalendarRepository } from '../../../../infrastructure/di/Dependenci
 import TCalendarBase from './TCalendarBase'
 import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -23,17 +24,14 @@ const TCalendarInteractive = ({
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
   const { organizationName } = useScheduleInfoStore()
-  const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
-  const setTeamCalendarData = useTeamCalendarStore(
-    state => state.setTeamCalendarData
-  )
-  const myTeam = useTeamCalendarStore(state => state.myTeam)
-  // 근무표 조회 API
+  const { teamCalendarData, myTeam, fetchTeamCalendarData } =
+    useTeamCalendarStore()
+
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`
   const monthEndDate = dayjs(monthStartDate).endOf('month').format('YYYY-MM-DD')
 
-  // 팀 근무표 조회 API (화면이 포커스될 때마다 다시 호출) -> 월별 조회
+  // 팀 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,29 +41,13 @@ const TCalendarInteractive = ({
           monthStartDate,
           monthEndDate,
         })
-        const response = await teamCalendarRepository.getTeamCalendar(
+        await fetchTeamCalendarData(
           organizationName,
           monthStartDate,
           monthEndDate
         )
-        // 서버 workType → 내부 WorkType 필드에 맞게 매핑 필요하면 fromShiftType 사용
-        const flattened: (TeamDateAndWorkType & { team: string })[] =
-          response.teams.flatMap(teamRecord =>
-            teamRecord.workInstances.map(wi => ({
-              team: teamRecord.team,
-              date: wi.date,
-              workTypeName: wi.workTypeName,
-              startTime: wi.startTime,
-              endTime: wi.endTime,
-            }))
-          )
-
-        setTeamCalendarData(flattened)
-        console.log('팀 근무표 수정 모드: 월별 근무표 조회 성공:', response)
-        console.log('organization name:', organizationName)
       } catch (error) {
         console.log('팀 근무표 수정 모드: 월별 근무표 조회 실패:', error)
-        console.log('organization name:', organizationName)
       }
     }
     fetchData()

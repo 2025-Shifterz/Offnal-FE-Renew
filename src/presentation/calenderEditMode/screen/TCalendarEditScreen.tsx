@@ -59,7 +59,6 @@ const TCalendarEditScreen = () => {
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
-    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateTeamCalendarDay({
@@ -121,16 +120,8 @@ const TCalendarEditScreen = () => {
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
-      console.log('teamCalendarData in handlePatchData:', teamCalendarData)
-
       const payload = toUpdateTeamShiftRecord(teamCalendarData)
-      console.log('팀 근무표 수정 요청 데이터:', {
-        organizationName,
-        ...payload,
-      })
-
       await teamCalendarRepository.updateTeamCalendar(organizationName, payload)
-      console.log('팀 근무표 수정 성공')
 
       navigation.reset({
         index: 0,

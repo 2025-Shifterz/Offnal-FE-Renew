@@ -32,7 +32,6 @@ const SelectShiftBox = ({
       {shiftTypes.map(({ id, text }) => {
         const key = fromShiftType(text)
         const time = workTimes[key]
-        console.log('근무시간 정보:', time)
         const isSelected = selectedBoxId === id
         const selectedDivStyle = isSelected
           ? 'border-border-primary bg-surface-primary-light'

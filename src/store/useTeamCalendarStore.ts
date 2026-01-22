@@ -172,6 +172,7 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
         startDate,
         endDate
       )
+      console.log('Fetched team calendar response:', response)
       // 서버 workType → 내부 WorkType 필드에 맞게 매핑 필요하면 fromShiftType 사용
       const flattened: (TeamDateAndWorkType & { team: string })[] =
         response.teams.flatMap(teamRecord =>

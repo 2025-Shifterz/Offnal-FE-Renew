@@ -21,16 +21,13 @@ const SelectScheduleScopeScreen = () => {
   // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
   const handleBoxClick = (type: ScheduleScope) => {
     setScheduleScope(type)
-    console.log(`선택된 전체 | 개인 근무표 방식: ${type}`)
   }
 
   const handleNext = () => {
-    console.log('handleNext called')
     const nextStep = goNextOnboadingScreen(
       onboardingMethod,
       OnboardingStep.SelectScheduleScope
     )
-    console.log('다음 온보딩 스텝:', nextStep)
     navigation.navigate({ name: nextStep } as OnboardingRoute)
   }
 

@@ -41,7 +41,6 @@ export const MonthPicker = ({ onDateChange }: MonthPickerProps) => {
 
   const handleMonthSelect = (monthId: number | null) => {
     setSelectedMonth(monthId)
-    console.log(`Selected Month: ${monthId} for year ${currentYear}`)
   }
 
   type Month = { id: number; name: string }

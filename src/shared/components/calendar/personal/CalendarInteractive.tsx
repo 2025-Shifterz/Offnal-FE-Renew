@@ -20,8 +20,7 @@ const CalendarInteractive = ({
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
   const { organizationName, workGroup } = useScheduleInfoStore()
-  const calendarData = useCalendarStore(state => state.calendarData)
-  const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
+  const { calendarData, fetchCalendarData } = useCalendarStore()
 
   // 근무표 조회 API
   useEffect(() => {
@@ -39,14 +38,12 @@ const CalendarInteractive = ({
           monthStartDate,
           monthEndDate,
         })
-        const response = await fetchCalendarData(
+        await fetchCalendarData(
           organizationName,
           workGroup,
           monthStartDate,
           monthEndDate
         )
-
-        console.log('근무표 수정 모드: 월별 근무표 조회 성공:', response)
       } catch (error) {
         console.log('근무표 수정 모드: 월별 근무표 조회 실패:', error)
       }

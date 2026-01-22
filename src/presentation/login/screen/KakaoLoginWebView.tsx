@@ -47,7 +47,6 @@ const KakaoLoginWebView = () => {
       setShouldHideWebView(true)
 
       const data = JSON.parse(event.nativeEvent.data)
-      console.log('KakaoLoginWebView - handleMessage data:', data)
 
       const accessToken = data.data?.accessToken
       const refreshToken = data.data?.refreshToken
@@ -73,22 +72,6 @@ const KakaoLoginWebView = () => {
         accessToken,
         refreshToken
       )
-
-      // store에 저장되는지 확인
-      const { user } = useUserStore.getState()
-      console.log('Stored user in Zustand:', user)
-      const {
-        accessToken: storedAccessToken,
-        refreshToken: storedRefreshToken,
-      } = useAuthStore.getState()
-      console.log('Stored auth in Zustand:', {
-        accessToken: storedAccessToken,
-        refreshToken: storedRefreshToken,
-      })
-
-      console.log('accessToken:', accessToken)
-      console.log('refreshToken:', refreshToken)
-      console.log('memberName:', memberName)
 
       if (newMember) {
         Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)

@@ -11,19 +11,11 @@ import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 
-type ScheduleTypeRouteProp = RouteProp<
-  OnboardingStackParamList,
-  'SelectMonthOCR'
->
-
 const SelectMonthOCRScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
-  const route = useRoute<ScheduleTypeRouteProp>()
   const { onboardingMethod } = useOnboardingStore()
-
-  console.log('SelectMonthWithOCRScreen params:', route.params)
 
   const [date, setDate] = useState<{ year: number; month: number | null }>({
     year: new Date().getFullYear(),
@@ -39,7 +31,6 @@ const SelectMonthOCRScreen = () => {
       onboardingMethod,
       OnboardingStep.SelectMonthOCR
     )
-    console.log('다음 온보딩 스텝:', nextStep)
     if (date.month) {
       navigation.navigate({
         name: nextStep,

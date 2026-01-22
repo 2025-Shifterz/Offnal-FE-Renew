@@ -47,13 +47,12 @@ const CalendarViewer = ({
           setMyTeam(responseTeam.myTeam) // myTeam 정보 저장
 
           // 개인 캘린더 조회
-          const response = await fetchCalendarData(
+          await fetchCalendarData(
             organizationName,
             responseTeam.myTeam || workGroup, // myTeam 이 있으면 그걸로 !!
             monthStartDate,
             monthEndDate
           )
-          console.log('캘린더 탭: 월별 근무표 조회 성공:', response)
         } catch (error) {
           console.log('캘린더 탭: 월별 근무표 조회 실패:', error)
         }
@@ -67,7 +66,6 @@ const CalendarViewer = ({
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
     setSelectedDate(date)
-    console.log('selectedDate:', selectedDate)
     onDateSelected?.(date) // ✅ 날짜 선택 시 콜백 실행
   }
 

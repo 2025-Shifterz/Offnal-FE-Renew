@@ -99,16 +99,6 @@ const CalendarEditor: ForwardRefRenderFunction<
   useImperativeHandle(ref, () => ({
     postData: async () => {
       try {
-        // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
-        const storedMonths = Array.from(
-          new Set( // 중복 제거
-            Object.keys(allCalendarData).map(dateStr =>
-              dayjs(dateStr).format('YYYY-MM')
-            )
-          )
-        ).sort()
-        console.log('저장된 calendarData의 년/월 목록:', storedMonths)
-
         // 새 캘린더 데이터 생성
         const shifts: Record<string, string> = {}
         Object.entries(allCalendarData).forEach(([date, value]) => {
@@ -127,7 +117,6 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         // TODO: 팀에서 설정한 myTeam 정보도 포함시키기
         // 팀에서 저장하면 내가 속한 조로 다시 개인 근무표를 조회해야함!!
-        console.log('workGroup:', workGroup)
         const newCalendarRequest: CreateCalendarRequest = {
           myTeam: workGroup,
           workTimes: convertedWorkTimes,

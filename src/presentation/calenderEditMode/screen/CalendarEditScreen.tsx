@@ -57,7 +57,6 @@ const CalendarEditScreen = () => {
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
-    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateCalendarDay(key, type)
@@ -100,16 +99,11 @@ const CalendarEditScreen = () => {
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
-      console.log('calendarData in handlePatchData:', calendarData)
-      console.log('근무표 수정 요청 데이터:', toUpdateShiftRecord(calendarData))
-
       await calendarRepository.updateCalendar(
         organizationName,
         workGroup,
         toUpdateShiftRecord(calendarData)
       )
-
-      console.log('근무표 수정 성공')
       // 저장 성공 후 스택을 초기화하여 캘린더 탭으로 이동 (뒤로가기 방지)
       navigation.reset({
         index: 0,
