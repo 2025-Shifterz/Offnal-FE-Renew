@@ -92,9 +92,9 @@ const KakaoLoginWebView = () => {
 
       if (newMember) {
         Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
-        navigation.replace('OnboardingSchedules', {
-          screen: 'SelectScheduleReg',
-        }) // 신규 회원이면 온보딩 화면으로 이동
+        navigation.replace('OnboardingMethodScreen', {
+          createScheduleButtonClick: false,
+        }) // 신규 회원이면 온보딩 방식 선택 화면으로 이동
       } else {
         navigation.replace('Tabs') // 로그인 한 적이 있으면 홈 화면으로 이동
       }

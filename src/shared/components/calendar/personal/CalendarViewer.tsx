@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import CalendarBase from './../personal/CalendarBase'
 import { View } from 'react-native'
@@ -72,7 +71,7 @@ const CalendarViewer = ({
     // organizationName 이 아직 셋팅되지 않은 경우 호출을 막음
     if (organizationName === '') return
     fetchData()
-  }, [organizationName, monthStartDate, monthEndDate])
+  }, [monthStartDate, monthEndDate])
 
   // ----------
   useEffect(() => {

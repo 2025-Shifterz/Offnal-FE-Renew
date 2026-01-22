@@ -14,7 +14,9 @@ export type RootStackParamList = {
   SplashScreen: undefined
   Tabs: NavigatorScreenParams<TabParamList> | undefined
   LoginScreens: NavigatorScreenParams<LoginStackParamList> | undefined
-  OnboardingMethodScreen: undefined
+  OnboardingMethodScreen: {
+    createScheduleButtonClick: boolean
+  }
   OnboardingSchedules:
     | NavigatorScreenParams<OnboardingStackParamList>
     | undefined

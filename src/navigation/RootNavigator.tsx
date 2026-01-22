@@ -43,10 +43,9 @@ const RootNavigator = () => {
         <RootStack.Screen name="SplashScreen" component={SplashScreen} />
         <RootStack.Screen name="LoginScreens" component={LoginNavigator} />
         <RootStack.Screen
-          // OCR / 수동 등록 선택 화면
+          // OCR / NEW / DIRECT 선택 화면
           name="OnboardingMethodScreen"
           component={OnboardingMethodScreen}
-          options={{ headerShown: false }}
         />
         <RootStack.Screen
           name="OnboardingSchedules"

@@ -69,13 +69,7 @@ const TCalendarInteractive = ({
       }
     }
     fetchData()
-  }, [
-    organizationName,
-    monthStartDate,
-    monthEndDate,
-    setTeamCalendarData,
-    myTeam,
-  ])
+  }, [monthStartDate, monthEndDate])
 
   return (
     <View>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
 import ScheduleNameInput from '../component/ScheduleNameInput'
@@ -18,27 +18,23 @@ const InputScheduleScreen = () => {
     navigate: (route: OnboardingRoute) => void
   }>()
   const { onboardingMethod } = useOnboardingStore()
-
-  // 처음에 organizationName 초기화
   const {
-    workGroup = '1조',
-    workTimes,
     organizationName = '',
     setOrganizationName,
     setWorkGroup,
   } = useScheduleInfoStore()
 
   const handleNext = async () => {
-    console.log('InputScheduleScreen 상태:', {
-      organizationName,
-      workGroup,
-      workTimes,
-    })
+    if (organizationName.trim() === '') {
+      Alert.alert('근무표 이름을 입력해주세요.')
+      return
+    }
+
     const nextStep = goNextOnboadingScreen(
       onboardingMethod,
       OnboardingStep.InputSchedule
     )
-    console.log('다음 온보딩 스텝:', nextStep)
+
     navigation.navigate({ name: nextStep } as OnboardingRoute)
   }
 
