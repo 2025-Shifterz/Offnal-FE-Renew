@@ -16,12 +16,12 @@ import SelectPhotoOCRScreen from '../presentation/onboarding/screens/ocr/SelectP
 import SelectMonthOCRScreen from '../presentation/onboarding/screens/ocr/SelectMonthOCRScreen'
 import { OnboardingStep } from '../shared/types/OnboardingStep'
 import { OnboardingMethod } from '../shared/types/OnboardingMethod'
-import { goNextOnboadingHeader } from '../presentation/onboarding/flow/goNextOnboardingHeader'
+import { goNextOnboardingHeader } from '../presentation/onboarding/flow/goNextOnboardingHeader'
 import { useOnboardingStore } from '../store/useOnboardingStore'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
-const OnBoardingHeader = ({
+const OnboardingHeader = ({
   navigation,
   method,
   step,
@@ -30,7 +30,7 @@ const OnBoardingHeader = ({
   method: OnboardingMethod
   step: OnboardingStep
 }) => {
-  const stepInfo = goNextOnboadingHeader(method, step)
+  const stepInfo = goNextOnboardingHeader(method, step)
   if (!stepInfo) return null
   return (
     <CenterAlignedTopAppBar
@@ -57,7 +57,7 @@ const OnBoardingScheduleNavigator = () => {
         const step = route.name as OnboardingStep
         return {
           header: () => (
-            <OnBoardingHeader
+            <OnboardingHeader
               navigation={navigation}
               method={onboardingMethod}
               step={step}

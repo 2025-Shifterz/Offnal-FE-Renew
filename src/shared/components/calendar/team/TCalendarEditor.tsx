@@ -5,7 +5,7 @@ import React, {
   ForwardRefRenderFunction,
   forwardRef,
 } from 'react'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import dayjs from 'dayjs'
 import TCalendarBase from './TCalendarBase'
 import TeamTypeSelect from './TeamTypeSelect'
@@ -24,7 +24,7 @@ import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
 import { UpdateTeamShiftsRequest } from '../../../../infrastructure/remote/request/PatchTeamWorkCalendarRequest'
 
 export interface TCalendarEditorRef {
-  postData: () => void
+  postData: () => Promise<boolean>
 }
 
 const TCalendarEditor: ForwardRefRenderFunction<
@@ -51,14 +51,14 @@ const TCalendarEditor: ForwardRefRenderFunction<
   const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
   // 처음에 기존 값 조회//
   useEffect(() => {
-    if (onboardingMethod === 'OCR') {
-      clearNewTeamCalendarData()
-    } else if (onboardingMethod === 'EXISTING_OCR') {
+    if (onboardingMethod === 'EXISTING_OCR') {
       // 기존 근무표가 있는 경우, 기존 근무표로 초기화
       async function fetchData() {
         await fetchTeamCalendarData(organizationName, startDate, endDate)
       }
       fetchData()
+    } else {
+      clearNewTeamCalendarData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate])
@@ -102,27 +102,19 @@ const TCalendarEditor: ForwardRefRenderFunction<
     teamCalendarData,
     newTeamCalendarData
   )
-  console.log('합쳐진 allTeamCalendarData:', allTeamCalendarData)
 
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
+      // 입력 데이터 검증
+      const hasAnyWorkData = allTeamCalendarData.some(
+        teamRecord => Object.keys(teamRecord.workInstances).length > 0
+      )
+      if (!hasAnyWorkData) {
+        Alert.alert('알림', '근무 형태를 하나 이상 입력해주세요.')
+        return false
+      }
       try {
-        // 모든 팀의 날짜를 flatten
-        const allDates = allTeamCalendarData.flatMap(teamRecord =>
-          Object.keys(teamRecord.workInstances)
-        )
-
-        // YYYY-MM 단위로 중복 제거하고 정렬
-        const storedMonths = Array.from(
-          new Set(allDates.map(dateStr => dayjs(dateStr).format('YYYY-MM')))
-        ).sort()
-
-        if (storedMonths.length === 0) {
-          console.warn('저장된 근무 데이터가 없습니다.')
-          return
-        }
-
         // 팀별로 shifts 생성
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           allTeamCalendarData.map(teamRecord => {
@@ -157,23 +149,21 @@ const TCalendarEditor: ForwardRefRenderFunction<
         }
 
         // API 호출
-        let res
         if (onboardingMethod === 'EXISTING_OCR') {
           console.log('요청하는 팀 근무표 수정 데이터:', updatedRequest)
-          console.log('organization name:', organizationName)
-          res = await teamCalendarRepository.updateTeamCalendar(
+          await teamCalendarRepository.updateTeamCalendar(
             organizationName,
             updatedRequest
           )
         } else {
           console.log('요청하는 팀 근무표 등록 데이터:', newCalendarRequest)
-          res = await calendarRepository.createCalendar(newCalendarRequest)
+          await calendarRepository.createCalendar(newCalendarRequest)
         }
-        console.log('근무표 저장 성공:', res)
 
-        console.log('저장된 teamCalendarData의 년/월 목록:', storedMonths)
+        return true
       } catch (error) {
         console.error('팀 근무표 저장 실패:', error)
+        return false
       }
     },
   }))

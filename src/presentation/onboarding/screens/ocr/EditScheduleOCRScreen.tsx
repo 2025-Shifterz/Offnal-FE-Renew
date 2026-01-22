@@ -20,7 +20,7 @@ import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
-import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
+import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 

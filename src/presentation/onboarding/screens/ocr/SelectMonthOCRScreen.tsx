@@ -7,7 +7,7 @@ import { OnboardingStackParamList } from '../../../../navigation/types/StackType
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
-import goNextOnboadingScreen from '../../flow/goNextOnboadingScreen'
+import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 

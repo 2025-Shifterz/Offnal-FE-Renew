@@ -15,7 +15,7 @@ import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { WorkType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
@@ -23,7 +23,7 @@ import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 
 export interface CalendarEditorRef {
-  postData: () => void
+  postData: () => Promise<boolean>
 }
 
 const CalendarEditor: ForwardRefRenderFunction<
@@ -53,14 +53,14 @@ const CalendarEditor: ForwardRefRenderFunction<
   const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
   // 처음에 기존 값 조회//
   useEffect(() => {
-    if (onboardingMethod === 'OCR') {
-      clearNewCalendarData()
-    } else if (onboardingMethod === 'EXISTING_OCR') {
+    if (onboardingMethod === 'EXISTING_OCR') {
       // 기존 근무표가 있는 경우, 기존 근무표로 초기화
       async function fetchData() {
         await fetchCalendarData(organizationName, workGroup, startDate, endDate)
       }
       fetchData()
+    } else {
+      clearNewCalendarData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate])
@@ -98,6 +98,13 @@ const CalendarEditor: ForwardRefRenderFunction<
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
+      // 입력 데이터 검증
+      const hasAnyWorkData = Object.keys(allCalendarData).length > 0
+
+      if (!hasAnyWorkData) {
+        Alert.alert('알림', '근무 형태를 하나 이상 입력해주세요.')
+        return false
+      }
       try {
         // 새 캘린더 데이터 생성
         const shifts: Record<string, string> = {}
@@ -107,7 +114,6 @@ const CalendarEditor: ForwardRefRenderFunction<
 
         newCalendars = [
           {
-            // TODO: myTeam도 추가하기
             organizationName,
             team: workGroup,
             shifts,
@@ -125,21 +131,19 @@ const CalendarEditor: ForwardRefRenderFunction<
         console.log('요청하는 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
-        let res
         if (onboardingMethod === 'EXISTING_OCR') {
-          res = await calendarRepository.updateCalendar(
-            organizationName,
-            workGroup,
-            { shifts }
-          )
+          await calendarRepository.updateCalendar(organizationName, workGroup, {
+            shifts,
+          })
         } else {
-          res = await calendarRepository.createCalendar(newCalendarRequest)
+          await calendarRepository.createCalendar(newCalendarRequest)
+          Alert.alert('근무표 저장 성공')
         }
 
-        console.log('근무표 저장 성공', res)
+        return true
       } catch (error) {
         console.error('근무표 저장 실패:', error)
-        throw error
+        return false
       }
     },
   }))

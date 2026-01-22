@@ -22,7 +22,6 @@ export const useOnboardingStore = create<OnboardingState>(set => ({
   currentStep: OnboardingStep.SelectScheduleScope,
 
   scheduleScope: 'ALL',
-  existingSchedule: false,
 
   setOnboardingMethod: (method: OnboardingMethod) =>
     set(() => ({

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import TeamItem from './TeamItem'
 
@@ -7,7 +7,15 @@ interface TeamInputProps {
 }
 
 const TeamInput = ({ setWorkGroup }: TeamInputProps) => {
+  // 초기값 설정
+  // workGroup에서 숫자 추출
+
   const [selectedBoxId, setSelectedBoxId] = useState(1)
+
+  useEffect(() => {
+    setSelectedBoxId(1)
+    setWorkGroup('1조')
+  }, [])
 
   return (
     <View className="flex gap-[9px]">

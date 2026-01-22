@@ -13,7 +13,7 @@ import TCalendarEditor, {
 import CalendarEditorHeader from '../../../shared/components/calendar/header/CalendarEditorHeader'
 import dayjs from 'dayjs'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
-import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
+import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
@@ -30,16 +30,21 @@ const InputCalendarTypeScreen = () => {
   // 자식의 postData 호출
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
-  const handleNext = () => {
+  const handleNext = async () => {
+    // 입력한 데이터가 없으면 경고
+    let success = false
+
     if (scheduleScope === 'ALL') {
       if (tCalendarEditorRef.current) {
-        tCalendarEditorRef.current.postData() // 팀 근무표 저장 요청
+        success = await tCalendarEditorRef.current.postData() // 팀 근무표 저장 요청
       }
     } else {
       if (calendarEditorRef.current) {
-        calendarEditorRef.current.postData() // 근무표 저장 요청
+        success = await calendarEditorRef.current.postData() // 근무표 저장 요청
       }
     }
+
+    if (!success) return // 저장 실패 시 다음 화면으로 이동하지 않음
 
     const nextStep = goNextOnboadingScreen(
       onboardingMethod,

@@ -107,7 +107,7 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(set => ({
       }
     })
 
-    set({ teamCalendarData: Object.values(grouped) })
+    set({ newTeamCalendarData: Object.values(grouped) })
   },
   updateTeamCalendarDay: ({ team, date, workTypeName }) => {
     set(state => {

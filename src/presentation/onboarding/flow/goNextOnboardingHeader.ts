@@ -2,7 +2,7 @@ import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { FLOW_BY_METHOD } from '../constant/flow'
 
-export const goNextOnboadingHeader = (
+export const goNextOnboardingHeader = (
   method: OnboardingMethod,
   currentStep: OnboardingStep
 ) => {

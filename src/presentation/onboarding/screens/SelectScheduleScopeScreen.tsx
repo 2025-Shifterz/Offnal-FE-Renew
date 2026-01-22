@@ -7,7 +7,7 @@ import TitleMessage from '../../../shared/components/TitleMessage'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScheduleScope } from '../../../shared/types/ScheduleScope'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
-import goNextOnboadingScreen from '../flow/goNextOnboadingScreen'
+import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 
