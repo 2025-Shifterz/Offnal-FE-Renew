@@ -15,4 +15,3 @@ export type OnboardingRoute =
       name: 'InputCalendarType'
     }
   | { name: 'CompleteSchedule' }
-  | { name: 'NavigationError' }

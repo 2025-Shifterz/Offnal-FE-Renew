@@ -9,13 +9,13 @@ const goNextOnboadingScreen = (
   currentStep: OnboardingStep
 ): OnboardingStep => {
   const flow = FLOW_BY_METHOD[onboardingMethod]
-  if (!flow) return OnboardingStep.Error
+  if (!flow) throw new Error(`Invalid onboarding method: ${onboardingMethod}`)
 
   const currentStepIndex = flow.indexOf(currentStep)
-  if (currentStepIndex === -1) return OnboardingStep.Error
+  if (currentStepIndex === -1)
+    throw new Error(`Invalid current step: ${currentStep}`)
 
-  const nextStepIndex = currentStepIndex + 1
-  return flow[nextStepIndex] ?? OnboardingStep.Error
+  return flow[currentStepIndex + 1]
 }
 
 export default goNextOnboadingScreen

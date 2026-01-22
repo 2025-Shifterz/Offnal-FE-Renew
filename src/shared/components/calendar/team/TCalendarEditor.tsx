@@ -19,7 +19,6 @@ import {
 } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
-import { all } from 'axios'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
 import { UpdateTeamShiftsRequest } from '../../../../infrastructure/remote/request/PatchTeamWorkCalendarRequest'

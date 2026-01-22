@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Alert, View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
@@ -23,6 +23,10 @@ const InputScheduleScreen = () => {
     setOrganizationName,
     setWorkGroup,
   } = useScheduleInfoStore()
+
+  useEffect(() => {
+    setOrganizationName('') // 초기화
+  }, [])
 
   const handleNext = async () => {
     if (organizationName.trim() === '') {

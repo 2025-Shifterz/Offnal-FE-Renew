@@ -1,9 +1,6 @@
 import { View, Text, ScrollView, InteractionManager } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
-import {
-  onboardingNavigation,
-  OnboardingStackParamList,
-} from '../../../../navigation/types/StackTypes'
+import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
   convertOCRResultToPersonalSchduleData,
@@ -153,6 +150,7 @@ const EditScheduleOCRScreen = () => {
           />
           {scheduleScope === 'ALL' ? (
             <TCalendarEditor
+              myTeam={workGroup}
               currentDate={currentDate}
               ref={tCalendarEditorRef}
             />

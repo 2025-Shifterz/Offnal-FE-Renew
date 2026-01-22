@@ -32,8 +32,6 @@ import OnboardingMethodScreen from '../presentation/onboarding/screens/Onboardin
 import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
 
 // Onboarding Navigation Error Screen
-import NavigationErrorScreen from '../presentation/error/screen/NavigationError'
-
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
 const RootNavigator = () => {
@@ -90,12 +88,6 @@ const RootNavigator = () => {
         {/* Migrate from AutoAlarmNavigator.tsx */}
         <RootStack.Screen name="CreateAlarm" component={CreateAlarmScreen} />
         {/* <RootStack.Screen name="EditAutoAlarm" component={} /> */}
-
-        {/* 온보딩 중 네비게이션 에러 화면 */}
-        <RootStack.Screen
-          name="NavigationError"
-          component={NavigationErrorScreen}
-        />
       </RootStack.Navigator>
     </NavigationContainer>
   )

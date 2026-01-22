@@ -54,9 +54,6 @@ export type RootStackParamList = {
   // Migrate from AutoAlarmNavigator.tsx
   CreateAlarm: undefined
   EditAutoAlarm: { alarmId: string }
-
-  // 에러 화면
-  NavigationError: undefined
 }
 // 탭 네비게이터
 export type TabParamList = {

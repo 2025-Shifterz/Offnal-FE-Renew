@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { onboardingNavigation } from '../../../navigation/types/StackTypes'
 import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
