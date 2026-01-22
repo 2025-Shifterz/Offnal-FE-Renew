@@ -65,7 +65,7 @@ const SelectShiftBox = ({
                   selectedTextStyle
                 )}
               >
-                {`${time.startTime}~${time.endTime}`}
+                {time?.startTime || '--:-- '}~{time?.endTime || ' --:--'}
               </Text>
             </View>
             <TimeFrame text={text} />
