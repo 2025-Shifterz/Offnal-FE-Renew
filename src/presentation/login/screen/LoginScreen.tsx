@@ -103,8 +103,8 @@ const LoginScreen = () => {
                     index: 0,
                     routes: [
                       {
-                        name: 'OnboardingSchedules',
-                        params: { screen: 'SelectScheduleReg' },
+                        name: 'OnboardingMethodScreen',
+                        params: { createScheduleButtonClick: false },
                       },
                     ],
                   })
