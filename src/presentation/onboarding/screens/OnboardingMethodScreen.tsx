@@ -55,11 +55,12 @@ const OnboardingMethodScreen = () => {
     <SafeAreaView className="h-full w-full flex-1 bg-background-gray-subtle1 ">
       <TopAppBar
         title=""
-        showBackButton={true}
+        showBackButton={createScheduleButtonClick ? true : false}
         onPressBackButton={() => {
           navigation.pop()
         }}
       />
+
       <View className="mx-p-7 flex-1">
         <View className="mb-[4px]" />
         <GlobalText className="text-text-bolder heading-m">
