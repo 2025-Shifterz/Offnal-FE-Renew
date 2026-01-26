@@ -23,8 +23,11 @@ import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { rootNavigation, RootStackParamList } from '../../../navigation/types'
 
 const TodoScreen = () => {
   const navigation = useNavigation<rootNavigation>()

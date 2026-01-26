@@ -48,7 +48,6 @@ const HasCalendar = ({
   const sheetRef = useRef<BottomSheet>(null)
 
   const openBottomSheet = (date: dayjs.Dayjs) => {
-    console.log('바텀시트 열기 함수 실행됨.')
     setSelectedDate(date)
     sheetRef.current?.expand() // 바텀 시트 열기
   }
@@ -80,7 +79,6 @@ const HasCalendar = ({
       <CalendarViewerHeader
         onPressTeamIcon={() => {
           setIsTeamView(!isTeamView)
-          console.log('클릭됨')
         }}
         selectedDate={currentDate.toDate()}
         onChange={newDate => setCurrentDate(dayjs(newDate))}

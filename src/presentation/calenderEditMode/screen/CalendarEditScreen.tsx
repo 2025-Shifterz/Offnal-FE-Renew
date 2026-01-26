@@ -1,4 +1,4 @@
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -8,24 +8,21 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { RootStackParamList, rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
-import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
-type RootNavigationRouteProp = RouteProp<RootStackParamList, 'EditCalendar'>
 const CalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const route = useRoute<RootNavigationRouteProp>()
 
-  const { workTimes } = route.params
-
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  const myTeam = useTeamCalendarStore(state => state.myTeam)
+
+  const { organizationName, workGroup } = useScheduleInfoStore()
 
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
@@ -60,7 +57,6 @@ const CalendarEditScreen = () => {
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
-    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateCalendarDay(key, type)
@@ -103,16 +99,11 @@ const CalendarEditScreen = () => {
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
-      console.log('calendarData in handlePatchData:', calendarData)
-      console.log('근무표 수정 요청 데이터:', toUpdateShiftRecord(calendarData))
-
       await calendarRepository.updateCalendar(
-        latestOrganization.organizationName,
-        myTeam,
+        organizationName,
+        workGroup,
         toUpdateShiftRecord(calendarData)
       )
-
-      console.log('근무표 수정 성공')
       // 저장 성공 후 스택을 초기화하여 캘린더 탭으로 이동 (뒤로가기 방지)
       navigation.reset({
         index: 0,

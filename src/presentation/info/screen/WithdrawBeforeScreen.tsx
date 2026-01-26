@@ -11,7 +11,7 @@ import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'
 import CheckBoxMenuItem from '../component/CheckBoxMenuItem'
 import CheckBoxWithTextInput from '../component/CheckBoxWithTextInput'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 

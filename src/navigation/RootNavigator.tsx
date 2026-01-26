@@ -5,8 +5,7 @@ import SplashScreen from '../presentation/splash/SplashScreen'
 import TabsNavigator from './TabsNavigator'
 import OnBoardingScheduleNavigator from './OnboardingScheduleNavigator'
 import LoginNavigator from './LoginNavigator'
-import OnBoardingScheduleOCRNavigator from './OnbordingScheduleOCRNavigator'
-import { RootStackParamList } from './types'
+import { RootStackParamList } from './types/StackTypes'
 
 // Migrate from MainNavigator.tsx
 import TodoScreen from '../presentation/note/screens/TodoScreen'
@@ -26,6 +25,13 @@ import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 import WithdrawBeforeScreen from '../presentation/info/screen/WithdrawBeforeScreen'
 import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
 
+// Migrate from OnboardingNavigator.tsx
+import OnboardingMethodScreen from '../presentation/onboarding/screens/OnboardingMethodScreen'
+
+// Migrate from AutoAlarmNavigator.tsx
+import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
+
+// Onboarding Navigation Error Screen
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
 const RootNavigator = () => {
@@ -35,13 +41,15 @@ const RootNavigator = () => {
         <RootStack.Screen name="SplashScreen" component={SplashScreen} />
         <RootStack.Screen name="LoginScreens" component={LoginNavigator} />
         <RootStack.Screen
+          // OCR / NEW / DIRECT 선택 화면
+          name="OnboardingMethodScreen"
+          component={OnboardingMethodScreen}
+        />
+        <RootStack.Screen
           name="OnboardingSchedules"
           component={OnBoardingScheduleNavigator}
         />
-        <RootStack.Screen
-          name="OnboardingSchedulesOCR"
-          component={OnBoardingScheduleOCRNavigator}
-        />
+
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
 
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
@@ -76,6 +84,10 @@ const RootNavigator = () => {
           component={WithdrawBeforeScreen}
         />
         <RootStack.Screen name="WithdrawScreen" component={WithdrawScreen} />
+
+        {/* Migrate from AutoAlarmNavigator.tsx */}
+        <RootStack.Screen name="CreateAlarm" component={CreateAlarmScreen} />
+        {/* <RootStack.Screen name="EditAutoAlarm" component={} /> */}
       </RootStack.Navigator>
     </NavigationContainer>
   )

@@ -30,7 +30,7 @@ const TopAppBar = ({
   rightActions,
 }: TopAppBarProps) => {
   return (
-    <View className="h-[50px] w-full items-center justify-center">
+    <View className="h-[50px] w-full items-center justify-center ">
       {showBackButton && (
         <TouchableOpacity
           onPress={onPressBackButton}

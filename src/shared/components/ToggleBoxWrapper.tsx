@@ -1,8 +1,8 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import { twMerge } from 'tailwind-merge'
-import { ScheduleRegMethod } from '../types/ScheduleRegMethod'
-import { ScheduleScopeType } from '../types/ScheduleScopeType'
+import { ScheduleRegMethod } from '../types/OnboardingMethod'
+import { ScheduleScopeType } from '../types/ScheduleScope'
 import { SchedulePhotoType } from '../types/SchedulePhotoType'
 
 // 토글 시 스타일 변경되는 박스 래퍼 컴포넌트

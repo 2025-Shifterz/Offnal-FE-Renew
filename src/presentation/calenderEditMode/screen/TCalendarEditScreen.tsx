@@ -1,4 +1,4 @@
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -7,28 +7,24 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation, RootStackParamList } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
-import { useCalendarStore } from '../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
 import TEditBottomSheet from '../components/TEditBottomSheet'
 import { toUpdateTeamShiftRecord } from '../mapper/UpdateTeamShiftMapper'
-
-type RootNavigationRouteProp = RouteProp<RootStackParamList, 'TeamEditCalendar'>
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const route = useRoute<RootNavigationRouteProp>()
-
-  const { workTimes } = route.params
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
 
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const updateTeamCalendarDay = useTeamCalendarStore(
     state => state.updateTeamCalendarDay
   )
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
+  const { organizationName } = useScheduleInfoStore()
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
     year: dayjs().year(),
@@ -63,7 +59,6 @@ const TCalendarEditScreen = () => {
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
-    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateTeamCalendarDay({
@@ -125,19 +120,8 @@ const TCalendarEditScreen = () => {
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
-      console.log('teamCalendarData in handlePatchData:', teamCalendarData)
-
       const payload = toUpdateTeamShiftRecord(teamCalendarData)
-      console.log('팀 근무표 수정 요청 데이터:', {
-        organizationName: latestOrganization.organizationName,
-        ...payload,
-      })
-
-      await teamCalendarRepository.updateTeamCalendar(
-        latestOrganization.organizationName,
-        payload
-      )
-      console.log('팀 근무표 수정 성공')
+      await teamCalendarRepository.updateTeamCalendar(organizationName, payload)
 
       navigation.reset({
         index: 0,

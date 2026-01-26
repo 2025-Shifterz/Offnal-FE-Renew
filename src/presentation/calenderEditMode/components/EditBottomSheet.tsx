@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import BottomSheet from '@gorhom/bottom-sheet'
 import SelectShiftBox from './SelectShiftBox'
@@ -6,16 +6,8 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
-import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
+import { WorkTime } from '../../../shared/types/WorkTime'
 dayjs.locale('ko') // 한글 locale 적용
-
-// 근무형태 선택 박스 map 데이터
-const shiftTypes: { id: number; text: WorkType }[] = [
-  { id: 1, text: '주간' },
-  { id: 2, text: '오후' },
-  { id: 3, text: '야간' },
-  { id: 4, text: '휴일' },
-]
 
 interface EditBottomSheetProps {
   selectedDate: dayjs.Dayjs | null
@@ -24,7 +16,7 @@ interface EditBottomSheetProps {
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
   setSelectedBoxId: (id: number) => void
-  workTimes: { [key: string]: { startTime: string; endTime: string } }
+  workTimes: WorkTime
 }
 
 const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(

@@ -26,6 +26,9 @@ module.exports = {
       },
     ],
 
+    // dependency 관련 룰
+    'react-hooks/exhaustive-deps': 'warn',
+
     // eslint 적용되는지 시험용
     //  'no-console': 'error',
   },

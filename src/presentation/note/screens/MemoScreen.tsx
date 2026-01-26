@@ -17,8 +17,11 @@ import {
   useRoute,
 } from '@react-navigation/native'
 import { useEffect } from 'react'
-import { rootNavigation, RootStackParamList } from '../../../navigation/types'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()

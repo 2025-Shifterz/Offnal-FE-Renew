@@ -6,7 +6,7 @@ import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
 import { useCallback, useMemo } from 'react'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import {
   CommonActions,
   useFocusEffect,
