@@ -23,11 +23,18 @@ import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
-import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 
 const TodoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'Todo'>>()
+
+  const selectedDate = route.params?.selectedDate
+
   const sheetRef = useRef<BottomSheetMethods>(null)
   const changeTodoDateBottomSheetRef =
     useRef<ChangeTodoDateBottomSheetMethods>(null)
@@ -46,7 +53,7 @@ const TodoScreen = () => {
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [showInput, setShowInput] = useState(false)
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
 
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null)
   const [editingTodoText, setEditingTodoText] = useState<string>('')

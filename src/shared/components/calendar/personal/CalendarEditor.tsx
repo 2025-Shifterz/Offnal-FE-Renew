@@ -137,9 +137,7 @@ const CalendarEditor: ForwardRefRenderFunction<
           })
         } else {
           await calendarRepository.createCalendar(newCalendarRequest)
-          Alert.alert('근무표 저장 성공')
         }
-
         return true
       } catch (error) {
         console.error('근무표 저장 실패:', error)

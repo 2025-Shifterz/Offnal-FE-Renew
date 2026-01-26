@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -34,6 +35,15 @@ const FeedBackScreen = () => {
   const [feedback, setFeedback] = useState('')
 
   const currentRatingData = RATING_DATA[rating]
+
+  const handleFeedbackSubmit = () => {
+    Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
+      {
+        text: '확인',
+        onPress: navigation.pop,
+      },
+    ])
+  }
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
@@ -91,7 +101,7 @@ const FeedBackScreen = () => {
           </ScrollView>
           <BottomButton
             text="제출하기"
-            onPress={() => {}}
+            onPress={handleFeedbackSubmit}
             className="px-number-8"
           />
         </KeyboardAvoidingView>
