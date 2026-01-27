@@ -47,42 +47,39 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       : '날짜 없음'
 
     return (
-      <>
-        {/* 바텀 시트 */}
-        <BottomSheetWrapper ref={internalRef}>
-          <View className="mt-[5px] gap-[20px] px-p-6">
-            <View className="gap-[10px]">
-              <Text className="text-text-basic heading-xs">근무형태 입력</Text>
-              <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
-                <Text className="text-text-primary label-s">{`선택된 날짜: ${formattedDate}`}</Text>
-              </View>
-            </View>
-            <View className="gap-[11px]">
-              <Text className="text-text-subtle heading-xxs">간격</Text>
-              <SelectShiftBox
-                selectedBoxId={selectedBoxId}
-                setSelectedBoxId={setSelectedBoxId}
-                handleTypeSelect={handleTypeSelect}
-                workTimes={workTimes}
-              />
-            </View>
-            <View className="h-[46px] w-full flex-row items-center gap-[10px]">
-              <TouchableOpacity
-                onPress={handleCancel}
-                className="h-full flex-[3] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
-              >
-                <Text className="text-text-basic body-m">취소</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleSave} // 저장 버튼에 handleSave 연결
-                className="h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse"
-              >
-                <Text className="text-text-bolder-inverse body-m">저장</Text>
-              </TouchableOpacity>
+      <BottomSheetWrapper ref={internalRef}>
+        <View className="gap-[20px] px-p-6 pb-number-16">
+          <View className="gap-[10px]">
+            <Text className="text-text-basic heading-xs">근무형태 입력</Text>
+            <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
+              <Text className="text-text-primary label-s">{`선택된 날짜: ${formattedDate}`}</Text>
             </View>
           </View>
-        </BottomSheetWrapper>
-      </>
+          <View className="gap-[11px]">
+            <Text className="text-text-subtle heading-xxs">간격</Text>
+            <SelectShiftBox
+              selectedBoxId={selectedBoxId}
+              setSelectedBoxId={setSelectedBoxId}
+              handleTypeSelect={handleTypeSelect}
+              workTimes={workTimes}
+            />
+          </View>
+          <View className="h-[46px] w-full flex-row items-center gap-[10px]">
+            <TouchableOpacity
+              onPress={handleCancel}
+              className="h-full flex-[3] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
+            >
+              <Text className="text-text-basic body-m">취소</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSave} // 저장 버튼에 handleSave 연결
+              className="h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse"
+            >
+              <Text className="text-text-bolder-inverse body-m">저장</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </BottomSheetWrapper>
     )
   }
 )

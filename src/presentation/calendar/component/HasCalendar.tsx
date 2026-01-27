@@ -116,9 +116,13 @@ const HasCalendar = ({
       {/* 노트 바텀시트 */}
       <BottomSheetWrapper
         ref={sheetRef}
-        handleStyle={{ backgroundColor: '#F4F5F6' }}
+        handleStyle={{
+          backgroundColor: '#F4F5F6',
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+        }}
       >
-        <View className="flex-1 gap-[11px] bg-surface-gray-subtle1 px-[16px] pt-[12px]">
+        <View className="gap-[11px] bg-surface-gray-subtle1 px-[16px] pb-number-8 pt-[12px]">
           <View className="flex-row items-center gap-[8px]">
             <Text className="w-[42px] text-text-bolder heading-xxs">
               {formattedDate}
