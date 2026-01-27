@@ -166,11 +166,12 @@ const TCalendarEditScreen = () => {
               setSelectedDate={openBottomSheet}
             />
           </View>
+          <View className="h-[100px] flex-1 " />
         </ScrollView>
         {/* 모든 저장 버튼 -> 근무표에 저장되어야함. post 요청!! */}
         <TouchableOpacity
           onPress={handlePatchData}
-          className="absolute bottom-[13px] right-[13px] h-[40px] w-[40px] items-center justify-center rounded-radius-max bg-success-40"
+          className="absolute bottom-[80px] right-[13px] h-[40px] w-[40px] items-center justify-center rounded-radius-max bg-success-40"
         >
           <SuccessIcon />
         </TouchableOpacity>
