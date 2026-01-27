@@ -48,7 +48,7 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
 
     return (
       <BottomSheetWrapper ref={internalRef}>
-        <View className="gap-[20px] px-p-6 pb-number-16">
+        <View className="gap-[20px] px-p-6 pb-number-20">
           <View className="gap-[10px]">
             <Text className="text-text-basic heading-xs">근무형태 입력</Text>
             <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
