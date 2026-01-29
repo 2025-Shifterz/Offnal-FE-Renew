@@ -1,7 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import { View, TouchableOpacity, Alert } from 'react-native'
-import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
+import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import EmptyMessage from '../components/EmptyMessage'
@@ -10,22 +10,32 @@ import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
 import OneAddButton from '../components/OneAddButton'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native'
 import { useEffect } from 'react'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MainStackParamList } from '../../../navigation/types'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 
 const MemoScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'Memo'>>()
+
+  const selectedDate = route.params?.selectedDate
+
   const swipeListViewRef = useRef<SwipeListView<any>>(null)
 
   const memos = localMemoStore(state => state.memos)
   const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
   const deleteMemo = localMemoStore(state => state.deleteMemo)
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
 
   useEffect(() => {
     fetchMemosByDate(currentDate)

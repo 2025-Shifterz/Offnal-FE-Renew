@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { View } from 'react-native'
 import TeamInput from '../components/TeamInput'
-import TimeInput from '../../schedule/component/TimeInput'
-import ScheduleNameInput from '../../schedule/component/ScheduleNameInput'
-import { WorkTimeContext } from '../../../shared/context/WorkTimeContext'
+import TimeInput from '../../onboarding/component/TimeInput'
+import ScheduleNameInput from '../../onboarding/component/ScheduleNameInput'
 import BottomButton from '../../../shared/components/BottomButton'
+
+// 현재 안쓰이는 페이지 !!
 
 const CalendarInfoEditScreen = () => {
   const [calendarName, setCalendarName] = useState('') // 근무표 이름
@@ -26,9 +27,7 @@ const CalendarInfoEditScreen = () => {
               calendarName={calendarName}
               setCalendarName={setCalendarName}
             />
-            <WorkTimeContext.Provider value={{ workTimes, setWorkTimes }}>
-              <TimeInput />
-            </WorkTimeContext.Provider>
+            <TimeInput />
             <TeamInput setWorkGroup={setWorkGroup} />
           </View>
 

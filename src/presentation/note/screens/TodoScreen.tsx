@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import { Todo } from '../../../domain/models/Todo'
@@ -23,13 +23,18 @@ import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { MainStackParamList } from '../../../navigation/types'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 
 const TodoScreen = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<MainStackParamList>>()
+  const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'Todo'>>()
+
+  const selectedDate = route.params?.selectedDate
+
   const sheetRef = useRef<BottomSheetMethods>(null)
   const changeTodoDateBottomSheetRef =
     useRef<ChangeTodoDateBottomSheetMethods>(null)
@@ -48,7 +53,7 @@ const TodoScreen = () => {
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [showInput, setShowInput] = useState(false)
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
 
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null)
   const [editingTodoText, setEditingTodoText] = useState<string>('')

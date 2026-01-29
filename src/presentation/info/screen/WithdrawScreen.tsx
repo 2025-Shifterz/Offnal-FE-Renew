@@ -1,15 +1,15 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import { ActivityIndicator, Alert, View } from 'react-native'
 import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'
-import { infoNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import { useUserStore } from '../../../store/useUserStore'
 
 const WithdrawScreen = () => {
-  const navigation = useNavigation<infoNavigation>()
+  const navigation = useNavigation<rootNavigation>()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleWithdraw = async () => {

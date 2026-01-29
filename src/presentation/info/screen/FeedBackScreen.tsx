@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -7,13 +8,13 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
+import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import { useState } from 'react'
 import GlobalText from '../../../shared/components/GlobalText'
 import StarRating from '../../../shared/components/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
-import { infoNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 
 type RatingInfo = { emoji: string; text: string }
 
@@ -28,12 +29,21 @@ const RATING_DATA: { [key: number]: RatingInfo } = {
 const MAX_FEEDBACK_LENGTH = 100
 
 const FeedBackScreen = () => {
-  const navigation = useNavigation<infoNavigation>()
+  const navigation = useNavigation<rootNavigation>()
 
   const [rating, setRating] = useState(1)
   const [feedback, setFeedback] = useState('')
 
   const currentRatingData = RATING_DATA[rating]
+
+  const handleFeedbackSubmit = () => {
+    Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
+      {
+        text: '확인',
+        onPress: navigation.pop,
+      },
+    ])
+  }
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
@@ -91,7 +101,7 @@ const FeedBackScreen = () => {
           </ScrollView>
           <BottomButton
             text="제출하기"
-            onPress={() => {}}
+            onPress={handleFeedbackSubmit}
             className="px-number-8"
           />
         </KeyboardAvoidingView>

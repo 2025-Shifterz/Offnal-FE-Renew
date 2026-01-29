@@ -7,6 +7,7 @@ import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
 import SelectGroupBox from './SelectGroupBox'
+import { WorkTime } from '../../../shared/types/WorkTime'
 dayjs.locale('ko') // 한글 locale 적용
 
 interface TEditBottomSheetProps {
@@ -18,7 +19,7 @@ interface TEditBottomSheetProps {
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
   setSelectedBoxId: (id: number) => void
-  workTimes: { [key: string]: { startTime: string; endTime: string } }
+  workTimes: WorkTime
 }
 
 const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(

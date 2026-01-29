@@ -6,8 +6,8 @@ import {
   DateAndWorkTypeRecord,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
-import { calendarService } from '../infrastructure/di/Dependencies'
-import { convertDurationToEndTime } from '../shared/utils/calendar/convertDuration'
+import { calendarRepository } from '../infrastructure/di/Dependencies'
+import { useScheduleInfoStore } from './useScheduleInfoStore'
 
 /*
 <---- calendarData 형태 ----> 
@@ -23,11 +23,6 @@ interface CalendarState {
   selectedDate: dayjs.Dayjs | null
 
   isLoading: boolean
-  // 최신 조직 정보
-  latestOrganization: {
-    organizationName: string
-    team: string
-  }
 
   // 편집용
   newCalendarData: DateAndWorkTypeRecord
@@ -38,7 +33,6 @@ interface CalendarState {
   updateCalendarDay: (date: string, workTypeName: WorkType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
-  setLatestOrganization: (organizationName: string, team: string) => void
 
   // 온보딩 캘린더 편집용 - CalendarEditor 에서 쓰임
   setNewCalendarData: (data: DateAndWorkTypeRecord) => void
@@ -70,11 +64,6 @@ export const useCalendarStore = create<CalendarState>()(set => ({
     currentEndDate: dayjs().endOf('month').format('YYYY-MM-DD'),
   },
   isLoading: false,
-
-  latestOrganization: {
-    organizationName: '',
-    team: '',
-  },
 
   setCalendarData: data =>
     set(() => {
@@ -124,34 +113,30 @@ export const useCalendarStore = create<CalendarState>()(set => ({
 
   setLoading: loading => set({ isLoading: loading }),
 
-  // 서버에서 캘린더 데이터 불러오기
+  // 서버에서 캘린더 데이터 불러오기 & 데이터 저장
   fetchCalendarData: async (organizationName, team, startDate, endDate) => {
     set({ isLoading: true })
     try {
-      const data = await calendarService.getWorkCalendar(
+      const data = await calendarRepository.getCalendar(
         organizationName,
         team,
         startDate,
         endDate
       )
 
-      const mapped: DateAndWorkType[] = data.map(item => ({
-        date: item.date,
-        workTypeName: item.workTypeName,
-        startTime: item.startTime ?? '',
-        endTime: convertDurationToEndTime(item.startTime, item.duration) ?? '',
-      }))
-
-      useCalendarStore.getState().setCalendarData(mapped)
+      useCalendarStore.getState().setCalendarData(data)
+      console.log('Fetched calendar data:', data)
     } catch (error) {
       console.error('Error fetching calendar data:', error)
     } finally {
       set({ isLoading: false })
     }
+    try {
+      await useScheduleInfoStore
+        .getState()
+        .fetchScheduleInfo(organizationName, team)
+    } catch (e) {
+      console.error('scheduleInfo fetch failed', e)
+    }
   },
-
-  setLatestOrganization: (organizationName, team) =>
-    set(() => ({
-      latestOrganization: { organizationName, team },
-    })),
 }))

@@ -36,7 +36,7 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
             case 'Calendar':
               IconComponent = focused ? CalendarBkIcon : CalendarGrayIcon
               break
-            case 'MyInfo':
+            case 'MyInformation':
               IconComponent = focused ? MyInfoBkIcon : MyInfoGrayIcon
               break
             default:
@@ -60,7 +60,7 @@ const BottomNavigationBar = ({ children }: { children: ReactNode }) => {
             case 'Calendar':
               label = '근무 캘린더'
               break
-            case 'MyInfo':
+            case 'MyInformation':
               label = '내 정보'
               break
             default:
