@@ -123,11 +123,20 @@ jobs:
       - name: Install iOS dependencies (with CocoaPods)
         run: cd ios && bundle exec pod install
 
-      - name: Build Offnal iOS (Debug)
+      - name: Build Offnal iOS (Development Debug)
         run: |
           cd ios
           xcodebuild -workspace Offnal.xcworkspace \
-                     -scheme Offnal \
+                     -scheme Development \
                      -sdk iphonesimulator \
                      -configuration Debug \
+                     clean build
+
+      - name: Build Offnal iOS (Production Release)
+        run: |
+          cd ios
+          xcodebuild -workspace Offnal.xcworkspace \
+                     -scheme Production \
+                     -sdk iphonesimulator \
+                     -configuration Release \
                      clean build
