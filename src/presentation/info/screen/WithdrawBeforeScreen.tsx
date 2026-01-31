@@ -83,7 +83,7 @@ const WithdrawBeforeScreen = () => {
                   onChecked={() => handleCheck('no_longer_used')}
                 />
                 <CheckBoxMenuItem
-                  title="오류가 생겨 사용할 수 없는 없어요."
+                  title="오류가 생겨 사용할 수 없어요."
                   isChecked={checkedState.error}
                   onChecked={() => handleCheck('error')}
                 />
