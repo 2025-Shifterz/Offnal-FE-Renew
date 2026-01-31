@@ -178,6 +178,7 @@ const TodoScreen = () => {
             ) : (
               todos.map((item, index) => (
                 <Fragment key={item.id}>
+                  {index > 0 && <View className="h-px bg-border-gray-light" />}
                   {editingTodoId === item.id ? (
                     <View className="-scroll-py-safe-offset-p-3 w-full flex-row items-center justify-between px-[16px] py-p-3">
                       {item.isCompleted ? (
@@ -228,9 +229,6 @@ const TodoScreen = () => {
                       </TouchableOpacity>
                     </View>
                   )}
-                  {index < todos.length - 1 && (
-                    <View className="h-px bg-border-gray-light" />
-                  )}
                 </Fragment>
               ))
             )}
@@ -244,7 +242,6 @@ const TodoScreen = () => {
                 <TouchableOpacity onPress={() => {}}>
                   <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
                 </TouchableOpacity>
-
                 <View className="ml-[8px] flex-1">
                   <TextInput
                     value={todo}
