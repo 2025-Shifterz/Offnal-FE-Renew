@@ -84,11 +84,14 @@ const TodoScreen = () => {
       return
     }
 
+    const todoToAdd = todo
+    setTodo('')
+
     try {
-      await addTodo(todo, currentDate)
-      setTodo('') // 초기화
+      await addTodo(todoToAdd, currentDate)
     } catch (error) {
       console.error('Error adding todo: ', error)
+      setTodo(todoToAdd)
     }
   }
 
