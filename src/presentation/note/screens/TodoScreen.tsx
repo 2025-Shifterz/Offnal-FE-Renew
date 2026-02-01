@@ -1,13 +1,14 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import { Todo } from '../../../domain/models/Todo'
@@ -23,19 +24,22 @@ import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { useHeaderHeight } from '@react-navigation/elements'
 
 const TodoScreen = () => {
-  const navigation = useNavigation<rootNavigation>()
   const route = useRoute<RouteProp<RootStackParamList, 'Todo'>>()
+  const headerHeight = useHeaderHeight()
+
+  const insets = useSafeAreaInsets()
+  const scrollViewBottomPadding = insets.bottom + 50
 
   const selectedDate = route.params?.selectedDate
 
   const sheetRef = useRef<BottomSheetMethods>(null)
+  const scrollViewRef = useRef<ScrollView>(null)
+
   const changeTodoDateBottomSheetRef =
     useRef<ChangeTodoDateBottomSheetMethods>(null)
 
@@ -80,11 +84,14 @@ const TodoScreen = () => {
       return
     }
 
+    const todoToAdd = todo
+    setTodo('')
+
     try {
-      await addTodo(todo, currentDate)
-      setTodo('') // 초기화
+      await addTodo(todoToAdd, currentDate)
     } catch (error) {
       console.error('Error adding todo: ', error)
+      setTodo(todoToAdd)
     }
   }
 
@@ -150,16 +157,18 @@ const TodoScreen = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title="할 일"
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.goBack()
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+        keyboardVerticalOffset={headerHeight}
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={{ paddingBottom: scrollViewBottomPadding }}
+          onContentSizeChange={() => {
+            scrollViewRef.current?.scrollToEnd({ animated: true })
           }}
-        />
-
-        <ScrollView>
+        >
           <DayBoxHeader
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
@@ -172,6 +181,7 @@ const TodoScreen = () => {
             ) : (
               todos.map((item, index) => (
                 <Fragment key={item.id}>
+                  {index > 0 && <View className="h-px bg-border-gray-light" />}
                   {editingTodoId === item.id ? (
                     <View className="-scroll-py-safe-offset-p-3 w-full flex-row items-center justify-between px-[16px] py-p-3">
                       {item.isCompleted ? (
@@ -185,13 +195,16 @@ const TodoScreen = () => {
                           value={editingTodoText}
                           onChangeText={setEditingTodoText}
                           placeholder={`할 일 수정`}
-                          className="flex-1 text-body-xs text-text-basic"
+                          className="flex-1 py-0 font-pretRegular text-body-xs text-text-basic"
                           placeholderTextColor="#6d7882"
                           onSubmitEditing={handleSaveEdit}
                           onBlur={handleSaveEdit}
                           numberOfLines={1}
                           autoFocus={true}
                         />
+                      </View>
+                      <View className="opacity-0">
+                        <VerticalDots />
                       </View>
                     </View>
                   ) : (
@@ -209,16 +222,15 @@ const TodoScreen = () => {
                         )}
 
                         <View className="ml-[8px] flex-1">
-                          <GlobalText>{item.content}</GlobalText>
+                          <GlobalText className="text-body-xs text-text-basic">
+                            {item.content}
+                          </GlobalText>
                         </View>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => handleOpenSheet(item)}>
                         <VerticalDots />
                       </TouchableOpacity>
                     </View>
-                  )}
-                  {index < todos.length - 1 && (
-                    <View className="h-px bg-border-gray-light" />
                   )}
                 </Fragment>
               ))
@@ -233,20 +245,18 @@ const TodoScreen = () => {
                 <TouchableOpacity onPress={() => {}}>
                   <View className="h-[13px] w-[13px] rounded-[2px] bg-[#cdd1d5]" />
                 </TouchableOpacity>
-
-                <View className="ml-[8px] flex-row items-center justify-between">
+                <View className="ml-[8px] flex-1">
                   <TextInput
                     value={todo}
                     onChangeText={setTodo}
                     placeholder={`할 일 입력`}
-                    className="mb-[5px] flex-1 text-body-xs text-text-basic"
+                    className="flex-1 py-0 font-pretRegular text-body-xs text-text-basic"
                     placeholderTextColor="#6d7882"
                     onSubmitEditing={() => handleAddTodo()}
                     numberOfLines={1}
                     autoFocus={true}
                   />
                 </View>
-                <View className="h-[1px] bg-border-gray-light" />
               </View>
             )}
           </View>
@@ -272,7 +282,7 @@ const TodoScreen = () => {
             text="할 일 추가"
           />
         </ScrollView>
-      </SafeAreaView>
+      </KeyboardAvoidingView>
 
       <TodoOptionBottomSheet
         ref={sheetRef}
