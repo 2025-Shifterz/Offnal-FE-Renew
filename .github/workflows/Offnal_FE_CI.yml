@@ -25,7 +25,7 @@ jobs:
           cache: 'npm'
 
       - name: Install JS dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         continue-on-error: true
@@ -69,9 +69,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Install JS dependencies
-        run: npm install
+        run: npm ci
 
       - name: Create gradle.properties from Base64
         run: |
@@ -110,12 +111,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-pods-
 
       - name: Install JS dependencies
-        run: npm install
+        run: npm ci
 
       - name: Create .env.development from Base64
         run: |
