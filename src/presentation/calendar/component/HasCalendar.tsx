@@ -148,6 +148,7 @@ const HasCalendar = ({
           <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
             <ToDoCard.Container
               todos={displayTodos ?? []}
+              totalCount={todos.length}
               selectedDate={selectedDate}
               onClickExpand={onClickExpandTodos}
               isExpended={isExpendedTodos}
@@ -155,6 +156,7 @@ const HasCalendar = ({
             <View className="mt-[-20px]">
               <MemoCard.Container
                 memos={displayMemos ?? []}
+                totalCount={memos.length}
                 selectedDate={selectedDate}
                 onClickExpand={onClickExpandMemos}
                 isExpended={isExpendedMemos}

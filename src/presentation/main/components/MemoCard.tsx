@@ -11,6 +11,7 @@ import SeeMoreButton from './SeeMoreButton'
 
 interface MemoCardProps {
   memos: Memo[]
+  totalCount: number
   selectedDate: dayjs.Dayjs | null
   onClickExpand: () => void
   isExpended: boolean
@@ -24,6 +25,7 @@ interface MemoItemProps {
 
 const Container = ({
   memos,
+  totalCount,
   selectedDate,
   onClickExpand,
   isExpended,
@@ -45,7 +47,7 @@ const Container = ({
       {hasMemos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
-          {memos.length >= 5 && (
+          {totalCount > 5 && (
             <SeeMoreButton
               isExpended={isExpended}
               onClickExpand={onClickExpand}

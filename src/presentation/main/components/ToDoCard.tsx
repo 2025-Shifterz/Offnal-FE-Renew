@@ -13,6 +13,7 @@ import SeeMoreButton from './SeeMoreButton'
 
 interface TodoCardProps {
   todos: Todo[]
+  totalCount: number
   selectedDate: dayjs.Dayjs | null
   onClickExpand: () => void
   isExpended: boolean
@@ -26,6 +27,7 @@ interface TodoItemProps {
 
 const Container = ({
   todos,
+  totalCount,
   selectedDate,
   onClickExpand,
   isExpended,
@@ -47,7 +49,7 @@ const Container = ({
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
-          {todos.length >= 5 && (
+          {totalCount > 5 && (
             <SeeMoreButton
               isExpended={isExpended}
               onClickExpand={onClickExpand}
