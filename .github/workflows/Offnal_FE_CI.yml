@@ -79,6 +79,7 @@ jobs:
 
       - name: Create .env.development from Base64
         run: |
+          mkdir -p env
           echo "${{ secrets.ENV_DEV_BASE_64 }}" | base64 --decode > env/.env.development
 
       - name: Build Offnal Android (Develop Debug)
@@ -118,6 +119,7 @@ jobs:
 
       - name: Create .env.development from Base64
         run: |
+          mkdir -p env
           echo "${{ secrets.ENV_DEV_BASE_64 }}" | base64 --decode > env/.env.development
           cp env/.env.development .env
 
