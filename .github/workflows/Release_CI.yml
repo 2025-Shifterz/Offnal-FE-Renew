@@ -2,7 +2,7 @@ name: Release CI (Internal Test/Staging/Production)
 
 on:
   push:
-    branches: ['release/*', 'main', 'chore/OFFNAL-22']
+    branches: ['release/*', 'main']
     tags: ['v*']
 
 jobs:
