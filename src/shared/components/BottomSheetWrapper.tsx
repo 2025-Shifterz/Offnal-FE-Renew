@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
+import BottomSheet from '@gorhom/bottom-sheet'
 import { View, ViewStyle } from 'react-native'
 
 type BottomSheetWrapperProps = {
@@ -22,7 +22,7 @@ const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
           onChange={onChange}
           handleStyle={handleStyle}
         >
-          <BottomSheetView>{children}</BottomSheetView>
+          {children}
         </BottomSheet>
       </View>
     )

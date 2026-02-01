@@ -1,7 +1,7 @@
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
 import ToDoCard from '../../main/components/ToDoCard'
 import MemoCard from '../../main/components/MemoCard'
@@ -31,12 +31,18 @@ const HasCalendar = ({
     month: dayjs().month() + 1,
   })
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const [isExpendedTodos, setIsExpendedTodos] = useState(false)
+  const [isExpendedMemos, setIsExpendedMemos] = useState(false)
 
   const todos = useLocalTodoStore(state => state.todos)
   const fetchTodosByDate = useLocalTodoStore(state => state.getTodosByDate)
 
   const memos = localMemoStore(state => state.memos)
   const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
+
+  // 최근 5개만 보여주기 - 넘어가면 '...' 처리
+  const displayTodos = isExpendedTodos ? todos : todos.slice(-5)
+  const displayMemos = isExpendedMemos ? memos : memos.slice(-5)
 
   // 선택된 날짜.
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
@@ -55,6 +61,14 @@ const HasCalendar = ({
   // 근무형태가 있을 때만 렌더링
   const shiftTypeForSelectedDate =
     selectedDate && calendarData.get(selectedDate.format('YYYY-MM-DD'))
+
+  const onClickExpandTodos = () => {
+    setIsExpendedTodos(!isExpendedTodos)
+  }
+
+  const onClickExpandMemos = () => {
+    setIsExpendedMemos(!isExpendedMemos)
+  }
 
   // 선택된 날짜 가져오기
   useEffect(() => {
@@ -122,7 +136,7 @@ const HasCalendar = ({
           borderTopRightRadius: 15,
         }}
       >
-        <View className="gap-[11px] bg-surface-gray-subtle1 px-[16px] pb-number-8 pt-[12px]">
+        <View className="gap-[11px] bg-surface-gray-subtle1 px-[16px]  pt-[12px]">
           <View className="flex-row items-center gap-[8px]">
             <Text className="w-[42px] text-text-bolder heading-xxs">
               {formattedDate}
@@ -131,18 +145,22 @@ const HasCalendar = ({
               <TimeFrame text={shiftTypeForSelectedDate} />
             )}
           </View>
-          <ScrollView>
+          <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
             <ToDoCard.Container
-              todos={todos ?? []}
+              todos={displayTodos ?? []}
               selectedDate={selectedDate}
+              onClickExpand={onClickExpandTodos}
+              isExpended={isExpendedTodos}
             />
             <View className="mt-[-20px]">
               <MemoCard.Container
-                memos={memos ?? []}
+                memos={displayMemos ?? []}
                 selectedDate={selectedDate}
+                onClickExpand={onClickExpandMemos}
+                isExpended={isExpendedMemos}
               />
             </View>
-          </ScrollView>
+          </BottomSheetScrollView>
         </View>
       </BottomSheetWrapper>
     </View>

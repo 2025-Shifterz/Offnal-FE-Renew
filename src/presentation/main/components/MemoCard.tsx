@@ -7,10 +7,13 @@ import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Memo } from '../../../domain/models/Memo'
 import dayjs from 'dayjs'
+import SeeMoreButton from './SeeMoreButton'
 
 interface MemoCardProps {
   memos: Memo[]
   selectedDate: dayjs.Dayjs | null
+  onClickExpand: () => void
+  isExpended: boolean
 }
 
 interface MemoItemProps {
@@ -19,7 +22,12 @@ interface MemoItemProps {
   isLast: boolean
 }
 
-const Container = ({ memos, selectedDate }: MemoCardProps) => {
+const Container = ({
+  memos,
+  selectedDate,
+  onClickExpand,
+  isExpended,
+}: MemoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasMemos = memos && memos.length > 0
@@ -37,6 +45,12 @@ const Container = ({ memos, selectedDate }: MemoCardProps) => {
       {hasMemos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
+          {memos.length >= 5 && (
+            <SeeMoreButton
+              isExpended={isExpended}
+              onClickExpand={onClickExpand}
+            />
+          )}
           {memos.map((memo, index) => (
             <Item
               key={memo.id} // 고유한 key prop 사용

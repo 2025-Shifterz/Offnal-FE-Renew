@@ -9,10 +9,13 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { Todo } from '../../../domain/models/Todo'
 import dayjs from 'dayjs'
+import SeeMoreButton from './SeeMoreButton'
 
 interface TodoCardProps {
   todos: Todo[]
   selectedDate: dayjs.Dayjs | null
+  onClickExpand: () => void
+  isExpended: boolean
 }
 
 interface TodoItemProps {
@@ -21,7 +24,12 @@ interface TodoItemProps {
   isLast: boolean
 }
 
-const Container = ({ todos, selectedDate }: TodoCardProps) => {
+const Container = ({
+  todos,
+  selectedDate,
+  onClickExpand,
+  isExpended,
+}: TodoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasTodos = todos && todos.length > 0
@@ -39,6 +47,12 @@ const Container = ({ todos, selectedDate }: TodoCardProps) => {
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
+          {todos.length >= 5 && (
+            <SeeMoreButton
+              isExpended={isExpended}
+              onClickExpand={onClickExpand}
+            />
+          )}
           {todos.map((todo, index) => (
             <Item
               key={todo.id} // 고유한 key prop 사용

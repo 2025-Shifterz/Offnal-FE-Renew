@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
@@ -48,7 +48,7 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
 
     return (
       <BottomSheetWrapper ref={internalRef}>
-        <View className="gap-[20px] px-p-6 pb-number-20">
+        <BottomSheetView className="gap-[20px] px-p-6 pb-number-20">
           <View className="gap-[10px]">
             <Text className="text-text-basic heading-xs">근무형태 입력</Text>
             <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
@@ -78,7 +78,7 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
               <Text className="text-text-bolder-inverse body-m">저장</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </BottomSheetView>
       </BottomSheetWrapper>
     )
   }
