@@ -3,44 +3,21 @@ import TitleSection from '../components/TitleSection'
 import ToDoCard from '../components/ToDoCard'
 import MemoCard from '../components/MemoCard'
 import dayjs from 'dayjs'
-import { useState } from 'react'
-import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
+import { Todo } from '../../../domain/models/Todo'
+import { Memo } from '../../../domain/models/Memo'
 
 interface NoteSectionProps {
   selectedDate: dayjs.Dayjs | null
+  todos?: Todo[] | undefined
+  memos?: Memo[] | undefined
 }
 
-const NoteSection = ({ selectedDate }: NoteSectionProps) => {
-  const todos = useLocalTodoStore(state => state.todos)
-  const memos = localMemoStore(state => state.memos)
-
-  const [isExpendedTodos, setIsExpendedTodos] = useState(false)
-  const [isExpendedMemos, setIsExpendedMemos] = useState(false)
-
-  const onClickExpandTodos = () => {
-    setIsExpendedTodos(!isExpendedTodos)
-  }
-
-  const onClickExpandMemos = () => {
-    setIsExpendedMemos(!isExpendedMemos)
-  }
-
+const NoteSection = ({ selectedDate, todos, memos }: NoteSectionProps) => {
   return (
     <View className="flex-col justify-start gap-y-number-7 pt-number-8">
       <TitleSection.OnlyTitle title="기록하기" />
-      <ToDoCard.Container
-        todos={todos}
-        selectedDate={selectedDate}
-        onClickExpand={onClickExpandTodos}
-        isExpended={isExpendedTodos}
-      />
-      <MemoCard.Container
-        memos={memos}
-        selectedDate={selectedDate}
-        onClickExpand={onClickExpandMemos}
-        isExpended={isExpendedMemos}
-      />
+      <ToDoCard.Container todos={todos ?? []} selectedDate={selectedDate} />
+      <MemoCard.Container memos={memos ?? []} selectedDate={selectedDate} />
     </View>
   )
 }

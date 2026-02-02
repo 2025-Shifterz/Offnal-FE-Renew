@@ -31,8 +31,6 @@ const HasCalendar = ({
     month: dayjs().month() + 1,
   })
   const [currentDate, setCurrentDate] = useState(dayjs())
-  const [isExpendedTodos, setIsExpendedTodos] = useState(false)
-  const [isExpendedMemos, setIsExpendedMemos] = useState(false)
 
   const todos = useLocalTodoStore(state => state.todos)
   const fetchTodosByDate = useLocalTodoStore(state => state.getTodosByDate)
@@ -57,14 +55,6 @@ const HasCalendar = ({
   // 근무형태가 있을 때만 렌더링
   const shiftTypeForSelectedDate =
     selectedDate && calendarData.get(selectedDate.format('YYYY-MM-DD'))
-
-  const onClickExpandTodos = () => {
-    setIsExpendedTodos(!isExpendedTodos)
-  }
-
-  const onClickExpandMemos = () => {
-    setIsExpendedMemos(!isExpendedMemos)
-  }
 
   // 선택된 날짜 가져오기
   useEffect(() => {
@@ -142,19 +132,9 @@ const HasCalendar = ({
             )}
           </View>
           <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-            <ToDoCard.Container
-              todos={todos}
-              selectedDate={selectedDate}
-              onClickExpand={onClickExpandTodos}
-              isExpended={isExpendedTodos}
-            />
+            <ToDoCard.Container todos={todos} selectedDate={selectedDate} />
             <View className="mt-[-20px]">
-              <MemoCard.Container
-                memos={memos}
-                selectedDate={selectedDate}
-                onClickExpand={onClickExpandMemos}
-                isExpended={isExpendedMemos}
-              />
+              <MemoCard.Container memos={memos} selectedDate={selectedDate} />
             </View>
           </BottomSheetScrollView>
         </View>
