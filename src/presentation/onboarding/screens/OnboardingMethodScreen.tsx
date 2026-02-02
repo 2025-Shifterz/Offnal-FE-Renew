@@ -46,7 +46,7 @@ const OnboardingMethodScreen = () => {
         })
         break
       case 'DIRECT':
-        navigation.navigate('Tabs', { screen: 'Calendar' })
+        navigation.navigate('Tabs', { screen: 'Home' })
         break
     }
   }
