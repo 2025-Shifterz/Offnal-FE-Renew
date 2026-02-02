@@ -23,6 +23,16 @@ type TopAppBarProps = {
   rightActions?: ReactNode
 }
 
+/**
+ * TopAppBar
+ *
+ * @param title 제목
+ * @param showBackButton 뒤로가기 버튼을 보이게 할 건지 결정하는 설정
+ * @param onPressBackButton 뒤로가기 버튼 클릭 시 동작
+ * @param rightActions Action 버튼 (React Node)
+ *
+ * @deprecated CenterAlignedTopAppBar를 사용 권장
+ * */
 const TopAppBar = ({
   title,
   showBackButton,

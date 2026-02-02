@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
  * @param title 제목
  * @param rightActions 오른쪽에 위치할 액션 버튼
  * @param applySafeArea 상단 안전 영역 적용 여부 (기본값: false)
- * @param backgroundColor 배경색 (기본값: 'bg-surface-gray-subtle1')
+ * @param backgroundColor 배경색 (기본값: 'bg-background-gray-subtle1')
  */
 type CenterAlignedTopAppBarProps = {
   navigationIcon?: ReactNode
@@ -30,7 +30,7 @@ const CenterAlignedTopAppBar = ({
   title,
   rightActions,
   applySafeArea = false,
-  backgroundColor = 'bg-surface-gray-subtle1',
+  backgroundColor = 'bg-background-gray-subtle1',
 }: CenterAlignedTopAppBarProps) => {
   const insets = useSafeAreaInsets()
   const topPadding = applySafeArea ? insets.top : 0
@@ -39,7 +39,7 @@ const CenterAlignedTopAppBar = ({
   return (
     <View
       style={{ paddingTop: topPadding, height: height }}
-      className="w-full justify-center"
+      className={`w-full justify-center ${backgroundColor}`}
     >
       <View
         className={`relative h-[50px] w-full flex-row items-center justify-center ${backgroundColor}`}
