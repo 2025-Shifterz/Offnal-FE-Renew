@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Offnal FE CI (Develop)
+name: Develop CI
 
 on:
   push:
@@ -25,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: Install JS dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         continue-on-error: true
@@ -49,8 +46,8 @@ jobs:
           name: test-report
           path: html-report/
 
-  build_android:
-    name: Build Android
+  build_android_develop:
+    name: Build Android (Develop)
     needs: validate
     runs-on: ubuntu-latest
 
@@ -69,23 +66,25 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Install JS dependencies
-        run: npm install
+        run: npm ci
 
       - name: Create gradle.properties from Base64
         run: |
           echo "${{ secrets.GRADLE_PROPERTIES_BASE_64 }}" | base64 --decode > android/gradle.properties
 
-      - name: Create .env from Base64
+      - name: Create .env.development from Base64
         run: |
-          echo "${{ secrets.ENV_BASE_64 }}" | base64 --decode > .env
+          mkdir -p env
+          echo "${{ secrets.ENV_DEV_BASE_64 }}" | base64 --decode > env/.env.development
 
-      - name: Build Offnal Android (Debug)
-        run: cd android && ./gradlew assembleDebug
+      - name: Build Offnal Android (Develop Debug)
+        run: cd android && ./gradlew assembleDevelopDebug
 
-  build_ios:
-    name: Build iOS
+  build_ios_develop:
+    name: Build iOS (Develop)
     needs: validate
     runs-on: macos-latest
 
@@ -109,16 +108,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ios/Pods
-          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+          key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock', 'package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-pods-
 
       - name: Install JS dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Create .env from Base64
+      - name: Create .env.development from Base64
         run: |
-          echo "${{ secrets.ENV_BASE_64 }}" | base64 --decode > .env
+          mkdir -p env
+          echo "${{ secrets.ENV_DEV_BASE_64 }}" | base64 --decode > env/.env.development
+          cp env/.env.development .env
 
       - name: Install iOS dependencies (with CocoaPods)
         run: cd ios && bundle exec pod install
@@ -130,13 +131,4 @@ jobs:
                      -scheme Development \
                      -sdk iphonesimulator \
                      -configuration Debug \
-                     clean build
-
-      - name: Build Offnal iOS (Production Release)
-        run: |
-          cd ios
-          xcodebuild -workspace Offnal.xcworkspace \
-                     -scheme Production \
-                     -sdk iphonesimulator \
-                     -configuration Release \
                      clean build

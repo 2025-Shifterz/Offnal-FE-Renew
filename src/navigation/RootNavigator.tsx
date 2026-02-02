@@ -30,6 +30,9 @@ import OnboardingMethodScreen from '../presentation/onboarding/screens/Onboardin
 
 // Migrate from AutoAlarmNavigator.tsx
 import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
+import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
+import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
+import GlobalText from '../shared/components/GlobalText'
 
 // Onboarding Navigation Error Screen
 const RootStack = createNativeStackNavigator<RootStackParamList>()
@@ -54,7 +57,29 @@ const RootNavigator = () => {
 
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
         <RootStack.Screen name="AutoAlarm" component={AutoAlarm} />
-        <RootStack.Screen name="Todo" component={TodoScreen} />
+        <RootStack.Screen
+          name="Todo"
+          component={TodoScreen}
+          options={({ navigation }) => {
+            return {
+              header: () => (
+                <CenterAlignedTopAppBar
+                  navigationIcon={
+                    <TopAppBarBackButton onPress={navigation.goBack} />
+                  }
+                  title={
+                    <GlobalText className="font-pretSemiBold text-heading-xs">
+                      할 일
+                    </GlobalText>
+                  }
+                  applySafeArea={true}
+                />
+              ),
+              headerShown: true,
+              headerShadowVisible: false,
+            }
+          }}
+        />
         <RootStack.Screen name="Memo" component={MemoScreen} />
         <RootStack.Screen name="AddMemo" component={AddMemoScreen} />
 
