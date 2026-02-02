@@ -80,7 +80,29 @@ const RootNavigator = () => {
             }
           }}
         />
-        <RootStack.Screen name="Memo" component={MemoScreen} />
+        <RootStack.Screen
+          name="Memo"
+          component={MemoScreen}
+          options={({ navigation }) => {
+            return {
+              header: () => (
+                <CenterAlignedTopAppBar
+                  navigationIcon={
+                    <TopAppBarBackButton onPress={navigation.goBack} />
+                  }
+                  title={
+                    <GlobalText className="font-pretSemiBold text-heading-xs">
+                      메모
+                    </GlobalText>
+                  }
+                  applySafeArea={true}
+                />
+              ),
+              headerShown: true,
+              headerShadowVisible: false,
+            }
+          }}
+        />
         <RootStack.Screen name="AddMemo" component={AddMemoScreen} />
 
         {/* Migrate from CalendarNavigator.tsx - Flattened for Tab Bar Hiding */}
