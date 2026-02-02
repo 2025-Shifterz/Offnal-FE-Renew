@@ -107,8 +107,49 @@ const RootNavigator = () => {
         <RootStack.Screen
           name="WithdrawBeforeScreen"
           component={WithdrawBeforeScreen}
+          options={({ navigation }) => {
+            return {
+              header: () => (
+                <CenterAlignedTopAppBar
+                  navigationIcon={
+                    <TopAppBarBackButton onPress={navigation.goBack} />
+                  }
+                  title={
+                    <GlobalText className="font-pretSemiBold text-heading-xs">
+                      회원 탈퇴
+                    </GlobalText>
+                  }
+                  applySafeArea={true}
+                />
+              ),
+              headerShown: true,
+              headerShadowVisible: false,
+            }
+          }}
         />
-        <RootStack.Screen name="WithdrawScreen" component={WithdrawScreen} />
+        <RootStack.Screen
+          name="WithdrawScreen"
+          component={WithdrawScreen}
+          options={({ navigation }) => {
+            return {
+              header: () => (
+                <CenterAlignedTopAppBar
+                  navigationIcon={
+                    <TopAppBarBackButton onPress={navigation.goBack} />
+                  }
+                  title={
+                    <GlobalText className="font-pretSemiBold text-heading-xs">
+                      회원 탈퇴
+                    </GlobalText>
+                  }
+                  applySafeArea={true}
+                />
+              ),
+              headerShown: true,
+              headerShadowVisible: false,
+            }
+          }}
+        />
 
         {/* Migrate from AutoAlarmNavigator.tsx */}
         <RootStack.Screen name="CreateAlarm" component={CreateAlarmScreen} />

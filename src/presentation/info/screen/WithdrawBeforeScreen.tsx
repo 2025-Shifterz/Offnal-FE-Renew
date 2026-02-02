@@ -48,14 +48,7 @@ const WithdrawBeforeScreen = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 bg-surface-gray-subtle1">
-        <SafeAreaView className="flex-1 " edges={['top', 'bottom']}>
-          <TopAppBar
-            title="회원 탈퇴"
-            showBackButton={true}
-            onPressBackButton={() => {
-              navigation.pop()
-            }}
-          />
+        <SafeAreaView className="flex-1 " edges={['bottom']}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             className="flex-1"
