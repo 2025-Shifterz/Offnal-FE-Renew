@@ -41,7 +41,9 @@ const CenterAlignedTopAppBar = ({
       style={{ paddingTop: topPadding, height: height }}
       className={`w-full justify-center ${backgroundColor}`}
     >
-      <View className="relative h-[50px] w-full flex-row items-center justify-center">
+      <View
+        className={`relative h-[50px] w-full flex-row items-center justify-center ${backgroundColor}`}
+      >
         <View className="absolute left-number-9 items-center justify-center">
           {navigationIcon}
         </View>

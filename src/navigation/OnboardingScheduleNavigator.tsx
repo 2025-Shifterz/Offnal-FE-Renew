@@ -64,7 +64,6 @@ const OnBoardingScheduleNavigator = () => {
             />
           ),
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: '#F4F5F6' },
         }
       }}
     >
