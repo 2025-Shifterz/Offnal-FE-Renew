@@ -47,31 +47,20 @@ const WithdrawScreen = () => {
             <GlobalText className="font-pretSemiBold text-heading-m">
               탈퇴하기 전에 확인해주세요
             </GlobalText>
-            <View className="flex-row items-start">
-              <GlobalText className="mr-[4px] font-pretRegular text-label-xs">
-                {'\u2022'}
-              </GlobalText>
-              <GlobalText className="flex-1 font-pretRegular text-label-xs">
-                회원 탈퇴 시 모든 개인정보와 활동 기록이 영구적으로 삭제되며,
-                복구할 수 없습니다.
-              </GlobalText>
-            </View>
-            <View className="flex-row items-start">
-              <GlobalText className="mr-[4px] font-pretRegular text-label-xs">
-                {'\u2022'}
-              </GlobalText>
-              <GlobalText className="flex-1 font-pretRegular text-label-xs">
-                삭제되는 정보: 프로필 정보, 근무표 정보, 할 일 및 메모 등
-              </GlobalText>
-            </View>
-            <View className="flex-row items-start">
-              <GlobalText className="mr-[4px] font-pretRegular text-label-xs">
-                {'\u2022'}
-              </GlobalText>
-              <GlobalText className="flex-1 font-pretRegular text-label-xs">
-                단, 관련 법령에 따라 일부 정보는 일정 기간 보관될 수 있습니다.
-              </GlobalText>
-            </View>
+            {[
+              '회원 탈퇴 시 모든 개인정보와 활동 기록이 영구적으로 삭제되며, 복구할 수 없습니다.',
+              '삭제되는 정보: 프로필 정보, 근무표 정보, 할 일 및 메모 등',
+              '단, 관련 법령에 따라 일부 정보는 일정 기간 보관될 수 있습니다.',
+            ].map(text => (
+              <View key={text} className="flex-row items-start">
+                <GlobalText className="mr-[4px] font-pretRegular text-label-xs">
+                  {'\u2022'}
+                </GlobalText>
+                <GlobalText className="flex-1 font-pretRegular text-label-xs">
+                  {text}
+                </GlobalText>
+              </View>
+            ))}
           </View>
 
           <BottomButton
