@@ -39,6 +39,7 @@ const Container = ({ todos, selectedDate }: TodoCardProps) => {
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
+
           {todos.map((todo, index) => (
             <Item
               key={todo.id} // 고유한 key prop 사용
