@@ -11,7 +11,6 @@ import SeeMoreButton from './SeeMoreButton'
 
 interface MemoCardProps {
   memos: Memo[]
-  totalCount: number
   selectedDate: dayjs.Dayjs | null
   onClickExpand: () => void
   isExpended: boolean
@@ -25,7 +24,6 @@ interface MemoItemProps {
 
 const Container = ({
   memos,
-  totalCount,
   selectedDate,
   onClickExpand,
   isExpended,
@@ -33,6 +31,8 @@ const Container = ({
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasMemos = memos && memos.length > 0
+
+  const displayMemos = isExpended ? memos : memos.slice(-5)
 
   return (
     <View className="my-number-8 flex-col justify-start gap-y-number-7 rounded-lg bg-background-white p-number-6">
@@ -47,18 +47,18 @@ const Container = ({
       {hasMemos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
-          {totalCount > 5 && (
+          {memos.length > 5 && (
             <SeeMoreButton
               isExpended={isExpended}
               onClickExpand={onClickExpand}
             />
           )}
-          {memos.map((memo, index) => (
+          {displayMemos.map((memo, index) => (
             <Item
               key={memo.id} // 고유한 key prop 사용
               memo={memo}
               isFirst={index === 0} // 첫 번째 아이템인지 확인
-              isLast={index === memos.length - 1} // 마지막 아이템인지 확인
+              isLast={index === displayMemos.length - 1} // 마지막 아이템인지 확인
             />
           ))}
         </View>

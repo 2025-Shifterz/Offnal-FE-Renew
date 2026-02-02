@@ -40,10 +40,6 @@ const HasCalendar = ({
   const memos = localMemoStore(state => state.memos)
   const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
 
-  // 최근 5개만 보여주기 - 넘어가면 '...' 처리
-  const displayTodos = isExpendedTodos ? todos : todos.slice(-5)
-  const displayMemos = isExpendedMemos ? memos : memos.slice(-5)
-
   // 선택된 날짜.
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   const formattedDate = selectedDate
@@ -147,16 +143,14 @@ const HasCalendar = ({
           </View>
           <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
             <ToDoCard.Container
-              todos={displayTodos ?? []}
-              totalCount={todos.length}
+              todos={todos}
               selectedDate={selectedDate}
               onClickExpand={onClickExpandTodos}
               isExpended={isExpendedTodos}
             />
             <View className="mt-[-20px]">
               <MemoCard.Container
-                memos={displayMemos ?? []}
-                totalCount={memos.length}
+                memos={memos}
                 selectedDate={selectedDate}
                 onClickExpand={onClickExpandMemos}
                 isExpended={isExpendedMemos}

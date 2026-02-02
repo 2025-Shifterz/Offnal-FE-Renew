@@ -18,9 +18,6 @@ const NoteSection = ({ selectedDate }: NoteSectionProps) => {
   const [isExpendedTodos, setIsExpendedTodos] = useState(false)
   const [isExpendedMemos, setIsExpendedMemos] = useState(false)
 
-  const displayTodos = isExpendedTodos ? todos : todos.slice(-5)
-  const displayMemos = isExpendedMemos ? memos : memos.slice(-5)
-
   const onClickExpandTodos = () => {
     setIsExpendedTodos(!isExpendedTodos)
   }
@@ -33,15 +30,13 @@ const NoteSection = ({ selectedDate }: NoteSectionProps) => {
     <View className="flex-col justify-start gap-y-number-7 pt-number-8">
       <TitleSection.OnlyTitle title="기록하기" />
       <ToDoCard.Container
-        todos={displayTodos ?? []}
-        totalCount={todos.length}
+        todos={todos}
         selectedDate={selectedDate}
         onClickExpand={onClickExpandTodos}
         isExpended={isExpendedTodos}
       />
       <MemoCard.Container
-        memos={displayMemos ?? []}
-        totalCount={memos.length}
+        memos={memos}
         selectedDate={selectedDate}
         onClickExpand={onClickExpandMemos}
         isExpended={isExpendedMemos}

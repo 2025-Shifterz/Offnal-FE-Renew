@@ -13,7 +13,6 @@ import SeeMoreButton from './SeeMoreButton'
 
 interface TodoCardProps {
   todos: Todo[]
-  totalCount: number
   selectedDate: dayjs.Dayjs | null
   onClickExpand: () => void
   isExpended: boolean
@@ -27,7 +26,6 @@ interface TodoItemProps {
 
 const Container = ({
   todos,
-  totalCount,
   selectedDate,
   onClickExpand,
   isExpended,
@@ -35,6 +33,8 @@ const Container = ({
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasTodos = todos && todos.length > 0
+
+  const displayTodos = isExpended ? todos : todos.slice(-5)
 
   return (
     <View className="my-number-8 flex-col justify-start gap-y-number-7 rounded-lg bg-background-white p-number-6">
@@ -49,18 +49,18 @@ const Container = ({
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
-          {totalCount > 5 && (
+          {todos.length > 5 && (
             <SeeMoreButton
               isExpended={isExpended}
               onClickExpand={onClickExpand}
             />
           )}
-          {todos.map((todo, index) => (
+          {displayTodos.map((todo, index) => (
             <Item
               key={todo.id} // 고유한 key prop 사용
               todo={todo}
               isFirst={index === 0} // 첫 번째 아이템인지 확인
-              isLast={index === todos.length - 1} // 마지막 아이템인지 확인
+              isLast={index === displayTodos.length - 1} // 마지막 아이템인지 확인
             />
           ))}
         </View>
