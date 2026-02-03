@@ -1,4 +1,5 @@
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -42,6 +43,8 @@ const WithdrawBeforeScreen = () => {
   const handleNavigate = () => {
     if (isAnyChecked) {
       navigation.navigate('WithdrawScreen')
+    } else {
+      Alert.alert('알림', '탈퇴 사유를 선택해주세요.')
     }
   }
 
