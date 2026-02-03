@@ -1,6 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
-import { View, TouchableOpacity, Alert } from 'react-native'
+import { View, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
@@ -60,16 +59,8 @@ const MemoScreen = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title="메모"
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.goBack()
-          }}
-        />
-
-        <View className="flex-1">
+      <SafeAreaView className="flex-1" edges={['bottom']}>
+        <ScrollView>
           <DayBoxHeader
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
@@ -140,7 +131,7 @@ const MemoScreen = () => {
             }
             text="메모 작성"
           />
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   )
