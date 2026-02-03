@@ -1,7 +1,7 @@
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
 import ToDoCard from '../../main/components/ToDoCard'
 import MemoCard from '../../main/components/MemoCard'
@@ -116,9 +116,13 @@ const HasCalendar = ({
       {/* 노트 바텀시트 */}
       <BottomSheetWrapper
         ref={sheetRef}
-        handleStyle={{ backgroundColor: '#F4F5F6' }}
+        handleStyle={{
+          backgroundColor: '#F4F5F6',
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+        }}
       >
-        <View className="flex-1 gap-[11px] bg-surface-gray-subtle1 px-[16px] pt-[12px]">
+        <View className="gap-[11px] bg-surface-gray-subtle1 px-[16px]  pt-[12px]">
           <View className="flex-row items-center gap-[8px]">
             <Text className="w-[42px] text-text-bolder heading-xxs">
               {formattedDate}
@@ -127,18 +131,12 @@ const HasCalendar = ({
               <TimeFrame text={shiftTypeForSelectedDate} />
             )}
           </View>
-          <ScrollView>
-            <ToDoCard.Container
-              todos={todos ?? []}
-              selectedDate={selectedDate}
-            />
+          <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+            <ToDoCard.Container todos={todos} selectedDate={selectedDate} />
             <View className="mt-[-20px]">
-              <MemoCard.Container
-                memos={memos ?? []}
-                selectedDate={selectedDate}
-              />
+              <MemoCard.Container memos={memos} selectedDate={selectedDate} />
             </View>
-          </ScrollView>
+          </BottomSheetScrollView>
         </View>
       </BottomSheetWrapper>
     </View>
