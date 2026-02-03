@@ -47,6 +47,17 @@ const RootNavigator = () => {
           // OCR / NEW / DIRECT 선택 화면
           name="OnboardingMethodScreen"
           component={OnboardingMethodScreen}
+          options={() => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={null}
+                title={null}
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
         <RootStack.Screen
           name="OnboardingSchedules"
@@ -56,32 +67,66 @@ const RootNavigator = () => {
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
 
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
-        <RootStack.Screen name="AutoAlarm" component={AutoAlarm} />
         <RootStack.Screen
           name="Todo"
           component={TodoScreen}
-          options={({ navigation }) => {
-            return {
-              header: () => (
-                <CenterAlignedTopAppBar
-                  navigationIcon={
-                    <TopAppBarBackButton onPress={navigation.goBack} />
-                  }
-                  title={
-                    <GlobalText className="font-pretSemiBold text-heading-xs">
-                      할 일
-                    </GlobalText>
-                  }
-                  applySafeArea={true}
-                />
-              ),
-              headerShown: true,
-              headerShadowVisible: false,
-            }
-          }}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    할 일
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
-        <RootStack.Screen name="Memo" component={MemoScreen} />
-        <RootStack.Screen name="AddMemo" component={AddMemoScreen} />
+        <RootStack.Screen
+          name="Memo"
+          component={MemoScreen}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    메모
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+        <RootStack.Screen
+          name="AddMemo"
+          component={AddMemoScreen}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={null}
+                applySafeArea={true}
+                backgroundColor="bg-surface-white"
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
 
         {/* Migrate from CalendarNavigator.tsx - Flattened for Tab Bar Hiding */}
         <RootStack.Screen name="EditCalendar" component={CalendarEditScreen} />
@@ -98,34 +143,89 @@ const RootNavigator = () => {
         <RootStack.Screen
           name="EditProfileScreen"
           component={EditProfileScreen}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    프로필 수정
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
-        <RootStack.Screen name="FeedbackScreen" component={FeedBackScreen} />
+
+        <RootStack.Screen
+          name="FeedbackScreen"
+          component={FeedBackScreen}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    평가 및 피드백
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+
         <RootStack.Screen
           name="TermsWebViewScreen"
           component={TermsWebViewScreen}
+          options={({ navigation, route }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    {route.params.title}
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
+
         <RootStack.Screen
           name="WithdrawBeforeScreen"
           component={WithdrawBeforeScreen}
-          options={({ navigation }) => {
-            return {
-              header: () => (
-                <CenterAlignedTopAppBar
-                  navigationIcon={
-                    <TopAppBarBackButton onPress={navigation.goBack} />
-                  }
-                  title={
-                    <GlobalText className="font-pretSemiBold text-heading-xs">
-                      회원 탈퇴
-                    </GlobalText>
-                  }
-                  applySafeArea={true}
-                />
-              ),
-              headerShown: true,
-              headerShadowVisible: false,
-            }
-          }}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    회원 탈퇴
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
         <RootStack.Screen
           name="WithdrawScreen"
@@ -152,7 +252,48 @@ const RootNavigator = () => {
         />
 
         {/* Migrate from AutoAlarmNavigator.tsx */}
-        <RootStack.Screen name="CreateAlarm" component={CreateAlarmScreen} />
+        <RootStack.Screen
+          name="CreateAlarm"
+          component={CreateAlarmScreen}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    알람 생성
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+        <RootStack.Screen
+          name="AutoAlarm"
+          component={AutoAlarm}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    자동 알람
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
         {/* <RootStack.Screen name="EditAutoAlarm" component={} /> */}
       </RootStack.Navigator>
     </NavigationContainer>

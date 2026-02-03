@@ -13,8 +13,9 @@ import GlobalText from '../../../shared/components/GlobalText'
 import BottomButton from '../../../shared/components/BottomButton'
 import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
-import { useEffect } from 'react'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
+import { useEffect, useLayoutEffect } from 'react'
+import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
+import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
 
 const OnboardingMethodScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -51,16 +52,29 @@ const OnboardingMethodScreen = () => {
     }
   }
 
-  return (
-    <SafeAreaView className="h-full w-full flex-1 bg-background-gray-subtle1 ">
-      <TopAppBar
-        title=""
-        showBackButton={createScheduleButtonClick ? true : false}
-        onPressBackButton={() => {
-          navigation.pop()
-        }}
-      />
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <CenterAlignedTopAppBar
+          navigationIcon={
+            createScheduleButtonClick ? (
+              <TopAppBarBackButton onPress={navigation.goBack} />
+            ) : null
+          }
+          title={null}
+          applySafeArea={true}
+        />
+      ),
+      headerShown: true,
+      headerShadowVisible: false,
+    })
+  }, [navigation])
 
+  return (
+    <SafeAreaView
+      className="h-full w-full flex-1 bg-background-gray-subtle1"
+      edges={['bottom']}
+    >
       <View className="mx-p-7 flex-1">
         <View className="mb-[4px]" />
         <GlobalText className="text-text-bolder heading-m">
