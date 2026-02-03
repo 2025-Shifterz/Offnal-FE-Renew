@@ -1,6 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
-import { View, TouchableOpacity, Alert } from 'react-native'
+import { View, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
@@ -22,7 +21,6 @@ import {
   rootNavigation,
   RootStackParamList,
 } from '../../../navigation/types/StackTypes'
-import { ScrollView } from 'react-native-gesture-handler'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()

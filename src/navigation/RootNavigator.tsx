@@ -60,48 +60,44 @@ const RootNavigator = () => {
         <RootStack.Screen
           name="Todo"
           component={TodoScreen}
-          options={({ navigation }) => {
-            return {
-              header: () => (
-                <CenterAlignedTopAppBar
-                  navigationIcon={
-                    <TopAppBarBackButton onPress={navigation.goBack} />
-                  }
-                  title={
-                    <GlobalText className="font-pretSemiBold text-heading-xs">
-                      할 일
-                    </GlobalText>
-                  }
-                  applySafeArea={true}
-                />
-              ),
-              headerShown: true,
-              headerShadowVisible: false,
-            }
-          }}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    할 일
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
         <RootStack.Screen
           name="Memo"
           component={MemoScreen}
-          options={({ navigation }) => {
-            return {
-              header: () => (
-                <CenterAlignedTopAppBar
-                  navigationIcon={
-                    <TopAppBarBackButton onPress={navigation.goBack} />
-                  }
-                  title={
-                    <GlobalText className="font-pretSemiBold text-heading-xs">
-                      메모
-                    </GlobalText>
-                  }
-                  applySafeArea={true}
-                />
-              ),
-              headerShown: true,
-              headerShadowVisible: false,
-            }
-          }}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    메모
+                  </GlobalText>
+                }
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
         />
         <RootStack.Screen name="AddMemo" component={AddMemoScreen} />
 
