@@ -49,7 +49,7 @@ const CalendarEditScreen = () => {
       case '휴일':
         return 4
       default:
-        return 0 // 기본값
+        return 0 // 기본값 없음
     }
   }
 

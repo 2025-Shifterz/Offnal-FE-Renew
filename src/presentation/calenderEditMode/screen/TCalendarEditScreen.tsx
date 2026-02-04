@@ -51,7 +51,7 @@ const TCalendarEditScreen = () => {
       case '휴일':
         return 4
       default:
-        return 1 // 기본값 '주간'
+        return 0 // 기본값 없음
     }
   }
 
