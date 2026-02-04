@@ -15,7 +15,6 @@ interface EditBottomSheetProps {
   handleCancel: () => void
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
-  setSelectedBoxId: (id: number) => void
   workTimes: WorkTime
 }
 
@@ -27,7 +26,6 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       handleCancel,
       handleSave,
       selectedBoxId,
-      setSelectedBoxId,
       workTimes,
     },
     ref
@@ -59,7 +57,6 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
             <Text className="text-text-subtle heading-xxs">간격</Text>
             <SelectShiftBox
               selectedBoxId={selectedBoxId}
-              setSelectedBoxId={setSelectedBoxId}
               handleTypeSelect={handleTypeSelect}
               workTimes={workTimes}
             />
@@ -72,8 +69,9 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
               <Text className="text-text-basic body-m">취소</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              disabled={selectedBoxId === 0}
               onPress={handleSave} // 저장 버튼에 handleSave 연결
-              className="h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse"
+              className={`h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse ${selectedBoxId === 0 ? 'opacity-40' : ''}`}
             >
               <Text className="text-text-bolder-inverse body-m">저장</Text>
             </TouchableOpacity>

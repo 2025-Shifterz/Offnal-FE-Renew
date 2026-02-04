@@ -8,7 +8,6 @@ import { WorkTime } from '../../../shared/types/WorkTime'
 
 interface SelectShiftBoxProps {
   selectedBoxId: number
-  setSelectedBoxId: (id: number) => void
   handleTypeSelect: (type: WorkType) => void
   workTimes: WorkTime
 }
@@ -23,7 +22,6 @@ const shiftTypes: { id: number; text: WorkType }[] = [
 
 const SelectShiftBox = ({
   selectedBoxId,
-  setSelectedBoxId,
   handleTypeSelect,
   workTimes,
 }: SelectShiftBoxProps) => {
@@ -42,7 +40,6 @@ const SelectShiftBox = ({
           <TouchableOpacity
             key={id}
             onPress={() => {
-              setSelectedBoxId(id)
               handleTypeSelect(text)
             }}
             className={twMerge(
