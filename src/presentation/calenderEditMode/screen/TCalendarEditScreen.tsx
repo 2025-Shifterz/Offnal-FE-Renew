@@ -89,6 +89,7 @@ const TCalendarEditScreen = () => {
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
   const openBottomSheet = (date: dayjs.Dayjs) => {
+    setSelectedGroup(1) // 기본값으로 1조 설정
     const key = date.format('YYYY-MM-DD')
     const teamRecord = teamCalendarData.find(
       t => t.team === `${selectedGroup}조`
