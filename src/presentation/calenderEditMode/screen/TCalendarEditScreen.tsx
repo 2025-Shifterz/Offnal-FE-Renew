@@ -34,7 +34,7 @@ const TCalendarEditScreen = () => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
-  const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
+  const [selectedBoxId, setSelectedBoxId] = useState(0) // 선택된 박스 ID 상태 추가
   const [selectedGroup, setSelectedGroup] = useState(1)
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
@@ -148,7 +148,6 @@ const TCalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
-              selectedYearMonth={selectedYearMonth}
               setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
