@@ -3,12 +3,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
   TextInput,
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import { useState } from 'react'
 import GlobalText from '../../../shared/components/GlobalText'
 import StarRating from '../../../shared/components/StarRating'
@@ -40,21 +38,16 @@ const FeedBackScreen = () => {
     Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
       {
         text: '확인',
-        onPress: navigation.pop,
+        onPress: () => {
+          navigation.pop()
+        },
       },
     ])
   }
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title="평가 및 피드백"
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.pop()
-          }}
-        />
+      <SafeAreaView className="flex-1" edges={['bottom']}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1"
