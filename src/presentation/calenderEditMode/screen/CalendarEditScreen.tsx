@@ -33,7 +33,6 @@ const CalendarEditScreen = () => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
-  const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
   const sheetRef = useRef<BottomSheet>(null)
@@ -49,8 +48,17 @@ const CalendarEditScreen = () => {
       case '휴일':
         return 4
       default:
-        return 1 // 기본값 '주간'
+        return 0 // 기본값 없음
     }
+  }
+
+  const getSelectedBoxId = () => {
+    if (!selectedDate) return 0
+
+    const key = selectedDate.format('YYYY-MM-DD')
+    const workType = calendarData[key]?.workTypeName ?? null
+
+    return shiftTypeToId(workType)
   }
 
   // 근무 형태 캘린더에 넣기
@@ -69,7 +77,6 @@ const CalendarEditScreen = () => {
 
     setSelectedDate(date)
     setBackupType(currentShift)
-    setSelectedBoxId(shiftTypeToId(currentShift)) // ID 설정
     sheetRef.current?.expand() // 바텀 시트 열기
   }
   // 취소 시 롤백
@@ -130,7 +137,6 @@ const CalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
-              selectedYearMonth={selectedYearMonth}
               setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
@@ -166,8 +172,7 @@ const CalendarEditScreen = () => {
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결
           ref={sheetRef}
           selectedDate={selectedDate}
-          selectedBoxId={selectedBoxId} // prop으로 전달
-          setSelectedBoxId={setSelectedBoxId} // prop으로 전달
+          selectedBoxId={getSelectedBoxId()} // prop으로 전달
           workTimes={workTimes} // EditBottomSheet에 전달
         />
       </>
