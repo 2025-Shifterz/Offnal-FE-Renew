@@ -60,7 +60,7 @@ const InformationScreen = () => {
       {
         id: 'version',
         title: '현재 버전',
-        caption: '1.0.0',
+        caption: '1.0.1',
         onPress: () => {
           /* TODO("Not yet Implemeted") */
         },

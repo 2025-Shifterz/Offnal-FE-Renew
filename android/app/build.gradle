@@ -28,8 +28,8 @@ android {
         applicationId "com.shifterz.offnal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1000007
-        versionName "1.0.0"
+        versionCode 7
+        versionName "1.0.1"
     }
 
     signingConfigs {
