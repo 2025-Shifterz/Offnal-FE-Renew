@@ -19,6 +19,9 @@ const KakaoLoginWebView = () => {
     const fetchLoginUrl = async () => {
       try {
         const secureLoginUrl = await authService.getLoginUrl()
+        if (!secureLoginUrl) {
+          throw new Error('Failed to get login URL')
+        }
         setLoginUrl(secureLoginUrl)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')
@@ -30,8 +33,10 @@ const KakaoLoginWebView = () => {
     fetchLoginUrl()
   }, [navigation])
 
+  const safeRedirectUri = JSON.stringify(KAKAO_REDIRECT_URI)
+
   const injectedJS = `
-    if (window.location.href.startsWith('${KAKAO_REDIRECT_URI}')) {
+    if (window.location.href.startsWith(${safeRedirectUri})) {
       window.ReactNativeWebView.postMessage(document.body.innerText);
     }
     true;
