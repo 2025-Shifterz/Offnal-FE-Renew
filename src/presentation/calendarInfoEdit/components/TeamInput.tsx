@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Text, View } from 'react-native'
-import DefaultChip from '../../../shared/components/chip/DefaultChip'
+import TeamItem from '../../onboarding/component/TeamItem'
 
 interface TeamInputProps {
   setWorkGroup: (text: string) => void
@@ -15,7 +15,7 @@ const TeamInput = ({ setWorkGroup }: TeamInputProps) => {
       <View className="flex h-[54px] gap-4 rounded-lg bg-white px-[15px] py-[11px]">
         <View className="flex-row gap-[8px]">
           {[1, 2, 3, 4].map(id => (
-            <DefaultChip
+            <TeamItem
               key={id}
               id={id}
               onPress={() => {

@@ -13,7 +13,10 @@ import {
 } from '@react-navigation/native'
 import KaKaoLoginBtn from '../components/KakaoLoginBtn'
 import { onboardingList } from '../constants/OnboardingList'
-import { loginNavigation, rootNavigation } from '../../../navigation/types'
+import {
+  loginNavigation,
+  rootNavigation,
+} from '../../../navigation/types/StackTypes'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
@@ -100,8 +103,8 @@ const LoginScreen = () => {
                     index: 0,
                     routes: [
                       {
-                        name: 'OnboardingSchedules',
-                        params: { screen: 'SelectScheduleReg' },
+                        name: 'OnboardingMethodScreen',
+                        params: { createScheduleButtonClick: false },
                       },
                     ],
                   })

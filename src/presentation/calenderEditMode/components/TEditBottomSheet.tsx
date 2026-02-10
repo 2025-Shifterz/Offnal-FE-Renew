@@ -1,12 +1,13 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import BottomSheet from '@gorhom/bottom-sheet'
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
 import SelectGroupBox from './SelectGroupBox'
+import { WorkTime } from '../../../shared/types/WorkTime'
 dayjs.locale('ko') // 한글 locale 적용
 
 interface TEditBottomSheetProps {
@@ -17,8 +18,7 @@ interface TEditBottomSheetProps {
   handleCancel: () => void
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
-  setSelectedBoxId: (id: number) => void
-  workTimes: { [key: string]: { startTime: string; endTime: string } }
+  workTimes: WorkTime
 }
 
 const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
@@ -31,7 +31,6 @@ const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
       handleCancel,
       handleSave,
       selectedBoxId,
-      setSelectedBoxId,
       workTimes,
     },
     ref
@@ -54,7 +53,7 @@ const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
       <>
         {/* 바텀 시트 */}
         <BottomSheetWrapper ref={internalRef}>
-          <View className="mt-[5px] gap-[20px] px-p-6">
+          <BottomSheetView className="gap-[20px] px-p-6 pb-number-20">
             <View className="gap-[10px]">
               <Text className="text-text-basic heading-xs">근무형태 입력</Text>
               <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
@@ -71,7 +70,6 @@ const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
 
             <SelectShiftBox
               selectedBoxId={selectedBoxId}
-              setSelectedBoxId={setSelectedBoxId}
               handleTypeSelect={handleTypeSelect}
               workTimes={workTimes}
             />
@@ -84,13 +82,14 @@ const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
                 <Text className="text-text-basic body-m">취소</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                disabled={selectedBoxId === 0}
                 onPress={handleSave} // 저장 버튼에 handleSave 연결
-                className="h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse"
+                className={`h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse ${selectedBoxId === 0 ? 'opacity-40' : ''}`}
               >
                 <Text className="text-text-bolder-inverse body-m">저장</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </BottomSheetView>
         </BottomSheetWrapper>
       </>
     )

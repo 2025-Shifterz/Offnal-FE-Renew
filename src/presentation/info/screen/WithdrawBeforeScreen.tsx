@@ -1,4 +1,5 @@
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -6,12 +7,11 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
 import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/GlobalText'
 import CheckBoxMenuItem from '../component/CheckBoxMenuItem'
 import CheckBoxWithTextInput from '../component/CheckBoxWithTextInput'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 
@@ -42,20 +42,15 @@ const WithdrawBeforeScreen = () => {
   const handleNavigate = () => {
     if (isAnyChecked) {
       navigation.navigate('WithdrawScreen')
+    } else {
+      Alert.alert('알림', '탈퇴 사유를 선택해주세요.')
     }
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 bg-surface-gray-subtle1">
-        <SafeAreaView className="flex-1 " edges={['top', 'bottom']}>
-          <TopAppBar
-            title="회원 탈퇴"
-            showBackButton={true}
-            onPressBackButton={() => {
-              navigation.pop()
-            }}
-          />
+        <SafeAreaView className="flex-1 " edges={['bottom']}>
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             className="flex-1"
@@ -83,7 +78,7 @@ const WithdrawBeforeScreen = () => {
                   onChecked={() => handleCheck('no_longer_used')}
                 />
                 <CheckBoxMenuItem
-                  title="오류가 생겨 사용할 수 없는 없어요."
+                  title="오류가 생겨 사용할 수 없어요."
                   isChecked={checkedState.error}
                   onChecked={() => handleCheck('error')}
                 />

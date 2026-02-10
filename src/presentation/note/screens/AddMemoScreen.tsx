@@ -7,11 +7,15 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/appbar/TopAppBar'
+import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
 import GlobalText from '../../../shared/components/GlobalText'
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { rootNavigation, RootStackParamList } from '../../../navigation/types'
+import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import dayjs from 'dayjs'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
 
@@ -55,26 +59,31 @@ const AddMemoScreen = () => {
     }
   }
 
-  return (
-    <View className="flex-1 bg-background-white px-[16px]">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title=""
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.goBack()
-          }}
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <CenterAlignedTopAppBar
+          navigationIcon={<TopAppBarBackButton onPress={navigation.goBack} />}
+          title={null}
           rightActions={[
             <TouchableOpacity onPress={handleSave} disabled={isDisabled}>
               <GlobalText
-                className={`font-pretSemiBold heading-xs ${isDisabled ? 'text-text-basic-inverse' : 'text-text-basic'}`}
+                className={`font-pretSemiBold text-heading-xs ${isDisabled ? 'text-text-basic-inverse' : 'text-text-basic'}`}
               >
                 완료
               </GlobalText>
             </TouchableOpacity>,
           ]}
+          applySafeArea={true}
+          backgroundColor="bg-surface-white"
         />
+      ),
+    })
+  }, [navigation, isDisabled, handleSave])
 
+  return (
+    <View className="flex-1 bg-background-white">
+      <SafeAreaView className="flex-1" edges={['bottom']}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1 px-[20px] pt-[4px]"
