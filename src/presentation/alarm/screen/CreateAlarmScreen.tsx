@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { useNavigation } from '@react-navigation/native'
 

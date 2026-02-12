@@ -1,6 +1,6 @@
 import { TouchableOpacity } from 'react-native'
 import { twMerge } from 'tailwind-merge'
-import GlobalText from '../GlobalText'
+import GlobalText from '../text/GlobalText'
 
 interface DefaultChipProps {
   id: number

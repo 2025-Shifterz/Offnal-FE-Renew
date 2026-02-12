@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 const FilledAlarmPage = () => {
   return (

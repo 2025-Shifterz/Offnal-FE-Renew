@@ -8,11 +8,12 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
-import GlobalText from '../../../shared/components/GlobalText'
-import StarRating from '../../../shared/components/StarRating'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import StarRating from '../../../shared/components/rating/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
+import RatingChip from '../../../shared/components/chip/RatingChip'
 
 type RatingInfo = { emoji: string; text: string }
 
@@ -59,13 +60,7 @@ const FeedBackScreen = () => {
               </GlobalText>
               <View className="flex-col items-center gap-g-2 ">
                 <StarRating rating={rating} onRatingChange={setRating} />
-                {currentRatingData && (
-                  <View className="mt-[5px] rounded-radius-max border border-[#F05F424D] bg-surface-danger-subtle px-number-6 py-number-3">
-                    <GlobalText className="font-pretMedium text-body-xxs">
-                      {currentRatingData.emoji} {currentRatingData.text}
-                    </GlobalText>
-                  </View>
-                )}
+                <RatingChip rating={rating} />
               </View>
 
               <View className="flex-col">

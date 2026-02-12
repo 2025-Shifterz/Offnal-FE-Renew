@@ -3,7 +3,7 @@ import { Dimensions, View } from 'react-native'
 
 const screenWidth = Dimensions.get('window').width
 
-const CustomDashedLine = () => {
+const DashedDivider = () => {
   const segmentWidth = 7 + 4 // 선 7px + 공백 4px
   const repeatCount = Math.ceil(screenWidth / segmentWidth)
 
@@ -19,4 +19,4 @@ const CustomDashedLine = () => {
   )
 }
 
-export default CustomDashedLine
+export default DashedDivider

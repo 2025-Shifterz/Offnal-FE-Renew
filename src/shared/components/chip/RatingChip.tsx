@@ -1,5 +1,5 @@
 import { View } from 'react-native'
-import GlobalText from '../GlobalText'
+import GlobalText from '../text/GlobalText'
 
 const RATING_DATA: Record<number, { emoji: string; text: string }> = {
   1: { emoji: '😞', text: '매우 불만족' },

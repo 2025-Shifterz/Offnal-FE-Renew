@@ -2,9 +2,8 @@ import React, { useCallback, useState } from 'react'
 import { View, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
-import TitleMessage from '../../../../shared/components/TitleMessage'
+import { useNavigation } from '@react-navigation/native'
+import HeadLineText from '../../../../shared/components/text/HeadLineText'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
@@ -52,9 +51,9 @@ const SelectMonthOCRScreen = () => {
     <View className="flex-1 bg-background-gray-subtle1 px-number-8">
       <SafeAreaView edges={['bottom']} className="flex-1">
         <View className="flex-1 gap-[20px]">
-          <TitleMessage
-            title={`이미지에 해당하는 근무 월을\n선택해주세요.`}
-            subTitle={`AI 인식을 위해 등록할 이미지가\n어떤 월의 근무표인지 알려주세요.`}
+          <HeadLineText
+            heading={`이미지에 해당하는 근무 월을\n선택해주세요.`}
+            description={`AI 인식을 위해 등록할 이미지가\n어떤 월의 근무표인지 알려주세요.`}
           />
 
           <MonthPicker onDateChange={handleDateChange} />

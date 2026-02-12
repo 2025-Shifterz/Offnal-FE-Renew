@@ -1,5 +1,5 @@
 import { TouchableOpacity } from 'react-native'
-import GlobalText from '../GlobalText'
+import GlobalText from '../text/GlobalText'
 import AddIcon from '../../../assets/icons/todo-add.svg'
 
 const ButtonChip = ({

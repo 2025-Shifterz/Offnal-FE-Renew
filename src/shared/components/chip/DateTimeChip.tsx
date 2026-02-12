@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs'
 import { View } from 'react-native'
 import CalendarIcon from '../../../assets/icons/calendar.svg'
-import GlobalText from '../GlobalText'
+import GlobalText from '../text/GlobalText'
 
 const DateTimeChip = ({ date }: { date: Dayjs }) => {
   const isToday = date.isSame(dayjs(), 'day')

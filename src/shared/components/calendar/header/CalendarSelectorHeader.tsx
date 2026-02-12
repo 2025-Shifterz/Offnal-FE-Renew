@@ -4,7 +4,7 @@ import CalendarIcon from '../../../../assets/icons/calendar.svg'
 import ArrowLeft from '../../../../assets/icons/black-arrow-l.svg'
 import ArrowRight from '../../../../assets/icons/black-arrow-r.svg'
 import dayjs from 'dayjs'
-import GlobalText from '../../GlobalText'
+import GlobalText from '../../text/GlobalText'
 
 interface CalendarHeaderProps {
   currentDate: dayjs.Dayjs

@@ -3,7 +3,7 @@ import TodoEmptyIcon from '../../../assets/icons/todo-empty.svg'
 
 import { View } from 'react-native'
 import { twMerge } from 'tailwind-merge'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 interface EmptyTodoContentProps {
   text: string
