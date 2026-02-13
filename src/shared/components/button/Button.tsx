@@ -10,7 +10,7 @@ import { Pressable, TouchableOpacity } from 'react-native'
 interface ButtonProps {
   content: React.ReactNode
   onPress: () => void
-  disabled: boolean
+  disabled?: boolean
 }
 
 /**
