@@ -2,14 +2,11 @@ import React, { useEffect, useState, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { View, ActivityIndicator, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
-import { API_URL } from '@env'
+import { KAKAO_REDIRECT_URI } from '@env'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useAuthStore } from '../../../store/useAuthStore'
-import { useUserStore } from '../../../store/useUserStore'
-
-const REDIRECT_URI = `${API_URL}/callback`
 
 const KakaoLoginWebView = () => {
   const [loginUrl, setLoginUrl] = useState<string | null>(null)
@@ -21,9 +18,10 @@ const KakaoLoginWebView = () => {
   useEffect(() => {
     const fetchLoginUrl = async () => {
       try {
-        const data = await authService.getLoginUrl()
-        const secureLoginUrl = data?.replace('http://', 'https://')
-
+        const secureLoginUrl = await authService.getLoginUrl()
+        if (!secureLoginUrl) {
+          throw new Error('Failed to get login URL')
+        }
         setLoginUrl(secureLoginUrl)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')
@@ -35,8 +33,10 @@ const KakaoLoginWebView = () => {
     fetchLoginUrl()
   }, [navigation])
 
+  const safeRedirectUri = JSON.stringify(KAKAO_REDIRECT_URI)
+
   const injectedJS = `
-    if (window.location.href.startsWith('${REDIRECT_URI}')) {
+    if (window.location.href.startsWith(${safeRedirectUri})) {
       window.ReactNativeWebView.postMessage(document.body.innerText);
     }
     true;
