@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import CalendarBase from './CalendarBase'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
+import { useShallow } from 'zustand/shallow'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -19,8 +20,15 @@ const CalendarInteractive = ({
   setSelectedDate,
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
-  const { organizationName, workGroup } = useScheduleInfoStore()
-  const { calendarData, fetchCalendarData } = useCalendarStore()
+  const { organizationName, workGroup } = useScheduleInfoStore(
+    useShallow(state => ({
+      organizationName: state.organizationName,
+      workGroup: state.workGroup,
+    }))
+  )
+
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
 
   // 근무표 조회 API
   useEffect(() => {

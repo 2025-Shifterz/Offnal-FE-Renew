@@ -50,7 +50,7 @@ const OnboardingHeader = ({
 
 // + 온보딩 화면들
 const OnBoardingScheduleNavigator = () => {
-  const { onboardingMethod } = useOnboardingStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
   return (
     <Stack.Navigator
       screenOptions={({ navigation, route }) => {

@@ -17,14 +17,14 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const workTimes = useScheduleInfoStore(state => state.workTimes)
 
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const updateTeamCalendarDay = useTeamCalendarStore(
     state => state.updateTeamCalendarDay
   )
 
-  const { organizationName } = useScheduleInfoStore()
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
     year: dayjs().year(),

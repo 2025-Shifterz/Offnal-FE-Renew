@@ -7,7 +7,7 @@ import {
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { useCalendarStore } from './useCalendarStore'
-import { localMemoStore } from './useLocalMemoStore'
+import { useMemoStore } from './useMemoStore'
 import { useAuthStore } from './useAuthStore'
 import CookieManager from '@react-native-cookies/cookies'
 
@@ -74,7 +74,7 @@ export const useUserStore = create<UserState>()(
         await memberRepository.withDrawMember()
 
         const { clearCalendarData } = useCalendarStore.getState()
-        const { deleteAllMemos } = localMemoStore.getState()
+        const { deleteAllMemos } = useMemoStore.getState()
         useAuthStore.setState({
           accessToken: null,
           refreshToken: null,

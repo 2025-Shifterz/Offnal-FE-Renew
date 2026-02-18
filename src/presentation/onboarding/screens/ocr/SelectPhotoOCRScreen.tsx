@@ -13,14 +13,10 @@ import {
   request,
   RESULTS,
 } from 'react-native-permissions'
-
 import RegMethod from '../../component/RegMethod'
-
 import TakePicture from '../../../../assets/icons/ic_camera_32.svg'
 import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
-
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
 import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
@@ -45,7 +41,7 @@ const SelectPhotoOCRScreen = () => {
     navigate: (route: OnboardingRoute) => void
   }>()
   const route = useRoute<ScheduleInfoInputRouteProp>()
-  const { onboardingMethod } = useOnboardingStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
 
   const { year, month } = route.params
 

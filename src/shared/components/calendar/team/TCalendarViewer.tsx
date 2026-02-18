@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { useFocusEffect } from '@react-navigation/native'
+import { useShallow } from 'zustand/shallow'
 
 interface TCalendarViewerProps {
   selectedYearMonth: { year: number; month: number }
@@ -22,9 +23,15 @@ const TCalendarViewer = ({
   setSelectedDate,
   onDateSelected,
 }: TCalendarViewerProps) => {
-  const { organizationName } = useScheduleInfoStore()
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
   const { teamCalendarData, fetchTeamCalendarData, myTeam } =
-    useTeamCalendarStore()
+    useTeamCalendarStore(
+      useShallow(state => ({
+        teamCalendarData: state.teamCalendarData,
+        fetchTeamCalendarData: state.fetchTeamCalendarData,
+        myTeam: state.myTeam,
+      }))
+    )
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`

@@ -17,12 +17,34 @@ import { useEffect, useLayoutEffect } from 'react'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
 
+const OnboardingMethodTopAppBar = ({
+  enableBackButton,
+  onBack,
+}: {
+  enableBackButton: boolean
+  onBack: () => void
+}) => {
+  return (
+    <CenterAlignedTopAppBar
+      navigationIcon={
+        enableBackButton ? <TopAppBarBackButton onPress={onBack} /> : null
+      }
+      title={null}
+      applySafeArea={true}
+    />
+  )
+}
+
 const OnboardingMethodScreen = () => {
   const navigation = useNavigation<rootNavigation>()
   const route =
     useRoute<RouteProp<RootStackParamList, 'OnboardingMethodScreen'>>()
   const { createScheduleButtonClick } = route.params
-  const { onboardingMethod, setOnboardingMethod } = useOnboardingStore()
+
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
+  const setOnboardingMethod = useOnboardingStore(
+    state => state.setOnboardingMethod
+  )
 
   // 초기 상태를 OCR로 설정
   useEffect(() => {
@@ -55,14 +77,9 @@ const OnboardingMethodScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       header: () => (
-        <CenterAlignedTopAppBar
-          navigationIcon={
-            createScheduleButtonClick ? (
-              <TopAppBarBackButton onPress={navigation.goBack} />
-            ) : null
-          }
-          title={null}
-          applySafeArea={true}
+        <OnboardingMethodTopAppBar
+          enableBackButton={createScheduleButtonClick}
+          onBack={navigation.goBack}
         />
       ),
       headerShown: true,
