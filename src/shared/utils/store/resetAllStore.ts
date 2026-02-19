@@ -17,12 +17,13 @@ import CookieManager from '@react-native-cookies/cookies'
  *
  * @returns {void}
  */
-export const resetAllStore = () => {
+export const resetAllStore = async () => {
   useAuthStore.getState().resetAllTokens()
   useUserStore.getState().clearUser()
   useCalendarStore.getState().clearCalendarData()
   useMemoStore.getState().deleteAllMemos()
   useTodoStore.getState().deleteAllTodos()
-  CookieManager.removeSessionCookies()
-  CookieManager.clearAll()
+
+  await CookieManager.removeSessionCookies()
+  await CookieManager.clearAll()
 }

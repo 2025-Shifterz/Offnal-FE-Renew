@@ -18,7 +18,7 @@ const WithdrawScreen = () => {
 
     try {
       await memberRepository.withDrawMember()
-      resetAll()
+      await resetAll()
 
       Alert.alert('알림', '회원 탈퇴가 완료되었습니다.', [
         {

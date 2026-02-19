@@ -36,7 +36,7 @@ const InformationScreen = () => {
         text: '로그아웃',
         onPress: async () => {
           await authService.tokenLogOut()
-          resetAll()
+          await resetAll()
 
           navigation.dispatch(
             CommonActions.reset({
