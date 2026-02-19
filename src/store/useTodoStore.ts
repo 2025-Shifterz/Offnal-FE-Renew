@@ -3,6 +3,7 @@ import { Todo } from '../domain/models/Todo'
 import { create } from 'zustand'
 import {
   addTodoUseCase,
+  deleteAllTodosUseCase,
   deleteTodoUseCase,
   getToDosByDateUseCase,
   todoCompletionUseCase,
@@ -17,6 +18,8 @@ export interface TodoState {
   addTodo: (todo: string, date: dayjs.Dayjs) => Promise<void>
 
   deleteTodo: (id: number, date: dayjs.Dayjs) => Promise<void>
+
+  deleteAllTodos: () => Promise<void>
 
   updateTodoContent: (
     id: number,
@@ -66,6 +69,11 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     await deleteTodoUseCase.execute(id)
     const updatedTodos = await getToDosByDateUseCase.execute(date)
     set({ todos: updatedTodos })
+  },
+
+  deleteAllTodos: async () => {
+    await deleteAllTodosUseCase.execute()
+    set({ todos: [] })
   },
 
   updateTodoContent: async (id: number, content: string, date: dayjs.Dayjs) => {

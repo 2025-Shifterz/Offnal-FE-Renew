@@ -6,10 +6,6 @@ import {
 } from '../infrastructure/di/Dependencies'
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
-import { useCalendarStore } from './useCalendarStore'
-import { useMemoStore } from './useMemoStore'
-import { useAuthStore } from './useAuthStore'
-import CookieManager from '@react-native-cookies/cookies'
 
 export interface UserState {
   user: User | null
@@ -29,9 +25,6 @@ export interface UserState {
       fileName: string
     } | null
   ) => Promise<void>
-
-  // withdraw
-  onWithdraw: () => Promise<void>
 }
 
 export const useUserStore = create<UserState>()(
@@ -68,25 +61,6 @@ export const useUserStore = create<UserState>()(
         set(() => ({
           user: data,
         }))
-      },
-
-      onWithdraw: async () => {
-        await memberRepository.withDrawMember()
-
-        const { clearCalendarData } = useCalendarStore.getState()
-        const { deleteAllMemos } = useMemoStore.getState()
-        useAuthStore.setState({
-          accessToken: null,
-          refreshToken: null,
-        })
-
-        clearCalendarData()
-        deleteAllMemos()
-
-        await CookieManager.removeSessionCookies()
-        await CookieManager.clearAll()
-
-        set(() => ({ user: null }))
       },
     }),
     { name: 'user-storage', storage: createJSONStorage(() => EncryptedStorage) }

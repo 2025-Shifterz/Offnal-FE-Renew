@@ -2,6 +2,8 @@ import axios from 'axios'
 import { API_URL } from '@env'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { authService } from '../../di/Dependencies'
+import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
+import { resetAllStore } from '../../../shared/utils/store/resetAllStore'
 
 export const api = axios.create({
   baseURL: API_URL,
@@ -102,7 +104,7 @@ api.interceptors.response.use(
         // 리프레시 토큰도 만료된 경우 로그아웃 처리
         processQueue(err, null)
         // console.log('토큰 재발급 실패:', err)
-        useAuthStore.getState().logout()
+        resetAllStore()
 
         return Promise.reject(err)
       } finally {

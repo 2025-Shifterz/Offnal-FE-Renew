@@ -11,16 +11,17 @@ import {
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native'
-import { useAuthStore } from '../../../store/useAuthStore'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
 import { useUserStore } from '../../../store/useUserStore'
+import { authService } from '../../../infrastructure/di/Dependencies'
+import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
 
 const InformationScreen = () => {
   const navigation = useNavigation<rootNavigation>()
 
   const user = useUserStore(state => state.user)
   const fetchProfile = useUserStore(state => state.fetchProfile)
-  const logout = useAuthStore(state => state.logout)
+  const { resetAll } = useResetAllStore()
 
   useFocusEffect(
     useCallback(() => {
@@ -33,8 +34,9 @@ const InformationScreen = () => {
       { text: '취소', style: 'cancel' },
       {
         text: '로그아웃',
-        onPress: () => {
-          logout()
+        onPress: async () => {
+          await authService.tokenLogOut()
+          resetAll()
 
           navigation.dispatch(
             CommonActions.reset({
@@ -46,7 +48,7 @@ const InformationScreen = () => {
         style: 'destructive',
       },
     ])
-  }, [logout, navigation])
+  }, [resetAll, navigation])
 
   const informationMenus: MenuItemProps[] = useMemo(() => {
     return [
