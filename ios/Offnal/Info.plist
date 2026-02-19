@@ -25,6 +25,28 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+			<key>127.0.0.1</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>근무표 등록을 위해 카메라 접근이 필요합니다.</string>
 	<key>NSHealthShareUsageDescription</key>
