@@ -16,14 +16,17 @@ export class MemberRepositoryImpl implements MemberRepository {
       name: string
     }
   ): Promise<Profile> {
-    const imageReq: ImagePickerAssetRequest = {
-      uri: file?.url ?? '',
-      type: file?.type ?? '',
-      fileName: file?.name ?? '',
-    }
     const req: PatchProfileRequest = { name: userName }
 
-    await this.memberService.updateProfileImage(imageReq)
+    if (file) {
+      const imageReq: ImagePickerAssetRequest = {
+        uri: file.url,
+        type: file.type,
+        fileName: file.name,
+      }
+      await this.memberService.updateProfileImage(imageReq)
+    }
+
     const result = await this.memberService.updateProfile(req)
 
     const profile = toProfileDomain(result)

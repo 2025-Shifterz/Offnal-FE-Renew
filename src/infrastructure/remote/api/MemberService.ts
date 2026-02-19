@@ -57,8 +57,6 @@ export class MemberService {
         { extension: effectiveExtension }
       )
 
-      console.log('presignedResponse:', effectiveMimeType)
-
       const { uploadUrl } = presignedResponse.data.data
 
       const fileResponse = await fetch(image.uri)
@@ -77,15 +75,9 @@ export class MemberService {
       })
 
       if (!uploadResponse.ok) {
-        console.error(
-          'S3 업로드 실패:',
-          uploadResponse.status,
-          await uploadResponse.text()
-        )
         throw new Error('S3 업로드에 실패했습니다.')
       }
 
-      console.log('S3 업로드 성공!')
       return
     } catch (error) {
       if (axios.isAxiosError(error)) {

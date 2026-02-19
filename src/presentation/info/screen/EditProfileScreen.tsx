@@ -51,29 +51,6 @@ const EditProfileScreen = () => {
     }
   }, [user])
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      header: () => (
-        <CenterAlignedTopAppBar
-          navigationIcon={<TopAppBarBackButton onPress={navigation.goBack} />}
-          title={
-            <GlobalText className="font-pretSemiBold text-heading-xs">
-              프로필 수정
-            </GlobalText>
-          }
-          rightActions={
-            <TouchableOpacity onPress={handleUpdateProfile}>
-              <Text>저장하기</Text>
-            </TouchableOpacity>
-          }
-          applySafeArea={true}
-        />
-      ),
-      headerShown: true,
-      headerShadowVisible: false,
-    })
-  }, [navigation])
-
   const handleUpdateProfile = async () => {
     if (!user) {
       Alert.alert('오류', '사용자 정보를 불러올 수 없습니다.')
@@ -110,6 +87,29 @@ const EditProfileScreen = () => {
       Alert.alert('오류', '프로필 수정에 실패했습니다.')
     }
   }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <CenterAlignedTopAppBar
+          navigationIcon={<TopAppBarBackButton onPress={navigation.goBack} />}
+          title={
+            <GlobalText className="font-pretSemiBold text-heading-xs">
+              프로필 수정
+            </GlobalText>
+          }
+          rightActions={
+            <TouchableOpacity onPress={handleUpdateProfile}>
+              <Text>저장하기</Text>
+            </TouchableOpacity>
+          }
+          applySafeArea={true}
+        />
+      ),
+      headerShown: true,
+      headerShadowVisible: false,
+    })
+  }, [navigation, handleUpdateProfile])
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
