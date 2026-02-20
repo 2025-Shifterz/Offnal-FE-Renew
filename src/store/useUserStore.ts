@@ -58,11 +58,12 @@ export const useUserStore = create<UserState>()(
           fileName: string
         } | null
       ) => {
-        await memberRepository.updateUserProfile(name, {
-          url: image?.uri ?? '',
-          type: image?.type ?? '',
-          name: image?.fileName ?? '',
-        })
+        await memberRepository.updateUserProfile(
+          name,
+          image
+            ? { url: image.uri, type: image.type, name: image.fileName }
+            : undefined
+        )
 
         const data = await memberService.getProfile()
         set(() => ({
