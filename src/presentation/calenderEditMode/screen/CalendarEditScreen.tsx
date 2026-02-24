@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -8,7 +8,10 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
@@ -17,6 +20,7 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const CalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'EditCalendar'>>()
 
   const workTimes = useScheduleInfoStore(state => state.workTimes)
   const calendarData = useCalendarStore(state => state.calendarData)
@@ -24,10 +28,14 @@ const CalendarEditScreen = () => {
 
   const { organizationName, workGroup } = useScheduleInfoStore()
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const initialDate = route.params?.selectedDate
+    ? dayjs(route.params.selectedDate)
+    : dayjs()
+
+  const [currentDate, setCurrentDate] = useState(initialDate)
   const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
+    year: initialDate.year(),
+    month: initialDate.month() + 1,
   })
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)

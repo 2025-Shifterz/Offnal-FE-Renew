@@ -1,5 +1,11 @@
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
-import { useEffect, useRef, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
@@ -18,19 +24,24 @@ interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
   isTeamView: boolean
   setIsTeamView: (value: boolean) => void
+  currentDate: dayjs.Dayjs
+  setCurrentDate: Dispatch<SetStateAction<dayjs.Dayjs>>
+  selectedYearMonth: { year: number; month: number }
+  setSelectedYearMonth: Dispatch<
+    SetStateAction<{ year: number; month: number }>
+  >
 }
 
 const HasCalendar = ({
   setShowPlus,
   isTeamView,
   setIsTeamView,
+  currentDate,
+  setCurrentDate,
+  selectedYearMonth,
+  setSelectedYearMonth,
 }: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
-  const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
-  })
-  const [currentDate, setCurrentDate] = useState(dayjs())
 
   const todos = useLocalTodoStore(state => state.todos)
   const fetchTodosByDate = useLocalTodoStore(state => state.getTodosByDate)

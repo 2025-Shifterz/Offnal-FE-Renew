@@ -35,6 +35,7 @@ export type RootStackParamList = {
       E: { startTime: string; endTime: string }
       N: { startTime: string; endTime: string }
     }
+    selectedDate?: string
   }
   EditCalendar: {
     workTimes: {
@@ -42,6 +43,7 @@ export type RootStackParamList = {
       E: { startTime: string; endTime: string }
       N: { startTime: string; endTime: string }
     }
+    selectedDate?: string
   }
   CalendarInfoEdit: undefined
 

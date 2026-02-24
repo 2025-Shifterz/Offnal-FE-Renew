@@ -6,6 +6,7 @@ import { View } from 'react-native'
 import PlusEdit from '../component/PlusEdit'
 import { useFocusEffect } from '@react-navigation/native'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import dayjs from 'dayjs'
 
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
@@ -14,6 +15,12 @@ const CalendarScreen = () => {
   // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
   const [isTeamView, setIsTeamView] = useState(false)
   const { fetchOrganization } = useScheduleInfoStore()
+
+  const [currentDate, setCurrentDate] = useState(dayjs())
+  const [selectedYearMonth, setSelectedYearMonth] = useState({
+    year: dayjs().year(),
+    month: dayjs().month() + 1,
+  })
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(
@@ -50,10 +57,18 @@ const CalendarScreen = () => {
           setShowPlus={setShowPlus}
           isTeamView={isTeamView}
           setIsTeamView={setIsTeamView}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          selectedYearMonth={selectedYearMonth}
+          setSelectedYearMonth={setSelectedYearMonth}
         />
       </SafeAreaView>
       {showPlus && (
-        <PlusEdit setShowPlus={setShowPlus} isTeamView={isTeamView} />
+        <PlusEdit
+          setShowPlus={setShowPlus}
+          isTeamView={isTeamView}
+          currentDate={currentDate}
+        />
       )}
     </View>
   )

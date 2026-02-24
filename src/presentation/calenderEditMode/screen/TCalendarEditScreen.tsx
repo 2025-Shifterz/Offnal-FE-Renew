@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -7,7 +7,10 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
@@ -17,6 +20,7 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'TeamEditCalendar'>>()
   const workTimes = useScheduleInfoStore(state => state.workTimes)
 
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
@@ -25,10 +29,15 @@ const TCalendarEditScreen = () => {
   )
 
   const { organizationName } = useScheduleInfoStore()
-  const [currentDate, setCurrentDate] = useState(dayjs())
+
+  const initialDate = route.params?.selectedDate
+    ? dayjs(route.params.selectedDate)
+    : dayjs()
+
+  const [currentDate, setCurrentDate] = useState(initialDate)
   const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
+    year: initialDate.year(),
+    month: initialDate.month() + 1,
   })
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
