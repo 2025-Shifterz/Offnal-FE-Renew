@@ -3,12 +3,13 @@ import {
   requestPermission,
   readRecords,
 } from 'react-native-health-connect'
-import { HealthData } from '../../../shared/types/Health'
 import { Alert } from 'react-native'
-import { STEP_GOAL } from '../../../presentation/main/constants/stepGoal'
+import { HealthRepository } from '../../domain/repositories/HealthRepository'
+import { HealthData } from '../../shared/types/Health'
+import { STEP_GOAL } from '../../presentation/main/constants/stepGoal'
 
-export class AndroidHealthService {
-  getAndroidHealthService = async (): Promise<HealthData> => {
+export class AndroidHealthDataSource implements HealthRepository {
+  getHealthData = async (): Promise<HealthData> => {
     try {
       // initialize the client
       const isInitialized = await initialize()
@@ -100,12 +101,7 @@ export class AndroidHealthService {
         '오류',
         'Android 헬스 데이터 가져오기 중 오류가 발생했습니다.'
       )
-      return {
-        steps: 0,
-        weight: 0,
-        bmi: 0,
-        stepPercentage: 0,
-      }
+      throw error
     }
   }
 }

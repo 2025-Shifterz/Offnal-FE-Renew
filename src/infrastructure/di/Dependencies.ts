@@ -25,8 +25,6 @@ import { MemberService } from '../remote/api/MemberService'
 import { TodoService } from '../remote/api/TodoService'
 import { AuthService } from '../remote/api/AuthService'
 import { MemberRepositoryImpl as MemberRepositoryImpl } from '../../data/impl/MemberRepositoryImpl'
-import { IosHealthService } from '../remote/api/IosHealthService'
-import { AndroidHealthService } from '../remote/api/AndroidHealthService'
 import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
 import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
 import { OrganizationService } from '../remote/api/OrganizationService'
@@ -50,8 +48,6 @@ export const memberService = new MemberService()
 export const todoService = new TodoService()
 export const memoService = new MemoService()
 export const authService = new AuthService()
-export const iosHealthService = new IosHealthService()
-export const androidHealthService = new AndroidHealthService()
 export const teamCalendarService = new TeamCalendarService()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
