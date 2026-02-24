@@ -24,19 +24,10 @@ const CalendarViewer = ({
   setSelectedDate,
   onDateSelected,
 }: CalendarViewerProps) => {
-  const { calendarData, fetchCalendarData } = useCalendarStore(
-    useShallow(state => ({
-      calendarData: state.calendarData,
-      fetchCalendarData: state.fetchCalendarData,
-    }))
-  )
-
-  const { organizationName, workGroup } = useScheduleInfoStore(
-    useShallow(state => ({
-      organizationName: state.organizationName,
-      workGroup: state.workGroup,
-    }))
-  )
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   // '2025-11-01' 형태

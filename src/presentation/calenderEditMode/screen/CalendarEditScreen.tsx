@@ -14,7 +14,6 @@ import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
-import { useShallow } from 'zustand/shallow'
 
 const CalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -23,12 +22,8 @@ const CalendarEditScreen = () => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
 
-  const { organizationName, workGroup } = useScheduleInfoStore(
-    useShallow(state => ({
-      organizationName: state.organizationName,
-      workGroup: state.workGroup,
-    }))
-  )
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
 
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({

@@ -41,14 +41,10 @@ const EditScheduleOCRScreen = () => {
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
 
-  // Stores
-  const { onboardingMethod, scheduleScope } = useOnboardingStore(
-    useShallow(state => ({
-      onboardingMethod: state.onboardingMethod,
-      scheduleScope: state.scheduleScope,
-    }))
-  )
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
+  const scheduleScope = useOnboardingStore(state => state.scheduleScope)
   const workGroup = useScheduleInfoStore(state => state.workGroup)
+
   const setNewCalendarData = useCalendarStore(state => state.setNewCalendarData)
   const setTeamCalendarData = useTeamCalendarStore(
     state => state.setTeamCalendarData

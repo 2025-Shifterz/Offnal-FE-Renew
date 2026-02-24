@@ -17,15 +17,11 @@ import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
-import { useShallow } from 'zustand/shallow'
 
 const InputCalendarTypeScreen = () => {
-  const { scheduleScope, onboardingMethod } = useOnboardingStore(
-    useShallow(state => ({
-      scheduleScope: state.scheduleScope,
-      onboardingMethod: state.onboardingMethod,
-    }))
-  )
+  const scheduleScope = useOnboardingStore(state => state.scheduleScope)
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
+
   const workGroup = useScheduleInfoStore(state => state.workGroup)
   const [currentDate, setCurrentDate] = useState(dayjs)
 

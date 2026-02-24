@@ -52,13 +52,8 @@ const TCalendarEditor: ForwardRefRenderFunction<
       fetchTeamCalendarData: state.fetchTeamCalendarData,
     }))
   )
-
-  const { workTimes, organizationName } = useScheduleInfoStore(
-    useShallow(state => ({
-      workTimes: state.workTimes,
-      organizationName: state.organizationName,
-    }))
-  )
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
 
   const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
 
