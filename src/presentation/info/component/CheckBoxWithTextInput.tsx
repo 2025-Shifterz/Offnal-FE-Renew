@@ -1,6 +1,6 @@
 import { Pressable, TextInput, TouchableOpacity, View } from 'react-native'
 import CheckIcon from '../../../assets/icons/checked.svg'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 interface CheckBoxWithTextInputProps {
   title: string

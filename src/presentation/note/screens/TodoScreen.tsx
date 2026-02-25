@@ -14,8 +14,8 @@ import dayjs from 'dayjs'
 import { Todo } from '../../../domain/models/Todo'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import EmptyMessage from '../components/EmptyMessage'
-import GlobalText from '../../../shared/components/text/GlobalText'
-import OneAddButton from '../../../shared/components/chip/AddOneTouchableChip'
+import GlobalText from '../../../shared/components/GlobalText'
+import OneAddButton from '../components/OneAddButton'
 import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 import TodoOptionBottomSheet, {
   BottomSheetMethods,
@@ -275,7 +275,7 @@ const TodoScreen = () => {
           </View>
 
           <OneAddButton
-            onPress={async () => {
+            addOneTodo={async () => {
               if (editingTodoId) {
                 setEditingTodoId(null)
                 setEditingTodoText('')

@@ -1,6 +1,6 @@
 import { TouchableOpacity } from 'react-native'
 import { View } from 'react-native'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 import CheckIcon from '../../../assets/icons/checked.svg'
 
 interface CheckBoxMenuItemProps {

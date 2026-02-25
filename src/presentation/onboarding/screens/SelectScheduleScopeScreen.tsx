@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import SelectScheduleBox from '../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
 import BottomButton from '../../../shared/components/BottomButton'
-import HeadLineText from '../../../shared/components/text/HeadLineText'
+import TitleMessage from '../../../shared/components/TitleMessage'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScheduleScope } from '../../../shared/types/ScheduleScope'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
@@ -45,9 +45,9 @@ const SelectScheduleScopeScreen = () => {
       className="flex-1 bg-background-gray-subtle1 px-[16px]"
     >
       <View className="w-full flex-1">
-        <HeadLineText
-          heading="근무표 등록 방식을 선택해주세요."
-          description={`전체 근무표를 등록해 여러 조의 스케쥴을 확인하거나,\n내 근무조만 등록해 간편하게 일상을 관리할 수 있어요.`}
+        <TitleMessage
+          title="근무표 등록 방식을 선택해주세요."
+          subTitle={`전체 근무표를 등록해 여러 조의 스케쥴을 확인하거나,\n내 근무조만 등록해 간편하게 일상을 관리할 수 있어요.`}
         />
         <View className="mt-[26px] flex flex-row gap-3">
           <SelectScheduleBox

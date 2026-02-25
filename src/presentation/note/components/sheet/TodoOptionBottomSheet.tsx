@@ -5,7 +5,7 @@ import ArrowDownIcon from '../../../../assets/icons/ic_arrow_down_16_primary.svg
 import ArrowRightIcon from '../../../../assets/icons/ic_arrow_right_16_primary.svg'
 import FilpRightIcon from '../../../../assets/icons/ic_flip_right_16_primary.svg'
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
-import GlobalText from '../../../../shared/components/text/GlobalText'
+import GlobalText from '../../../../shared/components/GlobalText'
 import { Todo } from '../../../../domain/models/Todo'
 import { View } from 'react-native'
 import TodoOptionItem from './TodoOptionItem'

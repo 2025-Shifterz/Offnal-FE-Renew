@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomButton from '../../../shared/components/BottomButton'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 import CheckBoxMenuItem from '../component/CheckBoxMenuItem'
 import CheckBoxWithTextInput from '../component/CheckBoxWithTextInput'
 import { rootNavigation } from '../../../navigation/types/StackTypes'

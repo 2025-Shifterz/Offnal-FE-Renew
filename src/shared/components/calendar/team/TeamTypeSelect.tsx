@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
+import CustomDashedLine from '../DashedLine'
 import TimeFrame, { TimeFrameChildren } from '../TimeFrame'
-import DashedDivider from '../../divider/DashedDivider'
 
 interface TypeSelectProps {
   onPressSelect: (team: string, type: TimeFrameChildren) => void
@@ -14,7 +14,7 @@ const teams = ['1조', '2조', '3조', '4조']
 const TypeSelect = ({ onPressSelect }: TypeSelectProps) => {
   return (
     <>
-      <DashedDivider />
+      <CustomDashedLine />
       <TouchableOpacity className="rounded-b-radius-m2 flex-col gap-[9px] bg-surface-white p-[11px]">
         <Text className="text-text-subtle body-xs">근무 형태 입력</Text>
         <View className="flex gap-[3px]">

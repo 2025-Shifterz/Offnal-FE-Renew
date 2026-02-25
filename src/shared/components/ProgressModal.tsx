@@ -1,5 +1,5 @@
 import { Modal, Text, View } from 'react-native'
-import ModalIcon from '../../../assets/icons/ic_dialog_logo.svg'
+import ModalIcon from '../../assets/icons/ic_dialog_logo.svg'
 
 interface ProgressModalProps {
   isVisible: boolean

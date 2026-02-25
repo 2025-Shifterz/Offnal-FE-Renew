@@ -1,5 +1,5 @@
 import { Image, TouchableOpacity, View } from 'react-native'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 type MyInformationCardProps = {
   profileImgUrl?: string

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import HeadLineText from '../../../shared/components/text/HeadLineText'
+import TitleMessage from '../../../shared/components/TitleMessage'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CalendarEditor, {
@@ -62,9 +62,9 @@ const InputCalendarTypeScreen = () => {
       className="flex-1 bg-background-gray-subtle1 px-[16px]"
     >
       <ScrollView className="mb-[100px] w-full flex-1">
-        <HeadLineText
-          heading="달력에 근무 형태를 입력해주세요."
-          description="각 날짜에 해당하는 근무 유형을 선택해주세요."
+        <TitleMessage
+          title="달력에 근무 형태를 입력해주세요."
+          subTitle="각 날짜에 해당하는 근무 유형을 선택해주세요."
         />
         <View className="mt-[20px] rounded-radius-xl bg-white">
           <CalendarEditorHeader

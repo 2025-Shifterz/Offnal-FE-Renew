@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 const AutoAlarmScreen = () => {
   const [showAlarmList, setShowAlarmList] = useState(false) // 알람 없음

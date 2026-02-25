@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import IcStarGray from '../../../assets/icons/ic_star_gray.svg'
-import IcStarYellow from '../../../assets/icons/ic_star_yellow.svg'
+import IcStarGray from '../../assets/icons/ic_star_gray.svg'
+import IcStarYellow from '../../assets/icons/ic_star_yellow.svg'
 
 interface StarRatingProps {
   rating: number

@@ -4,11 +4,11 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import EmptyMessage from '../components/EmptyMessage'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
-import OneAddButton from '../../../shared/components/chip/AddOneTouchableChip'
+import OneAddButton from '../components/OneAddButton'
 import {
   RouteProp,
   useFocusEffect,
@@ -129,7 +129,7 @@ const MemoScreen = () => {
           </View>
 
           <OneAddButton
-            onPress={() =>
+            addOneTodo={() =>
               navigation.navigate('AddMemo', {
                 date: currentDate.toISOString(),
               })

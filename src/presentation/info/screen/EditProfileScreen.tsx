@@ -15,7 +15,7 @@ import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { Asset, launchImageLibrary } from 'react-native-image-picker'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 
 const MAX_NAME_LENGTH = 10
 

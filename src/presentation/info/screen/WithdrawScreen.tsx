@@ -1,7 +1,7 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Alert, View } from 'react-native'
 import BottomButton from '../../../shared/components/BottomButton'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useState } from 'react'

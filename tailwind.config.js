@@ -217,7 +217,6 @@ module.exports = {
         'surface-gray-subtle2': 'var(--color-surface-gray-subtle2)',
         'surface-information-subtle': 'var(--color-surface-information-subtle)',
         'surface-inverse': 'var(--color-surface-inverse)',
-        'surface-inverse-subtle': 'var(--color-surface-inverse-subtle)',
         'surface-inverse-static': 'var(--color-surface-inverse-static)',
         'surface-primary': 'var(--color-surface-primary)',
         'surface-primary-light': 'var(--color-surface-primary-light)',

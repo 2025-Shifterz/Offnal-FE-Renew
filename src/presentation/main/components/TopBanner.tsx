@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import GlobalText from '../../../shared/components/GlobalText'
 import HomeWorkTypeChip from './HomeWorkTypeChip'
 import SealImg from '../../../assets/images/seal-character.svg'
 import BellIcon from '../../../assets/icons/ic_home_bell_24.svg'

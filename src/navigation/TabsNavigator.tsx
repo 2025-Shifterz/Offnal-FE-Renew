@@ -4,7 +4,7 @@ import MainScreen from '../presentation/main/screen/MainScreen'
 import CalendarScreen from '../presentation/calendar/screen/CalendarScreen'
 import InformationScreen from '../presentation/info/screen/InformationScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
-import GlobalText from '../shared/components/text/GlobalText'
+import GlobalText from '../shared/components/GlobalText'
 
 const Tab = createBottomTabNavigator()
 
