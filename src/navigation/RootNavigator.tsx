@@ -32,7 +32,7 @@ import OnboardingMethodScreen from '../presentation/onboarding/screens/Onboardin
 import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
-import GlobalText from '../shared/components/GlobalText'
+import GlobalText from '../shared/components/text/GlobalText'
 
 // Onboarding Navigation Error Screen
 const RootStack = createNativeStackNavigator<RootStackParamList>()

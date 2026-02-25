@@ -2,7 +2,7 @@ import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 
 import AlarmClock from '../../../assets/icons/ic_clock.svg'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 type NoAlarmPageProps = {
   handleShowAlarmList: () => void

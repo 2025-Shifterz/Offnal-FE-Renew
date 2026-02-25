@@ -8,21 +8,13 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
-import GlobalText from '../../../shared/components/GlobalText'
-import StarRating from '../../../shared/components/StarRating'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import StarRating from '../../../shared/components/rating/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
-
-type RatingInfo = { emoji: string; text: string }
-
-const RATING_DATA: { [key: number]: RatingInfo } = {
-  1: { emoji: '😞', text: '매우 불만족' },
-  2: { emoji: '😕', text: '불만족' },
-  3: { emoji: '🙂', text: '보통' },
-  4: { emoji: '😊', text: '만족' },
-  5: { emoji: '🥰', text: '매우 만족' },
-}
+import RatingChip from '../../../shared/components/chip/RatingChip'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const MAX_FEEDBACK_LENGTH = 100
 
@@ -31,8 +23,6 @@ const FeedBackScreen = () => {
 
   const [rating, setRating] = useState(1)
   const [feedback, setFeedback] = useState('')
-
-  const currentRatingData = RATING_DATA[rating]
 
   const handleFeedbackSubmit = () => {
     Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
@@ -59,13 +49,7 @@ const FeedBackScreen = () => {
               </GlobalText>
               <View className="flex-col items-center gap-g-2 ">
                 <StarRating rating={rating} onRatingChange={setRating} />
-                {currentRatingData && (
-                  <View className="mt-[5px] rounded-radius-max border border-[#F05F424D] bg-surface-danger-subtle px-number-6 py-number-3">
-                    <GlobalText className="font-pretMedium text-body-xxs">
-                      {currentRatingData.emoji} {currentRatingData.text}
-                    </GlobalText>
-                  </View>
-                )}
+                <RatingChip rating={rating} />
               </View>
 
               <View className="flex-col">
@@ -92,11 +76,16 @@ const FeedBackScreen = () => {
               </View>
             </View>
           </ScrollView>
-          <BottomButton
-            text="제출하기"
-            onPress={handleFeedbackSubmit}
-            className="px-number-8"
-          />
+          <View className="px-number-8 pb-[24px]">
+            <EmphasizedButton
+              content={
+                <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+                  제출하기
+                </GlobalText>
+              }
+              onPress={handleFeedbackSubmit}
+            />
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>

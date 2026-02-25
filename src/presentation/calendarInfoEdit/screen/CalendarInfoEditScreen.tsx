@@ -24,8 +24,8 @@ const CalendarInfoEditScreen = () => {
         <View className="w-full flex-1">
           <View className="mt-[-70px] flex gap-[26px]">
             <ScheduleNameInput
-              calendarName={calendarName}
-              setCalendarName={setCalendarName}
+              organizationName={calendarName}
+              setOrganizationName={setCalendarName}
             />
             <TimeInput />
             <TeamInput setWorkGroup={setWorkGroup} />

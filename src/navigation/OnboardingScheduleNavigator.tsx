@@ -4,7 +4,6 @@ import {
 } from '@react-navigation/native-stack'
 import { OnboardingStackParamList } from './types/StackTypes'
 import SelectScheduleScope from '../presentation/onboarding/screens/SelectScheduleScopeScreen'
-import StepBar from '../shared/components/StepBar'
 import CompleteScheduleScreen from '../presentation/onboarding/screens/CompleteScheduleScreen'
 import InputScheduleScreen from '../presentation/onboarding/screens/InputScheduleScreen'
 import InputCalendarTypeScreen from '../presentation/onboarding/screens/InputCalendarTypeScreen'
@@ -18,6 +17,7 @@ import { OnboardingStep } from '../shared/types/OnboardingStep'
 import { OnboardingMethod } from '../shared/types/OnboardingMethod'
 import { goNextOnboardingHeader } from '../presentation/onboarding/flow/goNextOnboardingHeader'
 import { useOnboardingStore } from '../store/useOnboardingStore'
+import ProgressIndicatorHeader from '../shared/components/progress/ProgressIndicatorHeader'
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>()
 
@@ -38,9 +38,9 @@ const OnboardingHeader = ({
         <TopAppBarBackButton onPress={() => navigation.goBack()} />
       }
       title={
-        <StepBar
-          currentStep={stepInfo.currentStep}
-          totalSteps={stepInfo.totalSteps}
+        <ProgressIndicatorHeader
+          currentProgress={stepInfo.currentStep}
+          totalProgress={stepInfo.totalSteps}
         />
       }
       applySafeArea={true}

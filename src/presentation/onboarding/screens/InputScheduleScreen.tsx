@@ -4,7 +4,7 @@ import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
 import ScheduleNameInput from '../component/ScheduleNameInput'
 import { useNavigation } from '@react-navigation/native'
-import TitleMessage from '../../../shared/components/TitleMessage'
+import HeadLineText from '../../../shared/components/text/HeadLineText'
 import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
@@ -55,7 +55,7 @@ const InputScheduleScreen = () => {
       className="flex-1 bg-background-gray-subtle1 px-[16px]"
     >
       <View className="w-full flex-1">
-        <TitleMessage title="근무표의 기본 정보를 입력해주세요." />
+        <HeadLineText heading="근무표의 기본 정보를 입력해주세요." />
 
         <View className="flex gap-[26px]">
           <ScheduleNameInput
