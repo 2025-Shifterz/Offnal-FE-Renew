@@ -36,8 +36,10 @@ type PlusEditProps = {
 const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
-  const { workTimes } = useScheduleInfoStore()
-  const { setOnboardingMethod } = useOnboardingStore()
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const setOnboardingMethod = useOnboardingStore(
+    state => state.setOnboardingMethod
+  )
 
   // 페이드 인 애니메이션
   useEffect(() => {

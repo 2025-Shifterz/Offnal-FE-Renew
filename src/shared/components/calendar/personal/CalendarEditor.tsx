@@ -21,6 +21,7 @@ import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
+import { useShallow } from 'zustand/shallow'
 
 export interface CalendarEditorRef {
   postData: () => Promise<boolean>
@@ -36,15 +37,31 @@ const CalendarEditor: ForwardRefRenderFunction<
   const {
     calendarData,
     newCalendarData,
-    setSelectedDate,
     selectedDate,
+    setSelectedDate,
     clearNewCalendarData,
     updateNewCalendarDay,
     fetchCalendarData,
-  } = useCalendarStore()
+  } = useCalendarStore(
+    useShallow(state => ({
+      calendarData: state.calendarData,
+      newCalendarData: state.newCalendarData,
+      selectedDate: state.selectedDate,
+      setSelectedDate: state.setSelectedDate,
+      clearNewCalendarData: state.clearNewCalendarData,
+      updateNewCalendarDay: state.updateNewCalendarDay,
+      fetchCalendarData: state.fetchCalendarData,
+    }))
+  )
 
-  const { onboardingMethod } = useOnboardingStore()
-  const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
+  const { workTimes, workGroup, organizationName } = useScheduleInfoStore(
+    useShallow(state => ({
+      workTimes: state.workTimes,
+      workGroup: state.workGroup,
+      organizationName: state.organizationName,
+    }))
+  )
 
   // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []

@@ -22,6 +22,7 @@ import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
 import { UpdateTeamShiftsRequest } from '../../../../infrastructure/remote/request/PatchTeamWorkCalendarRequest'
+import { useShallow } from 'zustand/shallow'
 
 export interface TCalendarEditorRef {
   postData: () => Promise<boolean>
@@ -42,10 +43,19 @@ const TCalendarEditor: ForwardRefRenderFunction<
     updateTeamCalendarDay,
     clearNewTeamCalendarData,
     fetchTeamCalendarData,
-  } = useTeamCalendarStore()
+  } = useTeamCalendarStore(
+    useShallow(state => ({
+      teamCalendarData: state.teamCalendarData,
+      newTeamCalendarData: state.newTeamCalendarData,
+      updateTeamCalendarDay: state.updateTeamCalendarDay,
+      clearNewTeamCalendarData: state.clearNewTeamCalendarData,
+      fetchTeamCalendarData: state.fetchTeamCalendarData,
+    }))
+  )
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
 
-  const { onboardingMethod } = useOnboardingStore()
-  const { workTimes, organizationName } = useScheduleInfoStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
 
   const startDate = `${currentDate.year()}-${String(currentDate.month() + 1).padStart(2, '0')}-01`
   const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
