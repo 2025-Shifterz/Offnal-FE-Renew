@@ -24,18 +24,11 @@ export const useOnboardingStore = create<OnboardingState>(set => ({
   scheduleScope: 'ALL',
 
   setOnboardingMethod: (method: OnboardingMethod) =>
-    set(() => ({
-      onboardingMethod: method,
-    })),
+    set(() => ({ onboardingMethod: method })),
 
   setOnboardingState: (method: OnboardingMethod, step: OnboardingStep) =>
-    set(() => ({
-      onboardingMethod: method,
-      currentStep: step,
-    })),
+    set(() => ({ onboardingMethod: method, currentStep: step })),
 
   setScheduleScope: (scope: ScheduleScope) =>
-    set(() => ({
-      scheduleScope: scope,
-    })),
+    set(() => ({ scheduleScope: scope })),
 }))

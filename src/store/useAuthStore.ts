@@ -1,11 +1,9 @@
 import { create } from 'zustand'
 import { useUserStore } from './useUserStore'
-import { useCalendarStore } from './useCalendarStore'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { authService } from '../infrastructure/di/Dependencies'
-import CookieManager from '@react-native-cookies/cookies'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
 
 interface AuthState {
@@ -16,9 +14,10 @@ interface AuthState {
   login: (user: User, accessToken: string, refreshToken: string) => void
   loginWithApple: () => Promise<boolean>
 
-  logout: () => void
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
+
+  resetAllTokens: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -108,28 +107,14 @@ export const useAuthStore = create<AuthState>()(
         })
       },
 
-      // 로그아웃 시
-      logout: async () => {
-        const { clearUser } = useUserStore.getState()
-        const { clearCalendarData } = useCalendarStore.getState()
-        await authService.tokenLogOut()
-
-        clearUser()
-        clearCalendarData()
-        set({
-          accessToken: null,
-          refreshToken: null,
-        })
-
-        await CookieManager.removeSessionCookies()
-        await CookieManager.clearAll()
-      },
-
       // 토큰만 업데이트
       setAccessToken: token => set(state => ({ ...state, accessToken: token })),
       setRefreshToken: token =>
         set(state => ({ ...state, refreshToken: token })),
+
+      resetAllTokens: () => set({ accessToken: null, refreshToken: null }),
     }),
+
     {
       name: 'auth-storage',
       storage: createJSONStorage(() => EncryptedStorage),

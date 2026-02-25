@@ -14,7 +14,7 @@ const SelectMonthOCRScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
-  const { onboardingMethod } = useOnboardingStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
 
   const [date, setDate] = useState<{ year: number; month: number | null }>({
     year: new Date().getFullYear(),

@@ -5,17 +5,20 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
-import { useUserStore } from '../../../store/useUserStore'
+import { memberRepository } from '../../../infrastructure/di/Dependencies'
+import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
 
 const WithdrawScreen = () => {
   const navigation = useNavigation<rootNavigation>()
   const [isLoading, setIsLoading] = useState(false)
+  const { resetAll } = useResetAllStore()
 
   const handleWithdraw = async () => {
     setIsLoading(true)
 
     try {
-      await useUserStore.getState().onWithdraw()
+      await memberRepository.withDrawMember()
+      await resetAll()
 
       Alert.alert('알림', '회원 탈퇴가 완료되었습니다.', [
         {

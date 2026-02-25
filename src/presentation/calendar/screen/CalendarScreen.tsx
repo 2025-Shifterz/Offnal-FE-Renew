@@ -13,7 +13,9 @@ const CalendarScreen = () => {
 
   // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
   const [isTeamView, setIsTeamView] = useState(false)
-  const { fetchOrganization } = useScheduleInfoStore()
+  const fetchOrganization = useScheduleInfoStore(
+    state => state.fetchOrganization
+  )
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(

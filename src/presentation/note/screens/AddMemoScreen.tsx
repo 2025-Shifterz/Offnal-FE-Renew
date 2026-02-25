@@ -17,7 +17,35 @@ import {
   RootStackParamList,
 } from '../../../navigation/types/StackTypes'
 import dayjs from 'dayjs'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
+import { useMemoStore } from '../../../store/useMemoStore'
+
+const AddMemoScreenTopAppBar = ({
+  onBack,
+  handleSave,
+  isDisabled,
+}: {
+  onBack: () => void
+  handleSave: () => void
+  isDisabled: boolean
+}) => {
+  return (
+    <CenterAlignedTopAppBar
+      navigationIcon={<TopAppBarBackButton onPress={onBack} />}
+      title={null}
+      rightActions={[
+        <TouchableOpacity onPress={handleSave} disabled={isDisabled}>
+          <GlobalText
+            className={`font-pretSemiBold text-heading-xs ${isDisabled ? 'text-text-basic-inverse' : 'text-text-basic'}`}
+          >
+            완료
+          </GlobalText>
+        </TouchableOpacity>,
+      ]}
+      applySafeArea={true}
+      backgroundColor="bg-surface-white"
+    />
+  )
+}
 
 const AddMemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -26,8 +54,8 @@ const AddMemoScreen = () => {
   const dateString = route.params?.date
   const date = dateString ? dayjs(dateString) : dayjs()
 
-  const addMemo = localMemoStore(state => state.addMemo)
-  const updateMemo = localMemoStore(state => state.updateMemo)
+  const addMemo = useMemoStore(state => state.addMemo)
+  const updateMemo = useMemoStore(state => state.updateMemo)
 
   const [title, setTitle] = useState(memoToUpdate?.title || '')
   const [content, setContent] = useState(memoToUpdate?.content || '')
@@ -62,20 +90,10 @@ const AddMemoScreen = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       header: () => (
-        <CenterAlignedTopAppBar
-          navigationIcon={<TopAppBarBackButton onPress={navigation.goBack} />}
-          title={null}
-          rightActions={[
-            <TouchableOpacity onPress={handleSave} disabled={isDisabled}>
-              <GlobalText
-                className={`font-pretSemiBold text-heading-xs ${isDisabled ? 'text-text-basic-inverse' : 'text-text-basic'}`}
-              >
-                완료
-              </GlobalText>
-            </TouchableOpacity>,
-          ]}
-          applySafeArea={true}
-          backgroundColor="bg-surface-white"
+        <AddMemoScreenTopAppBar
+          onBack={navigation.goBack}
+          handleSave={handleSave}
+          isDisabled={isDisabled}
         />
       ),
     })

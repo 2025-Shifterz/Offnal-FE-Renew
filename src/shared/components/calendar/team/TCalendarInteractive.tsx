@@ -2,13 +2,10 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
-
-import { teamCalendarRepository } from '../../../../infrastructure/di/Dependencies'
 import TCalendarBase from './TCalendarBase'
-import { TeamDateAndWorkType } from '../../../types/TeamCalendar'
+import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
-import { useCalendarStore } from '../../../../store/useCalendarStore'
+import { useShallow } from 'zustand/shallow'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -23,9 +20,15 @@ const TCalendarInteractive = ({
   setSelectedDate,
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
-  const { organizationName } = useScheduleInfoStore()
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
   const { teamCalendarData, myTeam, fetchTeamCalendarData } =
-    useTeamCalendarStore()
+    useTeamCalendarStore(
+      useShallow(state => ({
+        teamCalendarData: state.teamCalendarData,
+        myTeam: state.myTeam,
+        fetchTeamCalendarData: state.fetchTeamCalendarData,
+      }))
+    )
 
   // '2025-11-01' 형태
   const monthStartDate = `${selectedYearMonth.year}-${String(selectedYearMonth.month).padStart(2, '0')}-01`

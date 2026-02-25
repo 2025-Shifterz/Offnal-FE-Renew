@@ -10,13 +10,21 @@ import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
+import { useShallow } from 'zustand/shallow'
 
 const SelectScheduleScopeScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
-  const { onboardingMethod } = useOnboardingStore()
-  const { scheduleScope, setScheduleScope } = useOnboardingStore()
+
+  const { onboardingMethod, scheduleScope, setScheduleScope } =
+    useOnboardingStore(
+      useShallow(state => ({
+        onboardingMethod: state.onboardingMethod,
+        scheduleScope: state.scheduleScope,
+        setScheduleScope: state.setScheduleScope,
+      }))
+    )
 
   // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
   const handleBoxClick = (type: ScheduleScope) => {

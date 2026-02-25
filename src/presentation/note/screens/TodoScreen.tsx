@@ -20,13 +20,14 @@ import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 import TodoOptionBottomSheet, {
   BottomSheetMethods,
 } from '../components/sheet/TodoOptionBottomSheet'
-import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
+import { useTodoStore } from '../../../store/useTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { useHeaderHeight } from '@react-navigation/elements'
+import { useShallow } from 'zustand/shallow'
 
 const TodoScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Todo'>>()
@@ -62,8 +63,8 @@ const TodoScreen = () => {
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null)
   const [editingTodoText, setEditingTodoText] = useState<string>('')
 
-  const todos = useLocalTodoStore(state => state.todos)
   const {
+    todos,
     getTodosByDate,
     addTodo,
     deleteTodo,
@@ -72,7 +73,19 @@ const TodoScreen = () => {
     scheduleToday,
     scheduleNextDay,
     scheduleByDate,
-  } = useLocalTodoStore.getState()
+  } = useTodoStore(
+    useShallow(state => ({
+      todos: state.todos,
+      getTodosByDate: state.getTodosByDate,
+      addTodo: state.addTodo,
+      deleteTodo: state.deleteTodo,
+      updateTodoContent: state.updateTodoContent,
+      updateTodoCompleted: state.updateTodoCompleted,
+      scheduleToday: state.scheduleToday,
+      scheduleNextDay: state.scheduleNextDay,
+      scheduleByDate: state.scheduleByDate,
+    }))
+  )
 
   useEffect(() => {
     getTodosByDate(currentDate)
