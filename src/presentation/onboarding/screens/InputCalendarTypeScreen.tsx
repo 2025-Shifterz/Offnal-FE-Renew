@@ -19,8 +19,10 @@ import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const InputCalendarTypeScreen = () => {
-  const { scheduleScope, onboardingMethod } = useOnboardingStore()
-  const { workGroup = '1조' } = useScheduleInfoStore()
+  const scheduleScope = useOnboardingStore(state => state.scheduleScope)
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
+
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
   const [currentDate, setCurrentDate] = useState(dayjs)
 
   const navigation = useNavigation<{

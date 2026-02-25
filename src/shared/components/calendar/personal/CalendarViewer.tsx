@@ -7,6 +7,7 @@ import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { useFocusEffect } from '@react-navigation/native'
+import { useShallow } from 'zustand/shallow'
 
 interface CalendarViewerProps {
   selectedYearMonth: { year: number; month: number }
@@ -25,8 +26,8 @@ const CalendarViewer = ({
 }: CalendarViewerProps) => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
-
-  const { organizationName, workGroup } = useScheduleInfoStore()
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
   const setMyTeam = useTeamCalendarStore(state => state.setMyTeam)
 
   // '2025-11-01' 형태

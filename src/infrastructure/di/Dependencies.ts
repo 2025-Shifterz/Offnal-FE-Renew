@@ -36,6 +36,7 @@ import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarReposito
 import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 import { ScheduleInfoService } from '../remote/api/ScheduleInfoService'
 import { ScheduleInfoRepositoryImpl } from '../../data/impl/ScheduleInfoRepositoryImpl'
+import { DeleteAllTodosUseCase } from '../../domain/usecases/todos/DeleteAllTodosUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -78,6 +79,7 @@ export const todoCompletionUseCase = new UpdateTodoStateCompleteUseCase(
   todoRepository
 )
 export const deleteTodoUseCase = new DeleteTodoUseCase(todoRepository)
+export const deleteAllTodosUseCase = new DeleteAllTodosUseCase(todoRepository)
 export const updateTodoUseCase = new UpdateTodoUseCase(todoRepository)
 
 export const addMemoUseCase = new CreateMemoUseCase(memoRepository)

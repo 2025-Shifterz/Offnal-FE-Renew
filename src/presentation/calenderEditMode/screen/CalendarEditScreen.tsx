@@ -26,7 +26,8 @@ const CalendarEditScreen = () => {
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
 
-  const { organizationName, workGroup } = useScheduleInfoStore()
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
 
   const initialDate = route.params?.selectedDate
     ? dayjs(route.params.selectedDate)

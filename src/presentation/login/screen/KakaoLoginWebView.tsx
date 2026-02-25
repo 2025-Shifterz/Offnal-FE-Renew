@@ -14,6 +14,7 @@ const KakaoLoginWebView = () => {
   const webviewRef = useRef(null)
   const navigation = useNavigation<rootNavigation>()
   const [shouldHideWebView, setShouldHideWebView] = useState(false)
+  const login = useAuthStore(state => state.login)
 
   useEffect(() => {
     const fetchLoginUrl = async () => {
@@ -60,8 +61,6 @@ const KakaoLoginWebView = () => {
         return
       }
 
-      // Zustand 상태에 로그인 정보 저장
-      const { login } = useAuthStore.getState()
       login(
         {
           memberName: memberName,

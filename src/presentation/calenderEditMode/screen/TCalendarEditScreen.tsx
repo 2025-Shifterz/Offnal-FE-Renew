@@ -21,14 +21,13 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
   const route = useRoute<RouteProp<RootStackParamList, 'TeamEditCalendar'>>()
-  const workTimes = useScheduleInfoStore(state => state.workTimes)
 
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const updateTeamCalendarDay = useTeamCalendarStore(
     state => state.updateTeamCalendarDay
   )
-
-  const { organizationName } = useScheduleInfoStore()
 
   const initialDate = route.params?.selectedDate
     ? dayjs(route.params.selectedDate)

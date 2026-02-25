@@ -11,6 +11,7 @@ import CompleteCalendarLottie from '../../../assets/lottie/complete-calendar.svg
 const CompleteScheduleScreen = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}

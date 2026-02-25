@@ -23,6 +23,7 @@ import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
+import { useShallow } from 'zustand/shallow'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -34,15 +35,16 @@ const EditScheduleOCRScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
-  const { onboardingMethod, scheduleScope } = useOnboardingStore()
   const { ocrResult, year, month } = route.params
-  const { workGroup } = useScheduleInfoStore()
 
   const [currentDate, setCurrentDate] = useState(dayjs)
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
 
-  // Stores
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
+  const scheduleScope = useOnboardingStore(state => state.scheduleScope)
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
+
   const setNewCalendarData = useCalendarStore(state => state.setNewCalendarData)
   const setTeamCalendarData = useTeamCalendarStore(
     state => state.setTeamCalendarData

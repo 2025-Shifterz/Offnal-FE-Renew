@@ -2,8 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { View, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
+import { useNavigation } from '@react-navigation/native'
 import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
@@ -15,7 +14,7 @@ const SelectMonthOCRScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
-  const { onboardingMethod } = useOnboardingStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
 
   const [date, setDate] = useState<{ year: number; month: number | null }>({
     year: new Date().getFullYear(),

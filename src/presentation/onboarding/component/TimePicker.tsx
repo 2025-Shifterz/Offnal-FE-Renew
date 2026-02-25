@@ -41,7 +41,7 @@ const TimePicker = ({ type, mode }: TimePickerProps) => {
     N: { startTime: '00:00', endTime: '08:00' },
     '-': { startTime: '', endTime: '' },
   })
-  const { setWorkTimes } = useScheduleInfoStore()
+  const setWorkTimes = useScheduleInfoStore(state => state.setWorkTimes)
   const workTimeString = workTimes[type][mode] || '08:00'
   const {
     hour: initHour,
