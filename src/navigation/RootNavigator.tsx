@@ -16,7 +16,6 @@ import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
 // Migrate from CalendarNavigator.tsx
 import CalendarEditScreen from '../presentation/calenderEditMode/screen/CalendarEditScreen'
 import TCalendarEditScreen from '../presentation/calenderEditMode/screen/TCalendarEditScreen'
-import CalendarInfoEditScreen from '../presentation/calendarInfoEdit/screen/CalendarInfoEditScreen'
 
 // Migrate from MyInfoNavigator.tsx
 import EditProfileScreen from '../presentation/info/screen/EditProfileScreen'
@@ -133,10 +132,6 @@ const RootNavigator = () => {
         <RootStack.Screen
           name="TeamEditCalendar"
           component={TCalendarEditScreen}
-        />
-        <RootStack.Screen
-          name="CalendarInfoEdit"
-          component={CalendarInfoEditScreen}
         />
 
         {/* Migrate from MyInfoNavigator.tsx - Flattened for Tab Bar Hiding */}

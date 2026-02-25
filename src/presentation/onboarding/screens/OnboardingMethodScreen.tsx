@@ -128,8 +128,6 @@ const OnboardingMethodScreen = () => {
             onPress={handleBoxClick}
           />
         )}
-
-        <BottomButton text="다음" onPress={handleNext} />
       </View>
     </SafeAreaView>
   )

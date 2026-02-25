@@ -4,11 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
 import { useNavigation } from '@react-navigation/native'
 import HeadLineText from '../../../../shared/components/text/HeadLineText'
-import BottomButton from '../../../../shared/components/BottomButton'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
+import GlobalText from '../../../../shared/components/text/GlobalText'
+import EmphasizedButton from '../../../../shared/components/button/Button'
 
 const SelectMonthOCRScreen = () => {
   const navigation = useNavigation<{
@@ -55,11 +56,17 @@ const SelectMonthOCRScreen = () => {
             heading={`이미지에 해당하는 근무 월을\n선택해주세요.`}
             description={`AI 인식을 위해 등록할 이미지가\n어떤 월의 근무표인지 알려주세요.`}
           />
-
           <MonthPicker onDateChange={handleDateChange} />
-
-          <BottomButton text="다음" onPress={handleNext} />
         </View>
+
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              다음
+            </GlobalText>
+          }
+          onPress={handleNext}
+        />
       </SafeAreaView>
     </View>
   )

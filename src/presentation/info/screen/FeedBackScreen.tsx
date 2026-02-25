@@ -10,7 +10,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import StarRating from '../../../shared/components/rating/StarRating'
-import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import RatingChip from '../../../shared/components/chip/RatingChip'
@@ -76,7 +75,7 @@ const FeedBackScreen = () => {
               </View>
             </View>
           </ScrollView>
-          <View className="px-number-8 pb-[24px]">
+          <View className="px-number-8">
             <EmphasizedButton
               content={
                 <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">

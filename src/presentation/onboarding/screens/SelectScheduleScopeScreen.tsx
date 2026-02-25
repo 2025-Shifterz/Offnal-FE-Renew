@@ -2,7 +2,6 @@ import React from 'react'
 import { View } from 'react-native'
 import SelectScheduleBox from '../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
-import BottomButton from '../../../shared/components/BottomButton'
 import HeadLineText from '../../../shared/components/text/HeadLineText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ScheduleScope } from '../../../shared/types/ScheduleScope'
@@ -11,6 +10,8 @@ import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useShallow } from 'zustand/shallow'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const SelectScheduleScopeScreen = () => {
   const navigation = useNavigation<{
@@ -65,8 +66,16 @@ const SelectScheduleScopeScreen = () => {
             subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
           />
         </View>
-        <BottomButton text="다음" onPress={handleNext} />
       </View>
+
+      <EmphasizedButton
+        content={
+          <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+            다음
+          </GlobalText>
+        }
+        onPress={handleNext}
+      />
     </SafeAreaView>
   )
 }

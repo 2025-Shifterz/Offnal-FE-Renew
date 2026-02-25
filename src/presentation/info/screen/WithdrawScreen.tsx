@@ -1,12 +1,12 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { ActivityIndicator, Alert, View } from 'react-native'
-import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import { memberRepository } from '../../../infrastructure/di/Dependencies'
 import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const WithdrawScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -65,11 +65,16 @@ const WithdrawScreen = () => {
             ))}
           </View>
 
-          <BottomButton
-            text="탈퇴할게요"
-            onPress={() => handleWithdraw()}
-            className="px-number-8"
-          />
+          <View className="px-number-8">
+            <EmphasizedButton
+              content={
+                <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+                  탈퇴할게요
+                </GlobalText>
+              }
+              onPress={() => handleWithdraw()}
+            />
+          </View>
         </View>
       </SafeAreaView>
       {isLoading && (

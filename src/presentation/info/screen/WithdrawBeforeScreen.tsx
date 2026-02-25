@@ -7,13 +7,13 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import BottomButton from '../../../shared/components/BottomButton'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import CheckBoxMenuItem from '../component/CheckBoxMenuItem'
 import CheckBoxWithTextInput from '../component/CheckBoxWithTextInput'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const WithdrawBeforeScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -102,11 +102,16 @@ const WithdrawBeforeScreen = () => {
               </View>
             </View>
 
-            <BottomButton
-              text="탈퇴하기"
-              onPress={handleNavigate}
-              className="px-number-8"
-            />
+            <View className="px-number-8">
+              <EmphasizedButton
+                content={
+                  <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+                    탈퇴하기
+                  </GlobalText>
+                }
+                onPress={handleNavigate}
+              />
+            </View>
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>
