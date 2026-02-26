@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Alert, Platform } from 'react-native'
+import { Alert } from 'react-native'
 
 import { HealthData } from '../types/Health'
-import { HealthRepositoryImpl } from '../../data/impl/HealthRepositoryImpl'
+import { healthRepository } from '../../infrastructure/di/Dependencies'
 
 const useHealthData = () => {
-  const healthRepository = new HealthRepositoryImpl()
   const [healthData, setHealthData] = useState<HealthData>({
     steps: 0,
     weight: 0,

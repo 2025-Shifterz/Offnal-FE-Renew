@@ -34,6 +34,10 @@ import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarReposito
 import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 import { ScheduleInfoService } from '../remote/api/ScheduleInfoService'
 import { ScheduleInfoRepositoryImpl } from '../../data/impl/ScheduleInfoRepositoryImpl'
+import { HealthRepositoryImpl } from '../../data/impl/HealthRepositoryImpl'
+import { Platform } from 'react-native'
+import { IosHealthDataSource } from '../dataSource/IosHealthDataSource'
+import { AndroidHealthDataSource } from '../dataSource/AndroidHealthDataSource'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -66,6 +70,12 @@ export const scheduleInfoRepository = new ScheduleInfoRepositoryImpl(
 )
 export const homeRepository = new HomeRepositoryImpl(homeService)
 export const memberRepository = new MemberRepositoryImpl(memberService)
+
+const dataSource =
+  Platform.OS === 'ios'
+    ? new IosHealthDataSource()
+    : new AndroidHealthDataSource()
+export const healthRepository = new HealthRepositoryImpl(dataSource)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)
