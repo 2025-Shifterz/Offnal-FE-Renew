@@ -3,7 +3,6 @@ import {
   requestPermission,
   readRecords,
 } from 'react-native-health-connect'
-import { Alert } from 'react-native'
 import { HealthRepository } from '../../domain/repositories/HealthRepository'
 import { HealthData } from '../../shared/types/Health'
 import { STEP_GOAL } from '../../presentation/main/constants/stepGoal'
@@ -11,29 +10,23 @@ import { STEP_GOAL } from '../../presentation/main/constants/stepGoal'
 export class AndroidHealthDataSource implements HealthRepository {
   getHealthData = async (): Promise<HealthData> => {
     try {
-      // initialize the client
       const isInitialized = await initialize()
 
       if (!isInitialized) {
-        console.log('Health Connect를 사용할 수 없습니다')
-        return { steps: 0, weight: 0, bmi: 0, stepPercentage: 0 }
+        console.error('Health Connect를 사용할 수 없습니다')
+        throw new Error('Health Connect is not available')
       }
 
-      // request permissions
       await requestPermission([
         { accessType: 'read', recordType: 'Steps' },
         { accessType: 'read', recordType: 'Weight' },
         { accessType: 'read', recordType: 'Height' },
-        // { accessType: 'write', recordType: 'Steps' },
-        // { accessType: 'write', recordType: 'Weight' },
-        // { accessType: 'write', recordType: 'Height' },
       ])
 
       const now = new Date()
       const startOfDay = new Date()
       startOfDay.setHours(0, 0, 0, 0)
 
-      // 걸음 수
       const stepsResult = await readRecords('Steps', {
         timeRangeFilter: {
           operator: 'between',
@@ -97,10 +90,6 @@ export class AndroidHealthDataSource implements HealthRepository {
       }
     } catch (error) {
       console.error('Android 헬스 데이터 가져오기 오류:', error)
-      Alert.alert(
-        '오류',
-        'Android 헬스 데이터 가져오기 중 오류가 발생했습니다.'
-      )
       throw error
     }
   }

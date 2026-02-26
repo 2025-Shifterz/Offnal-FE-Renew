@@ -12,12 +12,7 @@ export class HealthRepositoryImpl implements HealthRepository {
       return await this.dataSource.getHealthData()
     } catch (error) {
       console.error('HealthRepositoryImpl getHealthData error:', error)
-      return {
-        steps: 0,
-        weight: 0,
-        bmi: 0,
-        stepPercentage: 0,
-      }
+      throw error
     }
   }
 }
