@@ -16,7 +16,8 @@ import {
   useRoute,
 } from '@react-navigation/native'
 import { useEffect } from 'react'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
+import { useShallow } from 'zustand/shallow'
+import { useMemoStore } from '../../../store/useMemoStore'
 import {
   rootNavigation,
   RootStackParamList,
@@ -30,9 +31,13 @@ const MemoScreen = () => {
 
   const swipeListViewRef = useRef<SwipeListView<any>>(null)
 
-  const memos = localMemoStore(state => state.memos)
-  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
-  const deleteMemo = localMemoStore(state => state.deleteMemo)
+  const { memos, fetchMemosByDate, deleteMemo } = useMemoStore(
+    useShallow(state => ({
+      memos: state.memos,
+      fetchMemosByDate: state.fetchMemosByDate,
+      deleteMemo: state.deleteMemo,
+    }))
+  )
 
   const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
 

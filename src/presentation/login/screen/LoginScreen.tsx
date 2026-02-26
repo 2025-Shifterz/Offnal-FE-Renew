@@ -35,7 +35,7 @@ type LoginScreenNavigationProp = CompositeNavigationProp<
 const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>()
   const [slideTime] = useState(4)
-  const { loginWithApple } = useAuthStore.getState()
+  const loginWithApple = useAuthStore(state => state.loginWithApple)
 
   return (
     <SafeAreaView className="w-full flex-1 items-center bg-background-white">

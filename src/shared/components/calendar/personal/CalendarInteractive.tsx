@@ -2,8 +2,8 @@
 import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
-import { useCalendarStore } from '../../../../store/useCalendarStore'
 import CalendarBase from './CalendarBase'
+import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 interface CalendarInteractiveProps {
@@ -19,8 +19,11 @@ const CalendarInteractive = ({
   setSelectedDate,
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
-  const { organizationName, workGroup } = useScheduleInfoStore()
-  const { calendarData, fetchCalendarData } = useCalendarStore()
+  const organizationName = useScheduleInfoStore(state => state.organizationName)
+  const workGroup = useScheduleInfoStore(state => state.workGroup)
+
+  const calendarData = useCalendarStore(state => state.calendarData)
+  const fetchCalendarData = useCalendarStore(state => state.fetchCalendarData)
 
   // 근무표 조회 API
   useEffect(() => {

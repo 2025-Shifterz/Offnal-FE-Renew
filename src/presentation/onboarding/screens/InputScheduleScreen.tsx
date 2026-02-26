@@ -12,17 +12,24 @@ import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
+import { useShallow } from 'zustand/shallow'
 
 const InputScheduleScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
-  const { onboardingMethod } = useOnboardingStore()
+  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
   const {
     organizationName = '',
     setOrganizationName,
     setWorkGroup,
-  } = useScheduleInfoStore()
+  } = useScheduleInfoStore(
+    useShallow(state => ({
+      organizationName: state.organizationName,
+      setOrganizationName: state.setOrganizationName,
+      setWorkGroup: state.setWorkGroup,
+    }))
+  )
 
   useEffect(() => {
     setOrganizationName('') // 초기화

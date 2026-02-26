@@ -38,6 +38,7 @@ import { HealthRepositoryImpl } from '../../data/impl/HealthRepositoryImpl'
 import { Platform } from 'react-native'
 import { IosHealthDataSource } from '../dataSource/IosHealthDataSource'
 import { AndroidHealthDataSource } from '../dataSource/AndroidHealthDataSource'
+import { DeleteAllTodosUseCase } from '../../domain/usecases/todos/DeleteAllTodosUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -84,6 +85,7 @@ export const todoCompletionUseCase = new UpdateTodoStateCompleteUseCase(
   todoRepository
 )
 export const deleteTodoUseCase = new DeleteTodoUseCase(todoRepository)
+export const deleteAllTodosUseCase = new DeleteAllTodosUseCase(todoRepository)
 export const updateTodoUseCase = new UpdateTodoUseCase(todoRepository)
 
 export const addMemoUseCase = new CreateMemoUseCase(memoRepository)

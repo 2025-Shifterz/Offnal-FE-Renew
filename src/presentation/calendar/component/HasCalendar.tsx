@@ -11,8 +11,8 @@ import CalendarViewer from '../../../shared/components/calendar/personal/Calenda
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 import { WorkType } from '../../../shared/types/Calendar'
 import CalendarViewerHeader from '../../../shared/components/calendar/header/CalendarViewerHeader'
-import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
+import { useTodoStore } from '../../../store/useTodoStore'
+import { useMemoStore } from '../../../store/useMemoStore'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
@@ -32,11 +32,11 @@ const HasCalendar = ({
   })
   const [currentDate, setCurrentDate] = useState(dayjs())
 
-  const todos = useLocalTodoStore(state => state.todos)
-  const fetchTodosByDate = useLocalTodoStore(state => state.getTodosByDate)
+  const todos = useTodoStore(state => state.todos)
+  const fetchTodosByDate = useTodoStore(state => state.getTodosByDate)
 
-  const memos = localMemoStore(state => state.memos)
-  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
+  const memos = useMemoStore(state => state.memos)
+  const fetchMemosByDate = useMemoStore(state => state.fetchMemosByDate)
 
   // 선택된 날짜.
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
