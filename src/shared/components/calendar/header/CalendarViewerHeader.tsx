@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Modal,
   Text,
@@ -14,9 +14,6 @@ interface CalendarViewerHeaderProps {
   selectedDate: Date
   onChange: (date: Date) => void
   onPressTeamIcon?: () => void
-  setSelectedYearMonth: Dispatch<
-    SetStateAction<{ year: number; month: number }>
-  >
 }
 
 const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() + i)
@@ -26,15 +23,10 @@ const CalendarViewerHeader = ({
   selectedDate,
   onChange,
   onPressTeamIcon,
-  setSelectedYearMonth,
 }: CalendarViewerHeaderProps) => {
   const [visible, setVisible] = useState(false)
   const [tempYear, setTempYear] = useState(selectedDate.getFullYear())
   const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
-
-  useEffect(() => {
-    setSelectedYearMonth({ year: tempYear, month: tempMonth })
-  }, [tempYear, tempMonth, setSelectedYearMonth])
 
   const handleConfirm = () => {
     setVisible(false)

@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
@@ -34,10 +34,13 @@ const TCalendarEditScreen = () => {
     : dayjs()
 
   const [currentDate, setCurrentDate] = useState(initialDate)
-  const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: initialDate.year(),
-    month: initialDate.month() + 1,
-  })
+  const selectedYearMonth = useMemo(
+    () => ({
+      year: currentDate.year(),
+      month: currentDate.month() + 1,
+    }),
+    [currentDate]
+  )
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
@@ -174,7 +177,6 @@ const TCalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
-              setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
           <Text className="text-text-subtle body-xs">

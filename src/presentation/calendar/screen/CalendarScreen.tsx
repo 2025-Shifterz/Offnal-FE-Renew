@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
 import { View } from 'react-native'
@@ -19,10 +19,13 @@ const CalendarScreen = () => {
   )
 
   const [currentDate, setCurrentDate] = useState(dayjs())
-  const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
-  })
+  const selectedYearMonth = useMemo(
+    () => ({
+      year: currentDate.year(),
+      month: currentDate.month() + 1,
+    }),
+    [currentDate]
+  )
 
   // 캘린더 탭에 포커스 될 때마다 실행
   useFocusEffect(
@@ -62,7 +65,6 @@ const CalendarScreen = () => {
           currentDate={currentDate}
           setCurrentDate={setCurrentDate}
           selectedYearMonth={selectedYearMonth}
-          setSelectedYearMonth={setSelectedYearMonth}
         />
       </SafeAreaView>
       {showPlus && (

@@ -27,9 +27,6 @@ interface HasCalendarProps {
   currentDate: dayjs.Dayjs
   setCurrentDate: Dispatch<SetStateAction<dayjs.Dayjs>>
   selectedYearMonth: { year: number; month: number }
-  setSelectedYearMonth: Dispatch<
-    SetStateAction<{ year: number; month: number }>
-  >
 }
 
 const HasCalendar = ({
@@ -39,7 +36,6 @@ const HasCalendar = ({
   currentDate,
   setCurrentDate,
   selectedYearMonth,
-  setSelectedYearMonth,
 }: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
 
@@ -88,12 +84,11 @@ const HasCalendar = ({
   return (
     <View className="h-full flex-1 px-[16px]">
       <CalendarViewerHeader
+        selectedDate={currentDate.toDate()}
         onPressTeamIcon={() => {
           setIsTeamView(!isTeamView)
         }}
-        selectedDate={currentDate.toDate()}
         onChange={newDate => setCurrentDate(dayjs(newDate))}
-        setSelectedYearMonth={setSelectedYearMonth}
       />
       <ScrollView className="h-full flex-1">
         {/* 팀 캘린더인지 */}
