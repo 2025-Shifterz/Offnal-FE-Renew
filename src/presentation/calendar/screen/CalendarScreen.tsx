@@ -15,7 +15,9 @@ const CalendarScreen = () => {
   const [showPlus, setShowPlus] = useState(false)
 
   // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
-  const [isTeamView, setIsTeamView] = useState(false)
+  const [isTeamView, setIsTeamView] = useState(
+    () => route.params?.isTeamView ?? false
+  )
   const fetchOrganization = useScheduleInfoStore(
     state => state.fetchOrganization
   )

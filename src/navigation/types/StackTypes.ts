@@ -61,7 +61,7 @@ export type RootStackParamList = {
 // 탭 네비게이터
 export type TabParamList = {
   Home: undefined
-  Calendar: { selectedDate?: string } | undefined
+  Calendar: { selectedDate?: string; isTeamView?: boolean } | undefined
   MyInformation: undefined
   AutoAlarm: undefined
 }

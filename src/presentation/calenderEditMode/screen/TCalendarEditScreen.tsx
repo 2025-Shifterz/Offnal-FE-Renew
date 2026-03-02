@@ -159,7 +159,10 @@ const TCalendarEditScreen = () => {
             name: 'Tabs',
             params: {
               screen: 'Calendar',
-              params: { selectedDate: currentDate.format('YYYY-MM-DD') },
+              params: {
+                selectedDate: currentDate.format('YYYY-MM-DD'),
+                isTeamView: true,
+              },
             },
           },
         ],
