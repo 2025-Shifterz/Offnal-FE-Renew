@@ -154,7 +154,15 @@ const TCalendarEditScreen = () => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Tabs', params: { screen: 'Calendar' } }],
+        routes: [
+          {
+            name: 'Tabs',
+            params: {
+              screen: 'Calendar',
+              params: { selectedDate: currentDate.format('YYYY-MM-DD') },
+            },
+          },
+        ],
       })
     } catch (error) {
       console.log('팀 근무표 수정 실패:', error)

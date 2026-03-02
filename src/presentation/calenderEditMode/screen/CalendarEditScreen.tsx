@@ -127,7 +127,15 @@ const CalendarEditScreen = () => {
       // 저장 성공 후 스택을 초기화하여 캘린더 탭으로 이동 (뒤로가기 방지)
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Tabs', params: { screen: 'Calendar' } }],
+        routes: [
+          {
+            name: 'Tabs',
+            params: {
+              screen: 'Calendar',
+              params: { selectedDate: currentDate.format('YYYY-MM-DD') },
+            },
+          },
+        ],
       })
     } catch (error) {
       console.log('근무표 수정 실패:', error)
