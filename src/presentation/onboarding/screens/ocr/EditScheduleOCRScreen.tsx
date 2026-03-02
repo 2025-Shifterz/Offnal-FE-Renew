@@ -6,7 +6,6 @@ import {
   convertOCRResultToPersonalSchduleData,
   convertOCRResultToTeamScheduleData,
 } from '../../mapper/calendarDataMapper'
-import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CalendarEditor, {
   CalendarEditorRef,
@@ -23,7 +22,8 @@ import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
-import { useShallow } from 'zustand/shallow'
+import GlobalText from '../../../../shared/components/text/GlobalText'
+import EmphasizedButton from '../../../../shared/components/button/Button'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -163,7 +163,14 @@ const EditScheduleOCRScreen = () => {
       </ScrollView>
 
       <View>
-        <BottomButton text="다음" onPress={handleNext} />
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              다음
+            </GlobalText>
+          }
+          onPress={handleNext}
+        />
       </View>
     </SafeAreaView>
   )

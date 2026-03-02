@@ -4,9 +4,10 @@ import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import HeadLineText from '../../../shared/components/text/HeadLineText'
-import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CompleteCalendarLottie from '../../../assets/lottie/complete-calendar.svg'
+import EmphasizedButton from '../../../shared/components/button/Button'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 const CompleteScheduleScreen = () => {
   const navigation =
@@ -26,8 +27,14 @@ const CompleteScheduleScreen = () => {
           <CompleteCalendarLottie />
         </View>
 
-        {/* 추후에 '완료'시 네비게이션 수정할 예정입니다. */}
-        <BottomButton text="완료" onPress={() => navigation.navigate('Tabs')} />
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              완료
+            </GlobalText>
+          }
+          onPress={() => navigation.navigate('Tabs')}
+        />
       </View>
     </SafeAreaView>
   )

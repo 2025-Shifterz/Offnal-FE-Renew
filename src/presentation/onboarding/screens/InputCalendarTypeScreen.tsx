@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import HeadLineText from '../../../shared/components/text/HeadLineText'
-import BottomButton from '../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CalendarEditor, {
   CalendarEditorRef,
@@ -17,6 +16,8 @@ import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../../../shared/types/OnboardingStep'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const InputCalendarTypeScreen = () => {
   const scheduleScope = useOnboardingStore(state => state.scheduleScope)
@@ -86,7 +87,14 @@ const InputCalendarTypeScreen = () => {
         </View>
       </ScrollView>
       <View>
-        <BottomButton text="다음" onPress={handleNext} />
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              다음
+            </GlobalText>
+          }
+          onPress={handleNext}
+        />
       </View>
     </SafeAreaView>
   )
