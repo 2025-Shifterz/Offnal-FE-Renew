@@ -75,7 +75,12 @@ export const memberRepository = new MemberRepositoryImpl(memberService)
 const dataSource =
   Platform.OS === 'ios'
     ? new IosHealthDataSource()
-    : new AndroidHealthDataSource()
+    : Platform.OS === 'android'
+      ? new AndroidHealthDataSource()
+      : (() => {
+          throw new Error('Unsupported platform for HealthDataSource')
+        })() // 다른 플랫폼에서는 빈 객체 반환
+
 export const healthRepository = new HealthRepositoryImpl(dataSource)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)

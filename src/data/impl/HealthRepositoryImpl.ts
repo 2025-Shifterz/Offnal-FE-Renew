@@ -11,30 +11,26 @@ export class HealthRepositoryImpl implements HealthRepository {
   }
 
   async getHealthData(): Promise<HealthData> {
-    try {
-      // 모든 데이터를 병렬로 가져오기
-      const [stepsRes, weightRes, bmiRes] = await Promise.allSettled([
-        this.dataSource.getSteps(),
-        this.dataSource.getWeight(),
-        this.dataSource.getBMI(),
-      ])
+    // 모든 데이터를 병렬로 가져오기
+    const [stepsRes, weightRes, bmiRes] = await Promise.allSettled([
+      this.dataSource.getSteps(),
+      this.dataSource.getWeight(),
+      this.dataSource.getBMI(),
+    ])
 
-      // 값 추출
-      const steps = stepsRes.status === 'fulfilled' ? stepsRes.value : 0
-      const weight = weightRes.status === 'fulfilled' ? weightRes.value : 0
-      const bmi = bmiRes.status === 'fulfilled' ? bmiRes.value : 0
+    // 값 추출
+    const steps = stepsRes.status === 'fulfilled' ? stepsRes.value : 0
+    const weight = weightRes.status === 'fulfilled' ? weightRes.value : 0
+    const bmi = bmiRes.status === 'fulfilled' ? bmiRes.value : 0
 
-      // 걸음 수 % 계산 (9000걸음 목표 대비)
-      const stepPercentage = (steps / STEP_GOAL) * 100
+    // 걸음 수 % 계산 (9000걸음 목표 대비)
+    const stepPercentage = (steps / STEP_GOAL) * 100
 
-      return {
-        steps: steps,
-        weight: Math.round(weight * 10) / 10,
-        bmi: Math.round(bmi * 10) / 10,
-        stepPercentage: Math.round(stepPercentage * 10) / 10,
-      }
-    } catch (error) {
-      throw error
+    return {
+      steps: steps,
+      weight: Math.round(weight * 10) / 10,
+      bmi: Math.round(bmi * 10) / 10,
+      stepPercentage: Math.round(stepPercentage * 10) / 10,
     }
   }
 }
