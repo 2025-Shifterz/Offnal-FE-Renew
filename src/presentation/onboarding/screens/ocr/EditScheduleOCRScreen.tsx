@@ -19,11 +19,10 @@ import CalendarEditorHeader from '../../../../shared/components/calendar/header/
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
-import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
+import { OnboardingStep } from '../../types/onboardingTypes'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
-import { useShallow } from 'zustand/shallow'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,

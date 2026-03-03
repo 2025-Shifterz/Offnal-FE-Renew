@@ -7,7 +7,7 @@ import TitleMessage from '../../../../shared/components/TitleMessage'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
-import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
+import { OnboardingStep } from '../../types/onboardingTypes'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 
 const SelectMonthOCRScreen = () => {

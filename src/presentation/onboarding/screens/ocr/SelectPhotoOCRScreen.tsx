@@ -22,10 +22,10 @@ import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/ProgressModal'
 import BottomButton from '../../../../shared/components/BottomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { SchedulePhotoType } from '../../../../shared/types/SchedulePhotoType'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
-import { OnboardingStep } from '../../../../shared/types/OnboardingStep'
+import { OnboardingStep } from '../../types/onboardingTypes'
+import { SchedulePhotoType } from '../../types/scheduleTypes'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 
 const { ScheduleModule } = NativeModules

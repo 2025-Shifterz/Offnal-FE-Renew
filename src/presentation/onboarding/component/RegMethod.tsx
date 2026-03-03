@@ -2,8 +2,8 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 import ToggleBoxWrapper from '../../../shared/components/ToggleBoxWrapper'
-import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
-import { SchedulePhotoType } from '../../../shared/types/SchedulePhotoType'
+import { OnboardingMethod } from '../types/onboardingTypes'
+import { SchedulePhotoType } from '../types/scheduleTypes'
 
 type RegMethodProps<T extends OnboardingMethod | SchedulePhotoType> = {
   type: T
