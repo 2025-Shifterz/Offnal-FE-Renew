@@ -7,7 +7,6 @@ import { healthRepository } from '../../infrastructure/di/Dependencies'
 const INITIAL_DATA: HealthData = {
   steps: 0,
   weight: 0,
-  height: 0,
   bmi: 0,
   stepPercentage: 0,
 }

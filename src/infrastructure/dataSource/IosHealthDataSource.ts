@@ -5,76 +5,77 @@ import {
   requestAuthorization,
 } from '@kingstinct/react-native-healthkit'
 import { HealthDataSource } from './interface/HealthDataSource'
-import { GetHealthResponse } from '../remote/response/GetHealthResponse'
 
 export class IosHealthDataSource implements HealthDataSource {
-  getHealthData = async (): Promise<GetHealthResponse> => {
-    try {
-      const isAvailable = await isHealthDataAvailable()
-      if (!isAvailable) {
-        console.error('오류', 'HealthKit을 사용할 수 없습니다')
-        throw new Error('HealthKit is not available')
-      }
-
-      // 권한 요청 - 읽기 전용
-      await requestAuthorization(
-        [],
-        [
-          'HKQuantityTypeIdentifierStepCount',
-          'HKQuantityTypeIdentifierBodyMass',
-          'HKQuantityTypeIdentifierBodyMassIndex',
-        ]
-      )
-
-      const now = new Date()
-      const todayStartDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        0,
-        0,
-        0
-      ) // 오늘 시작 시간
-      const todayEndDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        23,
-        59,
-        59
-      ) // 오늘 끝 시간
-
-      const stepData = await queryQuantitySamples(
-        'HKQuantityTypeIdentifierStepCount',
-        {
-          filter: {
-            startDate: todayStartDate,
-            endDate: todayEndDate,
-          },
-        }
-      )
-
-      const totalSteps =
-        stepData?.reduce((sum, sample) => sum + sample.quantity, 0) ?? 0
-
-      const weightData = await getMostRecentQuantitySample(
-        'HKQuantityTypeIdentifierBodyMass'
-      )
-      const weight = weightData?.quantity ?? 0
-
-      const bmiData = await getMostRecentQuantitySample(
-        'HKQuantityTypeIdentifierBodyMassIndex'
-      )
-      const bmi = bmiData?.quantity ?? 0
-
-      return {
-        totalSteps: totalSteps,
-        weight: weight,
-        bmi: bmi,
-      }
-    } catch (error) {
-      console.error('iOS 헬스 데이터 가져오기 오류:', error)
-      throw error
+  private async ensureAuthorization(): Promise<void> {
+    const isAvailable = await isHealthDataAvailable()
+    if (!isAvailable) {
+      console.error('오류', 'HealthKit을 사용할 수 없습니다')
+      throw new Error('HealthKit is not available')
     }
+
+    // 권한 요청 - 읽기 전용
+    await requestAuthorization(
+      [],
+      [
+        'HKQuantityTypeIdentifierStepCount',
+        'HKQuantityTypeIdentifierBodyMass',
+        'HKQuantityTypeIdentifierBodyMassIndex',
+      ]
+    )
+  }
+
+  async getSteps(): Promise<number> {
+    await this.ensureAuthorization()
+    const now = new Date()
+    const todayStartDate = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      0,
+      0,
+      0
+    ) // 오늘 시작 시간
+    const todayEndDate = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59
+    ) // 오늘 끝 시간
+
+    const stepData = await queryQuantitySamples(
+      'HKQuantityTypeIdentifierStepCount',
+      {
+        filter: {
+          startDate: todayStartDate,
+          endDate: todayEndDate,
+        },
+      }
+    )
+
+    const totalSteps =
+      stepData?.reduce((sum, sample) => sum + sample.quantity, 0) ?? 0
+
+    return totalSteps
+  }
+
+  async getWeight(): Promise<number> {
+    await this.ensureAuthorization()
+    const weightData = await getMostRecentQuantitySample(
+      'HKQuantityTypeIdentifierBodyMass'
+    )
+    const weight = weightData?.quantity ?? 0
+    return weight
+  }
+
+  async getBMI(): Promise<number> {
+    await this.ensureAuthorization()
+    const bmiData = await getMostRecentQuantitySample(
+      'HKQuantityTypeIdentifierBodyMassIndex'
+    )
+    const bmi = bmiData?.quantity ?? 0
+    return bmi
   }
 }

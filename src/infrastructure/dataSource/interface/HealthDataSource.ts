@@ -1,5 +1,7 @@
-import { GetHealthResponse } from '../../remote/response/GetHealthResponse'
-
 export interface HealthDataSource {
-  getHealthData(): Promise<GetHealthResponse>
+  getSteps(): Promise<number>
+
+  getWeight(): Promise<number>
+
+  getBMI(): Promise<number>
 }
