@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Modal,
   Text,
@@ -14,9 +14,6 @@ interface CalendarViewerHeaderProps {
   selectedDate: Date
   onChange: (date: Date) => void
   onPressTeamIcon?: () => void
-  setSelectedYearMonth: Dispatch<
-    SetStateAction<{ year: number; month: number }>
-  >
 }
 
 const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() + i)
@@ -26,15 +23,16 @@ const CalendarViewerHeader = ({
   selectedDate,
   onChange,
   onPressTeamIcon,
-  setSelectedYearMonth,
 }: CalendarViewerHeaderProps) => {
   const [visible, setVisible] = useState(false)
   const [tempYear, setTempYear] = useState(selectedDate.getFullYear())
   const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
 
+  // 외부에서 selectedDate가 변경될 때(navigation.reset 복귀 등) 헤더 텍스트 동기화
   useEffect(() => {
-    setSelectedYearMonth({ year: tempYear, month: tempMonth })
-  }, [tempYear, tempMonth, setSelectedYearMonth])
+    setTempYear(selectedDate.getFullYear())
+    setTempMonth(selectedDate.getMonth() + 1)
+  }, [selectedDate])
 
   const handleConfirm = () => {
     setVisible(false)

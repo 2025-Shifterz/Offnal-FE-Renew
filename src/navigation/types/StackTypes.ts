@@ -35,6 +35,7 @@ export type RootStackParamList = {
       E: { startTime: string; endTime: string }
       N: { startTime: string; endTime: string }
     }
+    selectedDate?: string
   }
   EditCalendar: {
     workTimes: {
@@ -42,6 +43,7 @@ export type RootStackParamList = {
       E: { startTime: string; endTime: string }
       N: { startTime: string; endTime: string }
     }
+    selectedDate?: string
   }
   CalendarInfoEdit: undefined
 
@@ -59,7 +61,7 @@ export type RootStackParamList = {
 // 탭 네비게이터
 export type TabParamList = {
   Home: undefined
-  Calendar: undefined
+  Calendar: { selectedDate?: string; isTeamView?: boolean } | undefined
   MyInformation: undefined
   AutoAlarm: undefined
 }
