@@ -13,6 +13,7 @@ import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { Animated } from 'react-native'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
+import dayjs from 'dayjs'
 
 // 컴포넌트
 type TextButtonProps = {
@@ -31,9 +32,10 @@ const TextButton = ({ text }: TextButtonProps) => {
 type PlusEditProps = {
   setShowPlus: (show: boolean) => void
   isTeamView: boolean
+  currentDate: dayjs.Dayjs
 }
 
-const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
+const PlusEdit = ({ setShowPlus, isTeamView, currentDate }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
   const workTimes = useScheduleInfoStore(state => state.workTimes)
@@ -51,9 +53,15 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   }, [fadeAnim])
   const navigateToEditModeScreen = () => {
     if (isTeamView) {
-      navigation.navigate('TeamEditCalendar', { workTimes: workTimes })
+      navigation.navigate('TeamEditCalendar', {
+        workTimes: workTimes,
+        selectedDate: currentDate.toISOString(),
+      })
     } else {
-      navigation.navigate('EditCalendar', { workTimes: workTimes })
+      navigation.navigate('EditCalendar', {
+        workTimes: workTimes,
+        selectedDate: currentDate.toISOString(),
+      })
     }
   }
 

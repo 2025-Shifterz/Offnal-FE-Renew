@@ -25,8 +25,6 @@ import { MemberService } from '../remote/api/MemberService'
 import { TodoService } from '../remote/api/TodoService'
 import { AuthService } from '../remote/api/AuthService'
 import { MemberRepositoryImpl as MemberRepositoryImpl } from '../../data/impl/MemberRepositoryImpl'
-import { IosHealthService } from '../remote/api/IosHealthService'
-import { AndroidHealthService } from '../remote/api/AndroidHealthService'
 import { UpdateMemoUseCase } from '../../domain/usecases/memos/UpdateMemoUseCase'
 import { GetMemoByIdUseCase } from '../../domain/usecases/memos/GetMemoByIdUseCase'
 import { OrganizationService } from '../remote/api/OrganizationService'
@@ -36,6 +34,10 @@ import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarReposito
 import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 import { ScheduleInfoService } from '../remote/api/ScheduleInfoService'
 import { ScheduleInfoRepositoryImpl } from '../../data/impl/ScheduleInfoRepositoryImpl'
+import { HealthRepositoryImpl } from '../../data/impl/HealthRepositoryImpl'
+import { Platform } from 'react-native'
+import { IosHealthDataSource } from '../dataSource/IosHealthDataSource'
+import { AndroidHealthDataSource } from '../dataSource/AndroidHealthDataSource'
 import { DeleteAllTodosUseCase } from '../../domain/usecases/todos/DeleteAllTodosUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
@@ -51,8 +53,6 @@ export const memberService = new MemberService()
 export const todoService = new TodoService()
 export const memoService = new MemoService()
 export const authService = new AuthService()
-export const iosHealthService = new IosHealthService()
-export const androidHealthService = new AndroidHealthService()
 export const teamCalendarService = new TeamCalendarService()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
@@ -71,6 +71,17 @@ export const scheduleInfoRepository = new ScheduleInfoRepositoryImpl(
 )
 export const homeRepository = new HomeRepositoryImpl(homeService)
 export const memberRepository = new MemberRepositoryImpl(memberService)
+
+const dataSource =
+  Platform.OS === 'ios'
+    ? new IosHealthDataSource()
+    : Platform.OS === 'android'
+      ? new AndroidHealthDataSource()
+      : (() => {
+          throw new Error('Unsupported platform for HealthDataSource')
+        })() // 다른 플랫폼에서는 빈 객체 반환
+
+export const healthRepository = new HealthRepositoryImpl(dataSource)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)

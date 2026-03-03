@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native'
-import React, { useRef, useState } from 'react'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import React, { useMemo, useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
@@ -8,7 +8,10 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
@@ -17,6 +20,7 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const CalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'EditCalendar'>>()
 
   const workTimes = useScheduleInfoStore(state => state.workTimes)
   const calendarData = useCalendarStore(state => state.calendarData)
@@ -25,13 +29,21 @@ const CalendarEditScreen = () => {
   const organizationName = useScheduleInfoStore(state => state.organizationName)
   const workGroup = useScheduleInfoStore(state => state.workGroup)
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
-  const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
-  })
+  const initialDate = route.params?.selectedDate
+    ? dayjs(route.params.selectedDate)
+    : dayjs()
+
+  const [currentDate, setCurrentDate] = useState(initialDate)
+  const selectedYearMonth = useMemo(
+    () => ({
+      year: currentDate.year(),
+      month: currentDate.month() + 1,
+    }),
+    [currentDate]
+  )
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
+
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
 
@@ -115,7 +127,18 @@ const CalendarEditScreen = () => {
       // 저장 성공 후 스택을 초기화하여 캘린더 탭으로 이동 (뒤로가기 방지)
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Tabs', params: { screen: 'Calendar' } }],
+        routes: [
+          {
+            name: 'Tabs',
+            params: {
+              screen: 'Calendar',
+              params: {
+                selectedDate: currentDate.format('YYYY-MM-DD'),
+                isTeamView: false,
+              },
+            },
+          },
+        ],
       })
     } catch (error) {
       console.log('근무표 수정 실패:', error)
@@ -138,7 +161,6 @@ const CalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
-              setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
           <Text className="text-text-subtle body-xs">
