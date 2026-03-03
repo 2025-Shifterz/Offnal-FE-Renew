@@ -3,12 +3,11 @@ import {
   requestPermission,
   readRecords,
 } from 'react-native-health-connect'
-import { HealthRepository } from '../../domain/repositories/HealthRepository'
-import { HealthData } from '../../shared/types/Health'
-import { STEP_GOAL } from '../../presentation/main/constants/stepGoal'
+import { HealthDataSource } from './interface/HealthDataSource'
+import { GetHealthResponse } from '../remote/response/GetHealthResponse'
 
-export class AndroidHealthDataSource implements HealthRepository {
-  getHealthData = async (): Promise<HealthData> => {
+export class AndroidHealthDataSource implements HealthDataSource {
+  getHealthData = async (): Promise<GetHealthResponse> => {
     try {
       const isInitialized = await initialize()
 
@@ -79,14 +78,10 @@ export class AndroidHealthDataSource implements HealthRepository {
         bmi = latestWeight / (latestHeight * latestHeight)
       }
 
-      // 걸음 수 % 계산 (9000걸음 목표 대비)
-      const stepPercentage = (totalSteps / STEP_GOAL) * 100
-
       return {
-        steps: totalSteps,
-        weight: Math.round(latestWeight * 10) / 10,
-        bmi: Math.round(bmi * 10) / 10,
-        stepPercentage: Math.round(stepPercentage * 10) / 10,
+        totalSteps: totalSteps,
+        weight: latestWeight,
+        bmi: bmi,
       }
     } catch (error) {
       console.error('Android 헬스 데이터 가져오기 오류:', error)

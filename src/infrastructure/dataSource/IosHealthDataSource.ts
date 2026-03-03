@@ -4,12 +4,11 @@ import {
   queryQuantitySamples,
   requestAuthorization,
 } from '@kingstinct/react-native-healthkit'
-import { HealthData } from '../../shared/types/Health'
-import { STEP_GOAL } from '../../presentation/main/constants/stepGoal'
-import { HealthRepository } from '../../domain/repositories/HealthRepository'
+import { HealthDataSource } from './interface/HealthDataSource'
+import { GetHealthResponse } from '../remote/response/GetHealthResponse'
 
-export class IosHealthDataSource implements HealthRepository {
-  getHealthData = async (): Promise<HealthData> => {
+export class IosHealthDataSource implements HealthDataSource {
+  getHealthData = async (): Promise<GetHealthResponse> => {
     try {
       const isAvailable = await isHealthDataAvailable()
       if (!isAvailable) {
@@ -68,14 +67,10 @@ export class IosHealthDataSource implements HealthRepository {
       )
       const bmi = bmiData?.quantity ?? 0
 
-      // 걸음 수 % 계산 (9000걸음 목표 대비)
-      const stepPercentage = (totalSteps / STEP_GOAL) * 100
-
       return {
-        steps: totalSteps,
-        weight: Math.round(weight * 10) / 10,
-        bmi: Math.round(bmi * 10) / 10,
-        stepPercentage: Math.round(stepPercentage * 10) / 10,
+        totalSteps: totalSteps,
+        weight: weight,
+        bmi: bmi,
       }
     } catch (error) {
       console.error('iOS 헬스 데이터 가져오기 오류:', error)
