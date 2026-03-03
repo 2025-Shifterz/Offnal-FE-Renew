@@ -1,6 +1,7 @@
 import api from './axiosInstance'
-import { Memo } from '../../../shared/types/Memo'
 import { GetMemosResponse } from '../response/GetMemosResponse'
+import { PostCreateMemoRequest } from '../request/PostCreateMemoRequest'
+import { PatchUpdateMemoRequest } from '../request/PatchUpdateMemoRequest'
 
 export class MemoService {
   async getMemos(filter: string, organizationId: number) {
@@ -15,18 +16,18 @@ export class MemoService {
     }
   }
 
-  async createMemo(memo: Memo) {
+  async createMemo(request: PostCreateMemoRequest) {
     try {
-      const response = await api.post('/memos', memo)
+      const response = await api.post('/memos', request)
       return response.data
     } catch (error) {
       console.error('Error adding memo:', error)
     }
   }
 
-  async updateMemo(memo: Memo) {
+  async updateMemo(request: PatchUpdateMemoRequest) {
     try {
-      const response = await api.put(`/memos`, memo)
+      const response = await api.put(`/memos`, request)
       return response.data
     } catch (error) {
       console.error('Error updating memo:', error)
