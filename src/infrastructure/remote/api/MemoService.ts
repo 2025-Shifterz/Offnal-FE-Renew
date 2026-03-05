@@ -25,7 +25,7 @@ export class MemoService {
     }
   }
 
-  async updateMemo(request: PatchUpdateMemoRequest) {
+  async updateMemo(request: UpdateMemoRequest) {
     try {
       const response = await api.put(`/memos`, request)
       return response.data
