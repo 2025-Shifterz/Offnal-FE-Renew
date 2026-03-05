@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/GlobalText'
 import BottomButton from '../../../shared/components/BottomButton'
-import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
+import { OnboardingMethod } from '../types/onboardingTypes'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import { useEffect, useLayoutEffect } from 'react'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'

@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge'
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 import { WorkType } from '../../../shared/types/Calendar'
 import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
-import { WorkTime } from '../../../shared/types/WorkTime'
+import { WorkTime } from '../../../domain/models/WorkTime'
 
 interface SelectShiftBoxProps {
   selectedBoxId: number

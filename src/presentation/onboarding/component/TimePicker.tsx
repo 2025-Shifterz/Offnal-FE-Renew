@@ -3,7 +3,7 @@ import { Button, Text, View } from 'react-native'
 import ArrowUp from '../../../assets/icons/arrow-up.svg'
 import ArrowDown from '../../../assets/icons/arrow-down.svg'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
-import { WorkTime } from '../../../shared/types/WorkTime'
+import { WorkTime } from '../../../domain/models/WorkTime'
 
 const pickerTextStyle = 'text-text-basic body-s font-[500px]'
 

@@ -1,7 +1,9 @@
 import { create } from 'zustand'
-import { OnboardingMethod } from '../shared/types/OnboardingMethod'
-import { OnboardingStep } from '../shared/types/OnboardingStep'
-import { ScheduleScope } from '../shared/types/ScheduleScope'
+import {
+  OnboardingMethod,
+  OnboardingStep,
+} from '../presentation/onboarding/types/onboardingTypes'
+import { ScheduleScope } from '../presentation/onboarding/types/scheduleTypes'
 
 interface OnboardingState {
   // 온보딩 방식 - OCR, NEW, DIRECT, EXISTING_OCR(근무표가 이미 있는 경우 OCR)

@@ -14,8 +14,10 @@ import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton
 import EditScheduleOCRScreen from '../presentation/onboarding/screens/ocr/EditScheduleOCRScreen'
 import SelectPhotoOCRScreen from '../presentation/onboarding/screens/ocr/SelectPhotoOCRScreen'
 import SelectMonthOCRScreen from '../presentation/onboarding/screens/ocr/SelectMonthOCRScreen'
-import { OnboardingStep } from '../shared/types/OnboardingStep'
-import { OnboardingMethod } from '../shared/types/OnboardingMethod'
+import {
+  OnboardingMethod,
+  OnboardingStep,
+} from '../presentation/onboarding/types/onboardingTypes'
 import { goNextOnboardingHeader } from '../presentation/onboarding/flow/goNextOnboardingHeader'
 import { useOnboardingStore } from '../store/useOnboardingStore'
 

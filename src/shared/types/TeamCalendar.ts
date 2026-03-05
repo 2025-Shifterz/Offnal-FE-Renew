@@ -1,10 +1,4 @@
-import { WorkType } from './Calendar'
-
-export interface WorkTypeInfo {
-  workTypeName: WorkType
-  startTime: string
-  endTime: string
-}
+import { WorkType, WorkTypeInfo } from './Calendar'
 
 export interface TeamCalendarRecord {
   team: string

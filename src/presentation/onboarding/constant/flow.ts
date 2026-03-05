@@ -1,5 +1,7 @@
-import { OnboardingStep } from '../../../shared/types/OnboardingStep'
-import { OnboardingStepByMethod } from '../../../shared/types/OnboardingStepByMethod'
+import {
+  OnboardingStep,
+  OnboardingStepByMethod,
+} from '../types/onboardingTypes'
 
 // 근무표 수동 입력 플로우
 export const NEW_FLOW: OnboardingStep[] = [

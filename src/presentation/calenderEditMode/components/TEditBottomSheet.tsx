@@ -7,7 +7,8 @@ import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
 import SelectGroupBox from './SelectGroupBox'
-import { WorkTime } from '../../../shared/types/WorkTime'
+import { WorkTime } from '../../../domain/models/WorkTime'
+
 dayjs.locale('ko') // 한글 locale 적용
 
 interface TEditBottomSheetProps {

@@ -1,6 +1,7 @@
 import api from './axiosInstance'
-import { Todo } from '../../../shared/types/Todo'
 import { GetTodosResponse } from '../response/GetTodosResponse'
+import { PostCreateTodoRequest } from '../request/PostCreateTodoRequest'
+import { PatchUpdateTodoRequest } from '../request/PatchUpdateTodoRequest'
 
 export class TodoService {
   async getTodos(filter: string, organizationId: number) {
@@ -15,18 +16,18 @@ export class TodoService {
     }
   }
 
-  async createTodo(todo: Todo) {
+  async createTodo(request: PostCreateTodoRequest) {
     try {
-      const response = await api.post('/todos', todo)
+      const response = await api.post('/todos', request)
       return response.data
     } catch (error) {
       console.error('Error adding todo:', error)
     }
   }
 
-  async updateTodo(todo: Todo) {
+  async updateTodo(request: UpdateTodoRequest) {
     try {
-      const response = await api.put(`/todos`, todo)
+      const response = await api.put(`/todos`, request)
       return response.data
     } catch (error) {
       console.error('Error updating todo:', error)

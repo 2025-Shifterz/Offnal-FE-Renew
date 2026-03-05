@@ -1,5 +1,4 @@
-import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
-import { OnboardingStep } from '../../../shared/types/OnboardingStep'
+import { OnboardingMethod, OnboardingStep } from '../types/onboardingTypes'
 import { FLOW_BY_METHOD } from '../constant/flow'
 
 export const goNextOnboardingHeader = (
