@@ -169,7 +169,7 @@ const TodoScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"

@@ -41,7 +41,7 @@ const FeedBackScreen = () => {
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1"
         >
-          <ScrollView className="flex-1 px-number-9">
+          <ScrollView className="flex-1 px-p-7">
             <View className="flex-col">
               <GlobalText className="my-[8.5px] font-pretMedium text-body-xs">
                 오프날에서의 경험이 만족스러우신가요?
@@ -75,7 +75,7 @@ const FeedBackScreen = () => {
               </View>
             </View>
           </ScrollView>
-          <View className="px-number-8">
+          <View className="px-p-7">
             <EmphasizedButton
               content={
                 <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">

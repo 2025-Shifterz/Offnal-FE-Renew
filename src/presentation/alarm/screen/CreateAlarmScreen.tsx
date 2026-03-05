@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native'
 const CreateAlarmScreen = () => {
   const nav = useNavigation<rootNavigation>()
   return (
-    <View className="flex-1 ">
+    <View className="flex-1 bg-background-gray-subtle1">
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <GlobalText>자동 알람 생성 화면</GlobalText>
       </SafeAreaView>

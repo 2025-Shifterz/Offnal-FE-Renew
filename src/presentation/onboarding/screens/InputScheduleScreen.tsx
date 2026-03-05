@@ -53,7 +53,7 @@ const InputScheduleScreen = () => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
     >
       <View className="w-full flex-1">
         <HeadLineText heading="근무표의 기본 정보를 입력해주세요." />
@@ -66,16 +66,16 @@ const InputScheduleScreen = () => {
           <TimeInput />
           <TeamInput setWorkGroup={setWorkGroup} />
         </View>
-
-        <EmphasizedButton
-          content={
-            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
-              다음
-            </GlobalText>
-          }
-          onPress={handleNext}
-        />
       </View>
+
+      <EmphasizedButton
+        content={
+          <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+            다음
+          </GlobalText>
+        }
+        onPress={handleNext}
+      />
     </SafeAreaView>
   )
 }

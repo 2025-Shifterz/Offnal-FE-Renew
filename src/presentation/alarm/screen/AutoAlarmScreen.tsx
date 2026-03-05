@@ -51,7 +51,7 @@ const AutoAlarmScreen = () => {
   }, [nav, showAlarmList])
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background-gray-subtle1">
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <View className="flex-1">
           {!showAlarmList ? (

@@ -49,7 +49,7 @@ const SelectMonthOCRScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-number-8">
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
       <SafeAreaView edges={['bottom']} className="flex-1">
         <View className="flex-1 gap-[20px]">
           <HeadLineText

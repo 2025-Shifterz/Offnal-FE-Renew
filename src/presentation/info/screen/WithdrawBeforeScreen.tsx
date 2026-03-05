@@ -102,7 +102,7 @@ const WithdrawBeforeScreen = () => {
               </View>
             </View>
 
-            <View className="px-number-8">
+            <View className="px-p-7">
               <EmphasizedButton
                 content={
                   <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">

@@ -15,6 +15,7 @@ import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import { useEffect, useLayoutEffect } from 'react'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const OnboardingMethodTopAppBar = ({
   enableBackButton,
@@ -89,9 +90,9 @@ const OnboardingMethodScreen = () => {
   return (
     <SafeAreaView
       className="h-full w-full flex-1 bg-background-gray-subtle1"
-      edges={['bottom']}
+      edges={['left', 'right', 'bottom']}
     >
-      <View className="mx-p-7 flex-1">
+      <View className="flex-1 px-p-7">
         <View className="mb-[4px]" />
         <GlobalText className="text-text-bolder heading-m">
           오프날에 오신걸 환영해요!{`\n`}근무표를 어떤 방법으로 입력할까요?
@@ -127,6 +128,17 @@ const OnboardingMethodScreen = () => {
             onPress={handleBoxClick}
           />
         )}
+      </View>
+
+      <View className="px-p-7">
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              다음
+            </GlobalText>
+          }
+          onPress={handleNext}
+        />
       </View>
     </SafeAreaView>
   )

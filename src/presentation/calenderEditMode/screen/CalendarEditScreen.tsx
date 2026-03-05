@@ -146,7 +146,7 @@ const CalendarEditScreen = () => {
           </Text>
         </View>
         {/* 캘린더 */}
-        <ScrollView className="flex-1 bg-surface-gray-subtle1 px-[16px] pt-[10px]">
+        <ScrollView className="flex-1 bg-surface-gray-subtle1 px-p-7 pt-[10px]">
           <View className="overflow-hidden rounded-radius-xl border-[3px] border-surface-information-subtle">
             <CalendarInteractive
               selectedYearMonth={selectedYearMonth}

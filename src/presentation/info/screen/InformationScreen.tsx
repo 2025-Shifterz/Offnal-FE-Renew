@@ -122,7 +122,7 @@ const InformationScreen = () => {
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
       <SafeAreaView className="flex-1" edges={['bottom']}>
-        <ScrollView className="flex-1 px-number-8">
+        <ScrollView className="flex-1 px-p-7">
           <View className="flex-col gap-g-2">
             <MyInformationCard
               profileName={user?.memberName ?? ''}

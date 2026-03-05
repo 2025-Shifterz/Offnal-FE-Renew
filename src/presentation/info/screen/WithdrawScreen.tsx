@@ -45,7 +45,7 @@ const WithdrawScreen = () => {
     <View className="flex-1 bg-surface-gray-subtle1">
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <View className="flex-1">
-          <View className="flex-1 gap-y-[12px] px-number-9 py-[14px]">
+          <View className="flex-1 gap-y-[12px] px-p-7 py-[14px]">
             <GlobalText className="font-pretSemiBold text-heading-m">
               탈퇴하기 전에 확인해주세요
             </GlobalText>
@@ -65,7 +65,7 @@ const WithdrawScreen = () => {
             ))}
           </View>
 
-          <View className="px-number-8">
+          <View className="px-p-7">
             <EmphasizedButton
               content={
                 <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">

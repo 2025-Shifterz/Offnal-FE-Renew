@@ -60,9 +60,9 @@ const InputCalendarTypeScreen = () => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
     >
-      <ScrollView className="mb-[100px] w-full flex-1">
+      <ScrollView className="w-full flex-1">
         <HeadLineText
           heading="달력에 근무 형태를 입력해주세요."
           description="각 날짜에 해당하는 근무 유형을 선택해주세요."

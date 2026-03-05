@@ -63,7 +63,7 @@ const MemoScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <ScrollView>
           <DayBoxHeader

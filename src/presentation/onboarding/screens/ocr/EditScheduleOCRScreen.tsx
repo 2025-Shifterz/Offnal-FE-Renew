@@ -129,7 +129,7 @@ const EditScheduleOCRScreen = () => {
 
   return (
     <SafeAreaView
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
       edges={['left', 'right', 'bottom']}
     >
       <ScrollView

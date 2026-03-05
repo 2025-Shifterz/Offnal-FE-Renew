@@ -137,7 +137,7 @@ const EditProfileScreen = () => {
           </View>
         </View>
 
-        <View className="px-number-8">
+        <View className="px-p-7">
           <Text className="mb-number-3 text-text-subtle body-xxs">이름</Text>
           <View className="flex-row items-center justify-between rounded-lg border-alpha-inverse10 bg-white px-4">
             <TextInput

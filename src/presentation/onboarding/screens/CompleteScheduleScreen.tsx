@@ -16,7 +16,7 @@ const CompleteScheduleScreen = () => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
     >
       <View className="w-full flex-1 ">
         <HeadLineText
