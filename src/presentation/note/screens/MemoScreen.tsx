@@ -8,7 +8,6 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
-import OneAddButton from '../../../shared/components/chip/AddOneTouchableChip'
 import {
   RouteProp,
   useFocusEffect,
@@ -22,6 +21,7 @@ import {
   rootNavigation,
   RootStackParamList,
 } from '../../../navigation/types/StackTypes'
+import AddOneTouchableChip from '../../../shared/components/chip/AddOneTouchableChip'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -128,14 +128,16 @@ const MemoScreen = () => {
             )}
           </View>
 
-          <OneAddButton
-            onPress={() =>
-              navigation.navigate('AddMemo', {
-                date: currentDate.toISOString(),
-              })
-            }
-            text="메모 작성"
-          />
+          <View className="mt-[8px] flex-row items-center justify-center">
+            <AddOneTouchableChip
+              onPress={() =>
+                navigation.navigate('AddMemo', {
+                  date: currentDate.toISOString(),
+                })
+              }
+              text="메모 작성"
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     </View>

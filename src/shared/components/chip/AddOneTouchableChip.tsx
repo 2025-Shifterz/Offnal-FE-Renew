@@ -2,7 +2,7 @@ import { TouchableOpacity } from 'react-native'
 import GlobalText from '../text/GlobalText'
 import AddIcon from '../../../assets/icons/todo-add.svg'
 
-const ButtonChip = ({
+const AddOneTouchableChip = ({
   text,
   onPress,
 }: {
@@ -20,4 +20,4 @@ const ButtonChip = ({
   )
 }
 
-export default ButtonChip
+export default AddOneTouchableChip

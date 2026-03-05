@@ -65,4 +65,4 @@ const UnEmphasizedButton = ({
   )
 }
 
-export { EmphasizedButton, UnEmphasizedButton }
+export { UnEmphasizedButton }
