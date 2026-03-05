@@ -25,7 +25,7 @@ export class TodoService {
     }
   }
 
-  async updateTodo(request: PatchUpdateTodoRequest) {
+  async updateTodo(request: UpdateTodoRequest) {
     try {
       const response = await api.put(`/todos`, request)
       return response.data
