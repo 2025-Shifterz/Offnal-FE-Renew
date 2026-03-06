@@ -1,4 +1,5 @@
-export type WorkType = '주간' | '야간' | '오후' | '휴일' | string
+import type { WorkType } from '../../domain/models/Calendar'
+export type { WorkType } from '../../domain/models/Calendar'
 export type WorkTypeEn = 'D' | 'E' | 'N' | '-'
 
 export interface WorkTypeInfo {

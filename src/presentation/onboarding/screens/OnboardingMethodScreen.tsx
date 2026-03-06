@@ -10,7 +10,7 @@ import {
 } from '../../../navigation/types/StackTypes'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import { OnboardingMethod } from '../../../shared/types/OnboardingMethod'
+import { OnboardingMethod } from '../types/onboardingTypes'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import { useEffect, useLayoutEffect } from 'react'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'

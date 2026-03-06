@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native'
-import React, { useRef, useState } from 'react'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import React, { useMemo, useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
@@ -7,7 +7,10 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
@@ -17,6 +20,7 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'TeamEditCalendar'>>()
 
   const workTimes = useScheduleInfoStore(state => state.workTimes)
   const organizationName = useScheduleInfoStore(state => state.organizationName)
@@ -25,11 +29,18 @@ const TCalendarEditScreen = () => {
     state => state.updateTeamCalendarDay
   )
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
-  const [selectedYearMonth, setSelectedYearMonth] = useState({
-    year: dayjs().year(),
-    month: dayjs().month() + 1,
-  })
+  const initialDate = route.params?.selectedDate
+    ? dayjs(route.params.selectedDate)
+    : dayjs()
+
+  const [currentDate, setCurrentDate] = useState(initialDate)
+  const selectedYearMonth = useMemo(
+    () => ({
+      year: currentDate.year(),
+      month: currentDate.month() + 1,
+    }),
+    [currentDate]
+  )
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
@@ -143,7 +154,18 @@ const TCalendarEditScreen = () => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Tabs', params: { screen: 'Calendar' } }],
+        routes: [
+          {
+            name: 'Tabs',
+            params: {
+              screen: 'Calendar',
+              params: {
+                selectedDate: currentDate.format('YYYY-MM-DD'),
+                isTeamView: true,
+              },
+            },
+          },
+        ],
       })
     } catch (error) {
       console.log('팀 근무표 수정 실패:', error)
@@ -166,7 +188,6 @@ const TCalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
-              setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
           <Text className="text-text-subtle body-xs">

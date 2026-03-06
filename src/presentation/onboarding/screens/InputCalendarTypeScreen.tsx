@@ -13,7 +13,7 @@ import CalendarEditorHeader from '../../../shared/components/calendar/header/Cal
 import dayjs from 'dayjs'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
-import { OnboardingStep } from '../../../shared/types/OnboardingStep'
+import { OnboardingStep } from '../types/onboardingTypes'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 import GlobalText from '../../../shared/components/text/GlobalText'

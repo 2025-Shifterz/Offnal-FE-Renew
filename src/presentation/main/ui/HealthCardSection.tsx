@@ -7,10 +7,10 @@ import useHealthData from '../../../shared/hooks/useHealthData'
 import { STEP_GOAL } from '../constants/stepGoal'
 
 const HealthCardSection = () => {
-  const { steps, weight, bmi, stepPercentage } = useHealthData()
+  const { healthData } = useHealthData()
 
   const calculateWeightStatus = (bmiValue: number) => {
-    if (bmiValue == 0) return null
+    if (bmiValue === 0) return null
     if (bmiValue < 18.5) return '저체중'
     if (bmiValue < 23) return '표준'
     if (bmiValue < 25) return '과체중'
@@ -23,16 +23,16 @@ const HealthCardSection = () => {
       <View className="w-full flex-row items-center gap-g-3 pb-number-8 pt-number-6">
         <HealthCard
           title="걸음 수"
-          value={steps}
+          value={healthData?.steps}
           goal={STEP_GOAL}
           Icon={SneakersIcon}
-          secondaryUnit={`${stepPercentage} %`}
+          secondaryUnit={`${healthData?.stepPercentage} %`}
         />
         <HealthCard
           title="몸무게 기록"
-          value={weight}
+          value={healthData?.weight}
           Icon={WeightIcon}
-          secondaryUnit={calculateWeightStatus(bmi)}
+          secondaryUnit={calculateWeightStatus(healthData?.bmi)}
         />
       </View>
     </View>

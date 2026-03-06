@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import { WorkTime } from '../shared/types/WorkTime'
+import { WorkTime } from '../domain/models/WorkTime'
 import {
   organizationRepository,
   scheduleInfoRepository,

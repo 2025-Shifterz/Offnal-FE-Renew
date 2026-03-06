@@ -1,4 +1,4 @@
-import { WorkType } from '../../shared/types/Calendar'
+import { WorkType } from './Calendar'
 
 export interface TeamCalendar {
   myTeam: string

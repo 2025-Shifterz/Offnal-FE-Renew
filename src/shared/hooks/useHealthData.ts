@@ -1,33 +1,25 @@
 import { useEffect, useState } from 'react'
-import { Alert, Platform } from 'react-native'
-import {
-  androidHealthService,
-  iosHealthService,
-} from '../../infrastructure/di/Dependencies'
+
 import { HealthData } from '../types/Health'
+import { healthRepository } from '../../infrastructure/di/Dependencies'
 
 const useHealthData = () => {
   const [healthData, setHealthData] = useState<HealthData>({
     steps: 0,
     weight: 0,
-    height: 0,
     bmi: 0,
     stepPercentage: 0,
   })
+  const [isError, setIsError] = useState(false)
 
   const fetchHealthData = async () => {
     try {
-      let data: HealthData
-      if (Platform.OS === 'ios') {
-        data = await iosHealthService.getIosHealthService()
-      } else if (Platform.OS === 'android') {
-        data = await androidHealthService.getAndroidHealthService()
-      } else {
-        throw new Error('지원하지 않는 플랫폼입니다')
-      }
+      setIsError(false)
+      const data: HealthData = await healthRepository.getHealthData()
       setHealthData(data)
-    } catch (error) {
-      Alert.alert('오류', `건강 데이터 가져오기 실패: ${error}`)
+    } catch (err) {
+      console.error('Failed to fetch health data:', err)
+      setIsError(true)
     }
   }
 
@@ -35,7 +27,7 @@ const useHealthData = () => {
     fetchHealthData()
   }, [])
 
-  return healthData
+  return { healthData, isError }
 }
 
 export default useHealthData

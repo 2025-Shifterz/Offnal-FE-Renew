@@ -1,5 +1,5 @@
-export interface Memo {
-  id: number
+export interface PostCreateMemoRequest {
+  title: string
   content: string
   targetDate: string
   organizationId: number
