@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import TitleMessage from '../../../shared/components/TitleMessage'
-import BottomButton from '../../../shared/components/BottomButton'
+import HeadLineText from '../../../shared/components/text/HeadLineText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CalendarEditor, {
   CalendarEditorRef,
@@ -17,6 +16,8 @@ import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
 import { OnboardingStep } from '../types/onboardingTypes'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const InputCalendarTypeScreen = () => {
   const scheduleScope = useOnboardingStore(state => state.scheduleScope)
@@ -59,12 +60,12 @@ const InputCalendarTypeScreen = () => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
     >
-      <ScrollView className="mb-[100px] w-full flex-1">
-        <TitleMessage
-          title="달력에 근무 형태를 입력해주세요."
-          subTitle="각 날짜에 해당하는 근무 유형을 선택해주세요."
+      <ScrollView className="w-full flex-1">
+        <HeadLineText
+          heading="달력에 근무 형태를 입력해주세요."
+          description="각 날짜에 해당하는 근무 유형을 선택해주세요."
         />
         <View className="mt-[20px] rounded-radius-xl bg-white">
           <CalendarEditorHeader
@@ -86,7 +87,14 @@ const InputCalendarTypeScreen = () => {
         </View>
       </ScrollView>
       <View>
-        <BottomButton text="다음" onPress={handleNext} />
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              다음
+            </GlobalText>
+          }
+          onPress={handleNext}
+        />
       </View>
     </SafeAreaView>
   )

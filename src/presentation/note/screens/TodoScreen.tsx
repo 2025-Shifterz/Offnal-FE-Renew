@@ -14,8 +14,8 @@ import dayjs from 'dayjs'
 import { Todo } from '../../../domain/models/Todo'
 import CheckedIcon from '../../../assets/icons/checked.svg'
 import EmptyMessage from '../components/EmptyMessage'
-import GlobalText from '../../../shared/components/GlobalText'
-import OneAddButton from '../components/OneAddButton'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import AddOneTouchableChip from '../../../shared/components/chip/AddOneTouchableChip'
 import VerticalDots from '../../../assets/icons/ic_dot_16.svg'
 import TodoOptionBottomSheet, {
   BottomSheetMethods,
@@ -169,7 +169,7 @@ const TodoScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         className="flex-1"
@@ -274,26 +274,28 @@ const TodoScreen = () => {
             )}
           </View>
 
-          <OneAddButton
-            addOneTodo={async () => {
-              if (editingTodoId) {
-                setEditingTodoId(null)
-                setEditingTodoText('')
-              }
+          <View className="mt-[8px] flex-row items-center justify-center">
+            <AddOneTouchableChip
+              onPress={async () => {
+                if (editingTodoId) {
+                  setEditingTodoId(null)
+                  setEditingTodoText('')
+                }
 
-              if (!showInput) {
-                setShowInput(true)
-              } else {
-                if (todo.trim()) {
-                  await handleAddTodo()
+                if (!showInput) {
                   setShowInput(true)
                 } else {
-                  setShowInput(false)
+                  if (todo.trim()) {
+                    await handleAddTodo()
+                    setShowInput(true)
+                  } else {
+                    setShowInput(false)
+                  }
                 }
-              }
-            }}
-            text="할 일 추가"
-          />
+              }}
+              text="할 일 추가"
+            />
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
 

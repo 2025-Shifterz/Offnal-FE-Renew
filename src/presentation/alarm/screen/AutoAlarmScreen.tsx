@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 const AutoAlarmScreen = () => {
   const [showAlarmList, setShowAlarmList] = useState(false) // 알람 없음
@@ -51,7 +51,7 @@ const AutoAlarmScreen = () => {
   }, [nav, showAlarmList])
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background-gray-subtle1">
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <View className="flex-1">
           {!showAlarmList ? (

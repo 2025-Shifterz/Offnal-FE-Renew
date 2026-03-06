@@ -2,8 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 import SelectScheduleBox from '../component/SelectScheduleBox'
 import { useNavigation } from '@react-navigation/native'
-import BottomButton from '../../../shared/components/BottomButton'
-import TitleMessage from '../../../shared/components/TitleMessage'
+import HeadLineText from '../../../shared/components/text/HeadLineText'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useOnboardingStore } from '../../../store/useOnboardingStore'
 import goNextOnboadingScreen from '../flow/goNextOnboardingScreen'
@@ -11,6 +10,8 @@ import { OnboardingStep } from '../types/onboardingTypes'
 import { ScheduleScope } from '../types/scheduleTypes'
 import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useShallow } from 'zustand/shallow'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const SelectScheduleScopeScreen = () => {
   const navigation = useNavigation<{
@@ -42,12 +43,12 @@ const SelectScheduleScopeScreen = () => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      className="flex-1 bg-background-gray-subtle1 px-[16px]"
+      className="flex-1 bg-background-gray-subtle1 px-p-7"
     >
       <View className="w-full flex-1">
-        <TitleMessage
-          title="근무표 등록 방식을 선택해주세요."
-          subTitle={`전체 근무표를 등록해 여러 조의 스케쥴을 확인하거나,\n내 근무조만 등록해 간편하게 일상을 관리할 수 있어요.`}
+        <HeadLineText
+          heading="근무표 등록 방식을 선택해주세요."
+          description={`전체 근무표를 등록해 여러 조의 스케쥴을 확인하거나,\n내 근무조만 등록해 간편하게 일상을 관리할 수 있어요.`}
         />
         <View className="mt-[26px] flex flex-row gap-3">
           <SelectScheduleBox
@@ -65,8 +66,16 @@ const SelectScheduleScopeScreen = () => {
             subTitle={`내가 속한 조의 스케줄만\n간편하게 등록해요`}
           />
         </View>
-        <BottomButton text="다음" onPress={handleNext} />
       </View>
+
+      <EmphasizedButton
+        content={
+          <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+            다음
+          </GlobalText>
+        }
+        onPress={handleNext}
+      />
     </SafeAreaView>
   )
 }

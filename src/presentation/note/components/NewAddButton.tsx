@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 interface NewAddButtonProps {
   handleAdd: () => void

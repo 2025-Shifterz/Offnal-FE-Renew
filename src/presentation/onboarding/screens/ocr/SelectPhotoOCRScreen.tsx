@@ -19,14 +19,15 @@ import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
 import { ocrService } from '../../../../infrastructure/di/Dependencies'
-import ProgressModal from '../../../../shared/components/ProgressModal'
-import BottomButton from '../../../../shared/components/BottomButton'
+import ProgressModal from '../../../../shared/components/progress/ProgressModal'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { OnboardingStep } from '../../types/onboardingTypes'
 import { SchedulePhotoType } from '../../types/scheduleTypes'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
+import EmphasizedButton from '../../../../shared/components/button/Button'
+import GlobalText from '../../../../shared/components/text/GlobalText'
 
 const { ScheduleModule } = NativeModules
 const { ImageProcessorModule } = NativeModules
@@ -252,10 +253,17 @@ const SelectPhotoOCRScreen = () => {
           title="카메라로 촬영하기"
           subtitle="지금 바로 사진을 찍어서 업로드 할 수 있어요."
         />
-
-        <BottomButton text="다음" onPress={handleNext} />
       </View>
       <ProgressModal isVisible={isAnalyzing} />
+
+      <EmphasizedButton
+        content={
+          <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+            다음
+          </GlobalText>
+        }
+        onPress={handleNext}
+      />
     </SafeAreaView>
   )
 }

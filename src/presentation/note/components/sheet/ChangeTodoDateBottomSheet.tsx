@@ -1,6 +1,6 @@
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
-import GlobalText from '../../../../shared/components/GlobalText'
+import GlobalText from '../../../../shared/components/text/GlobalText'
 import { TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'

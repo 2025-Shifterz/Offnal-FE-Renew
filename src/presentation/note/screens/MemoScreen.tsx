@@ -4,11 +4,10 @@ import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import EmptyMessage from '../components/EmptyMessage'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
-import OneAddButton from '../components/OneAddButton'
 import {
   RouteProp,
   useFocusEffect,
@@ -22,6 +21,7 @@ import {
   rootNavigation,
   RootStackParamList,
 } from '../../../navigation/types/StackTypes'
+import AddOneTouchableChip from '../../../shared/components/chip/AddOneTouchableChip'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -63,7 +63,7 @@ const MemoScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <ScrollView>
           <DayBoxHeader
@@ -128,14 +128,16 @@ const MemoScreen = () => {
             )}
           </View>
 
-          <OneAddButton
-            addOneTodo={() =>
-              navigation.navigate('AddMemo', {
-                date: currentDate.toISOString(),
-              })
-            }
-            text="메모 작성"
-          />
+          <View className="mt-[8px] flex-row items-center justify-center">
+            <AddOneTouchableChip
+              onPress={() =>
+                navigation.navigate('AddMemo', {
+                  date: currentDate.toISOString(),
+                })
+              }
+              text="메모 작성"
+            />
+          </View>
         </ScrollView>
       </SafeAreaView>
     </View>
