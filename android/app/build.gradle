@@ -28,7 +28,7 @@ android {
         applicationId "com.shifterz.offnal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1000008
+        versionCode 1000101
         versionName "1.0.1"
     }
 
