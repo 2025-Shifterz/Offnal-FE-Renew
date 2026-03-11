@@ -3,9 +3,8 @@ import React, { useEffect } from 'react'
 import { View } from 'react-native'
 import dayjs from 'dayjs'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { useTeamCalendarStore } from '../../../../store/useTeamCalendarStore'
 import CalendarBase from './CalendarBase'
-import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 
 interface CalendarInteractiveProps {
   currentDate: dayjs.Dayjs
@@ -20,11 +19,9 @@ const CalendarInteractive = ({
   setSelectedDate,
   selectedYearMonth,
 }: CalendarInteractiveProps) => {
-  const latestOrganization = useCalendarStore(state => state.latestOrganization)
-  const calendarData = useCalendarStore(state => state.calendarData)
-  const setCalendarData = useCalendarStore(state => state.setCalendarData)
+  const { organizationName, workGroup } = useScheduleInfoStore()
+  const { calendarData, fetchCalendarData } = useCalendarStore()
 
-  const myTeam = useTeamCalendarStore(state => state.myTeam)
   // 근무표 조회 API
   useEffect(() => {
     const fetchData = async () => {
@@ -36,31 +33,23 @@ const CalendarInteractive = ({
 
       try {
         console.log('요청하는 근무표 조회 데이터: ', {
-          organizationName: latestOrganization.organizationName,
-          myTeam,
+          organizationName,
+          workGroup,
           monthStartDate,
           monthEndDate,
         })
-        const response = await calendarRepository.getCalendar(
-          latestOrganization.organizationName,
-          myTeam,
+        await fetchCalendarData(
+          organizationName,
+          workGroup,
           monthStartDate,
           monthEndDate
         )
-
-        setCalendarData(response)
-        console.log('근무표 수정 모드: 월별 근무표 조회 성공:', response)
       } catch (error) {
         console.log('근무표 수정 모드: 월별 근무표 조회 실패:', error)
       }
     }
     fetchData()
-  }, [
-    selectedYearMonth,
-    latestOrganization.organizationName,
-    myTeam,
-    setCalendarData,
-  ])
+  }, [selectedYearMonth, organizationName, workGroup, fetchCalendarData])
 
   return (
     <View>

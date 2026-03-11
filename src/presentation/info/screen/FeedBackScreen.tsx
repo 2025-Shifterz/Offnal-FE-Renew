@@ -1,19 +1,18 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Text,
   TextInput,
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
 import { useState } from 'react'
 import GlobalText from '../../../shared/components/GlobalText'
 import StarRating from '../../../shared/components/StarRating'
 import BottomButton from '../../../shared/components/BottomButton'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 
 type RatingInfo = { emoji: string; text: string }
 
@@ -35,16 +34,20 @@ const FeedBackScreen = () => {
 
   const currentRatingData = RATING_DATA[rating]
 
+  const handleFeedbackSubmit = () => {
+    Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
+      {
+        text: '확인',
+        onPress: () => {
+          navigation.pop()
+        },
+      },
+    ])
+  }
+
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title="평가 및 피드백"
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.pop()
-          }}
-        />
+      <SafeAreaView className="flex-1" edges={['bottom']}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1"
@@ -91,7 +94,7 @@ const FeedBackScreen = () => {
           </ScrollView>
           <BottomButton
             text="제출하기"
-            onPress={() => {}}
+            onPress={handleFeedbackSubmit}
             className="px-number-8"
           />
         </KeyboardAvoidingView>

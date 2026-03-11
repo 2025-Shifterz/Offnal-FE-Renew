@@ -12,49 +12,58 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
-import {
-  CreateCalendarRequest,
-  InputWorkTimeDetail,
-} from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
+import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
 import { WorkType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
+import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
+import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 
 export interface CalendarEditorRef {
-  postData: () => void
+  postData: () => Promise<boolean>
 }
 
 const CalendarEditor: ForwardRefRenderFunction<
   CalendarEditorRef,
-  Partial<Omit<CreateCalendarRequest, 'workTimes'>> & {
-    workTimes: Record<string, InputWorkTimeDetail>
-    organizationName: string
-    workGroup: string
+  {
     currentDate: dayjs.Dayjs
   }
-> = ({ workTimes, organizationName, workGroup, currentDate }, ref) => {
+> = ({ currentDate }, ref) => {
   // stores
-  const selectedDate = useCalendarStore(state => state.selectedDate)
-  const setSelectedDate = useCalendarStore(state => state.setSelectedDate)
-  const newCalendarData = useCalendarStore(state => state.newCalendarData)
-  const clearNewCalendarData = useCalendarStore(
-    state => state.clearNewCalendarData
-  )
-  const updateNewCalendarDay = useCalendarStore(
-    state => state.updateNewCalendarDay
-  )
+  const {
+    calendarData,
+    newCalendarData,
+    setSelectedDate,
+    selectedDate,
+    clearNewCalendarData,
+    updateNewCalendarDay,
+    fetchCalendarData,
+  } = useCalendarStore()
+
+  const { onboardingMethod } = useOnboardingStore()
+  const { workTimes, workGroup, organizationName } = useScheduleInfoStore()
 
   // 편집 모드에서는 newCalendarData 사용
   let newCalendars: CreateCalendarRequest['calendars'] = []
 
-  // 처음에는 초기화//
+  const startDate = `${currentDate.year()}-${String(currentDate.month() + 1).padStart(2, '0')}-01`
+  const endDate = dayjs(startDate).endOf('month').format('YYYY-MM-DD')
+  // 처음에 기존 값 조회//
   useEffect(() => {
-    clearNewCalendarData()
+    if (onboardingMethod === 'EXISTING_OCR') {
+      // 기존 근무표가 있는 경우, 기존 근무표로 초기화
+      async function fetchData() {
+        await fetchCalendarData(organizationName, workGroup, startDate, endDate)
+      }
+      fetchData()
+    } else {
+      clearNewCalendarData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [startDate, endDate])
 
   // 날짜 선택
   const handleDatePress = (date: dayjs.Dayjs) => {
@@ -70,9 +79,7 @@ const CalendarEditor: ForwardRefRenderFunction<
     updateNewCalendarDay(key, type)
   }
 
-  const [convertedWorkTimes, setConvertedWorkTimes] = useState<
-    Record<string, { startTime: string; duration: string }>
-  >({
+  const [convertedWorkTimes, setConvertedWorkTimes] = useState({
     D: { startTime: '08:00', duration: 'PT8H' },
     E: { startTime: '16:00', duration: 'PT8H' },
     N: { startTime: '00:00', duration: 'PT8H' },
@@ -85,29 +92,28 @@ const CalendarEditor: ForwardRefRenderFunction<
     setConvertedWorkTimes(converted)
   }, [workTimes])
 
+  // 기존 + 새로 편집한 데이터 합치기
+  const allCalendarData = { ...calendarData, ...newCalendarData }
+
   // 부모에서 호출할 수 있는 함수 정의
   useImperativeHandle(ref, () => ({
     postData: async () => {
-      try {
-        // 저장된 calendarData에 어떤 년/월이 저장되어 있는지 확인
-        const storedMonths = Array.from(
-          new Set( // 중복 제거
-            Object.keys(newCalendarData).map(dateStr =>
-              dayjs(dateStr).format('YYYY-MM')
-            )
-          )
-        ).sort()
-        console.log('저장된 calendarData의 년/월 목록:', storedMonths)
+      // 입력 데이터 검증
+      const hasAnyWorkData = Object.keys(allCalendarData).length > 0
 
+      if (!hasAnyWorkData) {
+        Alert.alert('알림', '근무 형태를 하나 이상 입력해주세요.')
+        return false
+      }
+      try {
         // 새 캘린더 데이터 생성
         const shifts: Record<string, string> = {}
-        Object.entries(newCalendarData).forEach(([date, value]) => {
+        Object.entries(allCalendarData).forEach(([date, value]) => {
           shifts[date] = fromShiftType(value.workTypeName)
         })
 
         newCalendars = [
           {
-            // TODO: myTeam도 추가하기
             organizationName,
             team: workGroup,
             shifts,
@@ -125,13 +131,17 @@ const CalendarEditor: ForwardRefRenderFunction<
         console.log('요청하는 근무표 등록 데이터:', newCalendarRequest)
 
         // API 호출
-
-        const res = await calendarRepository.createCalendar(newCalendarRequest)
-
-        console.log('근무표 저장 성공', res)
+        if (onboardingMethod === 'EXISTING_OCR') {
+          await calendarRepository.updateCalendar(organizationName, workGroup, {
+            shifts,
+          })
+        } else {
+          await calendarRepository.createCalendar(newCalendarRequest)
+        }
+        return true
       } catch (error) {
         console.error('근무표 저장 실패:', error)
-        throw error
+        return false
       }
     },
   }))
@@ -142,7 +152,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         currentDate={currentDate}
         selectedDate={selectedDate}
         onDatePress={handleDatePress}
-        calendarData={newCalendarData}
+        calendarData={allCalendarData}
       />
       <TypeSelect onPress={handleTypeSelect} />
     </View>
