@@ -1,19 +1,47 @@
-import React, { forwardRef } from 'react'
-import BottomSheet from '@gorhom/bottom-sheet'
+import React, { forwardRef, useCallback } from 'react'
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+} from '@gorhom/bottom-sheet'
 import { View, ViewStyle } from 'react-native'
 
 type BottomSheetWrapperProps = {
   children: React.ReactNode
   onChange?: (index: number) => void
   handleStyle?: ViewStyle
+  enableBackdrop?: boolean
+  backdropOpacity?: number
 }
 
 const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
-  ({ children, onChange, handleStyle }, ref) => {
+  (
+    {
+      children,
+      onChange,
+      handleStyle,
+      enableBackdrop = false,
+      backdropOpacity = 0.32,
+    },
+    ref
+  ) => {
+    const renderBackdrop = useCallback(
+      (props: BottomSheetBackdropProps) => (
+        <BottomSheetBackdrop
+          {...props}
+          appearsOnIndex={0}
+          disappearsOnIndex={-1}
+          opacity={backdropOpacity}
+          pressBehavior="close"
+        />
+      ),
+      [backdropOpacity]
+    )
+
     return (
       <View className="absolute inset-0">
         <BottomSheet
           ref={ref}
+          backdropComponent={enableBackdrop ? renderBackdrop : undefined}
           index={-1}
           enablePanDownToClose={true} // 아래로 내려 닫기 활성화
           enableContentPanningGesture={false} //  제스처가 캘린더 터치 방해하지 않게

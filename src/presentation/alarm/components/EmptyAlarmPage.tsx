@@ -22,7 +22,7 @@ const NoAlarmPage = ({ handleShowAlarmList }: NoAlarmPageProps) => {
       </View>
       <TouchableOpacity
         onPress={handleShowAlarmList}
-        className="rounded-radius-m1 mt-5 h-fit w-fit bg-surface-primary px-2.5 py-2.5"
+        className="mt-5 h-fit w-fit rounded-radius-s bg-surface-primary p-number-6"
       >
         <GlobalText className="text-text-inverse-static body-m">
           + 새 알림 추가하기

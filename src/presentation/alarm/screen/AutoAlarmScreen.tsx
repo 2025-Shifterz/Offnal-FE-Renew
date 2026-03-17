@@ -2,65 +2,60 @@ import { useLayoutEffect, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import EmptyAlarmPage from '../components/EmptyAlarmPage'
 import FilledAlarmPage from '../components/FilledAlarmPage'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import PlusIcon from '../../../assets/icons/alarm_plus_24.svg'
+import AlarmPlus from '../../../assets/icons/alarm_plus_24.svg'
 import SettingsIcon from '../../../assets/icons/alarm_three-dot_24.svg'
 import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
-import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
-import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
+import StartAlignedTopAppBar from '../../../shared/components/appbar/StartAlignedTopAppBar'
 import GlobalText from '../../../shared/components/text/GlobalText'
 
 const AutoAlarmScreen = () => {
-  const [showAlarmList, setShowAlarmList] = useState(false) // 알람 없음
+  const [showAlarmList, setShowAlarmList] = useState(true)
   const nav = useNavigation<rootNavigation>()
-
-  const handleShowAlarmList = () => {
-    setShowAlarmList(!showAlarmList)
-  }
-  const navToCreateAlarmScreen = () => {
-    nav.navigate('CreateAlarm')
-  }
 
   useLayoutEffect(() => {
     nav.setOptions({
       header: () => (
-        <CenterAlignedTopAppBar
-          navigationIcon={<TopAppBarBackButton onPress={nav.goBack} />}
+        <StartAlignedTopAppBar
           title={
             <GlobalText className="font-pretSemiBold text-heading-xs">
               자동 알람
             </GlobalText>
           }
           rightActions={
-            showAlarmList && (
-              <View className="w-[64px] flex-row items-center justify-between">
-                <TouchableOpacity>
-                  <PlusIcon onPress={navToCreateAlarmScreen} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <SettingsIcon />
-                </TouchableOpacity>
-              </View>
-            )
+            <View className="flex-row gap-[4px]">
+              <TouchableOpacity
+                onPress={() => {
+                  nav.navigate('CreateAlarm')
+                }}
+              >
+                <AlarmPlus />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}}>
+                <SettingsIcon />
+              </TouchableOpacity>
+            </View>
           }
+          backgroundColor="bg-surface-gray-subtle1"
           applySafeArea={true}
         />
       ),
+      headerShown: true,
+      headerShadowVisible: false,
     })
-  }, [nav, showAlarmList])
+  }, [nav])
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
-      <SafeAreaView className="flex-1" edges={['bottom']}>
-        <View className="flex-1">
-          {!showAlarmList ? (
-            <EmptyAlarmPage handleShowAlarmList={handleShowAlarmList} />
-          ) : (
-            <FilledAlarmPage />
-          )}
-        </View>
-      </SafeAreaView>
+      <View className="flex-1">
+        {showAlarmList ? (
+          <FilledAlarmPage />
+        ) : (
+          <EmptyAlarmPage
+            handleShowAlarmList={() => nav.navigate('CreateAlarm')}
+          />
+        )}
+      </View>
     </View>
   )
 }
