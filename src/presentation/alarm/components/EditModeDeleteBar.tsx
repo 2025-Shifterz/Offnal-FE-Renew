@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 type EditModeDeleteBarProps = {
   disabled?: boolean

@@ -8,8 +8,8 @@ import {
 } from 'react'
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
 import AlarmIcon from '../../../assets/icons/ic_clock.svg'
-import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
-import GlobalText from '../../../shared/components/GlobalText'
+import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
+import GlobalText from '../../../shared/components/text/GlobalText'
 import ToggleSwitch from '../../../shared/components/ToggleSwitch'
 
 const intervalOptions = [1, 3, 5, 10, 15] as const

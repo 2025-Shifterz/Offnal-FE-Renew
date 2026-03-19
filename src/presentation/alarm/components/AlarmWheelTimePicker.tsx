@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 const ITEM_HEIGHT = 41
 const VISIBLE_ROWS = 5

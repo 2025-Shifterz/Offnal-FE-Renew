@@ -1,8 +1,8 @@
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
-import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
-import GlobalText from '../../../shared/components/GlobalText'
+import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
+import GlobalText from '../../../shared/components/text/GlobalText'
 import RadioButton from '../../../shared/components/RadioButton'
 
 export type AlarmSortOption = 'remaining' | 'shift'

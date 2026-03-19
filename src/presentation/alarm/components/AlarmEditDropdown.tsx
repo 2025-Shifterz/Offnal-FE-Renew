@@ -1,7 +1,7 @@
 import { Pressable, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import EditIcon from '../../../assets/icons/file-edit-02.svg'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 
 interface AlarmEditDropdownProps {
   visible: boolean

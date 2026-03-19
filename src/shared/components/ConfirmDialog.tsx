@@ -1,5 +1,5 @@
 import { Modal, Pressable, TouchableOpacity, View } from 'react-native'
-import GlobalText from './GlobalText'
+import GlobalText from './text/GlobalText'
 
 type ConfirmDialogProps = {
   visible: boolean
