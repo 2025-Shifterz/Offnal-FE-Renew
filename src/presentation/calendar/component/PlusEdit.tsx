@@ -9,9 +9,11 @@ import CancelIcon from '../../../assets/icons/w-cancel.svg'
 import CameraIcon from '../../../assets/icons/pr-cam.svg'
 import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { Animated } from 'react-native'
-import { useWorkTime } from '../../../shared/context/WorkTimeContext'
+import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
+import dayjs from 'dayjs'
 
 // 컴포넌트
 type TextButtonProps = {
@@ -30,12 +32,16 @@ const TextButton = ({ text }: TextButtonProps) => {
 type PlusEditProps = {
   setShowPlus: (show: boolean) => void
   isTeamView: boolean
+  currentDate: dayjs.Dayjs
 }
 
-const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
+const PlusEdit = ({ setShowPlus, isTeamView, currentDate }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
-  const { workTimes } = useWorkTime()
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const setOnboardingMethod = useOnboardingStore(
+    state => state.setOnboardingMethod
+  )
 
   // 페이드 인 애니메이션
   useEffect(() => {
@@ -47,9 +53,15 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   }, [fadeAnim])
   const navigateToEditModeScreen = () => {
     if (isTeamView) {
-      navigation.navigate('TeamEditCalendar', { workTimes: workTimes })
+      navigation.navigate('TeamEditCalendar', {
+        workTimes: workTimes,
+        selectedDate: currentDate.toISOString(),
+      })
     } else {
-      navigation.navigate('EditCalendar', { workTimes: workTimes })
+      navigation.navigate('EditCalendar', {
+        workTimes: workTimes,
+        selectedDate: currentDate.toISOString(),
+      })
     }
   }
 
@@ -65,7 +77,10 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
       <View className="absolute bottom-[13px] right-[13px] w-[189px] flex-col items-end gap-[13px]">
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('OnboardingSchedules')
+            navigation.navigate('OnboardingSchedules', {
+              screen: 'SelectScheduleScope',
+            })
+            setOnboardingMethod('EXISTING_OCR')
           }}
           className="flex-row items-center gap-[10px]"
         >

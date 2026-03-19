@@ -7,13 +7,45 @@ import {
   View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
-import GlobalText from '../../../shared/components/GlobalText'
-import { useState } from 'react'
+import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import { useLayoutEffect, useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { rootNavigation, RootStackParamList } from '../../../navigation/types'
+import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
 import dayjs from 'dayjs'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
+import { useMemoStore } from '../../../store/useMemoStore'
+
+const AddMemoScreenTopAppBar = ({
+  onBack,
+  handleSave,
+  isDisabled,
+}: {
+  onBack: () => void
+  handleSave: () => void
+  isDisabled: boolean
+}) => {
+  return (
+    <CenterAlignedTopAppBar
+      navigationIcon={<TopAppBarBackButton onPress={onBack} />}
+      title={null}
+      rightActions={[
+        <TouchableOpacity onPress={handleSave} disabled={isDisabled}>
+          <GlobalText
+            className={`font-pretSemiBold text-heading-xs ${isDisabled ? 'text-text-basic-inverse' : 'text-text-basic'}`}
+          >
+            완료
+          </GlobalText>
+        </TouchableOpacity>,
+      ]}
+      applySafeArea={true}
+      backgroundColor="bg-surface-white"
+    />
+  )
+}
 
 const AddMemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -22,8 +54,8 @@ const AddMemoScreen = () => {
   const dateString = route.params?.date
   const date = dateString ? dayjs(dateString) : dayjs()
 
-  const addMemo = localMemoStore(state => state.addMemo)
-  const updateMemo = localMemoStore(state => state.updateMemo)
+  const addMemo = useMemoStore(state => state.addMemo)
+  const updateMemo = useMemoStore(state => state.updateMemo)
 
   const [title, setTitle] = useState(memoToUpdate?.title || '')
   const [content, setContent] = useState(memoToUpdate?.content || '')
@@ -55,26 +87,21 @@ const AddMemoScreen = () => {
     }
   }
 
-  return (
-    <View className="flex-1 bg-background-white px-[16px]">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title=""
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.goBack()
-          }}
-          rightActions={[
-            <TouchableOpacity onPress={handleSave} disabled={isDisabled}>
-              <GlobalText
-                className={`font-pretSemiBold heading-xs ${isDisabled ? 'text-text-basic-inverse' : 'text-text-basic'}`}
-              >
-                완료
-              </GlobalText>
-            </TouchableOpacity>,
-          ]}
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <AddMemoScreenTopAppBar
+          onBack={navigation.goBack}
+          handleSave={handleSave}
+          isDisabled={isDisabled}
         />
+      ),
+    })
+  }, [navigation, isDisabled, handleSave])
 
+  return (
+    <View className="flex-1 bg-background-white">
+      <SafeAreaView className="flex-1" edges={['bottom']}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1 px-[20px] pt-[4px]"

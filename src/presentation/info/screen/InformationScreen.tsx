@@ -1,4 +1,3 @@
-import TopAppBar from '../../../shared/components/TopAppBar'
 import { Alert, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MyInformationCard from '../component/MyInformationCard'
@@ -6,22 +5,23 @@ import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
 import { useCallback, useMemo } from 'react'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import {
   CommonActions,
   useFocusEffect,
   useNavigation,
 } from '@react-navigation/native'
-import { useAuthStore } from '../../../store/useAuthStore'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
 import { useUserStore } from '../../../store/useUserStore'
+import { authService } from '../../../infrastructure/di/Dependencies'
+import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
 
 const InformationScreen = () => {
   const navigation = useNavigation<rootNavigation>()
 
   const user = useUserStore(state => state.user)
   const fetchProfile = useUserStore(state => state.fetchProfile)
-  const logout = useAuthStore(state => state.logout)
+  const { resetAll } = useResetAllStore()
 
   useFocusEffect(
     useCallback(() => {
@@ -34,8 +34,9 @@ const InformationScreen = () => {
       { text: '취소', style: 'cancel' },
       {
         text: '로그아웃',
-        onPress: () => {
-          logout()
+        onPress: async () => {
+          await authService.tokenLogOut()
+          await resetAll()
 
           navigation.dispatch(
             CommonActions.reset({
@@ -47,7 +48,7 @@ const InformationScreen = () => {
         style: 'destructive',
       },
     ])
-  }, [logout, navigation])
+  }, [resetAll, navigation])
 
   const informationMenus: MenuItemProps[] = useMemo(() => {
     return [
@@ -120,9 +121,8 @@ const InformationScreen = () => {
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
-      <SafeAreaView className="flex-1">
-        <TopAppBar title="내 정보" />
-        <ScrollView className="flex-1 px-number-8">
+      <SafeAreaView className="flex-1" edges={['bottom']}>
+        <ScrollView className="flex-1 px-p-7">
           <View className="flex-col gap-g-2">
             <MyInformationCard
               profileName={user?.memberName ?? ''}

@@ -1,29 +1,45 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import TopAppBar from '../../../shared/components/TopAppBar'
-import { View, TouchableOpacity, Alert } from 'react-native'
+import { View, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
 import EmptyMessage from '../components/EmptyMessage'
-import GlobalText from '../../../shared/components/GlobalText'
+import GlobalText from '../../../shared/components/text/GlobalText'
 import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
-import OneAddButton from '../components/OneAddButton'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native'
 import { useEffect } from 'react'
-import { rootNavigation } from '../../../navigation/types'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
+import { useShallow } from 'zustand/shallow'
+import { useMemoStore } from '../../../store/useMemoStore'
+import {
+  rootNavigation,
+  RootStackParamList,
+} from '../../../navigation/types/StackTypes'
+import AddOneTouchableChip from '../../../shared/components/chip/AddOneTouchableChip'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RouteProp<RootStackParamList, 'Memo'>>()
+
+  const selectedDate = route.params?.selectedDate
+
   const swipeListViewRef = useRef<SwipeListView<any>>(null)
 
-  const memos = localMemoStore(state => state.memos)
-  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
-  const deleteMemo = localMemoStore(state => state.deleteMemo)
+  const { memos, fetchMemosByDate, deleteMemo } = useMemoStore(
+    useShallow(state => ({
+      memos: state.memos,
+      fetchMemosByDate: state.fetchMemosByDate,
+      deleteMemo: state.deleteMemo,
+    }))
+  )
 
-  const [currentDate, setCurrentDate] = useState(dayjs())
+  const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
 
   useEffect(() => {
     fetchMemosByDate(currentDate)
@@ -47,17 +63,9 @@ const MemoScreen = () => {
   }
 
   return (
-    <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
-      <SafeAreaView className="flex-1">
-        <TopAppBar
-          title="메모"
-          showBackButton={true}
-          onPressBackButton={() => {
-            navigation.goBack()
-          }}
-        />
-
-        <View className="flex-1">
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
+      <SafeAreaView className="flex-1" edges={['bottom']}>
+        <ScrollView>
           <DayBoxHeader
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
@@ -120,15 +128,17 @@ const MemoScreen = () => {
             )}
           </View>
 
-          <OneAddButton
-            addOneTodo={() =>
-              navigation.navigate('AddMemo', {
-                date: currentDate.toISOString(),
-              })
-            }
-            text="메모 작성"
-          />
-        </View>
+          <View className="mt-[8px] flex-row items-center justify-center">
+            <AddOneTouchableChip
+              onPress={() =>
+                navigation.navigate('AddMemo', {
+                  date: currentDate.toISOString(),
+                })
+              }
+              text="메모 작성"
+            />
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </View>
   )

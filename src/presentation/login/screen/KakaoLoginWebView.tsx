@@ -2,14 +2,11 @@ import React, { useEffect, useState, useRef } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { View, ActivityIndicator, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
-import { API_URL } from '@env'
+import { KAKAO_REDIRECT_URI } from '@env'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useAuthStore } from '../../../store/useAuthStore'
-import { useUserStore } from '../../../store/useUserStore'
-
-const REDIRECT_URI = `${API_URL}/callback`
 
 const KakaoLoginWebView = () => {
   const [loginUrl, setLoginUrl] = useState<string | null>(null)
@@ -17,13 +14,15 @@ const KakaoLoginWebView = () => {
   const webviewRef = useRef(null)
   const navigation = useNavigation<rootNavigation>()
   const [shouldHideWebView, setShouldHideWebView] = useState(false)
+  const login = useAuthStore(state => state.login)
 
   useEffect(() => {
     const fetchLoginUrl = async () => {
       try {
-        const data = await authService.getLoginUrl()
-        const secureLoginUrl = data?.replace('http://', 'https://')
-
+        const secureLoginUrl = await authService.getLoginUrl()
+        if (!secureLoginUrl) {
+          throw new Error('Failed to get login URL')
+        }
         setLoginUrl(secureLoginUrl)
       } catch (err) {
         Alert.alert('에러', '카카오 로그인 페이지를 가져오지 못했습니다.')
@@ -35,8 +34,10 @@ const KakaoLoginWebView = () => {
     fetchLoginUrl()
   }, [navigation])
 
+  const safeRedirectUri = JSON.stringify(KAKAO_REDIRECT_URI)
+
   const injectedJS = `
-    if (window.location.href.startsWith('${REDIRECT_URI}')) {
+    if (window.location.href.startsWith(${safeRedirectUri})) {
       window.ReactNativeWebView.postMessage(document.body.innerText);
     }
     true;
@@ -47,7 +48,6 @@ const KakaoLoginWebView = () => {
       setShouldHideWebView(true)
 
       const data = JSON.parse(event.nativeEvent.data)
-      console.log('KakaoLoginWebView - handleMessage data:', data)
 
       const accessToken = data.data?.accessToken
       const refreshToken = data.data?.refreshToken
@@ -61,8 +61,6 @@ const KakaoLoginWebView = () => {
         return
       }
 
-      // Zustand 상태에 로그인 정보 저장
-      const { login } = useAuthStore.getState()
       login(
         {
           memberName: memberName,
@@ -74,27 +72,11 @@ const KakaoLoginWebView = () => {
         refreshToken
       )
 
-      // store에 저장되는지 확인
-      const { user } = useUserStore.getState()
-      console.log('Stored user in Zustand:', user)
-      const {
-        accessToken: storedAccessToken,
-        refreshToken: storedRefreshToken,
-      } = useAuthStore.getState()
-      console.log('Stored auth in Zustand:', {
-        accessToken: storedAccessToken,
-        refreshToken: storedRefreshToken,
-      })
-
-      console.log('accessToken:', accessToken)
-      console.log('refreshToken:', refreshToken)
-      console.log('memberName:', memberName)
-
       if (newMember) {
         Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
-        navigation.replace('OnboardingSchedules', {
-          screen: 'SelectScheduleReg',
-        }) // 신규 회원이면 온보딩 화면으로 이동
+        navigation.replace('OnboardingMethodScreen', {
+          createScheduleButtonClick: false,
+        }) // 신규 회원이면 온보딩 방식 선택 화면으로 이동
       } else {
         navigation.replace('Tabs') // 로그인 한 적이 있으면 홈 화면으로 이동
       }
