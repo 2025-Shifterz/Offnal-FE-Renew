@@ -31,6 +31,8 @@ export interface SnoozeBottomSheetMethods {
 interface SnoozeBottomSheetProps {
   onApply: (nextValue: SnoozeSetting) => void
   value: SnoozeSetting
+  onChange?: (index: number) => void
+  bottomInset?: number
 }
 
 const getRepeatText = (repeat: RepeatCount) => {
@@ -53,7 +55,7 @@ const chipBaseClass =
 const SnoozeBottomSheet = forwardRef<
   SnoozeBottomSheetMethods,
   SnoozeBottomSheetProps
->(({ onApply, value }, ref) => {
+>(({ onApply, value, onChange, bottomInset }, ref) => {
   const internalRef = useRef<BottomSheet>(null)
   const [draft, setDraft] = useState<SnoozeSetting>(value)
 
@@ -81,6 +83,8 @@ const SnoozeBottomSheet = forwardRef<
     <BottomSheetWrapper
       backdropOpacity={0.32}
       enableBackdrop={true}
+      bottomInset={bottomInset}
+      onChange={onChange}
       ref={internalRef}
       handleStyle={styles.hiddenHandle as ViewStyle}
     >

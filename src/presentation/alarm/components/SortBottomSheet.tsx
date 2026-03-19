@@ -15,12 +15,13 @@ export interface SortBottomSheetMethods {
 interface SortBottomSheetProps {
   onApply: (nextValue: AlarmSortOption) => void
   value: AlarmSortOption
+  bottomInset?: number
 }
 
 const SortBottomSheet = forwardRef<
   SortBottomSheetMethods,
   SortBottomSheetProps
->(({ onApply, value }, ref) => {
+>(({ onApply, value, bottomInset }, ref) => {
   const internalRef = useRef<BottomSheet>(null)
   const [draft, setDraft] = useState<AlarmSortOption>(value)
 
@@ -46,6 +47,7 @@ const SortBottomSheet = forwardRef<
     <BottomSheetWrapper
       backdropOpacity={0.32}
       enableBackdrop={true}
+      bottomInset={bottomInset}
       ref={internalRef}
       handleStyle={styles.hiddenHandle as ViewStyle}
     >

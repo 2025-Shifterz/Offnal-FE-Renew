@@ -11,6 +11,7 @@ type BottomSheetWrapperProps = {
   handleStyle?: ViewStyle
   enableBackdrop?: boolean
   backdropOpacity?: number
+  bottomInset?: number
 }
 
 const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
@@ -21,9 +22,12 @@ const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
       handleStyle,
       enableBackdrop = false,
       backdropOpacity = 0.32,
+      bottomInset,
     },
     ref
   ) => {
+    const resolvedBottomInset = bottomInset ?? 0
+
     const renderBackdrop = useCallback(
       (props: BottomSheetBackdropProps) => (
         <BottomSheetBackdrop
@@ -47,6 +51,7 @@ const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
           enableContentPanningGesture={false} //  제스처가 캘린더 터치 방해하지 않게
           enableDynamicSizing={true} // 동적 사이징 활성화
           overDragResistanceFactor={0} // 위로 더 이상 당겨지지 않게 함
+          bottomInset={resolvedBottomInset}
           onChange={onChange}
           handleStyle={handleStyle}
         >
