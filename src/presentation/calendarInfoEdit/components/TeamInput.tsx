@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Text, View } from 'react-native'
-import TeamItem from '../../onboarding/component/TeamItem'
+import TeamItem from '../../schedule/component/TeamItem'
 
 interface TeamInputProps {
   setWorkGroup: (text: string) => void

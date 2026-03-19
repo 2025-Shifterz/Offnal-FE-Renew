@@ -6,13 +6,11 @@ import CheckIcon from '../../../assets/icons/checked.svg'
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { RootStackParamList } from '../../../navigation/types'
 import { Todo } from '../../../domain/models/Todo'
-import dayjs from 'dayjs'
 
 interface TodoCardProps {
   todos: Todo[]
-  selectedDate: dayjs.Dayjs | null
 }
 
 interface TodoItemProps {
@@ -21,7 +19,7 @@ interface TodoItemProps {
   isLast: boolean
 }
 
-const Container = ({ todos, selectedDate }: TodoCardProps) => {
+const Container = ({ todos }: TodoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasTodos = todos && todos.length > 0
@@ -33,13 +31,12 @@ const Container = ({ todos, selectedDate }: TodoCardProps) => {
         <TitleSection.WithAddableBtn
           title="할 일"
           btnContent="할 일 추가"
-          onPressIcon={() => navigation.navigate('Todo', { selectedDate })}
+          onPressIcon={() => navigation.navigate('Todo')}
         />
       </View>
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
-
           {todos.map((todo, index) => (
             <Item
               key={todo.id} // 고유한 key prop 사용

@@ -29,6 +29,10 @@ const TCalendarBase = ({
   const highlightedMyTeamStyle = (team: string) =>
     team === myTeam ? 'bg-surface-primary-light' : ''
 
+  useEffect(() => {
+    console.log('teamCalendarData', teamCalendarData)
+  }, [teamCalendarData])
+
   const startOfMonth = currentDate.startOf('month')
   const startDay = startOfMonth.day()
   const daysInMonth = currentDate.daysInMonth()

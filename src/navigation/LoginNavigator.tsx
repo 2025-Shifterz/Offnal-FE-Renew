@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from '../presentation/login/screen/LoginScreen'
 import KakaoLoginWebView from '../presentation/login/screen/KakaoLoginWebView'
-import { LoginStackParamList } from './types/StackTypes'
+import { LoginStackParamList } from './types'
 import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 
 const Stack = createNativeStackNavigator<LoginStackParamList>()

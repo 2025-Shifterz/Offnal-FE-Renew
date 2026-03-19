@@ -1,11 +1,9 @@
 import { View, Text } from 'react-native'
+
 import EggIcon from '../../../assets/icons/ic_egg_28.svg'
-import FryingPanIcon from '../../../assets/icons/ic_frying_pan_28.svg'
-import RiceBowlIcon from '../../../assets/icons/ic_rice_bowl_28.svg'
 import LunchBoxIcon from '../../../assets/icons/ic_lunch_box_28.svg'
 import MoonIcon from '../../../assets/icons/ic_moon_28.svg'
 import SweetPotatoIcon from '../../../assets/icons/ic_sweet_potato_28.svg'
-import BowlIcon from '../../../assets/icons/ic_bowl_28.svg'
 
 interface RecommendTodaysMealProps {
   label: string
@@ -21,20 +19,17 @@ const RecommendTodaysMealChip: React.FC<RecommendTodaysMealProps> = ({
   items,
 }) => {
   const MealIconComponent = () => {
-    switch (true) {
-      case label.includes('아침'):
-        return <FryingPanIcon className="h-4 w-4" />
-      case label.includes('조식'):
+    switch (label) {
+      case '아침':
+      case '조식':
         return <EggIcon className="h-4 w-4" />
-      case label.includes('점심'):
-        return <BowlIcon className="h-4 w-4" />
-      case label.includes('중식'):
+      case '점심':
+      case '중식':
         return <LunchBoxIcon className="h-4 w-4" />
-      case label.includes('저녁'):
-        return <RiceBowlIcon className="h-4 w-4" />
-      case label.includes('석식'):
+      case '저녁':
+      case '석식':
         return <MoonIcon className="h-4 w-4" />
-      case label.includes('간식'):
+      case '간식':
         return <SweetPotatoIcon className="h-4 w-4" />
       default:
         return <LunchBoxIcon className="h-4 w-4" />

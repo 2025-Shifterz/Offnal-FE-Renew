@@ -4,9 +4,7 @@ import GlobalText from '../../../shared/components/GlobalText'
 
 const FilledAlarmPage = () => {
   return (
-    <View className="flex items-center justify-center">
-      <GlobalText>자동 알람 리스트 화면</GlobalText>
-      <GlobalText>자동 알람 리스트 화면</GlobalText>
+    <View>
       <GlobalText>자동 알람 리스트 화면</GlobalText>
     </View>
   )

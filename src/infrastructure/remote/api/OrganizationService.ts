@@ -6,7 +6,9 @@ import {
 } from '../response/GetAllOrganizationsResponse'
 
 export class OrganizationService {
-  getOrganization = async (): Promise<GetAllOrganizationsResponseData[]> => {
+  getAllOrganizations = async (): Promise<
+    GetAllOrganizationsResponseData[]
+  > => {
     try {
       const response =
         await api.get<GetAllOrganizationsResponse>(`/organizations`)

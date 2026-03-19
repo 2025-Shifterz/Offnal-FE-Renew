@@ -34,8 +34,6 @@ import { OrganizationRepositoryImpl } from '../../data/impl/OrganizationReposito
 import { UpdateTodoUseCase } from '../../domain/usecases/todos/UpdateTodoUseCase'
 import { TeamCalendarRepositoryImpl } from '../../data/impl/TeamCalendarRepositoryImpl'
 import { TeamCalendarService } from '../remote/api/TeamCalendarService'
-import { ScheduleInfoService } from '../remote/api/ScheduleInfoService'
-import { ScheduleInfoRepositoryImpl } from '../../data/impl/ScheduleInfoRepositoryImpl'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
@@ -44,7 +42,6 @@ const memoDao = new MemoDao()
 export const ocrService = new OcrService()
 export const organizationService = new OrganizationService()
 export const calendarService = new CalendarService()
-export const scheduleInfoService = new ScheduleInfoService()
 export const homeService = new HomeService()
 export const memberService = new MemberService()
 export const todoService = new TodoService()
@@ -64,9 +61,6 @@ export const organizationRepository = new OrganizationRepositoryImpl(
 export const calendarRepository = new CalendarRepositoryImpl(calendarService)
 export const teamCalendarRepository = new TeamCalendarRepositoryImpl(
   teamCalendarService
-)
-export const scheduleInfoRepository = new ScheduleInfoRepositoryImpl(
-  scheduleInfoService
 )
 export const homeRepository = new HomeRepositoryImpl(homeService)
 export const memberRepository = new MemberRepositoryImpl(memberService)

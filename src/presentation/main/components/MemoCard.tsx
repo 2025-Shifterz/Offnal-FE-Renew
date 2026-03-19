@@ -3,14 +3,12 @@ import { View, Text } from 'react-native'
 import TitleSection from './TitleSection'
 import NoteIcon from '../../../assets/icons/ic_note_24.svg'
 import { useNavigation } from '@react-navigation/native'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { RootStackParamList } from '../../../navigation/types'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Memo } from '../../../domain/models/Memo'
-import dayjs from 'dayjs'
 
 interface MemoCardProps {
   memos: Memo[]
-  selectedDate: dayjs.Dayjs | null
 }
 
 interface MemoItemProps {
@@ -19,7 +17,7 @@ interface MemoItemProps {
   isLast: boolean
 }
 
-const Container = ({ memos, selectedDate }: MemoCardProps) => {
+const Container = ({ memos }: MemoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasMemos = memos && memos.length > 0
@@ -31,7 +29,7 @@ const Container = ({ memos, selectedDate }: MemoCardProps) => {
         <TitleSection.WithAddableBtn
           title="메모"
           btnContent="메모 추가"
-          onPressIcon={() => navigation.navigate('Memo', { selectedDate })}
+          onPressIcon={() => navigation.navigate('Memo')}
         />
       </View>
       {hasMemos ? (

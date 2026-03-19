@@ -1,5 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { View, TouchableOpacity, Alert, ScrollView } from 'react-native'
+import TopAppBar from '../../../shared/components/TopAppBar'
+import { View, TouchableOpacity, Alert } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
@@ -9,32 +10,20 @@ import EditIcon from '../../../assets/icons/ic_edit_28_information.svg'
 import DeleteIcon from '../../../assets/icons/ic_trash_28_danger.svg'
 import { Fragment, useCallback, useRef, useState } from 'react'
 import OneAddButton from '../components/OneAddButton'
-import {
-  RouteProp,
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useEffect } from 'react'
+import { rootNavigation } from '../../../navigation/types'
 import { localMemoStore } from '../../../store/useLocalMemoStore'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const route = useRoute<RouteProp<RootStackParamList, 'Memo'>>()
-
-  const selectedDate = route.params?.selectedDate
-
   const swipeListViewRef = useRef<SwipeListView<any>>(null)
 
   const memos = localMemoStore(state => state.memos)
   const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
   const deleteMemo = localMemoStore(state => state.deleteMemo)
 
-  const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
+  const [currentDate, setCurrentDate] = useState(dayjs())
 
   useEffect(() => {
     fetchMemosByDate(currentDate)
@@ -59,8 +48,16 @@ const MemoScreen = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1 px-[16px]">
-      <SafeAreaView className="flex-1" edges={['bottom']}>
-        <ScrollView>
+      <SafeAreaView className="flex-1">
+        <TopAppBar
+          title="메모"
+          showBackButton={true}
+          onPressBackButton={() => {
+            navigation.goBack()
+          }}
+        />
+
+        <View className="flex-1">
           <DayBoxHeader
             currentDate={currentDate}
             setCurrentDate={setCurrentDate}
@@ -131,7 +128,7 @@ const MemoScreen = () => {
             }
             text="메모 작성"
           />
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </View>
   )

@@ -12,9 +12,4 @@ module.exports = {
     ],
     'react-native-worklets/plugin',
   ],
-  env: {
-    production: {
-      plugins: [['transform-remove-console', { exclude: ['error', 'warn'] }]],
-    },
-  },
 }

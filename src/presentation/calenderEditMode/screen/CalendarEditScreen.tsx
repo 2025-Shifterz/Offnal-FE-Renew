@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -8,21 +8,24 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { RootStackParamList, rootNavigation } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
+import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
-import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
+type RootNavigationRouteProp = RouteProp<RootStackParamList, 'EditCalendar'>
 const CalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const route = useRoute<RootNavigationRouteProp>()
 
-  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const { workTimes } = route.params
+
   const calendarData = useCalendarStore(state => state.calendarData)
   const updateCalendarDay = useCalendarStore(state => state.updateCalendarDay)
-
-  const { organizationName, workGroup } = useScheduleInfoStore()
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
+  const myTeam = useTeamCalendarStore(state => state.myTeam)
 
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
@@ -33,6 +36,7 @@ const CalendarEditScreen = () => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupType, setBackupType] = useState<WorkType | null>(null)
+  const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
   const sheetRef = useRef<BottomSheet>(null)
@@ -48,23 +52,15 @@ const CalendarEditScreen = () => {
       case '휴일':
         return 4
       default:
-        return 0 // 기본값 없음
+        return 1 // 기본값 '주간'
     }
-  }
-
-  const getSelectedBoxId = () => {
-    if (!selectedDate) return 0
-
-    const key = selectedDate.format('YYYY-MM-DD')
-    const workType = calendarData[key]?.workTypeName ?? null
-
-    return shiftTypeToId(workType)
   }
 
   // 근무 형태 캘린더에 넣기
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
+    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateCalendarDay(key, type)
@@ -77,6 +73,7 @@ const CalendarEditScreen = () => {
 
     setSelectedDate(date)
     setBackupType(currentShift)
+    setSelectedBoxId(shiftTypeToId(currentShift)) // ID 설정
     sheetRef.current?.expand() // 바텀 시트 열기
   }
   // 취소 시 롤백
@@ -106,11 +103,16 @@ const CalendarEditScreen = () => {
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
+      console.log('calendarData in handlePatchData:', calendarData)
+      console.log('근무표 수정 요청 데이터:', toUpdateShiftRecord(calendarData))
+
       await calendarRepository.updateCalendar(
-        organizationName,
-        workGroup,
+        latestOrganization.organizationName,
+        myTeam,
         toUpdateShiftRecord(calendarData)
       )
+
+      console.log('근무표 수정 성공')
       // 저장 성공 후 스택을 초기화하여 캘린더 탭으로 이동 (뒤로가기 방지)
       navigation.reset({
         index: 0,
@@ -137,6 +139,7 @@ const CalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
+              selectedYearMonth={selectedYearMonth}
               setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
@@ -158,7 +161,7 @@ const CalendarEditScreen = () => {
         {/* 모든 저장 버튼 -> 근무표에 저장되어야함. post 요청!! */}
         <TouchableOpacity
           onPress={handlePatchData}
-          className="absolute bottom-[80px] right-0 mx-p-6 h-[40px] w-[40px] items-center justify-center rounded-radius-max bg-success-40"
+          className="absolute bottom-[13px] right-[13px] h-[40px] w-[40px] items-center justify-center rounded-radius-max bg-success-40"
         >
           <SuccessIcon />
         </TouchableOpacity>
@@ -172,7 +175,8 @@ const CalendarEditScreen = () => {
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결
           ref={sheetRef}
           selectedDate={selectedDate}
-          selectedBoxId={getSelectedBoxId()} // prop으로 전달
+          selectedBoxId={selectedBoxId} // prop으로 전달
+          setSelectedBoxId={setSelectedBoxId} // prop으로 전달
           workTimes={workTimes} // EditBottomSheet에 전달
         />
       </>

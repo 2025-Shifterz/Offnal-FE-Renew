@@ -1,18 +1,22 @@
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import PlusIcon from '../../../assets/icons/w-plus.svg'
-import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
+import BottomSheet from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
 import ToDoCard from '../../main/components/ToDoCard'
 import MemoCard from '../../main/components/MemoCard'
+import {
+  getMemosByDateUseCase,
+  getToDosByDateUseCase,
+} from '../../../infrastructure/di/Dependencies'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import TCalendarViewer from '../../../shared/components/calendar/team/TCalendarViewer'
 import CalendarViewer from '../../../shared/components/calendar/personal/CalendarViewer'
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
 import { WorkType } from '../../../shared/types/Calendar'
+import { Memo } from '../../../domain/models/Memo'
+import { Todo } from '../../../domain/models/Todo'
 import CalendarViewerHeader from '../../../shared/components/calendar/header/CalendarViewerHeader'
-import { useLocalTodoStore } from '../../../store/useLocalTodoStore'
-import { localMemoStore } from '../../../store/useLocalMemoStore'
 
 interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
@@ -31,12 +35,9 @@ const HasCalendar = ({
     month: dayjs().month() + 1,
   })
   const [currentDate, setCurrentDate] = useState(dayjs())
-
-  const todos = useLocalTodoStore(state => state.todos)
-  const fetchTodosByDate = useLocalTodoStore(state => state.getTodosByDate)
-
-  const memos = localMemoStore(state => state.memos)
-  const fetchMemosByDate = localMemoStore(state => state.fetchMemosByDate)
+  // 노트
+  const [memos, setMemo] = useState<Memo[]>()
+  const [todos, setTodo] = useState<Todo[]>()
 
   // 선택된 날짜.
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
@@ -48,6 +49,7 @@ const HasCalendar = ({
   const sheetRef = useRef<BottomSheet>(null)
 
   const openBottomSheet = (date: dayjs.Dayjs) => {
+    console.log('바텀시트 열기 함수 실행됨.')
     setSelectedDate(date)
     sheetRef.current?.expand() // 바텀 시트 열기
   }
@@ -57,28 +59,32 @@ const HasCalendar = ({
     selectedDate && calendarData.get(selectedDate.format('YYYY-MM-DD'))
 
   // 선택된 날짜 가져오기
+  // getToDosByDates
   useEffect(() => {
     const initializeTodosbyDate = async () => {
       try {
         if (!selectedDate) return
 
-        await Promise.all([
-          fetchTodosByDate(selectedDate),
-          fetchMemosByDate(selectedDate),
+        const [todosOnly, memosOnly] = await Promise.all([
+          getToDosByDateUseCase.execute(selectedDate), // todo만 조회
+          getMemosByDateUseCase.execute(selectedDate), // memo는 MemoDao에서!
         ])
+        setTodo(todosOnly)
+        setMemo(memosOnly)
       } catch (error) {
         console.error('Error initializing todos and memos', error)
       }
     }
 
     initializeTodosbyDate()
-  }, [selectedDate, fetchTodosByDate, fetchMemosByDate])
+  }, [selectedDate])
 
   return (
     <View className="h-full flex-1 px-[16px]">
       <CalendarViewerHeader
         onPressTeamIcon={() => {
           setIsTeamView(!isTeamView)
+          console.log('클릭됨')
         }}
         selectedDate={currentDate.toDate()}
         onChange={newDate => setCurrentDate(dayjs(newDate))}
@@ -116,13 +122,9 @@ const HasCalendar = ({
       {/* 노트 바텀시트 */}
       <BottomSheetWrapper
         ref={sheetRef}
-        handleStyle={{
-          backgroundColor: '#F4F5F6',
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
-        }}
+        handleStyle={{ backgroundColor: '#F4F5F6' }}
       >
-        <View className="gap-[11px] bg-surface-gray-subtle1 px-[16px]  pt-[12px]">
+        <View className="flex-1 gap-[11px] bg-surface-gray-subtle1 px-[16px] pt-[12px]">
           <View className="flex-row items-center gap-[8px]">
             <Text className="w-[42px] text-text-bolder heading-xxs">
               {formattedDate}
@@ -131,12 +133,12 @@ const HasCalendar = ({
               <TimeFrame text={shiftTypeForSelectedDate} />
             )}
           </View>
-          <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-            <ToDoCard.Container todos={todos} selectedDate={selectedDate} />
+          <ScrollView>
+            <ToDoCard.Container todos={todos ?? []} />
             <View className="mt-[-20px]">
-              <MemoCard.Container memos={memos} selectedDate={selectedDate} />
+              <MemoCard.Container memos={memos ?? []} />
             </View>
-          </BottomSheetScrollView>
+          </ScrollView>
         </View>
       </BottomSheetWrapper>
     </View>
