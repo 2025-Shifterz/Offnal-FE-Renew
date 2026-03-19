@@ -5,8 +5,8 @@ export const toCalendarDomain = (entity: CalendarEntity[]): Calendar[] => {
   return entity.map(item => ({
     date: item.date,
     workTypeName: item.workTypeName,
-    startTime: item.startTime ? item.startTime : '',
-    endTime: item.endTime ? item.endTime : '',
+    startTime: item.startTime,
+    endTime: item.endTime,
   }))
 }
 

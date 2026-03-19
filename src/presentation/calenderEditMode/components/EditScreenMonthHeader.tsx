@@ -11,6 +11,7 @@ const arrowStyle =
 interface EditScreenMonthHeaderProps {
   currentDate: Dayjs
   setCurrentDate: (date: Dayjs) => void
+  selectedYearMonth: { year: number; month: number }
   setSelectedYearMonth: Dispatch<
     SetStateAction<{ year: number; month: number }>
   >
@@ -19,6 +20,7 @@ interface EditScreenMonthHeaderProps {
 const EditScreenMonthHeader = ({
   currentDate,
   setCurrentDate,
+  selectedYearMonth,
   setSelectedYearMonth,
 }: EditScreenMonthHeaderProps) => {
   const handlePrevMonth = () => {

@@ -18,9 +18,8 @@ export interface MonthlyShift {
   }
 }
 
-type WorkTimeKey = ['D', 'E', 'N'] // DTO의 키 값
 export interface CreateCalendarRequest {
   myTeam: string
-  workTimes: { [K in WorkTimeKey[number]]: WorkTimeDetail }
+  workTimes: { [K in WorkTypeEn]: WorkTimeDetail }
   calendars: MonthlyShift[]
 }

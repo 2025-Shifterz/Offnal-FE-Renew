@@ -2,7 +2,7 @@ import { Text, TouchableOpacity } from 'react-native'
 import KakaoLogo from '../../../assets/icons/kakao_logo.svg'
 
 import { useNavigation } from '@react-navigation/native'
-import { loginNavigation } from '../../../navigation/types/StackTypes'
+import { loginNavigation } from '../../../navigation/types'
 
 const KaKaoLoginBtn = () => {
   const navigation = useNavigation<loginNavigation>()

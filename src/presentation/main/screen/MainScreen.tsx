@@ -1,5 +1,5 @@
 import '../../../../global.css'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ScrollView, View, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HealthGuideSection from '../ui/HealthGuideSection'
@@ -26,8 +26,6 @@ export default function MainScreen() {
   const [schedule, setSchedule] = useState<Schedule>()
   const [todos, setTodo] = useState<Todo[]>()
   const [memos, setMemos] = useState<Memo[]>()
-
-  const today = useMemo(() => dayjs(), [])
 
   const fetchRoutine = async () => {
     try {
@@ -102,7 +100,7 @@ export default function MainScreen() {
           <RecommnedMealSection meals={(routine?.meals as any) ?? []} />
           <HealthGuideSection health={(routine?.health as any) ?? null} />
           <HealthCardSection />
-          <NoteSection todos={todos} memos={memos} selectedDate={today} />
+          <NoteSection todos={todos} memos={memos} />
         </View>
       </ScrollView>
     </SafeAreaView>

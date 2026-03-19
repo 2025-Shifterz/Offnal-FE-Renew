@@ -33,7 +33,7 @@ export function toShiftType(code: string): WorkType {
 /**
  * WorkType을 API가 요구하는 문자열('오전', '휴무' 등)로 변환하는 헬퍼 함수
  */
-export function fromShiftType(shift: WorkType): WorkTypeEn {
+export function fromShiftType(shift: WorkType): string {
   switch (shift) {
     case '주간':
       return 'D'
@@ -44,7 +44,7 @@ export function fromShiftType(shift: WorkType): WorkTypeEn {
     case '휴일':
       return '-'
     default:
-      return '-'
+      return '휴일'
   }
 }
 

@@ -1,3 +1,4 @@
+import TopAppBar from '../../../shared/components/TopAppBar'
 import { Alert, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MyInformationCard from '../component/MyInformationCard'
@@ -5,7 +6,7 @@ import InformationMenuContainer, {
   MenuItemProps,
 } from '../component/InformationMenuContainer'
 import { useCallback, useMemo } from 'react'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types'
 import {
   CommonActions,
   useFocusEffect,
@@ -60,7 +61,7 @@ const InformationScreen = () => {
       {
         id: 'version',
         title: '현재 버전',
-        caption: '1.0.1',
+        caption: '1.0.0',
         onPress: () => {
           /* TODO("Not yet Implemeted") */
         },
@@ -119,7 +120,8 @@ const InformationScreen = () => {
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
-      <SafeAreaView className="flex-1" edges={['bottom']}>
+      <SafeAreaView className="flex-1">
+        <TopAppBar title="내 정보" />
         <ScrollView className="flex-1 px-number-8">
           <View className="flex-col gap-g-2">
             <MyInformationCard

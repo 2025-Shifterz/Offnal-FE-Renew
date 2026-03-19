@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import type { rootNavigation } from '../../navigation/types/StackTypes'
+import type { rootNavigation } from '../../navigation/types'
 import LottieView from 'lottie-react-native'
 import { useAuthStore } from '../../store/useAuthStore'
 

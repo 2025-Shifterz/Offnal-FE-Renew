@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   View,
@@ -8,14 +8,12 @@ import {
   Image,
   Alert,
 } from 'react-native'
+import TopAppBar from '../../../shared/components/TopAppBar'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
 import { useUserStore } from '../../../store/useUserStore'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types'
 import { Asset, launchImageLibrary } from 'react-native-image-picker'
-import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
-import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
-import GlobalText from '../../../shared/components/GlobalText'
 
 const MAX_NAME_LENGTH = 10
 
@@ -50,29 +48,6 @@ const EditProfileScreen = () => {
       setNewImage(null)
     }
   }, [user])
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      header: () => (
-        <CenterAlignedTopAppBar
-          navigationIcon={<TopAppBarBackButton onPress={navigation.goBack} />}
-          title={
-            <GlobalText className="font-pretSemiBold text-heading-xs">
-              프로필 수정
-            </GlobalText>
-          }
-          rightActions={
-            <TouchableOpacity onPress={handleUpdateProfile}>
-              <Text>저장하기</Text>
-            </TouchableOpacity>
-          }
-          applySafeArea={true}
-        />
-      ),
-      headerShown: true,
-      headerShadowVisible: false,
-    })
-  }, [navigation])
 
   const handleUpdateProfile = async () => {
     if (!user) {
@@ -113,7 +88,18 @@ const EditProfileScreen = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
-      <SafeAreaView className="flex-1" edges={['bottom']}>
+      <SafeAreaView className="flex-1">
+        <TopAppBar
+          title="프로필 수정"
+          showBackButton={true}
+          onPressBackButton={() => navigation.goBack()}
+          rightActions={
+            <TouchableOpacity onPress={handleUpdateProfile}>
+              <Text>저장하기</Text>
+            </TouchableOpacity>
+          }
+        />
+
         <View className="mb-number-8 mt-number-8 items-center">
           <View className="relative h-32 w-32 items-center justify-center">
             <View className="relative h-32 w-32 items-center justify-center rounded-full bg-surface-gray-subtle2">

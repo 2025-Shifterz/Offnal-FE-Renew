@@ -1,13 +1,21 @@
-import React, { forwardRef, useImperativeHandle, useRef } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet'
+import BottomSheet from '@gorhom/bottom-sheet'
 import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/BottomSheetWrapper'
 import { WorkType } from '../../../shared/types/Calendar'
-import { WorkTime } from '../../../shared/types/WorkTime'
+import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
 dayjs.locale('ko') // 한글 locale 적용
+
+// 근무형태 선택 박스 map 데이터
+const shiftTypes: { id: number; text: WorkType }[] = [
+  { id: 1, text: '주간' },
+  { id: 2, text: '오후' },
+  { id: 3, text: '야간' },
+  { id: 4, text: '휴일' },
+]
 
 interface EditBottomSheetProps {
   selectedDate: dayjs.Dayjs | null
@@ -15,7 +23,8 @@ interface EditBottomSheetProps {
   handleCancel: () => void
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
-  workTimes: WorkTime
+  setSelectedBoxId: (id: number) => void
+  workTimes: { [key: string]: { startTime: string; endTime: string } }
 }
 
 const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
@@ -26,6 +35,7 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       handleCancel,
       handleSave,
       selectedBoxId,
+      setSelectedBoxId,
       workTimes,
     },
     ref
@@ -45,39 +55,42 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       : '날짜 없음'
 
     return (
-      <BottomSheetWrapper ref={internalRef}>
-        <BottomSheetView className="gap-[20px] px-p-6 pb-number-20">
-          <View className="gap-[10px]">
-            <Text className="text-text-basic heading-xs">근무형태 입력</Text>
-            <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
-              <Text className="text-text-primary label-s">{`선택된 날짜: ${formattedDate}`}</Text>
+      <>
+        {/* 바텀 시트 */}
+        <BottomSheetWrapper ref={internalRef}>
+          <View className="mt-[5px] gap-[20px] px-p-6">
+            <View className="gap-[10px]">
+              <Text className="text-text-basic heading-xs">근무형태 입력</Text>
+              <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">
+                <Text className="text-text-primary label-s">{`선택된 날짜: ${formattedDate}`}</Text>
+              </View>
+            </View>
+            <View className="gap-[11px]">
+              <Text className="text-text-subtle heading-xxs">간격</Text>
+              <SelectShiftBox
+                selectedBoxId={selectedBoxId}
+                setSelectedBoxId={setSelectedBoxId}
+                handleTypeSelect={handleTypeSelect}
+                workTimes={workTimes}
+              />
+            </View>
+            <View className="h-[46px] w-full flex-row items-center gap-[10px]">
+              <TouchableOpacity
+                onPress={handleCancel}
+                className="h-full flex-[3] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
+              >
+                <Text className="text-text-basic body-m">취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSave} // 저장 버튼에 handleSave 연결
+                className="h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse"
+              >
+                <Text className="text-text-bolder-inverse body-m">저장</Text>
+              </TouchableOpacity>
             </View>
           </View>
-          <View className="gap-[11px]">
-            <Text className="text-text-subtle heading-xxs">간격</Text>
-            <SelectShiftBox
-              selectedBoxId={selectedBoxId}
-              handleTypeSelect={handleTypeSelect}
-              workTimes={workTimes}
-            />
-          </View>
-          <View className="h-[46px] w-full flex-row items-center gap-[10px]">
-            <TouchableOpacity
-              onPress={handleCancel}
-              className="h-full flex-[3] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
-            >
-              <Text className="text-text-basic body-m">취소</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              disabled={selectedBoxId === 0}
-              onPress={handleSave} // 저장 버튼에 handleSave 연결
-              className={`h-full flex-[7] items-center justify-center rounded-radius-xl bg-surface-inverse ${selectedBoxId === 0 ? 'opacity-40' : ''}`}
-            >
-              <Text className="text-text-bolder-inverse body-m">저장</Text>
-            </TouchableOpacity>
-          </View>
-        </BottomSheetView>
-      </BottomSheetWrapper>
+        </BottomSheetWrapper>
+      </>
     )
   }
 )

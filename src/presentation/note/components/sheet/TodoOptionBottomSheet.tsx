@@ -10,7 +10,6 @@ import { Todo } from '../../../../domain/models/Todo'
 import { View } from 'react-native'
 import TodoOptionItem from './TodoOptionItem'
 import dayjs from 'dayjs'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export interface TodoOptionBottomSheetProps {
   selectedTodo: Todo | null
@@ -50,8 +49,6 @@ const TodoOptionBottomSheet = forwardRef<
     ref
   ) => {
     const bottomSheetRef = useRef<BottomSheet>(null)
-    const insets = useSafeAreaInsets()
-    const bottomInset = insets.bottom
 
     useImperativeHandle(ref, () => ({
       open: () => {

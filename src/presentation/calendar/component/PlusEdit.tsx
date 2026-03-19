@@ -9,10 +9,9 @@ import CancelIcon from '../../../assets/icons/w-cancel.svg'
 import CameraIcon from '../../../assets/icons/pr-cam.svg'
 import PencilIcon from '../../../assets/icons/pr-pencil.svg'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types'
 import { Animated } from 'react-native'
-import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
-import { useOnboardingStore } from '../../../store/useOnboardingStore'
+import { useWorkTime } from '../../../shared/context/WorkTimeContext'
 
 // 컴포넌트
 type TextButtonProps = {
@@ -36,8 +35,7 @@ type PlusEditProps = {
 const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
   const navigation = useNavigation<rootNavigation>()
   const fadeAnim = useRef(new Animated.Value(0)).current
-  const { workTimes } = useScheduleInfoStore()
-  const { setOnboardingMethod } = useOnboardingStore()
+  const { workTimes } = useWorkTime()
 
   // 페이드 인 애니메이션
   useEffect(() => {
@@ -67,10 +65,7 @@ const PlusEdit = ({ setShowPlus, isTeamView }: PlusEditProps) => {
       <View className="absolute bottom-[13px] right-[13px] w-[189px] flex-col items-end gap-[13px]">
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('OnboardingSchedules', {
-              screen: 'SelectScheduleScope',
-            })
-            setOnboardingMethod('EXISTING_OCR')
+            navigation.navigate('OnboardingSchedules')
           }}
           className="flex-row items-center gap-[10px]"
         >

@@ -8,14 +8,10 @@ import { OrganizationService } from '../../infrastructure/remote/api/Organizatio
 export class OrganizationRepositoryImpl implements OrganizationRepository {
   constructor(private organizationService: OrganizationService) {}
 
-  async getOrganization(): Promise<Organization> {
+  async getAllOrganizations(): Promise<Organization[]> {
     try {
-      const response = await this.organizationService.getOrganization()
-      // 배열 중 마지막 조직을 반환
-      if (response.length === 0) {
-        return {} as Organization
-      }
-      return response[response.length - 1] // TODO : 단일 조직 반환으로 바꾸기 -> 객체 형태로
+      const response = await this.organizationService.getAllOrganizations()
+      return response
     } catch (error) {
       throw error
     }

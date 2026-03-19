@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native'
 import React, { useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
@@ -7,24 +7,28 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation, RootStackParamList } from '../../../navigation/types'
 import { WorkType } from '../../../shared/types/Calendar'
+import { useCalendarStore } from '../../../store/useCalendarStore'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
 import TEditBottomSheet from '../components/TEditBottomSheet'
 import { toUpdateTeamShiftRecord } from '../mapper/UpdateTeamShiftMapper'
-import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
+
+type RootNavigationRouteProp = RouteProp<RootStackParamList, 'TeamEditCalendar'>
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
-  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const route = useRoute<RootNavigationRouteProp>()
+
+  const { workTimes } = route.params
 
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
   const updateTeamCalendarDay = useTeamCalendarStore(
     state => state.updateTeamCalendarDay
   )
+  const latestOrganization = useCalendarStore(state => state.latestOrganization)
 
-  const { organizationName } = useScheduleInfoStore()
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
     year: dayjs().year(),
@@ -33,15 +37,8 @@ const TCalendarEditScreen = () => {
 
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
-  const [backupTypeByGroup, setBackupTypeByGroup] = useState<
-    Record<number, WorkType | null>
-  >({
-    1: null,
-    2: null,
-    3: null,
-    4: null,
-  })
-
+  const [backupType, setBackupType] = useState<WorkType | null>(null)
+  const [selectedBoxId, setSelectedBoxId] = useState(1) // 선택된 박스 ID 상태 추가
   const [selectedGroup, setSelectedGroup] = useState(1)
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
@@ -58,26 +55,15 @@ const TCalendarEditScreen = () => {
       case '휴일':
         return 4
       default:
-        return 0 // 기본값 없음
+        return 1 // 기본값 '주간'
     }
-  }
-
-  const getSelectedBoxId = () => {
-    if (!selectedDate) return 0
-
-    const key = selectedDate.format('YYYY-MM-DD')
-    const teamRecord = teamCalendarData.find(
-      t => t.team === `${selectedGroup}조`
-    )
-
-    const workType = teamRecord?.workInstances[key]?.workTypeName ?? null
-    return shiftTypeToId(workType)
   }
 
   // 근무 형태 캘린더에 넣기
   const handleTypeSelect = (type: WorkType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
+    console.log('선택된 날짜:', key)
 
     // 상태 업데이트
     updateTeamCalendarDay({
@@ -85,11 +71,12 @@ const TCalendarEditScreen = () => {
       date: key,
       workTypeName: type,
     })
+
+    setSelectedBoxId(shiftTypeToId(type))
   }
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
   const openBottomSheet = (date: dayjs.Dayjs) => {
-    setSelectedGroup(1) // 기본값으로 1조 설정
     const key = date.format('YYYY-MM-DD')
     const teamRecord = teamCalendarData.find(
       t => t.team === `${selectedGroup}조`
@@ -98,35 +85,35 @@ const TCalendarEditScreen = () => {
     const currentShift = teamRecord?.workInstances[key]?.workTypeName || null
 
     setSelectedDate(date)
-    setBackupTypeByGroup(prev => ({
-      ...prev,
-      [selectedGroup]: currentShift,
-    }))
-
+    setBackupType(currentShift)
+    setSelectedBoxId(shiftTypeToId(currentShift)) // ID 설정
     sheetRef.current?.expand() // 바텀 시트 열기
   }
   // 취소 시 롤백
   const handleCancel = () => {
-    if (!selectedDate) return
-
-    const key = selectedDate.format('YYYY-MM-DD')
-    const teamName = `${selectedGroup}조`
-    const backupType = backupTypeByGroup[selectedGroup]
-
-    if (backupType !== null) {
-      updateTeamCalendarDay({
-        team: teamName,
-        date: key,
-        workTypeName: backupType,
-      })
-    } else {
-      updateTeamCalendarDay({
-        team: teamName,
-        date: key,
-        workTypeName: '',
-      })
+    if (selectedDate) {
+      const key = selectedDate.format('YYYY-MM-DD')
+      const teamName = `${selectedGroup}조`
+      // 상태 업데이트
+      if (backupType !== null) {
+        updateTeamCalendarDay({
+          team: teamName, // 선택된 조 추가
+          date: key,
+          workTypeName: backupType,
+        })
+      } else {
+        // 이전에 근무 형태가 없었으면 삭제
+        const teamRecord = teamCalendarData.find(t => t.team === teamName)
+        if (teamRecord?.workInstances[key]) {
+          // 삭제 처리
+          updateTeamCalendarDay({
+            team: teamName, // 선택된 조 추가
+            date: key,
+            workTypeName: backupType || '',
+          })
+        }
+      }
     }
-
     sheetRef.current?.close()
   }
 
@@ -138,8 +125,19 @@ const TCalendarEditScreen = () => {
   // '체크' 버튼을 누르면 patch 요청 - 근무표 수정사항 저장.
   const handlePatchData = async () => {
     try {
+      console.log('teamCalendarData in handlePatchData:', teamCalendarData)
+
       const payload = toUpdateTeamShiftRecord(teamCalendarData)
-      await teamCalendarRepository.updateTeamCalendar(organizationName, payload)
+      console.log('팀 근무표 수정 요청 데이터:', {
+        organizationName: latestOrganization.organizationName,
+        ...payload,
+      })
+
+      await teamCalendarRepository.updateTeamCalendar(
+        latestOrganization.organizationName,
+        payload
+      )
+      console.log('팀 근무표 수정 성공')
 
       navigation.reset({
         index: 0,
@@ -166,6 +164,7 @@ const TCalendarEditScreen = () => {
             <EditScreenHeader
               currentDate={currentDate}
               setCurrentDate={setCurrentDate}
+              selectedYearMonth={selectedYearMonth}
               setSelectedYearMonth={setSelectedYearMonth}
             />
           </View>
@@ -183,12 +182,11 @@ const TCalendarEditScreen = () => {
               setSelectedDate={openBottomSheet}
             />
           </View>
-          <View className="h-[100px] flex-1 " />
         </ScrollView>
         {/* 모든 저장 버튼 -> 근무표에 저장되어야함. post 요청!! */}
         <TouchableOpacity
           onPress={handlePatchData}
-          className="absolute bottom-[80px] right-[13px] h-[40px] w-[40px] items-center justify-center rounded-radius-max bg-success-40"
+          className="absolute bottom-[13px] right-[13px] h-[40px] w-[40px] items-center justify-center rounded-radius-max bg-success-40"
         >
           <SuccessIcon />
         </TouchableOpacity>
@@ -204,7 +202,8 @@ const TCalendarEditScreen = () => {
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결
           ref={sheetRef}
           selectedDate={selectedDate}
-          selectedBoxId={getSelectedBoxId()}
+          selectedBoxId={selectedBoxId} // prop으로 전달
+          setSelectedBoxId={setSelectedBoxId} // prop으로 전달
           workTimes={workTimes} // EditBottomSheet에 전달
         />
       </>

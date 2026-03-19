@@ -4,7 +4,7 @@ import { View, ActivityIndicator, Alert } from 'react-native'
 import { WebView } from 'react-native-webview'
 import { API_URL } from '@env'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { useUserStore } from '../../../store/useUserStore'
@@ -47,6 +47,7 @@ const KakaoLoginWebView = () => {
       setShouldHideWebView(true)
 
       const data = JSON.parse(event.nativeEvent.data)
+      console.log('KakaoLoginWebView - handleMessage data:', data)
 
       const accessToken = data.data?.accessToken
       const refreshToken = data.data?.refreshToken
@@ -73,11 +74,27 @@ const KakaoLoginWebView = () => {
         refreshToken
       )
 
+      // store에 저장되는지 확인
+      const { user } = useUserStore.getState()
+      console.log('Stored user in Zustand:', user)
+      const {
+        accessToken: storedAccessToken,
+        refreshToken: storedRefreshToken,
+      } = useAuthStore.getState()
+      console.log('Stored auth in Zustand:', {
+        accessToken: storedAccessToken,
+        refreshToken: storedRefreshToken,
+      })
+
+      console.log('accessToken:', accessToken)
+      console.log('refreshToken:', refreshToken)
+      console.log('memberName:', memberName)
+
       if (newMember) {
         Alert.alert('로그인 성공', `${memberName}님 환영합니다!`)
-        navigation.replace('OnboardingMethodScreen', {
-          createScheduleButtonClick: false,
-        }) // 신규 회원이면 온보딩 방식 선택 화면으로 이동
+        navigation.replace('OnboardingSchedules', {
+          screen: 'SelectScheduleReg',
+        }) // 신규 회원이면 온보딩 화면으로 이동
       } else {
         navigation.replace('Tabs') // 로그인 한 적이 있으면 홈 화면으로 이동
       }

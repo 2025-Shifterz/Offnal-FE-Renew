@@ -3,8 +3,6 @@ import BottomNavigationBar from '../presentation/main/components/BottomNavigatio
 import MainScreen from '../presentation/main/screen/MainScreen'
 import CalendarScreen from '../presentation/calendar/screen/CalendarScreen'
 import InformationScreen from '../presentation/info/screen/InformationScreen'
-import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
-import GlobalText from '../shared/components/GlobalText'
 
 const Tab = createBottomTabNavigator()
 
@@ -13,24 +11,7 @@ const TabsNavigator = () => {
     <BottomNavigationBar>
       <Tab.Screen name="Home" component={MainScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
-      <Tab.Screen
-        name="MyInformation"
-        component={InformationScreen}
-        options={{
-          header: () => (
-            <CenterAlignedTopAppBar
-              title={
-                <GlobalText className="font-pretSemiBold text-heading-xs">
-                  내 정보
-                </GlobalText>
-              }
-              applySafeArea={true}
-            />
-          ),
-          headerShown: true,
-          headerShadowVisible: false,
-        }}
-      />
+      <Tab.Screen name="MyInformation" component={InformationScreen} />
     </BottomNavigationBar>
   )
 }

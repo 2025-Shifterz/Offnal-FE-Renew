@@ -31,6 +31,7 @@ export class AndroidHealthService {
       const now = new Date()
       const startOfDay = new Date()
       startOfDay.setHours(0, 0, 0, 0)
+      console.log('startOfDay:', startOfDay.toISOString())
 
       // 걸음 수
       const stepsResult = await readRecords('Steps', {
@@ -87,6 +88,14 @@ export class AndroidHealthService {
 
       // 걸음 수 % 계산 (9000걸음 목표 대비)
       const stepPercentage = (totalSteps / STEP_GOAL) * 100
+
+      console.log('Android 헬스 데이터:', {
+        totalSteps,
+        latestWeight,
+        latestHeight,
+        bmi,
+        stepPercentage,
+      })
 
       return {
         steps: totalSteps,
