@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import { WorkType } from '../../../shared/types/Calendar'
@@ -17,6 +17,7 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
 const TCalendarEditScreen = () => {
   const navigation = useNavigation<rootNavigation>()
+  const insets = useSafeAreaInsets()
   const workTimes = useScheduleInfoStore(state => state.workTimes)
 
   const teamCalendarData = useTeamCalendarStore(state => state.teamCalendarData)
@@ -202,6 +203,7 @@ const TCalendarEditScreen = () => {
           handleTypeSelect={handleTypeSelect}
           handleCancel={handleCancel}
           handleSave={handleConfirmSelection} // 바텀시트 저장 버튼에는 이 함수 연결
+          bottomInset={insets.bottom}
           ref={sheetRef}
           selectedDate={selectedDate}
           selectedBoxId={getSelectedBoxId()}

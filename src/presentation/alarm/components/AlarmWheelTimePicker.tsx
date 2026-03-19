@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   FlatList,
   NativeScrollEvent,
@@ -59,17 +59,76 @@ const WheelColumn = ({
   width,
 }: WheelColumnProps) => {
   const listRef = useRef<FlatList<string>>(null)
+  const mountedRef = useRef(false)
+  const isDraggingRef = useRef(false)
+  const displayIndexRef = useRef(currentIndex)
+  const [displayIndex, setDisplayIndex] = useState(currentIndex)
 
-  useEffect(() => {
+  const syncDisplayIndex = (nextIndex: number) => {
+    if (displayIndexRef.current === nextIndex) {
+      return
+    }
+    displayIndexRef.current = nextIndex
+    setDisplayIndex(nextIndex)
+  }
+
+  useLayoutEffect(() => {
+    const nextOffset = currentIndex * ITEM_HEIGHT
+
+    if (!mountedRef.current) {
+      mountedRef.current = true
+      displayIndexRef.current = currentIndex
+      setDisplayIndex(currentIndex)
+      listRef.current?.scrollToOffset({
+        animated: false,
+        offset: nextOffset,
+      })
+      return
+    }
+
+    if (isDraggingRef.current) {
+      return
+    }
+
+    if (displayIndexRef.current === currentIndex) {
+      return
+    }
+
+    displayIndexRef.current = currentIndex
+    setDisplayIndex(currentIndex)
     listRef.current?.scrollToOffset({
       animated: false,
-      offset: currentIndex * ITEM_HEIGHT,
+      offset: nextOffset,
     })
   }, [currentIndex])
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (!isDraggingRef.current) {
+      return
+    }
+
+    const rawIndex = Math.round(event.nativeEvent.contentOffset.y / ITEM_HEIGHT)
+    syncDisplayIndex(clampIndex(rawIndex, data.length - 1))
+  }
+
+  const onScrollBeginDrag = () => {
+    isDraggingRef.current = true
+  }
 
   const onMomentumEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const rawIndex = Math.round(event.nativeEvent.contentOffset.y / ITEM_HEIGHT)
     const nextIndex = clampIndex(rawIndex, data.length - 1)
+    isDraggingRef.current = false
+    syncDisplayIndex(nextIndex)
+
+    if (nextIndex === currentIndex) {
+      listRef.current?.scrollToOffset({
+        animated: false,
+        offset: nextIndex * ITEM_HEIGHT,
+      })
+      return
+    }
+
     onIndexChange(nextIndex)
   }
 
@@ -85,10 +144,12 @@ const WheelColumn = ({
         offset: ITEM_HEIGHT * index,
       })}
       keyExtractor={(item, index) => `${item}-${index}`}
+      onScroll={onScroll}
+      onScrollBeginDrag={onScrollBeginDrag}
       onMomentumScrollEnd={onMomentumEnd}
-      onScrollEndDrag={onMomentumEnd}
+      scrollEventThrottle={16}
       renderItem={({ item, index }) => {
-        const distance = Math.abs(index - currentIndex)
+        const distance = Math.abs(index - displayIndex)
         const opacity = distance === 0 ? 1 : distance === 1 ? 0.82 : 0.38
         return (
           <View style={styles.item}>

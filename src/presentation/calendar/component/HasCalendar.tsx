@@ -18,12 +18,14 @@ interface HasCalendarProps {
   setShowPlus: (value: boolean) => void
   isTeamView: boolean
   setIsTeamView: (value: boolean) => void
+  bottomInset?: number
 }
 
 const HasCalendar = ({
   setShowPlus,
   isTeamView,
   setIsTeamView,
+  bottomInset = 0,
 }: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
   const [selectedYearMonth, setSelectedYearMonth] = useState({
@@ -116,6 +118,7 @@ const HasCalendar = ({
       {/* 노트 바텀시트 */}
       <BottomSheetWrapper
         ref={sheetRef}
+        bottomInset={bottomInset}
         handleStyle={{
           backgroundColor: '#F4F5F6',
           borderTopLeftRadius: 15,

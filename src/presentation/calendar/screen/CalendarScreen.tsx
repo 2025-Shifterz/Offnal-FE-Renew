@@ -1,4 +1,4 @@
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useCallback, useState } from 'react'
 import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
@@ -10,6 +10,7 @@ import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 const CalendarScreen = () => {
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
   const [showPlus, setShowPlus] = useState(false)
+  const insets = useSafeAreaInsets()
 
   // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
   const [isTeamView, setIsTeamView] = useState(false)
@@ -50,6 +51,7 @@ const CalendarScreen = () => {
           setShowPlus={setShowPlus}
           isTeamView={isTeamView}
           setIsTeamView={setIsTeamView}
+          bottomInset={insets.bottom}
         />
       </SafeAreaView>
       {showPlus && (

@@ -47,7 +47,7 @@ const StartAlignedTopAppBar = ({
           {title}
         </View>
 
-        <View className="absolute right-number-9 flex-row items-center justify-center">
+        <View className="absolute right-number-7 flex-row items-center justify-center">
           {rightActions}
         </View>
       </View>
