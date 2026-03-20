@@ -121,10 +121,11 @@ const HasCalendar = ({
       >
         <PlusIcon />
       </TouchableOpacity>
+
       {/* 노트 바텀시트 */}
       <BottomSheetWrapper
         ref={sheetRef}
-        bottomInset={bottomInset}
+        bottomInset={0}
         handleStyle={{
           backgroundColor: '#F4F5F6',
           borderTopLeftRadius: 15,

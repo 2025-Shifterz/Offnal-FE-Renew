@@ -4,6 +4,9 @@ import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
 import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import RadioButton from '../../../shared/components/RadioButton'
+import EmphasizedButton, {
+  UnEmphasizedButton,
+} from '../../../shared/components/button/Button'
 
 export type AlarmSortOption = 'remaining' | 'shift'
 
@@ -81,22 +84,24 @@ const SortBottomSheet = forwardRef<
         </View>
 
         <View className="flex-row gap-[10px]">
-          <TouchableOpacity
-            className="h-[52px] w-[72px] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
+          <UnEmphasizedButton
             onPress={onPressCancel}
-          >
-            <GlobalText className="font-pretMedium text-text-basic body-m">
-              취소
-            </GlobalText>
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="h-[52px] flex-1 items-center justify-center rounded-radius-xl bg-surface-inverse"
+            content={
+              <GlobalText className="font-pretMedium text-text-basic body-m">
+                취소
+              </GlobalText>
+            }
+            className="flex w-[72px]"
+          />
+          <EmphasizedButton
             onPress={onPressComplete}
-          >
-            <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
-              완료
-            </GlobalText>
-          </TouchableOpacity>
+            content={
+              <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
+                완료
+              </GlobalText>
+            }
+            className="w-full flex-1"
+          />
         </View>
       </BottomSheetView>
     </BottomSheetWrapper>

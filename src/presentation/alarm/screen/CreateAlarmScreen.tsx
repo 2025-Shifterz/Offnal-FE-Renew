@@ -21,6 +21,7 @@ import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlig
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import ToggleSwitch from '../../../shared/components/ToggleSwitch'
+import EmphasizedButton from '../../../shared/components/button/Button'
 
 const workTypes = ['주간', '오후', '야간', '휴일']
 const weekDays = ['일', '월', '화', '수', '목', '금', '토']
@@ -225,17 +226,17 @@ const CreateAlarmScreen = () => {
         </ScrollView>
 
         <View
-          className="absolute bottom-0 left-0 right-0 px-[20px]"
-          style={{ paddingBottom: Math.max(insets.bottom, 13) }}
+          className="px-[20px]"
+          style={{ paddingBottom: insets.bottom + 13 }}
         >
-          <TouchableOpacity
-            className="h-[52px] items-center justify-center rounded-radius-xl bg-surface-inverse"
+          <EmphasizedButton
             onPress={() => nav.goBack()}
-          >
-            <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
-              저장하기
-            </GlobalText>
-          </TouchableOpacity>
+            content={
+              <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
+                저장하기
+              </GlobalText>
+            }
+          />
         </View>
 
         <SnoozeBottomSheet

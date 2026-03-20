@@ -11,6 +11,9 @@ import AlarmIcon from '../../../assets/icons/ic_clock.svg'
 import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import ToggleSwitch from '../../../shared/components/ToggleSwitch'
+import EmphasizedButton, {
+  UnEmphasizedButton,
+} from '../../../shared/components/button/Button'
 
 const intervalOptions = [1, 3, 5, 10, 15] as const
 const repeatOptions = [1, 3, 5, 10, 'infinite'] as const
@@ -179,22 +182,24 @@ const SnoozeBottomSheet = forwardRef<
           </View>
 
           <View className="flex-row gap-[10px]">
-            <TouchableOpacity
-              className="h-[52px] w-[72px] items-center justify-center rounded-radius-xl bg-surface-gray-subtle1"
+            <UnEmphasizedButton
               onPress={onPressCancel}
-            >
-              <GlobalText className="font-pretMedium text-text-basic body-m">
-                취소
-              </GlobalText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className="h-[52px] flex-1 items-center justify-center rounded-radius-xl bg-surface-inverse"
+              content={
+                <GlobalText className="font-pretMedium text-text-basic body-m">
+                  취소
+                </GlobalText>
+              }
+              className="flex w-[72px]"
+            />
+            <EmphasizedButton
               onPress={onPressComplete}
-            >
-              <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
-                완료
-              </GlobalText>
-            </TouchableOpacity>
+              content={
+                <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
+                  완료
+                </GlobalText>
+              }
+              className="w-full flex-1"
+            />
           </View>
         </View>
       </BottomSheetView>

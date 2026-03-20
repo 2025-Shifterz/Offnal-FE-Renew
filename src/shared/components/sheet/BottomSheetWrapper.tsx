@@ -3,7 +3,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet'
-import { View, ViewStyle } from 'react-native'
+import { Platform, View, ViewStyle } from 'react-native'
 
 type BottomSheetWrapperProps = {
   children: React.ReactNode
@@ -26,7 +26,8 @@ const BottomSheetWrapper = forwardRef<BottomSheet, BottomSheetWrapperProps>(
     },
     ref
   ) => {
-    const resolvedBottomInset = bottomInset ?? 0
+    const resolvedBottomInset =
+      Platform.OS === 'android' ? (bottomInset ?? 0) : 0
 
     const renderBackdrop = useCallback(
       (props: BottomSheetBackdropProps) => (

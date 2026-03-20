@@ -6,11 +6,13 @@ import { Pressable, TouchableOpacity } from 'react-native'
  * @param content 버튼 내용
  * @param onPress 버튼 클릭 시 실행할 함수
  * @param disabled 버튼 비활성화 여부
+ * @param className tailwind className
  */
 interface ButtonProps {
   content: React.ReactNode
   onPress: () => void
   disabled?: boolean
+  className?: string
 }
 
 /**
@@ -21,17 +23,19 @@ interface ButtonProps {
  * @param content 버튼 내용
  * @param onPress 버튼 클릭 시 실행할 함수
  * @param disabled 버튼 비활성화 여부
+ * @param className tailwind className
  */
 const EmphasizedButton = ({
   content,
   onPress,
   disabled = false,
+  className = 'flex w-full',
 }: ButtonProps) => {
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className="flex w-full items-center rounded-radius-xl bg-surface-inverse py-[13px] active:bg-surface-inverse-subtle"
+      className={`${className} items-center rounded-radius-xl bg-surface-inverse py-[13px] active:bg-surface-inverse-subtle`}
     >
       {content}
     </Pressable>
@@ -48,17 +52,19 @@ export default EmphasizedButton
  * @param content 버튼 내용
  * @param onPress 버튼 클릭 시 실행할 함수
  * @param disabled 버튼 비활성화 여부
+ * @param className tailwind className
  */
 const UnEmphasizedButton = ({
   content,
   onPress,
   disabled = false,
+  className = 'flex w-full',
 }: ButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      className="flex w-full items-center rounded-radius-xl bg-surface-gray-subtle1 py-[13px]"
+      className={`${className} items-center rounded-radius-xl bg-surface-gray-subtle1 py-[13px]`}
     >
       {content}
     </TouchableOpacity>

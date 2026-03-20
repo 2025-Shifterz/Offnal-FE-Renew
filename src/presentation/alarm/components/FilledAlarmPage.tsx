@@ -447,7 +447,6 @@ const FilledAlarmPage = ({
       <SortBottomSheet
         ref={sortBottomSheetRef}
         onApply={setSortOption}
-        bottomInset={undefined}
         value={sortOption}
       />
       <Portal>
