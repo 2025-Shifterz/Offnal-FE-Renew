@@ -29,6 +29,7 @@ import OnboardingMethodScreen from '../presentation/onboarding/screens/Onboardin
 
 // Migrate from AutoAlarmNavigator.tsx
 import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
+import EditAutoAlarmScreen from '../presentation/alarm/screen/EditAutoAlarmScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
 import GlobalText from '../shared/components/text/GlobalText'
@@ -289,7 +290,10 @@ const RootNavigator = () => {
             headerShadowVisible: false,
           })}
         />
-        {/* <RootStack.Screen name="EditAutoAlarm" component={} /> */}
+        <RootStack.Screen
+          name="EditAutoAlarm"
+          component={EditAutoAlarmScreen}
+        />
       </RootStack.Navigator>
     </NavigationContainer>
   )

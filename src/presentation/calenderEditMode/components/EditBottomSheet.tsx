@@ -17,6 +17,7 @@ interface EditBottomSheetProps {
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
   workTimes: WorkTime
+  bottomInset?: number
 }
 
 const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
@@ -28,6 +29,7 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       handleSave,
       selectedBoxId,
       workTimes,
+      bottomInset = 0,
     },
     ref
   ) => {
@@ -46,8 +48,8 @@ const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
       : '날짜 없음'
 
     return (
-      <BottomSheetWrapper ref={internalRef}>
-        <BottomSheetView className="gap-[20px] px-p-6 pb-number-20">
+      <BottomSheetWrapper ref={internalRef} bottomInset={bottomInset}>
+        <BottomSheetView className="gap-[20px] px-p-6 pb-[16px]">
           <View className="gap-[10px]">
             <Text className="text-text-basic heading-xs">근무형태 입력</Text>
             <View className="rounded-radius-m1 border-[0.5px] border-[#2ECADC1A] bg-surface-primary-light px-p-6 py-p-4">

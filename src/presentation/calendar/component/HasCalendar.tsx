@@ -27,6 +27,7 @@ interface HasCalendarProps {
   currentDate: dayjs.Dayjs
   setCurrentDate: Dispatch<SetStateAction<dayjs.Dayjs>>
   selectedYearMonth: { year: number; month: number }
+  bottomInset?: number
 }
 
 const HasCalendar = ({
@@ -36,6 +37,7 @@ const HasCalendar = ({
   currentDate,
   setCurrentDate,
   selectedYearMonth,
+  bottomInset = 0,
 }: HasCalendarProps) => {
   const [calendarData] = useState<Map<string, WorkType>>(new Map())
 
@@ -119,9 +121,11 @@ const HasCalendar = ({
       >
         <PlusIcon />
       </TouchableOpacity>
+
       {/* 노트 바텀시트 */}
       <BottomSheetWrapper
         ref={sheetRef}
+        bottomInset={0}
         handleStyle={{
           backgroundColor: '#F4F5F6',
           borderTopLeftRadius: 15,

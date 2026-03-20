@@ -10,23 +10,25 @@ import { ScrollView, TouchableOpacity, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import RightArrow from '../../../assets/icons/black-arrow-r.svg'
 import AlarmIcon from '../../../assets/icons/ic_clock.svg'
+import TrashIcon from '../../../assets/icons/alarm_trash_24.svg'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
+import GlobalText from '../../../shared/components/text/GlobalText'
+import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
+import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
+import ToggleSwitch from '../../../shared/components/ToggleSwitch'
 import AlarmWheelTimePicker from '../components/AlarmWheelTimePicker'
 import SnoozeBottomSheet, {
   SnoozeBottomSheetMethods,
   SnoozeSetting,
   getRepeatText,
 } from '../components/SnoozeBottomSheet'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
-import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
-import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
-import GlobalText from '../../../shared/components/text/GlobalText'
-import ToggleSwitch from '../../../shared/components/ToggleSwitch'
+import ConfirmDialog from '../../../shared/components/ConfirmDialog'
 import EmphasizedButton from '../../../shared/components/button/Button'
 
 const workTypes = ['주간', '오후', '야간', '휴일']
 const weekDays = ['일', '월', '화', '수', '목', '금', '토']
 
-const CreateAlarmScreen = () => {
+const EditAutoAlarmScreen = () => {
   const nav = useNavigation<rootNavigation>()
   const insets = useSafeAreaInsets()
   const snoozeBottomSheetRef = useRef<SnoozeBottomSheetMethods>(null)
@@ -34,23 +36,53 @@ const CreateAlarmScreen = () => {
   const [selectedWorkType, setSelectedWorkType] = useState('휴일')
   const [selectedDays, setSelectedDays] = useState<string[]>(['목', '금', '토'])
   const [isHolidayAlarmOff, setIsHolidayAlarmOff] = useState(true)
-  const [snoozeSheetIndex, setSnoozeSheetIndex] = useState(-1)
   const [snoozeSetting, setSnoozeSetting] = useState<SnoozeSetting>({
     enabled: true,
-    interval: 10,
-    repeat: 3,
+    interval: 5,
+    repeat: 5,
   })
+  const [snoozeSheetIndex, setSnoozeSheetIndex] = useState(-1)
   const [alarmTime, setAlarmTime] = useState(() => {
     const initialTime = new Date()
     initialTime.setHours(9, 0, 0, 0)
     return initialTime
   })
+  const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false)
 
-  const toggleSelectedDay = (day: string) => {
-    setSelectedDays(prev =>
-      prev.includes(day) ? prev.filter(item => item !== day) : [...prev, day]
-    )
-  }
+  useLayoutEffect(() => {
+    nav.setOptions({
+      header: () => (
+        <CenterAlignedTopAppBar
+          title={
+            <GlobalText className="font-pretSemiBold text-heading-xs">
+              자동 알람 수정
+            </GlobalText>
+          }
+          navigationIcon={
+            <TopAppBarBackButton onPress={handleHeaderBackPress} />
+          }
+          rightActions={
+            <TouchableOpacity
+              className="items-center justify-center p-[2px]"
+              onPress={() => {
+                if (snoozeSheetIndex >= 0) {
+                  snoozeBottomSheetRef.current?.close()
+                }
+
+                setIsDeleteDialogVisible(true)
+              }}
+            >
+              <TrashIcon width={24} height={24} />
+            </TouchableOpacity>
+          }
+          backgroundColor="bg-surface-gray-subtle1"
+          applySafeArea={true}
+        />
+      ),
+      headerShown: true,
+      headerShadowVisible: false,
+    })
+  }, [nav])
 
   useEffect(() => {
     const listener = nav.addListener('beforeRemove', e => {
@@ -73,27 +105,13 @@ const CreateAlarmScreen = () => {
     nav.goBack()
   }, [nav])
 
-  useLayoutEffect(() => {
-    nav.setOptions({
-      header: () => (
-        <CenterAlignedTopAppBar
-          title={
-            <GlobalText className="font-pretSemiBold text-heading-xs">
-              자동 알람 생성
-            </GlobalText>
-          }
-          navigationIcon={
-            <TopAppBarBackButton onPress={handleHeaderBackPress} />
-          }
-          rightActions={null}
-          backgroundColor="bg-surface-gray-subtle1"
-          applySafeArea={true}
-        />
-      ),
-      headerShown: true,
-      headerShadowVisible: false,
-    })
-  }, [nav, handleHeaderBackPress])
+  const toggleSelectedDay = (day: string) => {
+    setSelectedDays(previous =>
+      previous.includes(day)
+        ? previous.filter(item => item !== day)
+        : [...previous, day]
+    )
+  }
 
   const snoozeLabel = snoozeSetting.enabled
     ? `${snoozeSetting.interval}분, ${getRepeatText(snoozeSetting.repeat)}`
@@ -106,7 +124,7 @@ const CreateAlarmScreen = () => {
           contentContainerStyle={{ paddingBottom: insets.bottom + 96 }}
           showsVerticalScrollIndicator={false}
         >
-          <View className="items-center px-[20px] pt-[6px]">
+          <View className="px-[20px] pt-[6px]">
             <View className="w-full overflow-hidden rounded-radius-xl bg-surface-gray-subtle1 px-[8px] py-[8px]">
               <AlarmWheelTimePicker value={alarmTime} onChange={setAlarmTime} />
             </View>
@@ -129,12 +147,12 @@ const CreateAlarmScreen = () => {
                   return (
                     <TouchableOpacity
                       key={type}
-                      onPress={() => setSelectedWorkType(type)}
                       className={`h-[37px] items-center justify-center rounded-radius-m px-[8px] ${
                         isSelected
                           ? 'border-[0.5px] border-border-primary bg-surface-primary-light'
                           : 'bg-surface-gray-subtle1'
                       }`}
+                      onPress={() => setSelectedWorkType(type)}
                     >
                       <GlobalText
                         className={`font-pretSemiBold heading-xxxxs ${
@@ -155,18 +173,19 @@ const CreateAlarmScreen = () => {
               <GlobalText className="font-pretSemiBold text-text-basic heading-xxxs">
                 요일 선택
               </GlobalText>
+
               <View className="mt-[8px] flex-row gap-[6px]">
                 {weekDays.map(day => {
                   const isSelected = selectedDays.includes(day)
                   return (
                     <TouchableOpacity
                       key={day}
-                      onPress={() => toggleSelectedDay(day)}
                       className={`h-[37px] flex-1 items-center justify-center rounded-radius-m ${
                         isSelected
                           ? 'border-[0.5px] border-border-primary bg-surface-primary-light'
                           : 'bg-surface-gray-subtle1'
                       }`}
+                      onPress={() => toggleSelectedDay(day)}
                     >
                       <GlobalText
                         className={`font-pretSemiBold heading-xxxxs ${
@@ -185,7 +204,7 @@ const CreateAlarmScreen = () => {
               <View className="mt-[20px]">
                 <View className="flex-row items-center justify-between">
                   <GlobalText className="font-pretMedium text-text-subtle body-xs">
-                    알람 조건
+                    알림 조건
                   </GlobalText>
                   <GlobalText className="font-pretSemiBold text-text-subtle label-xxs">
                     근무 이면서 요일
@@ -238,17 +257,30 @@ const CreateAlarmScreen = () => {
             }
           />
         </View>
-
-        <SnoozeBottomSheet
-          ref={snoozeBottomSheetRef}
-          bottomInset={insets.bottom}
-          onApply={setSnoozeSetting}
-          onChange={setSnoozeSheetIndex}
-          value={snoozeSetting}
-        />
       </View>
+
+      <SnoozeBottomSheet
+        ref={snoozeBottomSheetRef}
+        bottomInset={insets.bottom}
+        onApply={setSnoozeSetting}
+        value={snoozeSetting}
+        onChange={setSnoozeSheetIndex}
+      />
+
+      <ConfirmDialog
+        cancelText="취소"
+        confirmText="삭제"
+        description="삭제된 자동알람은 복구되지 않아요."
+        onCancel={() => setIsDeleteDialogVisible(false)}
+        onConfirm={() => {
+          // TODO: 삭제 로직 구현
+          setIsDeleteDialogVisible(false)
+        }}
+        title="자동 알람 삭제"
+        visible={isDeleteDialogVisible}
+      />
     </View>
   )
 }
 
-export default CreateAlarmScreen
+export default EditAutoAlarmScreen

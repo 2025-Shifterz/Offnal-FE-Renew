@@ -1,4 +1,4 @@
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import NoCalendar from '../component/NoCalendar'
 import HasCalendar from '../component/HasCalendar'
@@ -13,6 +13,7 @@ const CalendarScreen = () => {
   const route = useRoute<RouteProp<TabParamList, 'Calendar'>>()
   const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
   const [showPlus, setShowPlus] = useState(false)
+  const insets = useSafeAreaInsets()
 
   // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
   const [isTeamView, setIsTeamView] = useState(
@@ -82,6 +83,7 @@ const CalendarScreen = () => {
           currentDate={currentDate}
           setCurrentDate={setCurrentDate}
           selectedYearMonth={selectedYearMonth}
+          bottomInset={insets.bottom}
         />
       </SafeAreaView>
       {showPlus && (
