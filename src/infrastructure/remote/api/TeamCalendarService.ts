@@ -1,10 +1,10 @@
 import axios from 'axios'
-import api from './axiosInstance'
 import {
   GetTeamWorkCalendarResponse,
   GetTeamWorkCalendarResponseData,
 } from '../response/GetTeamWorkCalendarResponse'
 import { UpdateTeamShiftsRequest } from '../request/PatchTeamWorkCalendarRequest'
+import { apiAxiosClient } from '../axios/createAxiosClient'
 
 export class TeamCalendarService {
   // organizationName이 같은 조직들의 근무 일정 조회
@@ -14,7 +14,7 @@ export class TeamCalendarService {
     endDate: string
   ): Promise<GetTeamWorkCalendarResponseData> => {
     try {
-      const response = await api.get<GetTeamWorkCalendarResponse>(
+      const response = await apiAxiosClient.get<GetTeamWorkCalendarResponse>(
         `works/calendar/organizations/${organizationName}/work-instances`,
         {
           params: {
@@ -40,9 +40,13 @@ export class TeamCalendarService {
     teamShiftsData: UpdateTeamShiftsRequest
   ) => {
     try {
-      const response = await api.patch('works/calendar/group', teamShiftsData, {
-        params: { organizationName },
-      })
+      const response = await apiAxiosClient.patch(
+        'works/calendar/group',
+        teamShiftsData,
+        {
+          params: { organizationName },
+        }
+      )
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {

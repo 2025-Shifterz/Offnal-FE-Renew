@@ -1,5 +1,5 @@
 import axios from 'axios'
-import api from './axiosInstance'
+import { apiAxiosClient } from '../axios/createAxiosClient'
 import {
   GetAllOrganizationsResponse,
   GetAllOrganizationsResponseData,
@@ -9,7 +9,7 @@ export class OrganizationService {
   getOrganization = async (): Promise<GetAllOrganizationsResponseData[]> => {
     try {
       const response =
-        await api.get<GetAllOrganizationsResponse>(`/organizations`)
+        await apiAxiosClient.get<GetAllOrganizationsResponse>(`/organizations`)
       return response.data.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
