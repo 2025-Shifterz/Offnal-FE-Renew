@@ -1,10 +1,30 @@
 import { useAuthStore } from '../../../store/useAuthStore'
 import { authService } from '../../di/Dependencies'
 import { resetAllStore } from '../../../shared/utils/store/resetAllStore'
-import { apiAxiosClient } from './createAxiosClient'
+import { apiAxiosClient, openApiAxiosClient } from './createAxiosClient'
 
 // Request Logger Interceptor
 apiAxiosClient.interceptors.request.use(config => {
+  if (!__DEV__) {
+    return config
+  }
+
+  console.log('🧑🏻‍💻 Request Interceptor | Request URL:', config.url)
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Authorization: ',
+    config.headers.Authorization
+  )
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Content-Type: ',
+    config.headers['Content-Type']
+  )
+  console.log('🧑🏻‍💻 Request Interceptor | Request params:', config.params)
+  console.log('🧑🏻‍💻 Request Interceptor | Request body:', config.data)
+
+  return config
+})
+
+openApiAxiosClient.interceptors.request.use(config => {
   if (!__DEV__) {
     return config
   }

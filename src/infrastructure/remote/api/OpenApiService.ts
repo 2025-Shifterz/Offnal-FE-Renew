@@ -20,7 +20,7 @@ export class OpenApiService {
       '/getRestDeInfo',
       {
         params: {
-          serviceKey: OPEN_API_SERVICE_KEY,
+          serviceKey: decodeURIComponent(OPEN_API_SERVICE_KEY),
           solYear: solYear,
           _type: 'json',
           numOfRows: 100,

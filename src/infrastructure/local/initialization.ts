@@ -37,6 +37,28 @@ export const initializeDataBaseTables = async (): Promise<void> => {
           BEGIN
             UPDATE memos SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
           END;`,
+      `CREATE TABLE IF NOT EXISTS holiday_cache_meta (
+        year TEXT PRIMARY KEY,
+        totalCount INTEGER NOT NULL,
+        fetchedAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000)
+      );`,
+      `CREATE TABLE IF NOT EXISTS holiday_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        year TEXT NOT NULL,
+        dateName TEXT NOT NULL,
+        locdate INTEGER NOT NULL,
+        createdAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000),
+        updatedAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000),
+        UNIQUE(year, locdate)
+      );`,
+      `CREATE INDEX IF NOT EXISTS idx_holiday_items_year ON holiday_items(year);`,
+      `CREATE INDEX IF NOT EXISTS idx_holiday_items_locdate ON holiday_items(locdate);`,
+      `CREATE TRIGGER IF NOT EXISTS update_holiday_items_updatedAt
+          AFTER UPDATE ON holiday_items
+          FOR EACH ROW
+          BEGIN
+            UPDATE holiday_items SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
+          END;`,
     ]
 
     for (const query of sqlQueries) {
