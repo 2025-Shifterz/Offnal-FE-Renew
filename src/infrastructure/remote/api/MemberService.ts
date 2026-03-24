@@ -1,15 +1,16 @@
 import axios from 'axios'
-import api from './axiosInstance'
 import { GetProfileResponse } from '../response/GetProfileResponse'
 import { PatchProfileRequest } from '../request/PatchProfileRequest'
 import { ImagePickerAssetRequest } from '../request/ImagePickerAssetRequest'
 import { PatchProfileResponse } from '../response/PatchProfileResponse'
 import { GetPresignedUrlResponse } from '../response/GetPresignedUrlResponse'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class MemberService {
   getProfile = async () => {
     try {
-      const response = await api.get<GetProfileResponse>('/members/profile')
+      const response =
+        await apiAxiosClient.get<GetProfileResponse>('/members/profile')
       return response.data.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -23,7 +24,7 @@ export class MemberService {
 
   updateProfile = async (profileData: PatchProfileRequest) => {
     try {
-      const response = await api.patch<PatchProfileResponse>(
+      const response = await apiAxiosClient.patch<PatchProfileResponse>(
         '/members/profile',
         profileData
       )
@@ -52,10 +53,11 @@ export class MemberService {
         return
       }
 
-      const presignedResponse = await api.post<GetPresignedUrlResponse>(
-        '/members/profile/upload-url',
-        { extension: effectiveExtension }
-      )
+      const presignedResponse =
+        await apiAxiosClient.post<GetPresignedUrlResponse>(
+          '/members/profile/upload-url',
+          { extension: effectiveExtension }
+        )
 
       const { uploadUrl } = presignedResponse.data.data
 
@@ -91,7 +93,7 @@ export class MemberService {
 
   withdrawMember = async () => {
     try {
-      await api.delete('/members/withdraw')
+      await apiAxiosClient.delete('/members/withdraw')
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('API 요청 실패:', error.response?.data || error.message)

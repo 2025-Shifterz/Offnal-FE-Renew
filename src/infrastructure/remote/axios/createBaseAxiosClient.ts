@@ -1,9 +1,7 @@
 import axios from 'axios'
 import { API_URL } from '@env'
 
-const baseApi = axios.create({
+export const baseAxiosClient = axios.create({
   baseURL: API_URL,
-  timeout: 5000,
+  timeout: 10000,
 })
-
-export default baseApi

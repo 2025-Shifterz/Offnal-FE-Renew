@@ -1,12 +1,12 @@
-import api from './axiosInstance'
 import { GetMemosResponse } from '../response/GetMemosResponse'
 import { PostCreateMemoRequest } from '../request/PostCreateMemoRequest'
 import { PatchUpdateMemoRequest } from '../request/PatchUpdateMemoRequest'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class MemoService {
   async getMemos(filter: string, organizationId: number) {
     try {
-      const response = await api.get<GetMemosResponse>(
+      const response = await apiAxiosClient.get<GetMemosResponse>(
         `/memos?filter=${filter}&organizationId=${organizationId}`
       )
       return response.data.result
@@ -18,16 +18,16 @@ export class MemoService {
 
   async createMemo(request: PostCreateMemoRequest) {
     try {
-      const response = await api.post('/memos', request)
+      const response = await apiAxiosClient.post('/memos', request)
       return response.data
     } catch (error) {
       console.error('Error adding memo:', error)
     }
   }
 
-  async updateMemo(request: UpdateMemoRequest) {
+  async updateMemo(request: PatchUpdateMemoRequest) {
     try {
-      const response = await api.put(`/memos`, request)
+      const response = await apiAxiosClient.put(`/memos`, request)
       return response.data
     } catch (error) {
       console.error('Error updating memo:', error)
@@ -36,7 +36,7 @@ export class MemoService {
 
   async deleteMemo(memoId: number) {
     try {
-      const response = await api.delete(`/memos/${memoId}`)
+      const response = await apiAxiosClient.delete(`/memos/${memoId}`)
       return response.data
     } catch (error) {
       console.error('Error deleting memo:', error)

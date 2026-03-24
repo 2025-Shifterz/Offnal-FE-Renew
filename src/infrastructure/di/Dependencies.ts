@@ -35,14 +35,19 @@ import { TeamCalendarService } from '../remote/api/TeamCalendarService'
 import { ScheduleInfoService } from '../remote/api/ScheduleInfoService'
 import { ScheduleInfoRepositoryImpl } from '../../data/impl/ScheduleInfoRepositoryImpl'
 import { HealthRepositoryImpl } from '../../data/impl/HealthRepositoryImpl'
+import { HolidayDao } from '../local/dao/HolidayDao'
+import { OpenApiService } from '../remote/api/OpenApiService'
+import { HolidayRepositoryImpl } from '../../data/impl/HolidayRepositoryImpl'
 import { Platform } from 'react-native'
 import { IosHealthDataSource } from '../dataSource/IosHealthDataSource'
 import { AndroidHealthDataSource } from '../dataSource/AndroidHealthDataSource'
 import { DeleteAllTodosUseCase } from '../../domain/usecases/todos/DeleteAllTodosUseCase'
+import { GetHolidayDateSetUseCase } from '../../domain/usecases/holiday/GetHolidayDateSetUseCase'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
 const memoDao = new MemoDao()
+const holidayDao = new HolidayDao()
 
 export const ocrService = new OcrService()
 export const organizationService = new OrganizationService()
@@ -54,6 +59,7 @@ export const todoService = new TodoService()
 export const memoService = new MemoService()
 export const authService = new AuthService()
 export const teamCalendarService = new TeamCalendarService()
+export const openApiService = new OpenApiService()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
 export const todoRepository = new TodoRepositoryImpl(todoDao)
@@ -71,6 +77,10 @@ export const scheduleInfoRepository = new ScheduleInfoRepositoryImpl(
 )
 export const homeRepository = new HomeRepositoryImpl(homeService)
 export const memberRepository = new MemberRepositoryImpl(memberService)
+export const holidayRepository = new HolidayRepositoryImpl(
+  holidayDao,
+  openApiService
+)
 
 const dataSource =
   Platform.OS === 'ios'
@@ -100,3 +110,6 @@ export const getToDosByDateUseCase = new GetTodosByDateUseCase(todoRepository)
 export const getMemosByDateUseCase = new GetMemosByDateUseCase(memoRepository)
 export const getMemoByIdUseCase = new GetMemoByIdUseCase(memoRepository)
 export const updateMemoUseCase = new UpdateMemoUseCase(memoRepository)
+export const getHolidayDateSetUseCase = new GetHolidayDateSetUseCase(
+  holidayRepository
+)

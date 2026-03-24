@@ -14,6 +14,8 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { PortalProvider } from '@gorhom/portal'
 import { enableScreens } from 'react-native-screens'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import dayjs from 'dayjs'
+import { getHolidayDateSetUseCase } from './src/infrastructure/di/Dependencies'
 
 enableScreens()
 
@@ -25,6 +27,11 @@ function App() {
       try {
         await initializeDataBaseTables()
         console.log('DB tables created')
+        try {
+          await getHolidayDateSetUseCase.execute(dayjs().year().toString())
+        } catch (error) {
+          console.error('Error caching holiday data', error)
+        }
       } catch (error) {
         console.error('Error creating DB tables', error)
       } finally {

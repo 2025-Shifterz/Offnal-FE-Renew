@@ -1,13 +1,12 @@
 import { PostLoginWithAppleRequest } from '../request/PostLoginWithAppleRequest'
 import { PostLoginWithAppleResponse } from '../response/PostLoginWithAppleResponse'
-import { PostRefreshTokenResponse } from '../response/PostRefreshTokenResponse'
-import api from './axiosInstance'
-import { noInterceptorApi } from './noInterceptorAxiosInstance'
+import { baseAxiosClient } from '../axios/createBaseAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class AuthService {
   getLoginUrl = async () => {
     try {
-      const response = await api.get('/login/page')
+      const response = await apiAxiosClient.get('/login/page')
       return response.data.location
     } catch (error) {
       console.error('login/page API 요청 실패:', error)
@@ -15,11 +14,8 @@ export class AuthService {
   }
 
   loginWithApple = async (requestDto: PostLoginWithAppleRequest) => {
-    console.log('loginWithApple requestDto:', requestDto)
-    console.log('loginWithApple requestDto fullName:', requestDto.fullName)
-
     try {
-      const response = await api.post<PostLoginWithAppleResponse>(
+      const response = await apiAxiosClient.post<PostLoginWithAppleResponse>(
         '/login/apple',
         requestDto
       )
@@ -31,7 +27,7 @@ export class AuthService {
 
   // private
   private tokenReissueHelper = async (
-    axiosInstance: typeof api,
+    axiosInstance: typeof apiAxiosClient,
     refreshToken: string,
     instanceName: string
   ): Promise<{ accessToken: string; refreshToken: string }> => {
@@ -52,12 +48,16 @@ export class AuthService {
   }
 
   tokenReissue = async (refreshToken: string) => {
-    return this.tokenReissueHelper(api, refreshToken, 'with interceptor')
+    return this.tokenReissueHelper(
+      apiAxiosClient,
+      refreshToken,
+      'with interceptor'
+    )
   }
 
   tokenReissueWithNoInterceptor = async (refreshToken: string) => {
     return this.tokenReissueHelper(
-      noInterceptorApi,
+      baseAxiosClient,
       refreshToken,
       'no interceptor'
     )
@@ -65,7 +65,7 @@ export class AuthService {
 
   tokenLogOut = async () => {
     try {
-      await api.post('/tokens/logout')
+      await apiAxiosClient.post('/tokens/logout')
     } catch (error) {
       throw error
     }

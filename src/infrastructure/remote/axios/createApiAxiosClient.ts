@@ -1,24 +1,58 @@
-import axios from 'axios'
-import { API_URL } from '@env'
 import { useAuthStore } from '../../../store/useAuthStore'
 import { authService } from '../../di/Dependencies'
 import { resetAllStore } from '../../../shared/utils/store/resetAllStore'
+import { openApiAxiosClient } from './createOpenApiAxiosClient'
+import axios from 'axios'
+import { API_URL } from '@env'
 
-export const api = axios.create({
+export const apiAxiosClient = axios.create({
   baseURL: API_URL,
   timeout: 10000,
 })
 
-// 요청 URL 보고싶을 때!! -- 주석 삭제하지 말 것
-// api.interceptors.request.use(config => {
-//   console.log('요청 URL:', config.url)
-//   console.log('전체 요청:', API_URL + config.url)
-//   console.log('Query params:', config.params)
-//   return config
-// })
+// Request Logger Interceptor
+apiAxiosClient.interceptors.request.use(config => {
+  if (!__DEV__) {
+    return config
+  }
 
-// 요청 인터셉터
-api.interceptors.request.use(
+  console.log('🧑🏻‍💻 Request Interceptor | Request URL:', config.url)
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Authorization: ',
+    config.headers.Authorization
+  )
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Content-Type: ',
+    config.headers['Content-Type']
+  )
+  console.log('🧑🏻‍💻 Request Interceptor | Request params:', config.params)
+  console.log('🧑🏻‍💻 Request Interceptor | Request body:', config.data)
+
+  return config
+})
+
+openApiAxiosClient.interceptors.request.use(config => {
+  if (!__DEV__) {
+    return config
+  }
+
+  console.log('🧑🏻‍💻 Request Interceptor | Request URL:', config.url)
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Authorization: ',
+    config.headers.Authorization
+  )
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Content-Type: ',
+    config.headers['Content-Type']
+  )
+  console.log('🧑🏻‍💻 Request Interceptor | Request params:', config.params)
+  console.log('🧑🏻‍💻 Request Interceptor | Request body:', config.data)
+
+  return config
+})
+
+// Request Interceptor With AccessToken
+apiAxiosClient.interceptors.request.use(
   config => {
     const token = useAuthStore.getState().accessToken
 
@@ -48,7 +82,7 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = []
 }
 
-api.interceptors.response.use(
+apiAxiosClient.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config
@@ -66,7 +100,7 @@ api.interceptors.response.use(
           failedQueue.push({
             resolve: (token: string) => {
               originalRequest.headers.Authorization = `Bearer ${token}`
-              resolve(api(originalRequest))
+              resolve(apiAxiosClient(originalRequest))
             },
             reject: (err: any) => reject(err),
           })
@@ -97,7 +131,7 @@ api.interceptors.response.use(
 
         // 원래 실패했던 요청 다시 시도
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-        return api(originalRequest)
+        return apiAxiosClient(originalRequest)
       } catch (err) {
         // 재발급 시도했으나 실패한 경우
         // 리프레시 토큰도 만료된 경우 로그아웃 처리
@@ -115,4 +149,4 @@ api.interceptors.response.use(
   }
 )
 
-export default api
+export default apiAxiosClient

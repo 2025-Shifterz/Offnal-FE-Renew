@@ -1,5 +1,5 @@
 import axios from 'axios'
-import api from './axiosInstance'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 import { CreateCalendarRequest } from '../request/CreateWorkCalendarRequest'
 import { UpdateShiftsRequest } from '../request/PatchWorkCalendarReqeust'
 import {
@@ -15,7 +15,7 @@ export class CalendarService {
     endDate: string
   ): Promise<GetWorkCalendarResponseData[]> => {
     try {
-      const response = await api.get<GetWorkCalendarResponse>(
+      const response = await apiAxiosClient.get<GetWorkCalendarResponse>(
         '/works/calendar',
         {
           params: {
@@ -40,11 +40,15 @@ export class CalendarService {
 
   createWorkCalendar = async (calendarData: CreateCalendarRequest) => {
     try {
-      const response = await api.post('/works/calendar', calendarData)
+      const response = await apiAxiosClient.post(
+        '/works/calendar',
+        calendarData
+      )
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('API 요청 실패:', error.response?.data || error.message)
+        console.error('API 요청 실패:', error.request || error.message)
+        console.error('API 요청 실패:', error.config?.headers || error.message)
       } else {
         console.error('알 수 없는 에러:', error)
       }
@@ -55,7 +59,7 @@ export class CalendarService {
 
   deleteWorkCalendar = async (organizationName: string, team: string) => {
     try {
-      const response = await api.delete(`/works/calendar`, {
+      const response = await apiAxiosClient.delete(`/works/calendar`, {
         params: {
           organizationName,
           team,
@@ -78,12 +82,16 @@ export class CalendarService {
     shiftsData: UpdateShiftsRequest
   ) => {
     try {
-      const response = await api.patch('/works/calendar', shiftsData, {
-        params: {
-          organizationName,
-          team,
-        },
-      })
+      const response = await apiAxiosClient.patch(
+        '/works/calendar',
+        shiftsData,
+        {
+          params: {
+            organizationName,
+            team,
+          },
+        }
+      )
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
