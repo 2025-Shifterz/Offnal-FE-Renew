@@ -1,7 +1,7 @@
 import { GetTodosResponse } from '../response/GetTodosResponse'
 import { PostCreateTodoRequest } from '../request/PostCreateTodoRequest'
 import { PatchUpdateTodoRequest } from '../request/PatchUpdateTodoRequest'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class TodoService {
   async getTodos(filter: string, organizationId: number) {

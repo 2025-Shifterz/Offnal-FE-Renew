@@ -4,7 +4,7 @@ import { PatchProfileRequest } from '../request/PatchProfileRequest'
 import { ImagePickerAssetRequest } from '../request/ImagePickerAssetRequest'
 import { PatchProfileResponse } from '../response/PatchProfileResponse'
 import { GetPresignedUrlResponse } from '../response/GetPresignedUrlResponse'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class MemberService {
   getProfile = async () => {

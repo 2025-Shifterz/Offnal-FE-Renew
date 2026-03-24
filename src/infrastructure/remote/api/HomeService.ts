@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { GetScheduleResponse } from '../response/GetScheduleResponse'
 import { GetRoutineResponse } from '../response/GetRoutineResponse'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class HomeService {
   getSchedule = async () => {

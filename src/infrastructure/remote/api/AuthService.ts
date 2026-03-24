@@ -1,6 +1,7 @@
 import { PostLoginWithAppleRequest } from '../request/PostLoginWithAppleRequest'
 import { PostLoginWithAppleResponse } from '../response/PostLoginWithAppleResponse'
-import { baseAxiosClient, apiAxiosClient } from '../axios/createAxiosClient'
+import { baseAxiosClient } from '../axios/createBaseAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class AuthService {
   getLoginUrl = async () => {

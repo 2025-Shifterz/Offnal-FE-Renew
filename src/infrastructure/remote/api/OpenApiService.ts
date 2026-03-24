@@ -1,5 +1,5 @@
 import { OPEN_API_SERVICE_KEY } from '@env'
-import { openApiAxiosClient } from '../axios/createAxiosClient'
+import { openApiAxiosClient } from '../axios/createOpenApiAxiosClient'
 import {
   GetRestDeInfoResponse,
   SerializedGetRestDeInfoResponse,

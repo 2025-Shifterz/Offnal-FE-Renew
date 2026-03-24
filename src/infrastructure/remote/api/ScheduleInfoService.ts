@@ -2,7 +2,7 @@ import {
   GetScheduleInfoResponse,
   GetScheduleInfoResponseData,
 } from '../response/GetScheduleInfoResponse'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 // workTimes(D/E/N/-)을 조회하는 API
 export class ScheduleInfoService {

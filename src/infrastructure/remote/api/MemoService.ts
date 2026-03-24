@@ -1,7 +1,7 @@
 import { GetMemosResponse } from '../response/GetMemosResponse'
 import { PostCreateMemoRequest } from '../request/PostCreateMemoRequest'
 import { PatchUpdateMemoRequest } from '../request/PatchUpdateMemoRequest'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class MemoService {
   async getMemos(filter: string, organizationId: number) {

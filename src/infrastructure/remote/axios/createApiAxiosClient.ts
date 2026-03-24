@@ -1,7 +1,14 @@
 import { useAuthStore } from '../../../store/useAuthStore'
 import { authService } from '../../di/Dependencies'
 import { resetAllStore } from '../../../shared/utils/store/resetAllStore'
-import { apiAxiosClient, openApiAxiosClient } from './createAxiosClient'
+import { openApiAxiosClient } from './createOpenApiAxiosClient'
+import axios from 'axios'
+import { API_URL } from '@env'
+
+export const apiAxiosClient = axios.create({
+  baseURL: API_URL,
+  timeout: 10000,
+})
 
 // Request Logger Interceptor
 apiAxiosClient.interceptors.request.use(config => {

@@ -4,7 +4,7 @@ import {
   GetTeamWorkCalendarResponseData,
 } from '../response/GetTeamWorkCalendarResponse'
 import { UpdateTeamShiftsRequest } from '../request/PatchTeamWorkCalendarRequest'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
 export class TeamCalendarService {
   // organizationName이 같은 조직들의 근무 일정 조회

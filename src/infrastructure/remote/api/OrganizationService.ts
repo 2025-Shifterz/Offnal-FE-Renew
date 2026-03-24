@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 import {
   GetAllOrganizationsResponse,
   GetAllOrganizationsResponseData,

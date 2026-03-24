@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { apiAxiosClient } from '../axios/createAxiosClient'
+import { apiAxiosClient } from '../axios/createApiAxiosClient'
 import { CreateCalendarRequest } from '../request/CreateWorkCalendarRequest'
 import { UpdateShiftsRequest } from '../request/PatchWorkCalendarReqeust'
 import {
@@ -47,7 +47,8 @@ export class CalendarService {
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('API 요청 실패:', error.response?.data || error.message)
+        console.error('API 요청 실패:', error.request || error.message)
+        console.error('API 요청 실패:', error.config?.headers || error.message)
       } else {
         console.error('알 수 없는 에러:', error)
       }
