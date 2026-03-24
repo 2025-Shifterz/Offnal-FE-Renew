@@ -2,7 +2,17 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+ext {
+    REACT_NATIVE_NODE_MODULES_DIR = rootProject.file("../node_modules/react-native")
+    REACT_NATIVE_WORKLETS_NODE_MODULES_DIR = rootProject.file("../node_modules/react-native-worklets")
+}
+
+def nodeBinary = System.getenv("NODE_BINARY")?.trim()
+
 react {
+    if (nodeBinary) {
+        nodeExecutableAndArgs = [nodeBinary]
+    }
     autolinkLibrariesWithApp()
 }
 
