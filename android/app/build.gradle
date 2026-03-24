@@ -2,7 +2,31 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+ext {
+    REACT_NATIVE_NODE_MODULES_DIR = rootProject.file("../node_modules/react-native")
+    REACT_NATIVE_WORKLETS_NODE_MODULES_DIR = rootProject.file("../node_modules/react-native-worklets")
+}
+
+def findNodeBinary = {
+    def envNodeBinary = System.getenv("NODE_BINARY")?.trim()
+    if (envNodeBinary) {
+        return envNodeBinary
+    }
+
+    def candidates = [
+        "/opt/homebrew/bin/node",
+        "/usr/local/bin/node",
+        "${System.getenv("HOME")}/.nvm/versions/node/current/bin/node",
+    ]
+
+    def found = candidates.find { file(it).exists() }
+    return found ?: "node"
+}
+
+def nodeBinary = findNodeBinary()
+
 react {
+    nodeExecutableAndArgs = [nodeBinary]
     autolinkLibrariesWithApp()
 }
 

@@ -1,6 +1,27 @@
 pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
 plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+
+def findNodeBinary = {
+    def envNodeBinary = System.getenv("NODE_BINARY")?.trim()
+    if (envNodeBinary) {
+        return envNodeBinary
+    }
+
+    def candidates = [
+        "/opt/homebrew/bin/node",
+        "/usr/local/bin/node",
+        "${System.getenv("HOME")}/.nvm/versions/node/current/bin/node",
+    ]
+
+    def found = candidates.find { file(it).exists() }
+    return found ?: "node"
+}
+
+def nodeBinary = findNodeBinary()
+
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex ->
+    ex.autolinkLibrariesFromCommand([nodeBinary, "./node_modules/@react-native-community/cli/build/bin.js", "config"])
+}
 rootProject.name = "Offnal"
 include ':app'
 
