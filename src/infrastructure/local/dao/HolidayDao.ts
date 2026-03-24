@@ -55,21 +55,20 @@ export class HolidayDao {
     const db = await openShifterzDB()
     const now = Date.now()
 
-    await db.executeSql('DELETE FROM holiday_items WHERE year = ?;', [year])
-    await db.executeSql(
-      `INSERT OR REPLACE INTO holiday_cache_meta (year, totalCount, fetchedAt)
-       VALUES (?, ?, ?);`,
-      [year, totalCount, now]
-    )
-
-    for (const item of items) {
-      await db.executeSql(
-        `INSERT INTO holiday_items
-         (year, dateName, locdate)
-         VALUES (?, ?, ?);`,
-        [year, item.dateName, item.locdate]
+    await db.transaction(async tx => {
+      await tx.executeSql('DELETE FROM holiday_items WHERE year = ?;', [year])
+      await tx.executeSql(
+        `INSERT OR REPLACE INTO holiday_cache_meta (year, totalCount, fetchedAt) VALUES (?, ?, ?);`,
+        [year, totalCount, now]
       )
-    }
+
+      for (const item of items) {
+        await tx.executeSql(
+          `INSERT INTO holiday_items (year, dateName, locdate) VALUES (?, ?, ?);`,
+          [year, item.dateName, item.locdate]
+        )
+      }
+    })
   }
 
   async getHolidayItemsByYear(year: string): Promise<HolidayEntity[]> {
