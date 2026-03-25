@@ -11,6 +11,11 @@
     <uses-permission android:name="android.permission.health.WRITE_WEIGHT"/>
     <uses-permission android:name="android.permission.health.WRITE_HEIGHT"/>
 
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
+
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -50,7 +55,7 @@
         </intent-filter>
       </activity>
       <activity
-        android:name=".PermissionsRationaleActivity"
+        android:name=".module.health.PermissionsRationaleActivity"
         android:exported="true">
         <intent-filter>
           <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />
@@ -70,5 +75,11 @@
       </intent-filter>
     </activity-alias>
 
+        <service android:name=".module.alarm.AutoAlarmService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"/>
+
+        <receiver android:name=".module.alarm.AutoAlarmReceiver"
+            android:exported="true"/>
   </application>
 </manifest>
