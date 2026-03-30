@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { Asset } from 'react-native-image-picker'
+import apiAxiosClient from '../axios/createApiAxiosClient'
+import { PostBedrockVisionResponse } from '../response/PostBedrockVisionResponse'
 
 export class OcrService {
   getOcrResult = async (asset: Asset) => {
@@ -9,7 +11,7 @@ export class OcrService {
       uri: asset.uri,
       name: asset.fileName || 'upload.jpg',
       type: asset.type || 'image/jpeg',
-    } as any)
+    } as unknown as Blob)
 
     const response = await axios.post(
       'https://api.offnal.site/api/analyze-table',
@@ -44,5 +46,27 @@ export class OcrService {
         response.data
       )
     }
+  }
+
+  getVisionResult = async (
+    asset: Asset
+  ): Promise<PostBedrockVisionResponse> => {
+    const formData = new FormData()
+
+    formData.append('file', {
+      uri: asset.uri,
+      name: asset.fileName || 'upload.jpg',
+      type: asset.type || 'image/jpeg',
+    } as unknown as Blob)
+
+    const response = await apiAxiosClient.post<PostBedrockVisionResponse>(
+      '/bedrock/vision',
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    )
+
+    return response.data
   }
 }

@@ -5,7 +5,6 @@ import {
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker'
-import { NativeModules } from 'react-native'
 import {
   openSettings,
   Permission,
@@ -28,9 +27,7 @@ import { SchedulePhotoType } from '../../types/scheduleTypes'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 import EmphasizedButton from '../../../../shared/components/button/Button'
 import GlobalText from '../../../../shared/components/text/GlobalText'
-
-const { ScheduleModule } = NativeModules
-const { ImageProcessorModule } = NativeModules
+import { PostBedrockVisionResponse } from '../../../../infrastructure/remote/response/PostBedrockVisionResponse'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -46,7 +43,6 @@ const SelectPhotoOCRScreen = () => {
 
   const { year, month } = route.params
 
-  const [imageUri, setImageUri] = useState<string | null | undefined>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const requestPermissions = async (
@@ -106,34 +102,17 @@ const SelectPhotoOCRScreen = () => {
     return allGranted
   }
 
-  const analyzeScheduleImage = async () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        quality: 1,
-      },
-      hadleOCRResponse
-    )
+  function normalizeTeamNumber(team: string) {
+    const trimmedTeam = team.trim()
+
+    if (trimmedTeam.endsWith('조')) {
+      return trimmedTeam.slice(0, -1)
+    }
+
+    return trimmedTeam
   }
 
-  const openCameraImage = async () => {
-    const hasPermission = await requestPermissions('camera')
-    if (!hasPermission) return
-
-    launchCamera(
-      {
-        mediaType: 'photo',
-        cameraType: 'back',
-        quality: 1,
-        saveToPhotos: true,
-        includeBase64: false,
-      },
-      hadleOCRResponse
-    )
-  }
-
-  const hadleOCRResponse = async (response: ImagePickerResponse) => {
+  async function handleOCRResponse(response: ImagePickerResponse) {
     if (response.didCancel) return
     if (response.errorCode) {
       Alert.alert('Camera Error', response.errorMessage)
@@ -143,51 +122,23 @@ const SelectPhotoOCRScreen = () => {
     const asset = response.assets?.[0]
     if (!asset) return
 
-    setImageUri(asset.uri)
     setIsAnalyzing(true)
 
     try {
-      const ocrResult = await ocrService.getOcrResult(asset)
+      const visionResult: PostBedrockVisionResponse =
+        await ocrService.getVisionResult(asset)
 
-      console.log(ocrResult)
+      const ocrResult: [string, Record<string, string>][] =
+        visionResult.data.bedrockResponse.calendars.map(({ team, shifts }) => [
+          normalizeTeamNumber(team),
+          shifts,
+        ])
 
-      ocrResult?.forEach(([group, ShiftDay]) => {
-        console.log(`근무조: ${group}`)
-
-        for (const day in ShiftDay) {
-          if (Object.prototype.hasOwnProperty.call(ShiftDay, day)) {
-            const shiftType = ShiftDay[day]
-            console.log(` ${day}일: ${shiftType}`)
-          }
-        }
-      })
-
-      // 첫 번째 근무조 (인덱스 0)의 데이터 추출
-      if (ocrResult && ocrResult.length > 0) {
-        const [firstWorkGroupNumber, firstShiftsByDay] = ocrResult[0]
-
-        console.log(`첫 번째 근무조 번호: ${firstWorkGroupNumber}`) // 예: "1"
-        console.log('첫 번째 근무조의 근무표:', firstShiftsByDay)
-      }
-
-      // 만약 '2'번 근무조의 데이터만 명시적으로 찾고 싶다면
-      const group2Data =
-        ocrResult && ocrResult.find(([groupNum]) => groupNum === '2')
-      if (group2Data) {
-        const [group2Number, group2Shifts] = group2Data
-        console.log(`2번 근무조: ${group2Number}, Shifts:`, group2Shifts)
-      }
-
-      // 예시: 첫 번째 근무조의 1일자 근무 타입 추출
-      if (ocrResult && ocrResult.length > 0) {
-        const [, firstShiftsByDay] = ocrResult[0] // 첫 번째 요소의 shiftsByDay만 추출
-
-        const day1Shift = firstShiftsByDay['1']
-        console.log(`첫 번째 근무조의 1일자 근무: ${day1Shift}`) // 예: "D"
-
-        const day15Shift = firstShiftsByDay['15']
-        console.log(`첫 번째 근무조의 15일자 근무: ${day15Shift}`) // 예: "N"
-      }
+      console.log('Serialized Vision OCR Result for Navigation:', ocrResult)
+      console.log(
+        'Unreadable Cells:',
+        visionResult.data.bedrockResponse.unreadableCells
+      )
 
       const nextStep = goNextOnboadingScreen(
         onboardingMethod,
@@ -207,6 +158,33 @@ const SelectPhotoOCRScreen = () => {
     } finally {
       setIsAnalyzing(false)
     }
+  }
+
+  const analyzeScheduleImage = async () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+        quality: 1,
+      },
+      handleOCRResponse
+    )
+  }
+
+  const openCameraImage = async () => {
+    const hasPermission = await requestPermissions('camera')
+    if (!hasPermission) return
+
+    launchCamera(
+      {
+        mediaType: 'photo',
+        cameraType: 'back',
+        quality: 1,
+        saveToPhotos: true,
+        includeBase64: false,
+      },
+      handleOCRResponse
+    )
   }
 
   const [localSelectedPhotoBoxType, setLocalSelectedPhotoBoxType] =
