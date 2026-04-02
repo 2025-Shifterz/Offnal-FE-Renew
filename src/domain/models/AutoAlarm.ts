@@ -17,6 +17,7 @@ export interface AlarmTime {
 }
 
 export interface AlarmSnooze {
+  enabled: boolean
   intervalMinutes: number
   repeatCount: number
 }

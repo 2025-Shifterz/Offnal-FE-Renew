@@ -28,7 +28,7 @@ import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
 import OnboardingMethodScreen from '../presentation/onboarding/screens/OnboardingMethodScreen'
 
 // Migrate from AutoAlarmNavigator.tsx
-import CreateAlarmScreen from '../presentation/alarm/screen/CreateAlarmScreen'
+import CreateAutoAlarmScreen from '../presentation/alarm/screen/CreateAutoAlarmScreen'
 import EditAutoAlarmScreen from '../presentation/alarm/screen/EditAutoAlarmScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
@@ -250,7 +250,7 @@ const RootNavigator = () => {
         {/* Migrate from AutoAlarmNavigator.tsx */}
         <RootStack.Screen
           name="CreateAlarm"
-          component={CreateAlarmScreen}
+          component={CreateAutoAlarmScreen}
           options={({ navigation }) => ({
             header: () => (
               <CenterAlignedTopAppBar

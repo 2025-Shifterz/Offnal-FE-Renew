@@ -1,4 +1,4 @@
-import { openShifterzDB } from '../ShifterzDB'
+import { openDatabase } from '../database'
 import {
   HolidayCacheMetaEntity,
   HolidayEntity,
@@ -11,7 +11,7 @@ const formatLocdate = (locdate: number): string => {
 
 export class HolidayDao {
   async getCacheMeta(year: string): Promise<HolidayCacheMetaEntity | null> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
     const [result] = await db.executeSql(
       'SELECT year, totalCount, fetchedAt FROM holiday_cache_meta WHERE year = ?;',
       [year]
@@ -37,7 +37,7 @@ export class HolidayDao {
       return false
     }
 
-    const db = await openShifterzDB()
+    const db = await openDatabase()
     const [result] = await db.executeSql(
       'SELECT COUNT(*) AS count FROM holiday_items WHERE year = ?;',
       [year]
@@ -52,7 +52,7 @@ export class HolidayDao {
     items: Omit<HolidayEntity, 'id' | 'year' | 'createdAt' | 'updatedAt'>[],
     totalCount: number
   ): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
     const now = Date.now()
 
     await db.transaction(async tx => {
@@ -72,7 +72,7 @@ export class HolidayDao {
   }
 
   async getHolidayItemsByYear(year: string): Promise<HolidayEntity[]> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
     const [result] = await db.executeSql(
       'SELECT * FROM holiday_items WHERE year = ? ORDER BY locdate ASC;',
       [year]

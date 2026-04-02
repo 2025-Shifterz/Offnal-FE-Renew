@@ -10,17 +10,7 @@ import SortBottomSheet, {
   SortBottomSheetMethods,
 } from './SortBottomSheet'
 import EditModeDeleteBar from './EditModeDeleteBar'
-
-type ShiftType = '주간' | '오후' | '야간' | '휴일'
-
-export interface AlarmListItem {
-  id: string
-  shiftType: ShiftType
-  etaText: string
-  meridiem: '오전' | '오후'
-  time: string
-  enabled: boolean
-}
+import { AlarmListItem, AlarmListShiftType } from '../types/alarmListItem'
 
 interface FilledAlarmPageProps {
   initialItems?: AlarmListItem[]
@@ -131,7 +121,7 @@ const defaultAlarmItems: AlarmListItem[] = [
 ]
 
 const tagStyleMap: Record<
-  ShiftType,
+  AlarmListShiftType,
   { backgroundClass: string; textClass: string }
 > = {
   주간: {
@@ -162,7 +152,7 @@ const getTagClassName = (item: AlarmListItem) => {
   return tagStyleMap[item.shiftType]
 }
 
-const shiftSortOrder: Record<ShiftType, number> = {
+const shiftSortOrder: Record<AlarmListShiftType, number> = {
   주간: 0,
   오후: 1,
   야간: 2,

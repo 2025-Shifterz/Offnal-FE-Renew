@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import EmptyAlarmPage from '../components/EmptyAlarmPage'
 import FilledAlarmPage from '../components/FilledAlarmPage'
@@ -11,15 +11,32 @@ import { rootNavigation } from '../../../navigation/types/StackTypes'
 import StartAlignedTopAppBar from '../../../shared/components/appbar/StartAlignedTopAppBar'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
+import { toAlarmListItemArray } from '../mappers/alarmListItemMapper'
 
 const AutoAlarmScreen = () => {
-  const [showAlarmList] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [showEditMenu, setShowEditMenu] = useState(false)
 
   const nav = useNavigation<rootNavigation>()
   const insets = useSafeAreaInsets()
   const bottomOffset = 65 + insets.bottom
+
+  const autoAlarms = useAutoAlarmStore(state => state.autoAlarms)
+  const fetchAllAutoAlarms = useAutoAlarmStore(
+    state => state.fetchAllAutoAlarms
+  )
+
+  const alarmListItems = useMemo(
+    () => toAlarmListItemArray(autoAlarms),
+    [autoAlarms]
+  )
+
+  useEffect(() => {
+    fetchAllAutoAlarms().catch(error => {
+      console.error('Failed to load auto alarms:', error)
+    })
+  }, [fetchAllAutoAlarms])
 
   useEffect(() => {
     const navListener = nav.addListener('blur', () => {
@@ -84,8 +101,13 @@ const AutoAlarmScreen = () => {
   return (
     <View className="flex-1 bg-background-gray-subtle1">
       <View className="flex-1">
-        {showAlarmList ? (
+        {alarmListItems.length === 0 ? (
+          <EmptyAlarmPage
+            handleShowAlarmList={() => nav.navigate('CreateAlarm')}
+          />
+        ) : (
           <FilledAlarmPage
+            initialItems={alarmListItems}
             bottomOffset={bottomOffset}
             isEditing={isEditing}
             onPressItem={item => {
@@ -95,10 +117,6 @@ const AutoAlarmScreen = () => {
               setShowEditMenu(false)
               nav.navigate('EditAutoAlarm', { alarmId: item.id })
             }}
-          />
-        ) : (
-          <EmptyAlarmPage
-            handleShowAlarmList={() => nav.navigate('CreateAlarm')}
           />
         )}
       </View>
