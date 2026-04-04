@@ -1,3 +1,5 @@
+import { OcrResult } from '../../domain/models/OcrResult'
+
 export type OnboardingRoute =
   | { name: 'SelectScheduleScope' }
   | { name: 'InputSchedule' }
@@ -7,7 +9,7 @@ export type OnboardingRoute =
       params: {
         year: number
         month: number
-        ocrResult?: unknown
+        ocrResult?: OcrResult
       }
     }
   | { name: 'EditScheduleOCR' }

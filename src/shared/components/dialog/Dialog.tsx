@@ -1,36 +1,32 @@
 import { Modal, Pressable, TouchableOpacity, View } from 'react-native'
-import GlobalText from './text/GlobalText'
+import GlobalText from '../text/GlobalText'
 
-type ConfirmDialogProps = {
+type DialogProps = {
   visible: boolean
   title: string
   description: string
-  cancelText?: string
   confirmText?: string
-  onCancel: () => void
   onConfirm: () => void
 }
 
-const ConfirmDialog = ({
+const Dialog = ({
   visible,
   title,
   description,
-  cancelText = '취소',
   confirmText = '확인',
-  onCancel,
   onConfirm,
-}: ConfirmDialogProps) => {
+}: DialogProps) => {
   return (
     <Modal
       transparent={true}
       animationType="fade"
       statusBarTranslucent={true}
       visible={visible}
-      onRequestClose={onCancel}
+      onRequestClose={onConfirm}
     >
       <Pressable
         className="flex-1 items-center justify-center bg-alpha-inverse50 px-[16px]"
-        onPress={onCancel}
+        onPress={onConfirm}
       >
         <Pressable
           className="w-[286px] rounded-radius-xl bg-surface-white px-[16px] pb-[16px] pt-[20px]"
@@ -48,14 +44,6 @@ const ConfirmDialog = ({
 
             <View className="mt-[20px] flex-row gap-[8px]">
               <TouchableOpacity
-                className="h-[48px] flex-1 items-center justify-center rounded-radius-m bg-surface-gray-subtle1"
-                onPress={onCancel}
-              >
-                <GlobalText className="font-pretMedium text-text-basic body-m">
-                  {cancelText}
-                </GlobalText>
-              </TouchableOpacity>
-              <TouchableOpacity
                 className="h-[48px] flex-1 items-center justify-center rounded-radius-m bg-surface-inverse"
                 onPress={onConfirm}
               >
@@ -71,4 +59,4 @@ const ConfirmDialog = ({
   )
 }
 
-export default ConfirmDialog
+export default Dialog

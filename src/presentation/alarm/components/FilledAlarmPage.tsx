@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { FlatList, TouchableOpacity, View } from 'react-native'
 import { Portal } from '@gorhom/portal'
 import Checkbox from '../../../shared/components/Checkbox'
-import ConfirmDialog from '../../../shared/components/ConfirmDialog'
+import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import ToggleSwitch from '../../../shared/components/ToggleSwitch'
 import SortBottomSheet, {

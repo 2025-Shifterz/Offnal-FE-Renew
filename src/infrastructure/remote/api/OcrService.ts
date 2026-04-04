@@ -4,60 +4,10 @@ import apiAxiosClient from '../axios/createApiAxiosClient'
 import { PostBedrockVisionResponse } from '../response/PostBedrockVisionResponse'
 
 export class OcrService {
-  getOcrResult = async (asset: Asset) => {
-    const formData = new FormData()
-
-    formData.append('file', {
-      uri: asset.uri,
-      name: asset.fileName || 'upload.jpg',
-      type: asset.type || 'image/jpeg',
-    } as unknown as Blob)
-
-    const response = await axios.post(
-      'https://api.offnal.site/api/analyze-table',
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
-    )
-
-    console.log('OCR Result: ', response.data)
-
-    if (
-      response.data &&
-      typeof response.data === 'object' &&
-      'result' in response.data
-    ) {
-      const rawOcrResult = response.data.result
-
-      // Ensure rawOcrResult is an object before converting to entries
-      if (typeof rawOcrResult === 'object' && rawOcrResult !== null) {
-        const ocrResult: [string, { [day: string]: string }][] =
-          Object.entries(rawOcrResult)
-        console.log('Serialized OCR Result for Navigation:', ocrResult)
-
-        return ocrResult
-      } else {
-        console.warn("API response 'result' is not an object:", rawOcrResult)
-      }
-    } else {
-      console.warn(
-        "API response does not contain a 'result' key or is not an object:",
-        response.data
-      )
-    }
-  }
-
   getVisionResult = async (
     asset: Asset
   ): Promise<PostBedrockVisionResponse> => {
-    const formData = new FormData()
-
-    formData.append('file', {
-      uri: asset.uri,
-      name: asset.fileName || 'upload.jpg',
-      type: asset.type || 'image/jpeg',
-    } as unknown as Blob)
+    const formData = this.createImageFormData('image', asset)
 
     const response = await apiAxiosClient.post<PostBedrockVisionResponse>(
       '/bedrock/vision',
@@ -68,5 +18,21 @@ export class OcrService {
     )
 
     return response.data
+  }
+
+  private createImageFormData(fieldName: 'file' | 'image', asset: Asset) {
+    if (!asset.uri) {
+      throw new Error('업로드할 이미지 URI가 없습니다.')
+    }
+
+    const formData = new FormData()
+
+    formData.append(fieldName, {
+      uri: asset.uri,
+      name: asset.fileName || 'upload.jpg',
+      type: asset.type || 'image/jpeg',
+    } as unknown as Blob)
+
+    return formData
   }
 }

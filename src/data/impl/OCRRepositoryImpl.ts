@@ -7,8 +7,8 @@ import { toOcrResultDomain } from '../mappers/OCRMapper'
 export class OCRRepositoryImpl implements OCRRepository {
   constructor(private ocrService: OcrService) {}
 
-  async getOcrResult(asset: Asset): Promise<OcrResult | undefined> {
-    const response = await this.ocrService.getOcrResult(asset)
+  async getVisionResult(asset: Asset): Promise<OcrResult | undefined> {
+    const response = await this.ocrService.getVisionResult(asset)
     if (response === undefined) {
       return undefined
     }
