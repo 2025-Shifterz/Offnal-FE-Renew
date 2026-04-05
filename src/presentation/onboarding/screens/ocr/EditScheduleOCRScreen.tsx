@@ -37,7 +37,12 @@ const EditScheduleOCRScreen = () => {
   }>()
   const { ocrResult, year, month } = route.params
 
-  const [currentDate, setCurrentDate] = useState(dayjs)
+  const [currentDate, setCurrentDate] = useState(() =>
+    dayjs()
+      .year(year)
+      .month(month - 1)
+      .date(1)
+  )
   const calendarEditorRef = useRef<CalendarEditorRef>(null)
   const tCalendarEditorRef = useRef<TCalendarEditorRef>(null)
 
@@ -46,8 +51,8 @@ const EditScheduleOCRScreen = () => {
   const workGroup = useScheduleInfoStore(state => state.workGroup)
 
   const setNewCalendarData = useCalendarStore(state => state.setNewCalendarData)
-  const setTeamCalendarData = useTeamCalendarStore(
-    state => state.setTeamCalendarData
+  const setNewTeamCalendarData = useTeamCalendarStore(
+    state => state.setNewTeamCalendarData
   )
 
   const isProcessedRef = useRef(false)
@@ -59,56 +64,55 @@ const EditScheduleOCRScreen = () => {
     const task = InteractionManager.runAfterInteractions(() => {
       isProcessedRef.current = true
 
-      if (scheduleScope === 'MY') {
-        const scheduleData = convertOCRResultToPersonalSchduleData(
-          year,
-          month,
-          workGroup,
-          ocrResult as [string, Record<string, string>][]
-        )
+      switch (scheduleScope) {
+        case 'MY': {
+          const scheduleData = convertOCRResultToPersonalSchduleData(
+            year,
+            month,
+            workGroup,
+            ocrResult
+          )
 
-        const calendarRecord: Record<
-          string,
-          { workTypeName: string; startTime?: string; endTime?: string }
-        > = {}
+          const calendarRecord: Record<
+            string,
+            { workTypeName: string; startTime?: string; endTime?: string }
+          > = {}
 
-        scheduleData.forEach((workType, dateString) => {
-          calendarRecord[dateString] = { workTypeName: workType }
-        })
-
-        setNewCalendarData(calendarRecord)
-      } else if (scheduleScope === 'ALL') {
-        const teamScheduleData = convertOCRResultToTeamScheduleData(
-          year,
-          month,
-          ocrResult as [string, Record<string, string>][]
-        )
-
-        const formattedData = teamScheduleData.map(
-          ({ team, date, workType }) => ({
-            team,
-            date,
-            workTypeName: workType,
-            startTime: '',
-            endTime: '',
+          scheduleData.forEach((workType, dateString) => {
+            calendarRecord[dateString] = { workTypeName: workType }
           })
-        )
 
-        setTeamCalendarData(formattedData)
+          setNewCalendarData(calendarRecord)
+          break
+        }
+
+        case 'ALL': {
+          const teamScheduleData = convertOCRResultToTeamScheduleData(
+            year,
+            month,
+            ocrResult
+          )
+
+          const formattedData = teamScheduleData.map(
+            ({ team, date, workType }) => ({
+              team,
+              date,
+              workTypeName: workType,
+              startTime: '',
+              endTime: '',
+            })
+          )
+
+          setNewTeamCalendarData(formattedData)
+          break
+        }
       }
     })
 
     return () => task.cancel()
+    // OCR 결과는 첫 진입 시 한 번만 주입한다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    const initialDate = dayjs()
-      .year(year)
-      .month(month - 1)
-      .date(1)
-    setCurrentDate(initialDate)
-  }, [year, month])
 
   const handleNext = () => {
     if (scheduleScope === 'ALL') {

@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Memo } from '../../domain/models/Memo'
 import dayjs from 'dayjs'
+import { OcrResult } from '../../domain/models/OcrResult'
 
 // 네비게이션
 export type onboardingNavigation =
@@ -82,12 +83,12 @@ export type OnboardingStackParamList = {
   SelectPhotoOCR: {
     year: number
     month: number
-    ocrResult?: unknown
+    ocrResult?: OcrResult
   }
   EditScheduleOCR: {
     year: number
     month: number
-    ocrResult?: unknown
+    ocrResult?: OcrResult
   }
   // --
 

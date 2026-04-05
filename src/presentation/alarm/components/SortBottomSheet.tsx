@@ -3,7 +3,7 @@ import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
 import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import RadioButton from '../../../shared/components/RadioButton'
+import RadioButton from '../../../shared/components/button/RadioButton'
 import EmphasizedButton, {
   UnEmphasizedButton,
 } from '../../../shared/components/button/Button'

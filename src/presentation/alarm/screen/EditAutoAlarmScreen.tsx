@@ -22,7 +22,7 @@ import SnoozeBottomSheet, {
   SnoozeSetting,
   getRepeatText,
 } from '../components/SnoozeBottomSheet'
-import ConfirmDialog from '../../../shared/components/ConfirmDialog'
+import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
 import EmphasizedButton from '../../../shared/components/button/Button'
 
 const workTypes = ['주간', '오후', '야간', '휴일']

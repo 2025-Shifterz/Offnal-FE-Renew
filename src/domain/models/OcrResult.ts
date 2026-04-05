@@ -1,6 +1,6 @@
 export interface OcrResultItem {
-  category: string
-  schedule: { [day: string]: string }
+  team: string
+  shifts: Record<string, string>
 }
 
 export type OcrResult = OcrResultItem[]
