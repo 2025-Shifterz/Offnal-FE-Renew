@@ -25,7 +25,7 @@ import SnoozeBottomSheet, {
   SnoozeSetting,
   getRepeatText,
 } from '../components/SnoozeBottomSheet'
-import ConfirmDialog from '../../../shared/components/ConfirmDialog'
+import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
 import EmphasizedButton from '../../../shared/components/button/Button'
 import { RouteProp } from '@react-navigation/native'
 import { WorkType } from '../../../domain/models/Calendar'

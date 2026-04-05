@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import { View, Text, Alert, Platform } from 'react-native'
+import { View, Text, Platform } from 'react-native'
 import {
   ImagePickerResponse,
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker'
-import { NativeModules } from 'react-native'
 import {
   openSettings,
   Permission,
@@ -18,19 +17,21 @@ import TakePicture from '../../../../assets/icons/ic_camera_32.svg'
 import OpenGallery from '../../../../assets/icons/ic_gallery_32.svg'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
-import { ocrService } from '../../../../infrastructure/di/Dependencies'
 import ProgressModal from '../../../../shared/components/progress/ProgressModal'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import goNextOnboadingScreen from '../../flow/goNextOnboardingScreen'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { OnboardingStep } from '../../types/onboardingTypes'
 import { SchedulePhotoType } from '../../types/scheduleTypes'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 import EmphasizedButton from '../../../../shared/components/button/Button'
 import GlobalText from '../../../../shared/components/text/GlobalText'
-
-const { ScheduleModule } = NativeModules
-const { ImageProcessorModule } = NativeModules
+import { useShallow } from 'zustand/shallow'
+import {
+  ErrorDialog,
+  PermissionConfirmDialog,
+  PermissionNeededDialog,
+} from '../../component/OnboardingDialogs'
 
 type ScheduleInfoInputRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -41,13 +42,36 @@ const SelectPhotoOCRScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
+  const insets = useSafeAreaInsets()
   const route = useRoute<ScheduleInfoInputRouteProp>()
-  const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
-
   const { year, month } = route.params
 
-  const [imageUri, setImageUri] = useState<string | null | undefined>(null)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isPermissionDialogVisible, setIsPermissionDialogVisible] =
+    useState(false)
+  const [isPermissionNeededDialogVisible, setIsPermissionNeededDialogVisible] =
+    useState(false)
+  const [isCameraErrorDialogVisible, setIsCameraErrorDialogVisible] =
+    useState(false)
+  const [isOcrFailedDialogVisible, setIsOcrFailedDialogVisible] =
+    useState(false)
+  const [localSelectedPhotoBoxType, setLocalSelectedPhotoBoxType] =
+    useState<SchedulePhotoType>('Gallery')
+
+  const {
+    onboardingMethod,
+    isOcrAnalyzing,
+    ocrProgressPercent,
+    analyzeScheduleImage,
+    clearOcrResult,
+  } = useOnboardingStore(
+    useShallow(state => ({
+      onboardingMethod: state.onboardingMethod,
+      isOcrAnalyzing: state.isOcrAnalyzing,
+      ocrProgressPercent: state.ocrProgressPercent,
+      analyzeScheduleImage: state.analyzeScheduleImage,
+      clearOcrResult: state.clearOcrResult,
+    }))
+  )
 
   const requestPermissions = async (
     permissionType: 'camera' | 'gallery'
@@ -70,7 +94,6 @@ const SelectPhotoOCRScreen = () => {
       if (!perm) continue
 
       const status = await request(perm as Permission)
-      console.log(`Permission ${perm} status:`, status)
 
       if (status !== RESULTS.GRANTED) {
         allGranted = false
@@ -78,43 +101,17 @@ const SelectPhotoOCRScreen = () => {
           status === RESULTS.BLOCKED ||
           (Platform.OS === 'ios' && status === RESULTS.DENIED)
         ) {
-          Alert.alert(
-            '권한 필요',
-            '카메라 접근 권한이 필요합니다. 앱 설정에서 수동으로 권한을 허용해주세요.',
-            [
-              { text: '취소', style: 'cancel' },
-              {
-                text: '설정으로 이동',
-                onPress: () =>
-                  openSettings().catch(() =>
-                    console.warn('Failed to open settings')
-                  ),
-              },
-            ]
-          )
+          setIsPermissionDialogVisible(true)
+
           return false
         } else {
-          Alert.alert(
-            '권한 필요',
-            '요청된 카메라 권한이 거부되었습니다. 해당 기능을 사용하려면 권한을 허용해야 합니다.'
-          )
+          setIsPermissionNeededDialogVisible(true)
           return false
         }
       }
     }
 
     return allGranted
-  }
-
-  const analyzeScheduleImage = async () => {
-    launchImageLibrary(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        quality: 1,
-      },
-      hadleOCRResponse
-    )
   }
 
   const openCameraImage = async () => {
@@ -129,97 +126,70 @@ const SelectPhotoOCRScreen = () => {
         saveToPhotos: true,
         includeBase64: false,
       },
-      hadleOCRResponse
+      handleOcrResult
     )
   }
 
-  const hadleOCRResponse = async (response: ImagePickerResponse) => {
+  const openGalleryImage = async () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+        quality: 1,
+      },
+      handleOcrResult
+    )
+  }
+
+  async function handleOcrResult(response: ImagePickerResponse) {
     if (response.didCancel) return
     if (response.errorCode) {
-      Alert.alert('Camera Error', response.errorMessage)
+      setIsCameraErrorDialogVisible(true)
       return
     }
 
     const asset = response.assets?.[0]
     if (!asset) return
 
-    setImageUri(asset.uri)
-    setIsAnalyzing(true)
+    await analyzeScheduleImage(asset)
 
-    try {
-      const ocrResult = await ocrService.getOcrResult(asset)
+    const { ocrResult, ocrError } = useOnboardingStore.getState()
 
-      console.log(ocrResult)
-
-      ocrResult?.forEach(([group, ShiftDay]) => {
-        console.log(`근무조: ${group}`)
-
-        for (const day in ShiftDay) {
-          if (Object.prototype.hasOwnProperty.call(ShiftDay, day)) {
-            const shiftType = ShiftDay[day]
-            console.log(` ${day}일: ${shiftType}`)
-          }
-        }
-      })
-
-      // 첫 번째 근무조 (인덱스 0)의 데이터 추출
-      if (ocrResult && ocrResult.length > 0) {
-        const [firstWorkGroupNumber, firstShiftsByDay] = ocrResult[0]
-
-        console.log(`첫 번째 근무조 번호: ${firstWorkGroupNumber}`) // 예: "1"
-        console.log('첫 번째 근무조의 근무표:', firstShiftsByDay)
-      }
-
-      // 만약 '2'번 근무조의 데이터만 명시적으로 찾고 싶다면
-      const group2Data =
-        ocrResult && ocrResult.find(([groupNum]) => groupNum === '2')
-      if (group2Data) {
-        const [group2Number, group2Shifts] = group2Data
-        console.log(`2번 근무조: ${group2Number}, Shifts:`, group2Shifts)
-      }
-
-      // 예시: 첫 번째 근무조의 1일자 근무 타입 추출
-      if (ocrResult && ocrResult.length > 0) {
-        const [, firstShiftsByDay] = ocrResult[0] // 첫 번째 요소의 shiftsByDay만 추출
-
-        const day1Shift = firstShiftsByDay['1']
-        console.log(`첫 번째 근무조의 1일자 근무: ${day1Shift}`) // 예: "D"
-
-        const day15Shift = firstShiftsByDay['15']
-        console.log(`첫 번째 근무조의 15일자 근무: ${day15Shift}`) // 예: "N"
-      }
-
-      const nextStep = goNextOnboadingScreen(
-        onboardingMethod,
-        OnboardingStep.SelectPhotoOCR
-      )
-      navigation.navigate({
-        name: nextStep,
-        params: {
-          year,
-          month,
-          ocrResult,
-        },
-      } as OnboardingRoute)
-    } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : String(e)
-      Alert.alert('Analysis Error', errorMessage)
-    } finally {
-      setIsAnalyzing(false)
+    if (ocrError) {
+      setIsOcrFailedDialogVisible(true)
+      return
     }
+
+    if (!ocrResult) {
+      setIsOcrFailedDialogVisible(true)
+      return
+    }
+
+    const nextStep = goNextOnboadingScreen(
+      onboardingMethod,
+      OnboardingStep.SelectPhotoOCR
+    )
+
+    navigation.navigate({
+      name: nextStep,
+      params: {
+        year,
+        month,
+        ocrResult,
+      },
+    } as OnboardingRoute)
   }
 
-  const [localSelectedPhotoBoxType, setLocalSelectedPhotoBoxType] =
-    useState<SchedulePhotoType>('Gallery')
-
-  // 이 함수는 클릭된 박스의 type을 받아서 상태를 업데이트.
   const handleBoxClick = (type: SchedulePhotoType) => {
     setLocalSelectedPhotoBoxType(type)
   }
+
   const handleNext = () => {
+    clearOcrResult()
+
     switch (localSelectedPhotoBoxType) {
       case 'Gallery':
-        analyzeScheduleImage()
+        openGalleryImage()
         break
       case 'Camera':
         openCameraImage()
@@ -228,10 +198,7 @@ const SelectPhotoOCRScreen = () => {
   }
 
   return (
-    <SafeAreaView
-      edges={['bottom', 'left', 'right']}
-      className="flex-1 bg-background-gray-subtle1 px-p-7"
-    >
+    <View className="flex-1 bg-background-gray-subtle1 px-p-7">
       <View className="flex-1">
         <Text className="mb-5 mt-[9px] text-start heading-m">
           인식할 근무표를 등록해주세요.
@@ -254,17 +221,59 @@ const SelectPhotoOCRScreen = () => {
           subtitle="지금 바로 사진을 찍어서 업로드 할 수 있어요."
         />
       </View>
-      <ProgressModal isVisible={isAnalyzing} />
 
-      <EmphasizedButton
-        content={
-          <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
-            다음
-          </GlobalText>
-        }
-        onPress={handleNext}
+      <View style={{ paddingBottom: insets.bottom }}>
+        <EmphasizedButton
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              다음
+            </GlobalText>
+          }
+          onPress={handleNext}
+        />
+      </View>
+
+      <ProgressModal
+        isVisible={isOcrAnalyzing}
+        progressPercent={ocrProgressPercent}
       />
-    </SafeAreaView>
+
+      <PermissionConfirmDialog
+        isVisible={isPermissionDialogVisible}
+        onConfirm={() => {
+          openSettings()
+          setIsPermissionDialogVisible(false)
+        }}
+        onCancel={() => {
+          setIsPermissionDialogVisible(false)
+        }}
+      />
+
+      <PermissionNeededDialog
+        isVisible={isPermissionNeededDialogVisible}
+        onConfirm={() => {
+          setIsPermissionNeededDialogVisible(false)
+        }}
+      />
+
+      <ErrorDialog
+        isVisible={isOcrFailedDialogVisible}
+        title="인식 실패"
+        description="근무표가 제대로 인식되지 않았어요. 다른 사진으로 다시 시도해주세요."
+        onConfirm={() => {
+          setIsOcrFailedDialogVisible(false)
+        }}
+      />
+
+      <ErrorDialog
+        isVisible={isCameraErrorDialogVisible}
+        title="카메라 오류"
+        description="카메라 사용 중 오류가 발생했어요. 다시 시도해주세요."
+        onConfirm={() => {
+          setIsCameraErrorDialogVisible(false)
+        }}
+      />
+    </View>
   )
 }
 
