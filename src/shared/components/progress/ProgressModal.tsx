@@ -77,16 +77,12 @@ const ProgressModal = ({ isVisible, progressPercent }: ProgressModalProps) => {
               }}
             >
               <Animated.View
-                style={[
-                  {
-                    backgroundColor: '#55D9E8',
-                    borderRadius: 999,
-                    height: '100%',
-                  },
-                  typeof animatedFillWidth === 'number'
-                    ? { width: animatedFillWidth }
-                    : { width: animatedFillWidth },
-                ]}
+                style={{
+                  backgroundColor: '#55D9E8',
+                  borderRadius: 999,
+                  height: '100%',
+                  width: animatedFillWidth,
+                }}
               />
             </View>
 

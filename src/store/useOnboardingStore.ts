@@ -139,9 +139,12 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
       ocrResult: null,
     })
 
-    ocrProgressTimer = setInterval(() => {
+    const intervalId = setInterval(() => {
       if (currentRunId !== ocrProgressRunId) {
-        clearOcrProgressTimer()
+        clearInterval(intervalId)
+        if (ocrProgressTimer === intervalId) {
+          ocrProgressTimer = null
+        }
         return
       }
 
@@ -158,6 +161,8 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
         set({ ocrProgressPercent: nextProgress })
       }
     }, OCR_PROGRESS_INTERVAL_MS)
+
+    ocrProgressTimer = intervalId
 
     let ocrResult: OcrResult | null = null
     let ocrError: string | null = null
