@@ -1,4 +1,10 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import EmptyAlarmPage from '../components/EmptyAlarmPage'
 import FilledAlarmPage from '../components/FilledAlarmPage'
@@ -13,6 +19,7 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
 import { toAlarmListItemArray } from '../mappers/alarmListItemMapper'
+import { useCurrentTimeTick } from '../../../shared/hooks/useCurrentTimeTick'
 
 const AutoAlarmScreen = () => {
   const [isEditing, setIsEditing] = useState(false)
@@ -26,10 +33,16 @@ const AutoAlarmScreen = () => {
   const fetchAllAutoAlarms = useAutoAlarmStore(
     state => state.fetchAllAutoAlarms
   )
+  const toggleAutoAlarm = useAutoAlarmStore(state => state.toggleAutoAlarm)
+  const deleteAutoAlarms = useAutoAlarmStore(state => state.deleteAutoAlarms)
+  const setAutoAlarmsEnabled = useAutoAlarmStore(
+    state => state.setAutoAlarmsEnabled
+  )
+  const currentTimeMillis = useCurrentTimeTick()
 
   const alarmListItems = useMemo(
-    () => toAlarmListItemArray(autoAlarms),
-    [autoAlarms]
+    () => toAlarmListItemArray(autoAlarms, currentTimeMillis),
+    [autoAlarms, currentTimeMillis]
   )
 
   useEffect(() => {
@@ -46,6 +59,38 @@ const AutoAlarmScreen = () => {
 
     return navListener
   }, [nav])
+
+  const handleDeleteSelectedItems = useCallback(
+    async (ids: string[]) => {
+      const alarmIds = ids
+        .map(id => Number(id))
+        .filter((alarmId): alarmId is number => !Number.isNaN(alarmId))
+
+      await deleteAutoAlarms(alarmIds)
+    },
+    [deleteAutoAlarms]
+  )
+
+  const handleToggleAlarmItem = useCallback(
+    async (id: string, nextValue: boolean) => {
+      const alarmId = Number(id)
+      if (Number.isNaN(alarmId)) {
+        return
+      }
+
+      await toggleAutoAlarm(alarmId, nextValue)
+    },
+    [toggleAutoAlarm]
+  )
+
+  const handlePressEnableAll = useCallback(async () => {
+    const disabledAlarmIds = alarmListItems
+      .filter(item => !item.enabled)
+      .map(item => Number(item.id))
+      .filter((alarmId): alarmId is number => !Number.isNaN(alarmId))
+
+    await setAutoAlarmsEnabled(disabledAlarmIds, true)
+  }, [alarmListItems, setAutoAlarmsEnabled])
 
   useLayoutEffect(() => {
     nav.setOptions({
@@ -110,6 +155,9 @@ const AutoAlarmScreen = () => {
             initialItems={alarmListItems}
             bottomOffset={bottomOffset}
             isEditing={isEditing}
+            onDeleteSelectedItems={handleDeleteSelectedItems}
+            onToggleItem={handleToggleAlarmItem}
+            onPressEnableAll={handlePressEnableAll}
             onPressItem={item => {
               if (isEditing) {
                 return

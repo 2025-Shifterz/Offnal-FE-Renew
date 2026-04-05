@@ -36,7 +36,7 @@ import {
   UpdateAutoAlarmDraft,
 } from '../types/alarmDraft'
 import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
-import { ScrollView } from 'react-native-gesture-handler'
+import { useAutoAlarmNextTriggerPreview } from '../hooks/useAutoAlarmNextTriggerPreview'
 
 const workTypes: WorkType[] = ['주간', '오후', '야간', '휴일']
 const weekDays: AlarmWeekdayLabel[] = ['일', '월', '화', '수', '목', '금', '토']
@@ -102,6 +102,15 @@ const EditAutoAlarmScreen = () => {
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false)
   const [isEnabled, setIsEnabled] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [isDraftHydrated, setIsDraftHydrated] = useState(false)
+
+  const { previewText } = useAutoAlarmNextTriggerPreview({
+    alarmTime,
+    selectedDays,
+    selectedWorkType,
+    isHolidayAlarmOff,
+    isReady: isDraftHydrated,
+  })
 
   const handleHeaderBackPress = useCallback(() => {
     isHeaderBackRequestedRef.current = true
@@ -196,6 +205,7 @@ const EditAutoAlarmScreen = () => {
     })
     setAlarmTime(nextAlarmTime)
     setIsEnabled(storedAutoAlarm.isEnabled)
+    setIsDraftHydrated(true)
     hasHydratedDraftRef.current = true
   }, [storedAutoAlarm])
 
@@ -260,138 +270,133 @@ const EditAutoAlarmScreen = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
-      <View className="flex-1">
-        <View className="px-[20px]">
-          <View className="w-full overflow-hidden rounded-radius-xl bg-surface-gray-subtle1 px-[8px] py-[8px]">
-            <AlarmWheelTimePicker value={alarmTime} onChange={setAlarmTime} />
-          </View>
-
-          <View className="mt-[12px] w-full flex-row items-center rounded-radius-m border-[0.5px] border-surface-primary-light-3 bg-surface-primary-light px-[16px] py-[12px]">
-            <AlarmIcon width={18} height={18} />
-            <GlobalText className="ml-[8px] font-pretMedium text-text-primary body-s">
-              23시간 41분 후에 울려요
-            </GlobalText>
-          </View>
-
-          <View className="mt-[14px] w-full rounded-radius-xl bg-surface-white p-[16px]">
-            <GlobalText className="font-pretSemiBold text-text-basic heading-xxxs">
-              근무 형태 선택
-            </GlobalText>
-
-            <View className="mt-[12px] flex-row gap-[6px]">
-              {workTypes.map(type => {
-                const isSelected = selectedWorkType === type
-                return (
-                  <TouchableOpacity
-                    key={type}
-                    className={`h-[37px] items-center justify-center rounded-radius-m px-[8px] ${
-                      isSelected
-                        ? 'border-[0.5px] border-border-primary bg-surface-primary-light'
-                        : 'bg-surface-gray-subtle1'
-                    }`}
-                    onPress={() => setSelectedWorkType(type)}
-                  >
-                    <GlobalText
-                      className={`font-pretSemiBold heading-xxxxs ${
-                        isSelected ? 'text-text-primary' : 'text-text-disabled'
-                      }`}
-                    >
-                      {type}
-                    </GlobalText>
-                  </TouchableOpacity>
-                )
-              })}
-            </View>
-
-            <View className="my-[16px] h-[0.5px] w-full bg-divider-gray-light" />
-
-            <GlobalText className="font-pretSemiBold text-text-basic heading-xxxs">
-              요일 선택
-            </GlobalText>
-
-            <View className="mt-[8px] flex-row gap-[6px]">
-              {weekDays.map(day => {
-                const isSelected = selectedDays.includes(day)
-                return (
-                  <TouchableOpacity
-                    key={day}
-                    className={`h-[37px] flex-1 items-center justify-center rounded-radius-m ${
-                      isSelected
-                        ? 'border-[0.5px] border-border-primary bg-surface-primary-light'
-                        : 'bg-surface-gray-subtle1'
-                    }`}
-                    onPress={() => toggleSelectedDay(day)}
-                  >
-                    <GlobalText
-                      className={`font-pretSemiBold heading-xxxxs ${
-                        isSelected ? 'text-text-primary' : 'text-text-disabled'
-                      }`}
-                    >
-                      {day}
-                    </GlobalText>
-                  </TouchableOpacity>
-                )
-              })}
-            </View>
-
-            <View className="mt-[20px]">
-              <View className="flex-row items-center justify-between">
-                <GlobalText className="font-pretMedium text-text-subtle body-xs">
-                  알림 조건
-                </GlobalText>
-                <GlobalText className="font-pretSemiBold text-text-subtle label-xxs">
-                  근무 이면서 요일
-                </GlobalText>
-              </View>
-
-              <View className="mt-[10px] flex-row items-center justify-between">
-                <GlobalText className="font-pretMedium text-text-subtle body-xs">
-                  공휴일 알람 끄기
-                </GlobalText>
-                <ToggleSwitch
-                  onValueChange={setIsHolidayAlarmOff}
-                  value={isHolidayAlarmOff}
-                />
-              </View>
-            </View>
-
-            <View className="my-[16px] h-[0.5px] w-full bg-divider-gray-light" />
-
-            <TouchableOpacity
-              className="flex-row items-center justify-between"
-              onPress={() => snoozeBottomSheetRef.current?.open()}
-            >
-              <GlobalText className="font-pretSemiBold text-text-basic heading-xxs">
-                알람 미루기
-              </GlobalText>
-              <View className="flex-row items-center">
-                <GlobalText className="font-pretMedium text-text-subtle body-xs">
-                  {snoozeLabel}
-                </GlobalText>
-                <View className="ml-[6px]">
-                  <RightArrow width={16} height={16} />
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
+      <View className="flex-1 px-[20px]">
+        <View className="w-full overflow-hidden rounded-radius-xl bg-surface-gray-subtle1 px-[8px] py-[8px]">
+          <AlarmWheelTimePicker value={alarmTime} onChange={setAlarmTime} />
         </View>
 
-        <View
-          className="px-[20px]"
-          style={{ paddingBottom: insets.bottom + 13 }}
-        >
-          <EmphasizedButton
-            onPress={() => {
-              handleSavePress()
-            }}
-            disabled={isSaving}
-            content={
-              <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
-                저장하기
-              </GlobalText>
-            }
-          />
+        <View className="mt-[12px] w-full flex-row items-center rounded-radius-m border-[0.5px] border-surface-primary-light-3 bg-surface-primary-light px-[16px] py-[12px]">
+          <AlarmIcon width={18} height={18} />
+          <GlobalText className="ml-[8px] font-pretMedium text-text-primary body-s">
+            {previewText}
+          </GlobalText>
         </View>
+
+        <View className="mt-[14px] w-full rounded-radius-xl bg-surface-white p-[16px]">
+          <GlobalText className="font-pretSemiBold text-text-basic heading-xxxs">
+            근무 형태 선택
+          </GlobalText>
+
+          <View className="mt-[12px] flex-row gap-[6px]">
+            {workTypes.map(type => {
+              const isSelected = selectedWorkType === type
+              return (
+                <TouchableOpacity
+                  key={type}
+                  className={`h-[37px] items-center justify-center rounded-radius-m px-[8px] ${
+                    isSelected
+                      ? 'border-[0.5px] border-border-primary bg-surface-primary-light'
+                      : 'bg-surface-gray-subtle1'
+                  }`}
+                  onPress={() => setSelectedWorkType(type)}
+                >
+                  <GlobalText
+                    className={`font-pretSemiBold heading-xxxxs ${
+                      isSelected ? 'text-text-primary' : 'text-text-disabled'
+                    }`}
+                  >
+                    {type}
+                  </GlobalText>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+
+          <View className="my-[16px] h-[0.5px] w-full bg-divider-gray-light" />
+
+          <GlobalText className="font-pretSemiBold text-text-basic heading-xxxs">
+            요일 선택
+          </GlobalText>
+
+          <View className="mt-[8px] flex-row gap-[6px]">
+            {weekDays.map(day => {
+              const isSelected = selectedDays.includes(day)
+              return (
+                <TouchableOpacity
+                  key={day}
+                  className={`h-[37px] flex-1 items-center justify-center rounded-radius-m ${
+                    isSelected
+                      ? 'border-[0.5px] border-border-primary bg-surface-primary-light'
+                      : 'bg-surface-gray-subtle1'
+                  }`}
+                  onPress={() => toggleSelectedDay(day)}
+                >
+                  <GlobalText
+                    className={`font-pretSemiBold heading-xxxxs ${
+                      isSelected ? 'text-text-primary' : 'text-text-disabled'
+                    }`}
+                  >
+                    {day}
+                  </GlobalText>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+
+          <View className="mt-[20px]">
+            <View className="flex-row items-center justify-between">
+              <GlobalText className="font-pretMedium text-text-subtle body-xs">
+                알림 조건
+              </GlobalText>
+              <GlobalText className="font-pretSemiBold text-text-subtle label-xxs">
+                근무 이면서 요일
+              </GlobalText>
+            </View>
+
+            <View className="mt-[10px] flex-row items-center justify-between">
+              <GlobalText className="font-pretMedium text-text-subtle body-xs">
+                공휴일 알람 끄기
+              </GlobalText>
+              <ToggleSwitch
+                onValueChange={setIsHolidayAlarmOff}
+                value={isHolidayAlarmOff}
+              />
+            </View>
+          </View>
+
+          <View className="my-[16px] h-[0.5px] w-full bg-divider-gray-light" />
+
+          <TouchableOpacity
+            className="flex-row items-center justify-between"
+            onPress={() => snoozeBottomSheetRef.current?.open()}
+          >
+            <GlobalText className="font-pretSemiBold text-text-basic heading-xxs">
+              알람 미루기
+            </GlobalText>
+            <View className="flex-row items-center">
+              <GlobalText className="font-pretMedium text-text-subtle body-xs">
+                {snoozeLabel}
+              </GlobalText>
+              <View className="ml-[6px]">
+                <RightArrow width={16} height={16} />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View className="px-[20px]" style={{ paddingBottom: insets.bottom + 13 }}>
+        <EmphasizedButton
+          onPress={() => {
+            handleSavePress()
+          }}
+          disabled={isSaving}
+          content={
+            <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
+              저장하기
+            </GlobalText>
+          }
+        />
       </View>
 
       <SnoozeBottomSheet

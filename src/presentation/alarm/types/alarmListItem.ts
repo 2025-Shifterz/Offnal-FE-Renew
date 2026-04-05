@@ -5,6 +5,7 @@ export interface AlarmListItem {
   id: string
   shiftType: AlarmListShiftType
   etaText: string
+  remainingMillis?: number
   meridiem: AlarmListMeridiem
   time: string
   enabled: boolean

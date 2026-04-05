@@ -25,6 +25,7 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import ToggleSwitch from '../../../shared/components/ToggleSwitch'
 import EmphasizedButton from '../../../shared/components/button/Button'
 import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
+import { useAutoAlarmNextTriggerPreview } from '../hooks/useAutoAlarmNextTriggerPreview'
 
 const workTypes: WorkType[] = ['주간', '오후', '야간', '휴일']
 const weekDays: AlarmWeekdayLabel[] = ['일', '월', '화', '수', '목', '금', '토']
@@ -53,6 +54,12 @@ const CreateAutoAlarmScreen = () => {
     const initialTime = new Date()
     initialTime.setHours(9, 0, 0, 0)
     return initialTime
+  })
+  const { previewText } = useAutoAlarmNextTriggerPreview({
+    alarmTime,
+    selectedDays,
+    selectedWorkType,
+    isHolidayAlarmOff,
   })
 
   const toggleSelectedDay = (day: AlarmWeekdayLabel) => {
@@ -136,7 +143,7 @@ const CreateAutoAlarmScreen = () => {
 
   return (
     <View className="flex-1 bg-background-gray-subtle1">
-      <View className="flex-1">
+      <View className="flex-1 px-[20px]">
         <View className="w-full overflow-hidden rounded-radius-xl bg-surface-gray-subtle1 px-[8px] py-[8px]">
           <AlarmWheelTimePicker value={alarmTime} onChange={setAlarmTime} />
         </View>
@@ -144,7 +151,7 @@ const CreateAutoAlarmScreen = () => {
         <View className="mt-[12px] w-full flex-row items-center rounded-radius-m border-[0.5px] border-surface-primary-light-3 bg-surface-primary-light px-[16px] py-[12px]">
           <AlarmIcon width={18} height={18} />
           <GlobalText className="ml-[8px] font-pretMedium text-text-primary body-s">
-            23시간 41분 후에 울려요
+            {previewText}
           </GlobalText>
         </View>
 

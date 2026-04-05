@@ -1,15 +1,24 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { AutoAlarm } from '../domain/models/AutoAlarm'
-import { autoAlarmRepository } from '../infrastructure/di/Dependencies'
+import {
+  autoAlarmRepository,
+  getHolidayDateSetUseCase,
+} from '../infrastructure/di/Dependencies'
 import {
   toCreateAutoAlarmInput,
   toUpdateAutoAlarmInput,
 } from '../presentation/alarm/mappers/alarmDraftMapper'
 import {
+  AlarmDraft,
   CreateAutoAlarmDraft,
   UpdateAutoAlarmDraft,
 } from '../presentation/alarm/types/alarmDraft'
+import { useCalendarStore } from './useCalendarStore'
+import { useScheduleInfoStore } from './useScheduleInfoStore'
+import { useTeamCalendarStore } from './useTeamCalendarStore'
+import { createWorkTypeResolver } from '../shared/utils/alarm/workTypeResolver'
+import { resolveAutoAlarmNextTriggerAtMillis } from '../shared/utils/alarm/resolveAutoAlarmNextTriggerAtMillis'
 
 type AutoAlarmSortMode = 'workType' | 'remainingTime'
 
@@ -27,6 +36,8 @@ type AutoAlarmState = {
   updateAutoAlarm: (draft: UpdateAutoAlarmDraft) => Promise<void>
   toggleAutoAlarm: (id: number, enabled: boolean) => Promise<void>
   deleteAutoAlarm: (id: number) => Promise<void>
+  deleteAutoAlarms: (ids: number[]) => Promise<void>
+  setAutoAlarmsEnabled: (ids: number[], enabled: boolean) => Promise<void>
 
   deleteSelectedAutoAlarms: () => Promise<void>
 
@@ -52,6 +63,39 @@ const getErrorMessage = (error: unknown): string => {
 
 const getWorkTypeOrder = (workTypeTitle: string): number => {
   return workTypeSortOrder[workTypeTitle] ?? Number.MAX_SAFE_INTEGER
+}
+
+const resolveNextTriggerAtMillisForDraft = async (
+  draft: AlarmDraft
+): Promise<number> => {
+  const calendarData = useCalendarStore.getState().calendarData
+  const teamCalendarData = useTeamCalendarStore.getState().teamCalendarData
+  const currentTeam =
+    useScheduleInfoStore.getState().workGroup ||
+    useTeamCalendarStore.getState().myTeam
+
+  const resolveWorkTypeForDate = createWorkTypeResolver({
+    calendarData,
+    teamCalendarData,
+    currentTeam,
+  })
+
+  const nextTriggerAtMillis = await resolveAutoAlarmNextTriggerAtMillis({
+    alarmTime: draft.alarmTime,
+    selectedDays: draft.selectedDays,
+    selectedWorkType: draft.selectedWorkType,
+    isHolidayAlarmOff: draft.isHolidayAlarmOff,
+    getHolidayDateSet: year => getHolidayDateSetUseCase.execute(year),
+    resolveWorkTypeForDate,
+  })
+
+  if (nextTriggerAtMillis === null) {
+    throw new Error(
+      '조건을 만족하는 다음 알람 시간을 찾을 수 없습니다. 근무 일정, 요일, 공휴일 조건을 확인해 주세요.'
+    )
+  }
+
+  return nextTriggerAtMillis
 }
 
 const sortAutoAlarms = (
@@ -135,8 +179,10 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
     createAutoAlarm: async draft => {
       set({ isLoading: true, error: null })
       try {
+        const nextTriggerAtMillis =
+          await resolveNextTriggerAtMillisForDraft(draft)
         const createdAutoAlarm = await autoAlarmRepository.addAutoAlarm(
-          toCreateAutoAlarmInput(draft)
+          toCreateAutoAlarmInput(draft, nextTriggerAtMillis)
         )
 
         set(state => {
@@ -154,8 +200,10 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
     updateAutoAlarm: async draft => {
       set({ isLoading: true, error: null })
       try {
+        const nextTriggerAtMillis =
+          await resolveNextTriggerAtMillisForDraft(draft)
         const updatedAutoAlarm = await autoAlarmRepository.updateAutoAlarm(
-          toUpdateAutoAlarmInput(draft)
+          toUpdateAutoAlarmInput(draft, nextTriggerAtMillis)
         )
 
         set(state => {
@@ -201,18 +249,71 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
     },
 
     deleteAutoAlarm: async id => {
+      await get().deleteAutoAlarms([id])
+    },
+
+    deleteAutoAlarms: async ids => {
       set({ isLoading: true, error: null })
+      const targetIds = [...new Set(ids)]
+
+      if (targetIds.length === 0) {
+        set({ isLoading: false })
+        return
+      }
+
       try {
-        await autoAlarmRepository.deleteAutoAlarm(id)
+        for (const id of targetIds) {
+          await autoAlarmRepository.deleteAutoAlarm(id)
+        }
 
         set(state => {
-          state.autoAlarms = state.autoAlarms.filter(alarm => alarm.id !== id)
+          state.autoAlarms = state.autoAlarms.filter(
+            alarm => !targetIds.includes(alarm.id)
+          )
           state.selectedAlarmIds = state.selectedAlarmIds.filter(
-            selectedAlarmId => selectedAlarmId !== id
+            selectedAlarmId => !targetIds.includes(selectedAlarmId)
           )
         })
       } catch (error) {
+        const autoAlarms = await loadAutoAlarms(get().sortMode)
         set({ error: getErrorMessage(error) })
+        set({ autoAlarms })
+        throw error
+      } finally {
+        set({ isLoading: false })
+      }
+    },
+
+    setAutoAlarmsEnabled: async (ids, enabled) => {
+      set({ isLoading: true, error: null })
+      const targetIds = [...new Set(ids)]
+
+      if (targetIds.length === 0) {
+        set({ isLoading: false })
+        return
+      }
+
+      try {
+        const updatedAutoAlarms: AutoAlarm[] = []
+
+        for (const id of targetIds) {
+          const updatedAutoAlarm = await autoAlarmRepository.toggleAutoAlarm(
+            id,
+            enabled
+          )
+          updatedAutoAlarms.push(updatedAutoAlarm)
+        }
+
+        set(state => {
+          for (const updatedAutoAlarm of updatedAutoAlarms) {
+            upsertAutoAlarm(state.autoAlarms, updatedAutoAlarm)
+          }
+          state.autoAlarms = sortAutoAlarms(state.autoAlarms, state.sortMode)
+        })
+      } catch (error) {
+        const autoAlarms = await loadAutoAlarms(get().sortMode)
+        set({ error: getErrorMessage(error) })
+        set({ autoAlarms })
         throw error
       } finally {
         set({ isLoading: false })
@@ -220,36 +321,9 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
     },
 
     deleteSelectedAutoAlarms: async () => {
-      set({ isLoading: true, error: null })
       const selectedAlarmIds = [...get().selectedAlarmIds]
-
-      if (selectedAlarmIds.length === 0) {
-        set({ isLoading: false })
-        return
-      }
-
-      try {
-        for (const id of selectedAlarmIds) {
-          await autoAlarmRepository.deleteAutoAlarm(id)
-        }
-
-        set(state => {
-          state.autoAlarms = state.autoAlarms.filter(
-            alarm => !selectedAlarmIds.includes(alarm.id)
-          )
-          state.selectedAlarmIds = []
-        })
-      } catch (error) {
-        const autoAlarms = await loadAutoAlarms(get().sortMode)
-        set({
-          autoAlarms,
-          selectedAlarmIds: [],
-          error: getErrorMessage(error),
-        })
-        throw error
-      } finally {
-        set({ isLoading: false })
-      }
+      await get().deleteAutoAlarms(selectedAlarmIds)
+      set({ selectedAlarmIds: [] })
     },
 
     toggleSelectedAutoAlarmId: (id: number) => {
