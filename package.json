@@ -5,8 +5,8 @@
   "scripts": {
     "android:dev": "react-native run-android --mode=developdebug",
     "android:prod": "react-native run-android --mode=productrelease",
-    "ios:dev": "react-native run-ios --scheme Development",
-    "ios:prod": "react-native run-ios --scheme Production",
+    "ios:dev": "react-native run-ios --scheme Development --no-packager",
+    "ios:prod": "react-native run-ios --scheme Production --no-packager",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
@@ -24,6 +24,7 @@
     "@kingstinct/react-native-healthkit": "^11.1.1",
     "@react-native-community/datetimepicker": "^9.0.0",
     "@react-native-cookies/cookies": "^6.2.1",
+    "@react-native-seoul/kakao-login": "^5.4.2",
     "@react-native/new-app-screen": "0.81.4",
     "@react-navigation/bottom-tabs": "^7.4.8",
     "@react-navigation/native": "^7.1.18",
