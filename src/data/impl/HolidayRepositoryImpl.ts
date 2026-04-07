@@ -5,6 +5,8 @@ import { OpenApiService } from '../../infrastructure/remote/api/OpenApiService'
 import { HolidayEntity } from '../../infrastructure/local/entities/HolidayEntity'
 
 export class HolidayRepositoryImpl implements HolidayRepository {
+  private readonly holidayDateSetCache = new Map<string, Promise<Set<string>>>()
+
   constructor(
     private holidayDao: HolidayDao,
     private openApiService: OpenApiService
@@ -33,8 +35,25 @@ export class HolidayRepositoryImpl implements HolidayRepository {
   }
 
   async getHolidayDateSet(year: string): Promise<Set<string>> {
-    await this.ensureYearCached(year)
-    return this.holidayDao.getHolidayDateSetByYear(year)
+    const cachedHolidayDateSet = this.holidayDateSetCache.get(year)
+
+    if (cachedHolidayDateSet) {
+      return cachedHolidayDateSet
+    }
+
+    const pendingHolidayDateSet = (async () => {
+      await this.ensureYearCached(year)
+      return this.holidayDao.getHolidayDateSetByYear(year)
+    })()
+
+    const guardedHolidayDateSet = pendingHolidayDateSet.catch(error => {
+      this.holidayDateSetCache.delete(year)
+      throw error
+    })
+
+    this.holidayDateSetCache.set(year, guardedHolidayDateSet)
+
+    return guardedHolidayDateSet
   }
 
   async isHoliday(date: string): Promise<boolean> {

@@ -1,4 +1,4 @@
-import { openShifterzDB } from '../ShifterzDB'
+import { openDatabase } from '../database'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { Memo } from '../entities/MemoEntity'
@@ -22,7 +22,7 @@ export class MemoDao {
     content: string,
     targetDate: dayjs.Dayjs
   ): Promise<Memo> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const formattedTargetDate = targetDate.valueOf() // 밀리초 단위 타임스탬프로 변환
@@ -58,7 +58,7 @@ export class MemoDao {
    * @returns 모든 메모를 반환합니다.
    */
   async getAllMemos(): Promise<Memo[]> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const [result] = await db.executeSql('SELECT * FROM memos;')
@@ -86,7 +86,7 @@ export class MemoDao {
    * @returns 해당 ID의 메모를 반환합니다. 없으면 null 반환.
    */
   async getMemoById(id: number): Promise<Memo | null> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const query = `SELECT * FROM memos WHERE id = ?;`
@@ -115,7 +115,7 @@ export class MemoDao {
    * @returns 해당 날짜에 생성된 메모 배열
    */
   async getMemosByDate(targetDate: dayjs.Dayjs): Promise<Memo[]> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const startOf = targetDate.startOf('day').valueOf() // 밀리초 단위 타임스탬프로 변환 (시작)
@@ -159,7 +159,7 @@ export class MemoDao {
     content?: string,
     targetDate?: dayjs.Dayjs
   ): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const setParts: string[] = []
@@ -213,7 +213,7 @@ export class MemoDao {
    * @returns void
    */
   async deleteMemo(id: number): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const query = `DELETE FROM memos WHERE id = ?;`
@@ -242,7 +242,7 @@ export class MemoDao {
    * @returns void
    */
   async deleteAllMemos(): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
     try {
       await db.executeSql('DELETE FROM memos;')
 

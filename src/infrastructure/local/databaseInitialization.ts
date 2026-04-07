@@ -1,12 +1,12 @@
 import SQLite from 'react-native-sqlite-storage'
-import { openShifterzDB } from './ShifterzDB'
+import { openDatabase } from './database'
 
 SQLite.enablePromise(true)
 
 // 데이터베이스 테이블을 초기화하는 함수 (앱 시작 시 한 번만 호출된다.)
 export const initializeDataBaseTables = async (): Promise<void> => {
   try {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     const sqlQueries = [
       `CREATE TABLE IF NOT EXISTS todos (
@@ -57,7 +57,30 @@ export const initializeDataBaseTables = async (): Promise<void> => {
           AFTER UPDATE ON holiday_items
           FOR EACH ROW
           BEGIN
-            UPDATE holiday_items SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
+          UPDATE holiday_items SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
+          END;`,
+      `CREATE TABLE IF NOT EXISTS auto_alarms (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        hour INTEGER NOT NULL,
+        minute INTEGER NOT NULL,
+        workTypeTitle TEXT NOT NULL,
+        weekdaysMask INTEGER NOT NULL DEFAULT 0,
+        isEnabled INTEGER NOT NULL DEFAULT 1,
+        isHolidayDisabled INTEGER NOT NULL DEFAULT 0,
+        isSnoozeEnabled INTEGER NOT NULL DEFAULT 0,
+        snoozeIntervalMinutes INTEGER NOT NULL DEFAULT 0,
+        snoozeRepeatCount INTEGER NOT NULL DEFAULT 0,
+        nextTriggerAtMillis INTEGER NOT NULL,
+        createdAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000),
+        updatedAt INTEGER NOT NULL DEFAULT (strftime('%s', 'now') * 1000)
+      );`,
+      `CREATE INDEX IF NOT EXISTS idx_auto_alarms_nextTriggerAtMillis ON auto_alarms(nextTriggerAtMillis);`,
+      `CREATE INDEX IF NOT EXISTS idx_auto_alarms_isEnabled ON auto_alarms(isEnabled);`,
+      `CREATE TRIGGER IF NOT EXISTS update_auto_alarms_updatedAt
+          AFTER UPDATE ON auto_alarms
+          FOR EACH ROW
+          BEGIN
+            UPDATE auto_alarms SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
           END;`,
     ]
 

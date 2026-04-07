@@ -6,7 +6,7 @@
  */
 import './global.css'
 import { useEffect, useState } from 'react'
-import { initializeDataBaseTables } from './src/infrastructure/local/initialization'
+import { initializeDataBaseTables } from './src/infrastructure/local/databaseInitialization'
 import { ActivityIndicator, View, StatusBar } from 'react-native'
 import RootNavigator from './src/navigation/RootNavigator'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'

@@ -10,128 +10,21 @@ import SortBottomSheet, {
   SortBottomSheetMethods,
 } from './SortBottomSheet'
 import EditModeDeleteBar from './EditModeDeleteBar'
-
-type ShiftType = '주간' | '오후' | '야간' | '휴일'
-
-export interface AlarmListItem {
-  id: string
-  shiftType: ShiftType
-  etaText: string
-  meridiem: '오전' | '오후'
-  time: string
-  enabled: boolean
-}
+import { AlarmListItem, AlarmListShiftType } from '../types/alarmListItem'
 
 interface FilledAlarmPageProps {
-  initialItems?: AlarmListItem[]
-  onItemsChange?: (items: AlarmListItem[]) => void
+  initialItems: AlarmListItem[]
+  onDeleteSelectedItems?: (ids: string[]) => Promise<void> | void
+  onToggleItem?: (id: string, nextValue: boolean) => Promise<void> | void
+  onPressEnableAll?: () => Promise<void> | void
   onPressItem?: (item: AlarmListItem) => void
   isEditing?: boolean
   bottomOffset?: number
   bottomInset?: number
 }
 
-const defaultAlarmItems: AlarmListItem[] = [
-  {
-    id: '1',
-    shiftType: '주간',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '4:30',
-    enabled: true,
-  },
-  {
-    id: '2',
-    shiftType: '주간',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '4:30',
-    enabled: true,
-  },
-  {
-    id: '3',
-    shiftType: '주간',
-    etaText: '11시간 54분 후',
-    meridiem: '오전',
-    time: '4:40',
-    enabled: false,
-  },
-  {
-    id: '4',
-    shiftType: '오후',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '8:30',
-    enabled: true,
-  },
-  {
-    id: '5',
-    shiftType: '오후',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '8:35',
-    enabled: true,
-  },
-  {
-    id: '6',
-    shiftType: '오후',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '9:40',
-    enabled: false,
-  },
-  {
-    id: '7',
-    shiftType: '야간',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '4:30',
-    enabled: true,
-  },
-  {
-    id: '8',
-    shiftType: '야간',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '4:30',
-    enabled: true,
-  },
-  {
-    id: '9',
-    shiftType: '휴일',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '4:30',
-    enabled: true,
-  },
-  {
-    id: '10',
-    shiftType: '휴일',
-    etaText: '11시간 44분 후',
-    meridiem: '오전',
-    time: '4:30',
-    enabled: true,
-  },
-  {
-    id: '11',
-    shiftType: '휴일',
-    etaText: '11시간 44분 후',
-    meridiem: '오후',
-    time: '13:40',
-    enabled: false,
-  },
-  {
-    id: '12',
-    shiftType: '야간',
-    etaText: '11시간 44분 후',
-    meridiem: '오후',
-    time: '18:20',
-    enabled: false,
-  },
-]
-
 const tagStyleMap: Record<
-  ShiftType,
+  AlarmListShiftType,
   { backgroundClass: string; textClass: string }
 > = {
   주간: {
@@ -162,7 +55,7 @@ const getTagClassName = (item: AlarmListItem) => {
   return tagStyleMap[item.shiftType]
 }
 
-const shiftSortOrder: Record<ShiftType, number> = {
+const shiftSortOrder: Record<AlarmListShiftType, number> = {
   주간: 0,
   오후: 1,
   야간: 2,
@@ -175,6 +68,31 @@ const parseEtaToMinutes = (etaText: string) => {
   const hours = hourMatch ? Number(hourMatch[1]) : 0
   const minutes = minuteMatch ? Number(minuteMatch[1]) : 0
   return hours * 60 + minutes
+}
+
+const getRemainingMillis = (item: AlarmListItem): number => {
+  if (typeof item.remainingMillis === 'number') {
+    return item.remainingMillis
+  }
+
+  return parseEtaToMinutes(item.etaText) * 60_000
+}
+
+const compareRemainingItem = (left: AlarmListItem, right: AlarmListItem) => {
+  const leftRemainingMillis = getRemainingMillis(left)
+  const rightRemainingMillis = getRemainingMillis(right)
+  const leftExpired = leftRemainingMillis < 0
+  const rightExpired = rightRemainingMillis < 0
+
+  if (leftExpired !== rightExpired) {
+    return leftExpired ? 1 : -1
+  }
+
+  if (!leftExpired) {
+    return leftRemainingMillis - rightRemainingMillis
+  }
+
+  return rightRemainingMillis - leftRemainingMillis
 }
 
 const AlarmItemDivider = () => (
@@ -241,55 +159,54 @@ const AlarmRowContent = ({ item, onToggleItem }: AlarmRowContentProps) => {
 }
 
 const FilledAlarmPage = ({
-  initialItems = defaultAlarmItems,
-  onItemsChange,
+  initialItems,
+  onDeleteSelectedItems,
+  onToggleItem,
+  onPressEnableAll,
   onPressItem,
   isEditing = false,
   bottomOffset = 65,
 }: FilledAlarmPageProps) => {
   const sortBottomSheetRef = useRef<SortBottomSheetMethods>(null)
-  const [items, setItems] = useState<AlarmListItem[]>(initialItems)
   const [sortOption, setSortOption] = useState<AlarmSortOption>('remaining')
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false)
-
-  useEffect(() => {
-    setItems(initialItems)
-  }, [initialItems])
 
   useEffect(() => {
     setSelectedIds([])
     setIsDeleteDialogVisible(false)
   }, [isEditing])
 
+  useEffect(() => {
+    setSelectedIds(previousSelectedIds =>
+      previousSelectedIds.filter(selectedId =>
+        initialItems.some(item => item.id === selectedId)
+      )
+    )
+  }, [initialItems])
+
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
+  const handleToggleItem = (id: string, nextValue: boolean) => {
+    Promise.resolve(onToggleItem?.(id, nextValue)).catch(error => {
+      console.error('Failed to toggle auto alarm item:', error)
+    })
+  }
+
+  const handlePressEnableAll = () => {
+    Promise.resolve(onPressEnableAll?.()).catch(error => {
+      console.error('Failed to enable all auto alarms:', error)
+    })
+  }
 
   const selectedCount = selectedIds.length
-  const isAllSelected = items.length > 0 && selectedCount === items.length
-
-  const onToggleItem = (id: string, nextValue: boolean) => {
-    setItems(previousItems => {
-      const nextItems = previousItems.map(item =>
-        item.id === id ? { ...item, enabled: nextValue } : item
-      )
-      onItemsChange?.(nextItems)
-      return nextItems
-    })
-  }
-
-  const onPressEnableAll = () => {
-    setItems(previousItems => {
-      const nextItems = previousItems.map(item => ({ ...item, enabled: true }))
-      onItemsChange?.(nextItems)
-      return nextItems
-    })
-  }
+  const isAllSelected =
+    initialItems.length > 0 && selectedCount === initialItems.length
 
   const onToggleSelectAll = () => {
     setSelectedIds(previousSelectedIds =>
-      previousSelectedIds.length === items.length
+      previousSelectedIds.length === initialItems.length
         ? []
-        : items.map(item => item.id)
+        : initialItems.map(item => item.id)
     )
   }
 
@@ -301,33 +218,27 @@ const FilledAlarmPage = ({
     )
   }
 
-  const onDeleteSelected = () => {
+  const onDeleteSelected = async () => {
     if (!selectedIds.length) {
       return
     }
 
-    setItems(previousItems => {
-      const nextItems = previousItems.filter(item => !selectedSet.has(item.id))
-      onItemsChange?.(nextItems)
-      return nextItems
-    })
+    const idsToDelete = [...selectedIds]
+    await onDeleteSelectedItems?.(idsToDelete)
     setSelectedIds([])
   }
 
   const sortedItems = useMemo(() => {
-    const copiedItems = [...items]
+    const copiedItems = [...initialItems]
     if (sortOption === 'remaining') {
-      return copiedItems.sort(
-        (left, right) =>
-          parseEtaToMinutes(left.etaText) - parseEtaToMinutes(right.etaText)
-      )
+      return copiedItems.sort(compareRemainingItem)
     }
 
     return copiedItems.sort(
       (left, right) =>
         shiftSortOrder[left.shiftType] - shiftSortOrder[right.shiftType]
     )
-  }, [items, sortOption])
+  }, [initialItems, sortOption])
 
   const sortLabel = sortOption === 'remaining' ? '남은 시간 순' : '근무 타입 순'
 
@@ -354,7 +265,7 @@ const FilledAlarmPage = ({
             {sortLabel}
           </GlobalText>
         </TouchableOpacity>
-        <TouchableOpacity onPress={onPressEnableAll}>
+        <TouchableOpacity onPress={handlePressEnableAll}>
           <GlobalText className="font-pretMedium text-text-disabled body-xs">
             전체 켜기
           </GlobalText>
@@ -422,7 +333,7 @@ const FilledAlarmPage = ({
                     </View>
                     <ToggleSwitch
                       onValueChange={nextValue =>
-                        onToggleItem(item.id, nextValue)
+                        handleToggleItem(item.id, nextValue)
                       }
                       value={item.enabled}
                     />
@@ -437,7 +348,7 @@ const FilledAlarmPage = ({
               disabled={!onPressItem}
               onPress={() => onPressItem?.(item)}
             >
-              <AlarmRowContent item={item} onToggleItem={onToggleItem} />
+              <AlarmRowContent item={item} onToggleItem={handleToggleItem} />
             </TouchableOpacity>
           )
         }}
@@ -462,9 +373,13 @@ const FilledAlarmPage = ({
         confirmText="삭제"
         description="삭제된 알람은 복구되지 않아요."
         onCancel={() => setIsDeleteDialogVisible(false)}
-        onConfirm={() => {
+        onConfirm={async () => {
           setIsDeleteDialogVisible(false)
-          onDeleteSelected()
+          try {
+            await onDeleteSelected()
+          } catch (error) {
+            console.error('Failed to delete selected auto alarms:', error)
+          }
         }}
         title="자동 알람 삭제"
         visible={isDeleteDialogVisible}
