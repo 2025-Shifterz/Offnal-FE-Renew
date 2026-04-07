@@ -26,6 +26,10 @@ type AutoAlarmRow = {
 }
 
 export class AutoAlarmDao {
+  private buildIdPlaceholders(ids: number[]): string {
+    return ids.map(() => '?').join(', ')
+  }
+
   async getAllAutoAlarms(): Promise<AutoAlarmEntity[]> {
     const db = await openDatabase()
     const [result] = await db.executeSql(
@@ -172,9 +176,41 @@ export class AutoAlarmDao {
     )
   }
 
+  async deleteAutoAlarms(ids: number[]): Promise<void> {
+    const uniqueIds = [...new Set(ids)]
+
+    if (uniqueIds.length === 0) {
+      return
+    }
+
+    const db = await openDatabase()
+    const placeholders = this.buildIdPlaceholders(uniqueIds)
+
+    await db.executeSql(
+      `DELETE FROM auto_alarms WHERE id IN (${placeholders});`,
+      uniqueIds
+    )
+  }
+
   async deleteAllAutoAlarms(): Promise<void> {
     const db = await openDatabase()
     await db.executeSql(`DELETE FROM auto_alarms;`)
+  }
+
+  async setAutoAlarmsEnabled(ids: number[], enabled: boolean): Promise<void> {
+    const uniqueIds = [...new Set(ids)]
+
+    if (uniqueIds.length === 0) {
+      return
+    }
+
+    const db = await openDatabase()
+    const placeholders = this.buildIdPlaceholders(uniqueIds)
+
+    await db.executeSql(
+      `UPDATE auto_alarms SET isEnabled = ? WHERE id IN (${placeholders});`,
+      [enabled ? 1 : 0, ...uniqueIds]
+    )
   }
 
   async updateNextTriggerAtMillis(

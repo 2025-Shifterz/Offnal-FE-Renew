@@ -29,6 +29,10 @@ export interface AutoAlarmRepository {
 
   toggleAutoAlarm(id: number, enabled: boolean): Promise<AutoAlarm>
 
+  deleteAutoAlarms(ids: number[]): Promise<void>
+
+  setAutoAlarmsEnabled(ids: number[], enabled: boolean): Promise<void>
+
   updateNextTriggerAtMillis(
     id: number,
     nextTriggerAtMillis: number

@@ -8,8 +8,6 @@ export const initializeDataBaseTables = async (): Promise<void> => {
   try {
     const db = await openDatabase()
 
-    await migrateAutoAlarmTableIfNeeded(db)
-
     const sqlQueries = [
       `CREATE TABLE IF NOT EXISTS todos (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,7 +57,7 @@ export const initializeDataBaseTables = async (): Promise<void> => {
           AFTER UPDATE ON holiday_items
           FOR EACH ROW
           BEGIN
-            UPDATE holiday_items SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
+          UPDATE holiday_items SET updatedAt = (strftime('%s', 'now') * 1000) WHERE id = OLD.id;
           END;`,
       `CREATE TABLE IF NOT EXISTS auto_alarms (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,75 +88,8 @@ export const initializeDataBaseTables = async (): Promise<void> => {
       await db.executeSql(query)
     }
 
-    await ensureAutoAlarmSnoozeColumn(db)
-
     console.log('Database tables initialized!')
   } catch (error) {
     console.error('Error opening database: ', error)
   }
-}
-
-const autoAlarmBaseColumns = [
-  'hour',
-  'minute',
-  'workTypeTitle',
-  'weekdaysMask',
-  'isEnabled',
-  'isHolidayDisabled',
-  'snoozeIntervalMinutes',
-  'snoozeRepeatCount',
-  'nextTriggerAtMillis',
-  'createdAt',
-  'updatedAt',
-] as const
-
-const getTableColumns = async (
-  db: SQLite.SQLiteDatabase,
-  tableName: string
-): Promise<string[]> => {
-  const [result] = await db.executeSql(`PRAGMA table_info(${tableName});`)
-  const columns: string[] = []
-
-  for (let index = 0; index < result.rows.length; index += 1) {
-    columns.push(result.rows.item(index).name)
-  }
-
-  return columns
-}
-
-const migrateAutoAlarmTableIfNeeded = async (
-  db: SQLite.SQLiteDatabase
-): Promise<void> => {
-  const columns = await getTableColumns(db, 'auto_alarms')
-
-  if (columns.length === 0) {
-    return
-  }
-
-  const hasCompatibleSchema = autoAlarmBaseColumns.every(column =>
-    columns.includes(column)
-  )
-
-  if (hasCompatibleSchema) {
-    return
-  }
-
-  await db.executeSql('DROP TABLE IF EXISTS auto_alarms;')
-}
-
-const ensureAutoAlarmSnoozeColumn = async (
-  db: SQLite.SQLiteDatabase
-): Promise<void> => {
-  const [result] = await db.executeSql('PRAGMA table_info(auto_alarms);')
-  const hasSnoozeEnabledColumn = Array.from({
-    length: result.rows.length,
-  }).some((_, index) => result.rows.item(index).name === 'isSnoozeEnabled')
-
-  if (hasSnoozeEnabledColumn) {
-    return
-  }
-
-  await db.executeSql(
-    'ALTER TABLE auto_alarms ADD COLUMN isSnoozeEnabled INTEGER NOT NULL DEFAULT 0;'
-  )
 }

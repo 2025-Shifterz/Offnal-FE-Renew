@@ -48,6 +48,14 @@ export class AutoAlarmRepositoryImpl implements AutoAlarmRepository {
     return toAutoAlarmDomain(toggledAutoAlarm)
   }
 
+  async deleteAutoAlarms(ids: number[]): Promise<void> {
+    await this.autoAlarmDao.deleteAutoAlarms(ids)
+  }
+
+  async setAutoAlarmsEnabled(ids: number[], enabled: boolean): Promise<void> {
+    await this.autoAlarmDao.setAutoAlarmsEnabled(ids, enabled)
+  }
+
   async updateNextTriggerAtMillis(
     id: number,
     nextTriggerAtMillis: number

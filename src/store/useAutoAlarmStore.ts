@@ -262,16 +262,15 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
       }
 
       try {
-        for (const id of targetIds) {
-          await autoAlarmRepository.deleteAutoAlarm(id)
-        }
+        await autoAlarmRepository.deleteAutoAlarms(targetIds)
+        const targetIdSet = new Set(targetIds)
 
         set(state => {
           state.autoAlarms = state.autoAlarms.filter(
-            alarm => !targetIds.includes(alarm.id)
+            alarm => !targetIdSet.has(alarm.id)
           )
           state.selectedAlarmIds = state.selectedAlarmIds.filter(
-            selectedAlarmId => !targetIds.includes(selectedAlarmId)
+            selectedAlarmId => !targetIdSet.has(selectedAlarmId)
           )
         })
       } catch (error) {
@@ -294,20 +293,13 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
       }
 
       try {
-        const updatedAutoAlarms: AutoAlarm[] = []
-
-        for (const id of targetIds) {
-          const updatedAutoAlarm = await autoAlarmRepository.toggleAutoAlarm(
-            id,
-            enabled
-          )
-          updatedAutoAlarms.push(updatedAutoAlarm)
-        }
+        await autoAlarmRepository.setAutoAlarmsEnabled(targetIds, enabled)
+        const targetIdSet = new Set(targetIds)
 
         set(state => {
-          for (const updatedAutoAlarm of updatedAutoAlarms) {
-            upsertAutoAlarm(state.autoAlarms, updatedAutoAlarm)
-          }
+          state.autoAlarms = state.autoAlarms.map(alarm =>
+            targetIdSet.has(alarm.id) ? { ...alarm, isEnabled: enabled } : alarm
+          )
           state.autoAlarms = sortAutoAlarms(state.autoAlarms, state.sortMode)
         })
       } catch (error) {
