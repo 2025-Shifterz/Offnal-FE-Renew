@@ -14,17 +14,25 @@ import ToggleSwitch from '../../../shared/components/ToggleSwitch'
 import EmphasizedButton, {
   UnEmphasizedButton,
 } from '../../../shared/components/button/Button'
+import {
+  AlarmSnoozeIntervalMinutes,
+  AlarmSnoozeRepeatCount,
+  AlarmSnoozeSetting,
+} from '../types/alarmDraft'
 
-const intervalOptions = [1, 3, 5, 10, 15] as const
-const repeatOptions = [1, 3, 5, 10, 'infinite'] as const
+const intervalOptions = [
+  1, 3, 5, 10, 15,
+] as const satisfies readonly AlarmSnoozeIntervalMinutes[]
+const repeatOptions = [
+  1,
+  3,
+  5,
+  10,
+  'infinite',
+] as const satisfies readonly AlarmSnoozeRepeatCount[]
 
-export type RepeatCount = (typeof repeatOptions)[number]
-
-export interface SnoozeSetting {
-  enabled: boolean
-  interval: (typeof intervalOptions)[number]
-  repeat: RepeatCount
-}
+export type SnoozeSetting = AlarmSnoozeSetting
+type RepeatCount = AlarmSnoozeRepeatCount
 
 export interface SnoozeBottomSheetMethods {
   close: () => void
@@ -49,7 +57,7 @@ const getSummaryText = (value: SnoozeSetting) => {
   if (!value.enabled) {
     return '알람 미루기가 꺼져 있어요'
   }
-  return `${value.interval}분 간격으로 ${getRepeatText(value.repeat)} 울려요`
+  return `${value.intervalMinutes}분 간격으로 ${getRepeatText(value.repeatCount)} 울려요`
 }
 
 const chipBaseClass =
@@ -112,7 +120,7 @@ const SnoozeBottomSheet = forwardRef<
               </GlobalText>
               <View className="flex-row gap-[4px]">
                 {intervalOptions.map(option => {
-                  const selected = draft.interval === option
+                  const selected = draft.intervalMinutes === option
                   return (
                     <TouchableOpacity
                       key={option}
@@ -125,7 +133,7 @@ const SnoozeBottomSheet = forwardRef<
                       onPress={() =>
                         setDraft(previous => ({
                           ...previous,
-                          interval: option,
+                          intervalMinutes: option,
                         }))
                       }
                     >
@@ -146,7 +154,7 @@ const SnoozeBottomSheet = forwardRef<
               </GlobalText>
               <View className="flex-row gap-[4px]">
                 {repeatOptions.map(option => {
-                  const selected = draft.repeat === option
+                  const selected = draft.repeatCount === option
                   return (
                     <TouchableOpacity
                       key={option}
@@ -157,7 +165,10 @@ const SnoozeBottomSheet = forwardRef<
                       } ${draft.enabled ? '' : 'opacity-50'}`}
                       disabled={!draft.enabled}
                       onPress={() =>
-                        setDraft(previous => ({ ...previous, repeat: option }))
+                        setDraft(previous => ({
+                          ...previous,
+                          repeatCount: option,
+                        }))
                       }
                     >
                       <GlobalText

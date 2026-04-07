@@ -43,11 +43,14 @@ import { IosHealthDataSource } from '../dataSource/IosHealthDataSource'
 import { AndroidHealthDataSource } from '../dataSource/AndroidHealthDataSource'
 import { DeleteAllTodosUseCase } from '../../domain/usecases/todos/DeleteAllTodosUseCase'
 import { GetHolidayDateSetUseCase } from '../../domain/usecases/holiday/GetHolidayDateSetUseCase'
+import { AutoAlarmDao } from '../local/dao/AutoAlarmDao'
+import { AutoAlarmRepositoryImpl } from '../../data/impl/AutoAlarmRepositoryImpl'
 
 // 1. 구체적인 데이터 소스 인스턴스 생성
 const todoDao = new TodoDao()
 const memoDao = new MemoDao()
 const holidayDao = new HolidayDao()
+const autoAlarmDao = new AutoAlarmDao()
 
 export const ocrService = new OcrService()
 export const organizationService = new OrganizationService()
@@ -60,6 +63,17 @@ export const memoService = new MemoService()
 export const authService = new AuthService()
 export const teamCalendarService = new TeamCalendarService()
 export const openApiService = new OpenApiService()
+
+const dataSource = (() => {
+  switch (Platform.OS) {
+    case 'ios':
+      return new IosHealthDataSource()
+    case 'android':
+      return new AndroidHealthDataSource()
+    default:
+      throw new Error('Unsupported platform for HealthDataSource')
+  }
+})()
 
 // 2. 구체적인 리포지토리 구현체 인스턴스 생성 (TodoDao 주입)
 export const todoRepository = new TodoRepositoryImpl(todoDao)
@@ -81,17 +95,8 @@ export const holidayRepository = new HolidayRepositoryImpl(
   holidayDao,
   openApiService
 )
-
-const dataSource =
-  Platform.OS === 'ios'
-    ? new IosHealthDataSource()
-    : Platform.OS === 'android'
-      ? new AndroidHealthDataSource()
-      : (() => {
-          throw new Error('Unsupported platform for HealthDataSource')
-        })() // 다른 플랫폼에서는 빈 객체 반환
-
 export const healthRepository = new HealthRepositoryImpl(dataSource)
+export const autoAlarmRepository = new AutoAlarmRepositoryImpl(autoAlarmDao)
 
 // 3. Use Case 인스턴스 생성 (repository 주입)
 export const addTodoUseCase = new CreateTodoUseCase(todoRepository)

@@ -37,6 +37,11 @@ interface TeamCalendarState {
   setNewTeamCalendarData: (
     data: (TeamDateAndWorkType & { team: string })[]
   ) => void
+  updateNewTeamCalendarDay: (update: {
+    team: string
+    date: string
+    workTypeName: string
+  }) => void
   updateTeamCalendarDay: (update: {
     team: string
     date: string
@@ -110,6 +115,36 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(
       })
 
       set({ newTeamCalendarData: Object.values(grouped) })
+    },
+    updateNewTeamCalendarDay: ({ team, date, workTypeName }) => {
+      set(state => {
+        const teamRecord = state.newTeamCalendarData.find(t => t.team === team)
+
+        if (teamRecord) {
+          const existing = teamRecord.workInstances[date]
+
+          if (existing && existing.workTypeName === workTypeName) {
+            delete teamRecord.workInstances[date]
+          } else {
+            teamRecord.workInstances[date] = {
+              workTypeName,
+              startTime: existing?.startTime || '',
+              endTime: existing?.endTime || '',
+            }
+          }
+        } else {
+          state.newTeamCalendarData.push({
+            team,
+            workInstances: {
+              [date]: {
+                workTypeName,
+                startTime: '',
+                endTime: '',
+              },
+            },
+          })
+        }
+      })
     },
     updateTeamCalendarDay: ({ team, date, workTypeName }) => {
       set(state => {

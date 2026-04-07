@@ -40,14 +40,14 @@ const TCalendarEditor: ForwardRefRenderFunction<
   const {
     teamCalendarData,
     newTeamCalendarData,
-    updateTeamCalendarDay,
+    updateNewTeamCalendarDay,
     clearNewTeamCalendarData,
     fetchTeamCalendarData,
   } = useTeamCalendarStore(
     useShallow(state => ({
       teamCalendarData: state.teamCalendarData,
       newTeamCalendarData: state.newTeamCalendarData,
-      updateTeamCalendarDay: state.updateTeamCalendarDay,
+      updateNewTeamCalendarDay: state.updateNewTeamCalendarDay,
       clearNewTeamCalendarData: state.clearNewTeamCalendarData,
       fetchTeamCalendarData: state.fetchTeamCalendarData,
     }))
@@ -83,8 +83,8 @@ const TCalendarEditor: ForwardRefRenderFunction<
     if (!selectedDate) return
     const date = selectedDate.format('YYYY-MM-DD')
 
-    // store에 직접 업데이트
-    updateTeamCalendarDay({
+    // 편집 데이터는 신규/기존 OCR 모두 newTeamCalendarData에 누적한다.
+    updateNewTeamCalendarDay({
       team,
       date,
       workTypeName: type,

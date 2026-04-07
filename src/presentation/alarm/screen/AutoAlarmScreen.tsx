@@ -1,4 +1,10 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import EmptyAlarmPage from '../components/EmptyAlarmPage'
 import FilledAlarmPage from '../components/FilledAlarmPage'
@@ -11,15 +17,39 @@ import { rootNavigation } from '../../../navigation/types/StackTypes'
 import StartAlignedTopAppBar from '../../../shared/components/appbar/StartAlignedTopAppBar'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
+import { toAlarmListItemArray } from '../mappers/alarmListItemMapper'
+import { useCurrentTimeTick } from '../../../shared/hooks/useCurrentTimeTick'
 
 const AutoAlarmScreen = () => {
-  const [showAlarmList] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [showEditMenu, setShowEditMenu] = useState(false)
 
   const nav = useNavigation<rootNavigation>()
   const insets = useSafeAreaInsets()
   const bottomOffset = 65 + insets.bottom
+
+  const autoAlarms = useAutoAlarmStore(state => state.autoAlarms)
+  const fetchAllAutoAlarms = useAutoAlarmStore(
+    state => state.fetchAllAutoAlarms
+  )
+  const toggleAutoAlarm = useAutoAlarmStore(state => state.toggleAutoAlarm)
+  const deleteAutoAlarms = useAutoAlarmStore(state => state.deleteAutoAlarms)
+  const setAutoAlarmsEnabled = useAutoAlarmStore(
+    state => state.setAutoAlarmsEnabled
+  )
+  const currentTimeMillis = useCurrentTimeTick()
+
+  const alarmListItems = useMemo(
+    () => toAlarmListItemArray(autoAlarms, currentTimeMillis),
+    [autoAlarms, currentTimeMillis]
+  )
+
+  useEffect(() => {
+    fetchAllAutoAlarms().catch(error => {
+      console.error('Failed to load auto alarms:', error)
+    })
+  }, [fetchAllAutoAlarms])
 
   useEffect(() => {
     const navListener = nav.addListener('blur', () => {
@@ -29,6 +59,38 @@ const AutoAlarmScreen = () => {
 
     return navListener
   }, [nav])
+
+  const handleDeleteSelectedItems = useCallback(
+    async (ids: string[]) => {
+      const alarmIds = ids
+        .map(id => Number(id))
+        .filter((alarmId): alarmId is number => !Number.isNaN(alarmId))
+
+      await deleteAutoAlarms(alarmIds)
+    },
+    [deleteAutoAlarms]
+  )
+
+  const handleToggleAlarmItem = useCallback(
+    async (id: string, nextValue: boolean) => {
+      const alarmId = Number(id)
+      if (Number.isNaN(alarmId)) {
+        return
+      }
+
+      await toggleAutoAlarm(alarmId, nextValue)
+    },
+    [toggleAutoAlarm]
+  )
+
+  const handlePressEnableAll = useCallback(async () => {
+    const disabledAlarmIds = alarmListItems
+      .filter(item => !item.enabled)
+      .map(item => Number(item.id))
+      .filter((alarmId): alarmId is number => !Number.isNaN(alarmId))
+
+    await setAutoAlarmsEnabled(disabledAlarmIds, true)
+  }, [alarmListItems, setAutoAlarmsEnabled])
 
   useLayoutEffect(() => {
     nav.setOptions({
@@ -84,10 +146,18 @@ const AutoAlarmScreen = () => {
   return (
     <View className="flex-1 bg-background-gray-subtle1">
       <View className="flex-1">
-        {showAlarmList ? (
+        {alarmListItems.length === 0 ? (
+          <EmptyAlarmPage
+            handleShowAlarmList={() => nav.navigate('CreateAlarm')}
+          />
+        ) : (
           <FilledAlarmPage
+            initialItems={alarmListItems}
             bottomOffset={bottomOffset}
             isEditing={isEditing}
+            onDeleteSelectedItems={handleDeleteSelectedItems}
+            onToggleItem={handleToggleAlarmItem}
+            onPressEnableAll={handlePressEnableAll}
             onPressItem={item => {
               if (isEditing) {
                 return
@@ -95,10 +165,6 @@ const AutoAlarmScreen = () => {
               setShowEditMenu(false)
               nav.navigate('EditAutoAlarm', { alarmId: item.id })
             }}
-          />
-        ) : (
-          <EmptyAlarmPage
-            handleShowAlarmList={() => nav.navigate('CreateAlarm')}
           />
         )}
       </View>

@@ -1,4 +1,4 @@
-import { openShifterzDB } from '../ShifterzDB'
+import { openDatabase } from '../database'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { Todo } from '../entities/TodoEntity'
@@ -17,7 +17,7 @@ export class TodoDao {
    * @return void
    */
   async createTodo(content: string, targetDate: dayjs.Dayjs): Promise<Todo> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const formattedTargetDate = targetDate.valueOf() // 밀리초 단위 타임스탬프로 변환
@@ -54,7 +54,7 @@ export class TodoDao {
    * @returns 해당 ID의 투두를 반환합니다.
    */
   async getTodoById(id: number): Promise<Todo | null> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const query = `SELECT * FROM todos WHERE id = ?;`
@@ -81,7 +81,7 @@ export class TodoDao {
    * @returns 모든 투두를 반환합니다.
    */
   async getAllTodos(): Promise<Todo[]> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const [result] = await db.executeSql('SELECT * FROM todos;')
@@ -108,7 +108,7 @@ export class TodoDao {
    * @returns 해당 날짜의 모든 투두를 반환합니다.
    */
   async getTodosByDate(targetDate: dayjs.Dayjs): Promise<Todo[]> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const startOf = targetDate.startOf('day').valueOf() // 밀리초 단위 타임스탬프로 변환
@@ -150,7 +150,7 @@ export class TodoDao {
     completed?: boolean,
     targetDate?: dayjs.Dayjs
   ): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const fieldsToUpdate: string[] = []
@@ -195,7 +195,7 @@ export class TodoDao {
    * @returns void
    */
   async deleteTodoById(id: number): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const query = `DELETE FROM todos WHERE id = ?;`
@@ -218,7 +218,7 @@ export class TodoDao {
    * @returns void
    */
   async deleteAllTodos(): Promise<void> {
-    const db = await openShifterzDB()
+    const db = await openDatabase()
 
     try {
       const query = `DELETE FROM todos;`
