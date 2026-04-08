@@ -30,6 +30,9 @@ apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.grad
 def kakaoNativeAppKey = project.env.get("KAKAO_NATIVE_APP_KEY") ?: ""
 def kakaoScheme = kakaoNativeAppKey ? "kakao${kakaoNativeAppKey}" : "kakao"
 
+println("[Kakao][Gradle] KAKAO_NATIVE_APP_KEY=${kakaoNativeAppKey}")
+println("[Kakao][Gradle] kakaoScheme=${kakaoScheme}")
+
 
 android {
     ndkVersion rootProject.ext.ndkVersion

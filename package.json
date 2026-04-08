@@ -5,8 +5,8 @@
   "scripts": {
     "android:dev": "react-native run-android --mode=developdebug",
     "android:prod": "react-native run-android --mode=productrelease",
-    "ios:dev": "react-native run-ios --scheme Development --no-packager",
-    "ios:prod": "react-native run-ios --scheme Production --no-packager",
+    "ios:dev": "react-native run-ios --scheme Development",
+    "ios:prod": "react-native run-ios --scheme Production",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
