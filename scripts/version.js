@@ -2,11 +2,17 @@
 
 const fs = require('fs')
 const path = require('path')
+const {
+  getVersionSnapshot,
+  validateVersionConfig,
+  formatMarketingVersion,
+  formatPackageVersion,
+  formatVersionCode,
+} = require('../src/shared/config/versionUtils')
 
 const VERSION_FILE_PATH = path.join(__dirname, '..', 'version.json')
 const PACKAGE_JSON_PATH = path.join(__dirname, '..', 'package.json')
 const PACKAGE_LOCK_PATH = path.join(__dirname, '..', 'package-lock.json')
-const VERSION_MONTH_PATTERN = /^\d{4}\.\d{2}$/
 
 function getKstYearMonth(date = new Date()) {
   const formatter = new Intl.DateTimeFormat('en-CA', {
@@ -41,73 +47,6 @@ function readJsonFile(filePath) {
 
 function writeJsonFile(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`)
-}
-
-function validateVersionConfig(versionConfig) {
-  const yearMonth = String(versionConfig.yearMonth ?? '')
-  const buildNumber = Number(versionConfig.buildNumber)
-
-  if (!VERSION_MONTH_PATTERN.test(yearMonth)) {
-    throw new Error(
-      `Invalid yearMonth "${yearMonth}". Expected the format YYYY.MM.`
-    )
-  }
-
-  if (!Number.isInteger(buildNumber) || buildNumber < 1 || buildNumber > 999) {
-    throw new Error(
-      `Invalid buildNumber "${versionConfig.buildNumber}". Expected an integer between 1 and 999.`
-    )
-  }
-
-  return {
-    yearMonth,
-    buildNumber,
-  }
-}
-
-function formatMarketingVersion(yearMonth, buildNumber) {
-  return `${yearMonth}.${String(buildNumber).padStart(3, '0')}`
-}
-
-function formatPackageVersion(yearMonth, buildNumber) {
-  const [yearPart, monthPart] = yearMonth.split('.')
-  const year = Number(yearPart)
-  const month = Number(monthPart)
-
-  if (!Number.isInteger(year) || !Number.isInteger(month)) {
-    throw new Error(`Invalid yearMonth "${yearMonth}"`)
-  }
-
-  return `${year}.${month}.${buildNumber}`
-}
-
-function formatVersionCode(yearMonth, buildNumber) {
-  const [yearPart, monthPart] = yearMonth.split('.')
-  const year = Number(yearPart)
-  const month = Number(monthPart)
-
-  if (!Number.isInteger(year) || !Number.isInteger(month)) {
-    throw new Error(`Invalid yearMonth "${yearMonth}"`)
-  }
-
-  return year * 100000 + month * 1000 + buildNumber
-}
-
-function getVersionSnapshot(versionConfig) {
-  const validated = validateVersionConfig(versionConfig)
-
-  return {
-    ...validated,
-    marketingVersion: formatMarketingVersion(
-      validated.yearMonth,
-      validated.buildNumber
-    ),
-    packageVersion: formatPackageVersion(
-      validated.yearMonth,
-      validated.buildNumber
-    ),
-    versionCode: formatVersionCode(validated.yearMonth, validated.buildNumber),
-  }
 }
 
 function writeVersionConfig(filePath, versionConfig) {

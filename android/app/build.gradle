@@ -48,7 +48,7 @@ if (appBuildNumber < 1 || appBuildNumber > 999) {
     throw new GradleException("Invalid buildNumber in version.json: ${appBuildNumber}")
 }
 
-def appVersionName = "${appYearMonth}.${appBuildNumber}"
+def appVersionName = "${appYearMonth}.${appBuildNumber.toString().padLeft(3, '0')}"
 def versionParts = appYearMonth.split("\\.")
 def appVersionCode = versionParts[0].toInteger() * 100000 +
         versionParts[1].toInteger() * 1000 +
