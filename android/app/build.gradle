@@ -1,3 +1,4 @@
+import groovy.json.JsonSlurper
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
@@ -29,6 +30,29 @@ apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.grad
 
 def kakaoNativeAppKey = project.env.get("KAKAO_NATIVE_APP_KEY") ?: ""
 def kakaoScheme = kakaoNativeAppKey ? "kakao${kakaoNativeAppKey}" : "kakao"
+def versionConfigFile = rootProject.file("../version.json")
+
+if (!versionConfigFile.exists()) {
+    throw new GradleException("Missing version.json at ${versionConfigFile}")
+}
+
+def versionConfig = new JsonSlurper().parse(versionConfigFile)
+def appYearMonth = versionConfig.yearMonth?.toString()
+def appBuildNumber = (versionConfig.buildNumber as Number).intValue()
+
+if (!(appYearMonth ==~ /\d{4}\.\d{2}/)) {
+    throw new GradleException("Invalid yearMonth in version.json: ${appYearMonth}")
+}
+
+if (appBuildNumber < 1 || appBuildNumber > 999) {
+    throw new GradleException("Invalid buildNumber in version.json: ${appBuildNumber}")
+}
+
+def appVersionName = "${appYearMonth}.${appBuildNumber.toString().padLeft(3, '0')}"
+def versionParts = appYearMonth.split("\\.")
+def appVersionCode = versionParts[0].toInteger() * 100000 +
+        versionParts[1].toInteger() * 1000 +
+        appBuildNumber
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -40,8 +64,8 @@ android {
         applicationId "com.shifterz.offnal"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1000101
-        versionName "1.0.1"
+        versionCode appVersionCode
+        versionName appVersionName
         resValue "string", "kakao_app_key", kakaoNativeAppKey
     }
 

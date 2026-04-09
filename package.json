@@ -1,6 +1,6 @@
 {
   "name": "offnal",
-  "version": "1.0.0",
+  "version": "2026.4.1",
   "private": true,
   "scripts": {
     "android:dev": "react-native run-android --mode=developdebug",
@@ -8,6 +8,8 @@
     "ios:dev": "react-native run-ios --scheme Development",
     "ios:prod": "react-native run-ios --scheme Production",
     "lint": "eslint .",
+    "version:check": "node scripts/version.js check",
+    "version:sync": "node scripts/version.js sync",
     "start": "react-native start",
     "test": "jest",
     "prepare": "husky"
