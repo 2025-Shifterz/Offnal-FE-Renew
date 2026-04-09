@@ -2,6 +2,7 @@ import UIKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
+import kakao_login
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -30,6 +31,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     )
 
     return true
+  }
+
+  func application(
+    _ application: UIApplication,
+    open url: URL,
+    options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+  ) -> Bool {
+    if kakao_login.RNKakaoLogins.isKakaoTalkLoginUrl(url) {
+      return kakao_login.RNKakaoLogins.handleOpen(url)
+    }
+
+    return false
   }
 }
 
