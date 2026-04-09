@@ -15,7 +15,7 @@ const KaKaoLoginBtn = ({
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled || loading}
-      className="mb-number-8 h-12 w-full flex-row items-center justify-center rounded-radius-xs bg-kakao-bg px-[14px]"
+      className="mb-number-8 h-12 w-[300px] flex-row items-center justify-center rounded-radius-xs bg-kakao-bg px-[14px]"
     >
       <KakaoLogo />
       <View className="px-[86px]">

@@ -16,6 +16,7 @@ import { useUserStore } from '../../../store/useUserStore'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
 import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
+import { appVersionLabel } from '../../../shared/config/appVersion'
 
 const InformationScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -43,7 +44,7 @@ const InformationScreen = () => {
       {
         id: 'version',
         title: '현재 버전',
-        caption: '1.0.0',
+        caption: appVersionLabel,
         onPress: () => {
           /* TODO("Not yet Implemeted") */
         },
