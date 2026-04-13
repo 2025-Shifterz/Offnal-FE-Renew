@@ -12,7 +12,11 @@
     "version:sync": "node scripts/version.js sync",
     "start": "react-native start",
     "test": "jest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check": "bash ./scripts/check.sh",
+    "check:changed": "bash ./scripts/check-changed.sh",
+    "test:related": "bash ./scripts/test-related.sh",
+    "verify:no-secrets": "bash ./scripts/verify-no-secrets.sh"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
