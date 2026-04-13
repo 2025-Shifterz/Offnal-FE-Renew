@@ -31,24 +31,27 @@ apiAxiosClient.interceptors.request.use(config => {
   return config
 })
 
-openApiAxiosClient.interceptors.request.use(config => {
+apiAxiosClient.interceptors.response.use(response => {
   if (!__DEV__) {
-    return config
+    return response
   }
 
-  console.log('🧑🏻‍💻 Request Interceptor | Request URL:', config.url)
+  console.log('🧑🏻‍💻 Response Interceptor | Response URL:', response.config.url)
   console.log(
-    '🧑🏻‍💻 Request Interceptor | Authorization: ',
-    config.headers.Authorization
+    '🧑🏻‍💻 Response Interceptor | Authorization: ',
+    response.config.headers.Authorization
   )
   console.log(
-    '🧑🏻‍💻 Request Interceptor | Content-Type: ',
-    config.headers['Content-Type']
+    '🧑🏻‍💻 Response Interceptor | Content-Type: ',
+    response.config.headers['Content-Type']
   )
-  console.log('🧑🏻‍💻 Request Interceptor | Request params:', config.params)
-  console.log('🧑🏻‍💻 Request Interceptor | Request body:', config.data)
+  console.log(
+    '🧑🏻‍💻 Response Interceptor | Response params:',
+    response.config.params
+  )
+  console.log('🧑🏻‍💻 Response Interceptor | Response body:', response.data)
 
-  return config
+  return response
 })
 
 // Request Interceptor With AccessToken

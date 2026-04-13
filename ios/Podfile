@@ -4,6 +4,47 @@ require Pod::Executable.execute_command('node', ['-p',
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
+require 'fileutils'
+
+# Xcode 26's stricter clang rejects React Native's pinned fmt 11.0.2.
+# Bump the local third-party podspecs to a compatible fmt release until RN updates its pin.
+def patch_react_native_fmt_versions!
+  fmt_podspec = File.expand_path('../node_modules/react-native/third-party-podspecs/fmt.podspec', __dir__)
+  folly_podspec = File.expand_path('../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec', __dir__)
+
+  version_from = '11.0.2'
+  version_to = '11.1.0'
+
+  {
+    fmt_podspec => version_to,
+    folly_podspec => version_to,
+  }.each do |podspec_path, target_version|
+    next unless File.exist?(podspec_path)
+
+    contents = File.read(podspec_path)
+    next unless contents.include?(version_from)
+
+    updated = contents.gsub(version_from, target_version)
+    File.write(podspec_path, updated) if updated != contents
+  end
+end
+
+# CocoaPods caches local podspec JSON under Pods/Local Podspecs, so clear the stale fmt cache too.
+def clear_stale_react_native_podspec_cache!
+  local_podspecs_dir = File.expand_path('Pods/Local Podspecs', __dir__)
+  return unless Dir.exist?(local_podspecs_dir)
+
+  Dir.glob(File.join(local_podspecs_dir, '*fmt*')).each do |cached_spec|
+    FileUtils.rm_f(cached_spec)
+  end
+
+  Dir.glob(File.join(local_podspecs_dir, '*RCT-Folly*')).each do |cached_spec|
+    FileUtils.rm_f(cached_spec)
+  end
+end
+
+patch_react_native_fmt_versions!
+clear_stale_react_native_podspec_cache!
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!

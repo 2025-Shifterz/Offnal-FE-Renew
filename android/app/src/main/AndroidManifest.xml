@@ -55,7 +55,17 @@
         </intent-filter>
       </activity>
       <activity
-        android:name=".module.health.PermissionsRationaleActivity"
+        android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+        android:exported="true">
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="${kakaoScheme}" android:host="oauth" />
+        </intent-filter>
+      </activity>
+      <activity
+        android:name=".PermissionsRationaleActivity"
         android:exported="true">
         <intent-filter>
           <action android:name="androidx.health.ACTION_SHOW_PERMISSIONS_RATIONALE" />

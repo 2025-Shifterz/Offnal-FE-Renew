@@ -9,7 +9,7 @@ assignees: ''
 
 ## **이슈 제목:** `[날짜] - [환경] - [버전] 배포 시 발생한 [문제 유형]`
 
-**예시:** 2025-07-01 - Production - v1.2.3 배포 시 DB 마이그레이션 실패
+**예시:** 2025-07-01 - Production - v2026.04.001 배포 시 DB 마이그레이션 실패
 
 ## 배포 설명 
 배포 설명을 작성해주세요.
@@ -24,7 +24,7 @@ assignees: ''
 
 * **배포 환경:** `[Production / Staging / Development 등]`
 * **배포 대상 서비스/시스템:** `[예: 백엔드 API 서버, 프론트엔드 웹, 모바일 앱 등]`
-* **배포 버전:** `[예: v1.2.3, git hash: abcdefg]`
+* **배포 버전:** `[예: v2026.04.001, git hash: abcdefg]`
 * **배포 브랜치:** `[예: release/v1.2.3, main, develop]`
 * **배포 도구/플랫폼:** `[예: Jenkins, CircleCI, Kubernetes, AWS CodeDeploy 등]`
 * **배포 시작 시간:** `[예: 2025-07-01 10:30 KST]`
