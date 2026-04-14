@@ -10,6 +10,12 @@ import {
   toUpdateAutoAlarmInput,
 } from '../presentation/alarm/mappers/alarmDraftMapper'
 import {
+  cancelAutoAlarm,
+  scheduleAutoAlarm,
+  syncEnabledAutoAlarms,
+  type AutoAlarmSyncItem as NativeAutoAlarmSyncItem,
+} from '../presentation/alarm/native/autoAlarmBridge'
+import {
   AlarmDraft,
   CreateAutoAlarmDraft,
   UpdateAutoAlarmDraft,
@@ -155,6 +161,52 @@ const loadAutoAlarms = async (
   return sortAutoAlarms(autoAlarms, sortMode)
 }
 
+const toNativeSyncItem = (
+  autoAlarm: Pick<AutoAlarm, 'id' | 'nextTriggerAtMillis' | 'isEnabled'>
+): NativeAutoAlarmSyncItem => ({
+  alarmId: autoAlarm.id,
+  nextTriggerAtMillis: autoAlarm.nextTriggerAtMillis,
+  isEnabled: autoAlarm.isEnabled,
+})
+
+const syncSingleAutoAlarm = async (
+  autoAlarm: Pick<AutoAlarm, 'id' | 'nextTriggerAtMillis' | 'isEnabled'>
+): Promise<void> => {
+  if (autoAlarm.isEnabled) {
+    await scheduleAutoAlarm(autoAlarm.id, autoAlarm.nextTriggerAtMillis)
+    return
+  }
+
+  await cancelAutoAlarm(autoAlarm.id)
+}
+
+const syncAutoAlarmsById = async (
+  ids: number[],
+  isEnabled: boolean
+): Promise<void> => {
+  const uniqueIds = [...new Set(ids)]
+
+  if (uniqueIds.length === 0) {
+    return
+  }
+
+  const autoAlarms = await Promise.all(
+    uniqueIds.map(async id => autoAlarmRepository.getAutoAlarmById(id))
+  )
+  const syncItems = autoAlarms
+    .filter((autoAlarm): autoAlarm is AutoAlarm => autoAlarm !== undefined)
+    .map(autoAlarm => ({
+      ...toNativeSyncItem(autoAlarm),
+      isEnabled,
+    }))
+
+  if (syncItems.length === 0) {
+    return
+  }
+
+  await syncEnabledAutoAlarms(syncItems)
+}
+
 export const useAutoAlarmStore = create<AutoAlarmState>()(
   immer((set, get) => ({
     isLoading: false,
@@ -189,6 +241,8 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
           upsertAutoAlarm(state.autoAlarms, createdAutoAlarm)
           state.autoAlarms = sortAutoAlarms(state.autoAlarms, state.sortMode)
         })
+
+        await syncSingleAutoAlarm(createdAutoAlarm)
       } catch (error) {
         set({ error: getErrorMessage(error) })
         throw error
@@ -210,6 +264,8 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
           upsertAutoAlarm(state.autoAlarms, updatedAutoAlarm)
           state.autoAlarms = sortAutoAlarms(state.autoAlarms, state.sortMode)
         })
+
+        await syncSingleAutoAlarm(updatedAutoAlarm)
       } catch (error) {
         set({ error: getErrorMessage(error) })
         throw error
@@ -233,6 +289,7 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
         if (!hasCachedAutoAlarm) {
           const autoAlarms = await loadAutoAlarms(get().sortMode)
           set({ autoAlarms })
+          await syncSingleAutoAlarm(toggledAutoAlarm)
           return
         }
 
@@ -240,6 +297,8 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
           upsertAutoAlarm(state.autoAlarms, toggledAutoAlarm)
           state.autoAlarms = sortAutoAlarms(state.autoAlarms, state.sortMode)
         })
+
+        await syncSingleAutoAlarm(toggledAutoAlarm)
       } catch (error) {
         set({ error: getErrorMessage(error) })
         throw error
@@ -273,6 +332,8 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
             selectedAlarmId => !targetIdSet.has(selectedAlarmId)
           )
         })
+
+        await Promise.all(targetIds.map(async id => cancelAutoAlarm(id)))
       } catch (error) {
         const autoAlarms = await loadAutoAlarms(get().sortMode)
         set({ error: getErrorMessage(error) })
@@ -302,6 +363,8 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
           )
           state.autoAlarms = sortAutoAlarms(state.autoAlarms, state.sortMode)
         })
+
+        await syncAutoAlarmsById(targetIds, enabled)
       } catch (error) {
         const autoAlarms = await loadAutoAlarms(get().sortMode)
         set({ error: getErrorMessage(error) })

@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 import './global.css'
 import { useEffect, useState } from 'react'
 import { initializeDataBaseTables } from './src/infrastructure/local/databaseInitialization'
@@ -16,30 +10,66 @@ import { enableScreens } from 'react-native-screens'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import dayjs from 'dayjs'
 import { getHolidayDateSetUseCase } from './src/infrastructure/di/Dependencies'
+import { useAutoAlarmStore } from './src/store/useAutoAlarmStore'
+import { syncEnabledAutoAlarms } from './src/presentation/alarm/native/autoAlarmBridge'
 
 enableScreens()
+
+const getHolidayDateSet = async (): Promise<void> => {
+  const year = dayjs().year().toString()
+
+  await getHolidayDateSetUseCase.execute(year)
+}
+
+const syncAutoAlarmsOnAppStart = async (): Promise<void> => {
+  await useAutoAlarmStore.getState().fetchAllAutoAlarms()
+
+  const autoAlarms = useAutoAlarmStore.getState().autoAlarms
+
+  await syncEnabledAutoAlarms(
+    autoAlarms.map(autoAlarm => ({
+      alarmId: autoAlarm.id,
+      nextTriggerAtMillis: autoAlarm.nextTriggerAtMillis,
+      isEnabled: autoAlarm.isEnabled,
+    }))
+  )
+}
 
 function App() {
   const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
+    let isCanceled = false
+
     const init = async () => {
       try {
         await initializeDataBaseTables()
-        console.log('DB tables created')
-        try {
-          await getHolidayDateSetUseCase.execute(dayjs().year().toString())
-        } catch (error) {
-          console.error('Error caching holiday data', error)
-        }
       } catch (error) {
         console.error('Error creating DB tables', error)
-      } finally {
+      }
+
+      try {
+        await getHolidayDateSet()
+      } catch (error) {
+        console.error('Error caching holiday data', error)
+      }
+
+      try {
+        await syncAutoAlarmsOnAppStart()
+      } catch (error) {
+        console.error('Error syncing auto alarms on app start', error)
+      }
+
+      if (!isCanceled) {
         setIsReady(true)
       }
     }
 
-    init()
+    void init()
+
+    return () => {
+      isCanceled = true
+    }
   }, [])
 
   if (!isReady) {
