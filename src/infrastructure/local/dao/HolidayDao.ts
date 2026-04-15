@@ -44,7 +44,9 @@ export class HolidayDao {
     )
 
     const row = result.rows.item(0) as { count: number | string }
-    return Number(row.count) === Number(meta.totalCount)
+    const actualCount = Number(row.count)
+    const expectedCount = Number(meta.totalCount)
+    return actualCount === expectedCount
   }
 
   async replaceHolidayItems(
@@ -55,20 +57,23 @@ export class HolidayDao {
     const db = await openDatabase()
     const now = Date.now()
 
-    await db.transaction(async tx => {
-      await tx.executeSql('DELETE FROM holiday_items WHERE year = ?;', [year])
-      await tx.executeSql(
-        `INSERT OR REPLACE INTO holiday_cache_meta (year, totalCount, fetchedAt) VALUES (?, ?, ?);`,
-        [year, totalCount, now]
-      )
-
-      for (const item of items) {
-        await tx.executeSql(
+    try {
+      const statements: Array<[string, unknown[]]> = [
+        ['DELETE FROM holiday_items WHERE year = ?;', [year]],
+        [
+          `INSERT OR REPLACE INTO holiday_cache_meta (year, totalCount, fetchedAt) VALUES (?, ?, ?);`,
+          [year, totalCount, now],
+        ],
+        ...items.map(item => [
           `INSERT INTO holiday_items (year, dateName, locdate) VALUES (?, ?, ?);`,
-          [year, item.dateName, item.locdate]
-        )
-      }
-    })
+          [year, item.dateName, item.locdate],
+        ]),
+      ]
+
+      await db.sqlBatch(statements)
+    } catch (error) {
+      throw error
+    }
   }
 
   async getHolidayItemsByYear(year: string): Promise<HolidayEntity[]> {

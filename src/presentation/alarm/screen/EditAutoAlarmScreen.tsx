@@ -104,13 +104,18 @@ const EditAutoAlarmScreen = () => {
   const [isSaving, setIsSaving] = useState(false)
   const [isDraftHydrated, setIsDraftHydrated] = useState(false)
 
-  const { previewText } = useAutoAlarmNextTriggerPreview({
-    alarmTime,
-    selectedDays,
-    selectedWorkType,
-    isHolidayAlarmOff,
-    isReady: isDraftHydrated,
-  })
+  const { previewText, nextTriggerAtMillis, isCalculating } =
+    useAutoAlarmNextTriggerPreview({
+      alarmTime,
+      selectedDays,
+      selectedWorkType,
+      isHolidayAlarmOff,
+      isReady: isDraftHydrated,
+    })
+  const isSaveDisabled =
+    isSaving || isCalculating || nextTriggerAtMillis === null
+  const alarmConditionText =
+    selectedDays.length === 0 ? '근무' : '근무 이면서 요일'
 
   const handleHeaderBackPress = useCallback(() => {
     isHeaderBackRequestedRef.current = true
@@ -349,7 +354,7 @@ const EditAutoAlarmScreen = () => {
                 알림 조건
               </GlobalText>
               <GlobalText className="font-pretSemiBold text-text-subtle label-xxs">
-                근무 이면서 요일
+                {alarmConditionText}
               </GlobalText>
             </View>
 
@@ -390,7 +395,7 @@ const EditAutoAlarmScreen = () => {
           onPress={() => {
             handleSavePress()
           }}
-          disabled={isSaving}
+          disabled={isSaveDisabled}
           content={
             <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
               저장하기
