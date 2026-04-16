@@ -9,6 +9,8 @@ import { PortalProvider } from '@gorhom/portal'
 import { enableScreens } from 'react-native-screens'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import dayjs from 'dayjs'
+import { PERMISSIONS, RESULTS, request } from 'react-native-permissions'
+import { Platform } from 'react-native'
 import { getHolidayDateSetUseCase } from './src/infrastructure/di/Dependencies'
 import { useAutoAlarmStore } from './src/store/useAutoAlarmStore'
 import { syncEnabledAutoAlarms } from './src/presentation/alarm/native/autoAlarmBridge'
@@ -24,17 +26,43 @@ const getHolidayDateSet = async (): Promise<void> => {
   ])
 }
 
+const requestNotificationPermission = async (): Promise<void> => {
+  if (Platform.OS !== 'android' || Platform.Version < 33) {
+    return
+  }
+
+  const permission = PERMISSIONS.ANDROID.POST_NOTIFICATIONS
+  const status = await request(permission)
+
+  if (status !== RESULTS.GRANTED) {
+    console.warn('Notification permission not granted:', status)
+  }
+}
+
 const syncAutoAlarmsOnAppStart = async (): Promise<void> => {
   await useAutoAlarmStore.getState().fetchAllAutoAlarms()
 
-  const autoAlarms = useAutoAlarmStore.getState().autoAlarms
+  const now = Date.now()
+  const autoAlarmStore = useAutoAlarmStore.getState()
+  const staleAlarmIds = autoAlarmStore.autoAlarms
+    .filter(alarm => alarm.isEnabled && alarm.nextTriggerAtMillis <= now)
+    .map(alarm => alarm.id)
+
+  if (staleAlarmIds.length > 0) {
+    await autoAlarmStore.setAutoAlarmsEnabled(staleAlarmIds, false)
+  }
 
   await syncEnabledAutoAlarms(
-    autoAlarms.map(autoAlarm => ({
-      alarmId: autoAlarm.id,
-      nextTriggerAtMillis: autoAlarm.nextTriggerAtMillis,
-      isEnabled: autoAlarm.isEnabled,
-    }))
+    useAutoAlarmStore
+      .getState()
+      .autoAlarms.filter(
+        autoAlarm => autoAlarm.isEnabled && autoAlarm.nextTriggerAtMillis > now
+      )
+      .map(autoAlarm => ({
+        alarmId: autoAlarm.id,
+        nextTriggerAtMillis: autoAlarm.nextTriggerAtMillis,
+        isEnabled: autoAlarm.isEnabled,
+      }))
   )
 }
 
@@ -58,6 +86,12 @@ function App() {
       }
 
       try {
+        await requestNotificationPermission()
+      } catch (error) {
+        console.error('Error requesting notification permission', error)
+      }
+
+      try {
         await syncAutoAlarmsOnAppStart()
       } catch (error) {
         console.error('Error syncing auto alarms on app start', error)
@@ -68,7 +102,9 @@ function App() {
       }
     }
 
-    void init()
+    init().catch(error => {
+      console.error('Unexpected app init failure', error)
+    })
 
     return () => {
       isCanceled = true

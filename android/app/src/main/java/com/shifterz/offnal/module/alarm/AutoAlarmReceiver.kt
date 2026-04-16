@@ -31,6 +31,12 @@ class AutoAlarmReceiver : BroadcastReceiver() {
                 Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS,
                 intent?.getLongExtra(Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS, -1L) ?: -1L
             )
+            if (intent?.hasExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT) == true) {
+                putExtra(
+                    Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT,
+                    intent.getIntExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT, -1)
+                )
+            }
         }
 
         ContextCompat.startForegroundService(safeContext, alarmForegroundService)

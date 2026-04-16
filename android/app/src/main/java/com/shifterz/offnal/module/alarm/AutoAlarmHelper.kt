@@ -13,7 +13,11 @@ class AutoAlarmHelper(private val context: Context) {
         context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
     }
 
-    fun scheduleAlarm(alarmId: Int, triggerAtMillis: Long) {
+    fun scheduleAlarm(
+        alarmId: Int,
+        triggerAtMillis: Long,
+        snoozeRemainingCount: Int? = null
+    ) {
         require(alarmId > 0) { "alarmId must be a positive integer." }
         require(triggerAtMillis > 0L) { "triggerAtMillis must be a positive timestamp." }
 
@@ -22,7 +26,8 @@ class AutoAlarmHelper(private val context: Context) {
 
         val pendingIntent = buildBroadcastPendingIntent(
             alarmId = alarmId,
-            triggerAtMillis = triggerAtMillis
+            triggerAtMillis = triggerAtMillis,
+            snoozeRemainingCount = snoozeRemainingCount
         )
 
         manager.setExactAndAllowWhileIdle(
@@ -38,7 +43,8 @@ class AutoAlarmHelper(private val context: Context) {
         val manager = requireAlarmManager()
         val pendingIntent = buildBroadcastPendingIntent(
             alarmId = alarmId,
-            triggerAtMillis = System.currentTimeMillis()
+            triggerAtMillis = System.currentTimeMillis(),
+            snoozeRemainingCount = null
         )
 
         manager.cancel(pendingIntent)
@@ -70,12 +76,16 @@ class AutoAlarmHelper(private val context: Context) {
 
     private fun buildBroadcastPendingIntent(
         alarmId: Int,
-        triggerAtMillis: Long
+        triggerAtMillis: Long,
+        snoozeRemainingCount: Int?
     ): PendingIntent {
         val intent = Intent(context, AutoAlarmReceiver::class.java).apply {
             action = Constants.AUTO_ALARM_ACTION_START
             putExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, alarmId)
             putExtra(Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS, triggerAtMillis)
+            snoozeRemainingCount?.let {
+                putExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT, it)
+            }
         }
 
         return PendingIntent.getBroadcast(

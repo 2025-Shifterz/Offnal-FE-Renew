@@ -9,12 +9,23 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.RingtoneManager
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import com.shifterz.offnal.constant.Constants
+import com.shifterz.offnal.model.AutoAlarmRuntimeConfig
 
 class AutoAlarmService : Service() {
+    private val alarmHelper by lazy { AutoAlarmHelper(this) }
+    private val databaseHelper by lazy { AutoAlarmDatabaseHelper(this) }
+    private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
+
     private var mediaPlayer: MediaPlayer? = null
+    private var autoStopRunnable: Runnable? = null
+    private var currentAlarmId: Int = -1
+    private var currentRemainingSnoozeCount: Int? = null
+    private var currentRuntimeConfig: AutoAlarmRuntimeConfig? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -34,16 +45,55 @@ class AutoAlarmService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             Constants.AUTO_ALARM_ACTION_STOP -> {
-                stopAlarmRinging()
+                endAlarmSession()
                 return START_NOT_STICKY
             }
 
             else -> {
+                val startIntent = intent ?: run {
+                    stopSelf()
+                    return START_NOT_STICKY
+                }
+
+                val alarmId = startIntent.getIntExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, -1)
+                val triggerAtMillis =
+                    startIntent.getLongExtra(Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS, -1L)
+
+                if (alarmId <= 0 || triggerAtMillis <= 0L) {
+                    stopSelf()
+                    return START_NOT_STICKY
+                }
+
+                val runtimeConfig = databaseHelper.loadRuntimeConfig(alarmId)
+                if (runtimeConfig == null) {
+                    stopSelf()
+                    return START_NOT_STICKY
+                }
+
+                currentAlarmId = alarmId
+                currentRuntimeConfig = runtimeConfig
+                currentRemainingSnoozeCount =
+                    if (startIntent.hasExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT)) {
+                        val extraCount =
+                            startIntent.getIntExtra(
+                                Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT,
+                                -1
+                            )
+                        if (extraCount >= 0) extraCount else null
+                    } else {
+                        when {
+                            !runtimeConfig.isSnoozeEnabled -> null
+                            runtimeConfig.snoozeRepeatCount == 0 -> null
+                            else -> runtimeConfig.snoozeRepeatCount
+                        }
+                    }
+
                 startForeground(
                     Constants.AUTO_ALARM_FOREGROUND_NOTIFICATION_ID,
                     buildRingingNotification()
                 )
                 startAlarmRinging()
+                scheduleAutoStop()
             }
         }
 
@@ -51,6 +101,7 @@ class AutoAlarmService : Service() {
     }
 
     override fun onDestroy() {
+        cancelAutoStop()
         releaseAlarmResources()
         super.onDestroy()
     }
@@ -77,6 +128,20 @@ class AutoAlarmService : Service() {
         }
     }
 
+    private fun scheduleAutoStop() {
+        cancelAutoStop()
+        autoStopRunnable = Runnable {
+            endAlarmSession()
+        }.also { runnable ->
+            mainHandler.postDelayed(runnable, AUTO_STOP_DURATION_MS)
+        }
+    }
+
+    private fun cancelAutoStop() {
+        autoStopRunnable?.let { mainHandler.removeCallbacks(it) }
+        autoStopRunnable = null
+    }
+
     private fun buildRingingNotification(): Notification {
         val stopIntent = Intent(this, AutoAlarmService::class.java).apply {
             action = Constants.AUTO_ALARM_ACTION_STOP
@@ -99,14 +164,56 @@ class AutoAlarmService : Service() {
             .build()
     }
 
-    private fun stopAlarmRinging() {
+    private fun endAlarmSession() {
+        cancelAutoStop()
+
+        val alarmId = currentAlarmId
+        val runtimeConfig = currentRuntimeConfig
+        val remainingSnoozeCount = currentRemainingSnoozeCount
+
         releaseAlarmResources()
         stopForeground(STOP_FOREGROUND_REMOVE)
+
+        if (alarmId <= 0 || runtimeConfig == null) {
+            stopSelf()
+            return
+        }
+
+        val shouldRepeatSnooze = when {
+            !runtimeConfig.isSnoozeEnabled -> false
+            remainingSnoozeCount == null -> true
+            remainingSnoozeCount > 0 -> true
+            else -> false
+        }
+
+        if (shouldRepeatSnooze) {
+            val nextRemainingCount = remainingSnoozeCount?.let { if (it > 0) it - 1 else null }
+            val nextTriggerAtMillis = System.currentTimeMillis() + (runtimeConfig.snoozeIntervalMinutes * 60_000L)
+
+            databaseHelper.updateNextTriggerAtMillis(alarmId, nextTriggerAtMillis)
+            databaseHelper.setEnabled(alarmId, true)
+
+            alarmHelper.scheduleAlarm(
+                alarmId = alarmId,
+                triggerAtMillis = nextTriggerAtMillis,
+                snoozeRemainingCount = nextRemainingCount
+            )
+        } else {
+            databaseHelper.setEnabled(alarmId, false)
+        }
+
         stopSelf()
     }
 
     private fun releaseAlarmResources() {
         mediaPlayer?.release()
         mediaPlayer = null
+        currentAlarmId = -1
+        currentRemainingSnoozeCount = null
+        currentRuntimeConfig = null
+    }
+
+    private companion object {
+        private const val AUTO_STOP_DURATION_MS = 30_000L
     }
 }
