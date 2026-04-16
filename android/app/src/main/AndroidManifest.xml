@@ -90,6 +90,6 @@
             android:foregroundServiceType="mediaPlayback"/>
 
         <receiver android:name=".module.alarm.AutoAlarmReceiver"
-            android:exported="true"/>
+            android:exported="false"/>
   </application>
 </manifest>

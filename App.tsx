@@ -16,9 +16,12 @@ import { syncEnabledAutoAlarms } from './src/presentation/alarm/native/autoAlarm
 enableScreens()
 
 const getHolidayDateSet = async (): Promise<void> => {
-  const year = dayjs().year().toString()
+  const currentYear = dayjs().year()
 
-  await getHolidayDateSetUseCase.execute(year)
+  await Promise.all([
+    getHolidayDateSetUseCase.execute(currentYear.toString()),
+    getHolidayDateSetUseCase.execute((currentYear + 1).toString()),
+  ])
 }
 
 const syncAutoAlarmsOnAppStart = async (): Promise<void> => {

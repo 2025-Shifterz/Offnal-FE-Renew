@@ -73,6 +73,7 @@ class AutoAlarmHelper(private val context: Context) {
         triggerAtMillis: Long
     ): PendingIntent {
         val intent = Intent(context, AutoAlarmReceiver::class.java).apply {
+            action = Constants.AUTO_ALARM_ACTION_START
             putExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, alarmId)
             putExtra(Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS, triggerAtMillis)
         }

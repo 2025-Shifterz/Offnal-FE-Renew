@@ -19,6 +19,8 @@ class AutoAlarmReceiver : BroadcastReceiver() {
      */
     override fun onReceive(context: Context?, intent: Intent?) {
         val safeContext = context ?: return
+        if (intent?.action != Constants.AUTO_ALARM_ACTION_START) return
+
         val alarmId = intent?.getIntExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, -1) ?: -1
         if (alarmId <= 0) return
 
