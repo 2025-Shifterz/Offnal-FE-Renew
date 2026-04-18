@@ -12,8 +12,10 @@ import android.media.RingtoneManager
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.shifterz.offnal.constant.Constants
+import com.shifterz.offnal.constant.Constants.AUTO_STOP_DURATION_MS
 import com.shifterz.offnal.model.AutoAlarmRuntimeConfig
 
 class AutoAlarmService : Service() {
@@ -45,7 +47,7 @@ class AutoAlarmService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             Constants.AUTO_ALARM_ACTION_STOP -> {
-                endAlarmSession()
+                endAlarmSession(fromTimeout = false)
                 return START_NOT_STICKY
             }
 
@@ -131,7 +133,7 @@ class AutoAlarmService : Service() {
     private fun scheduleAutoStop() {
         cancelAutoStop()
         autoStopRunnable = Runnable {
-            endAlarmSession()
+            endAlarmSession(fromTimeout = true)
         }.also { runnable ->
             mainHandler.postDelayed(runnable, AUTO_STOP_DURATION_MS)
         }
@@ -164,7 +166,7 @@ class AutoAlarmService : Service() {
             .build()
     }
 
-    private fun endAlarmSession() {
+    private fun endAlarmSession(fromTimeout: Boolean) {
         cancelAutoStop()
 
         val alarmId = currentAlarmId
@@ -175,6 +177,12 @@ class AutoAlarmService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
 
         if (alarmId <= 0 || runtimeConfig == null) {
+            stopSelf()
+            return
+        }
+
+        if (!fromTimeout) {
+            databaseHelper.setEnabled(alarmId, false)
             stopSelf()
             return
         }
@@ -190,14 +198,22 @@ class AutoAlarmService : Service() {
             val nextRemainingCount = remainingSnoozeCount?.let { if (it > 0) it - 1 else null }
             val nextTriggerAtMillis = System.currentTimeMillis() + (runtimeConfig.snoozeIntervalMinutes * 60_000L)
 
-            databaseHelper.updateNextTriggerAtMillis(alarmId, nextTriggerAtMillis)
-            databaseHelper.setEnabled(alarmId, true)
-
-            alarmHelper.scheduleAlarm(
-                alarmId = alarmId,
-                triggerAtMillis = nextTriggerAtMillis,
-                snoozeRemainingCount = nextRemainingCount
-            )
+            val updatedTrigger = databaseHelper.updateNextTriggerAtMillis(alarmId, nextTriggerAtMillis)
+            val enabledUpdated = databaseHelper.setEnabled(alarmId, true)
+            if (updatedTrigger && enabledUpdated) {
+                runCatching {
+                    alarmHelper.scheduleAlarm(
+                        alarmId = alarmId,
+                        triggerAtMillis = nextTriggerAtMillis,
+                        snoozeRemainingCount = nextRemainingCount
+                    )
+                }.onFailure { exception ->
+                    Log.w(TAG, "Failed to schedule snoozed auto alarm for alarmId=$alarmId", exception)
+                    databaseHelper.setEnabled(alarmId, false)
+                }
+            } else {
+                databaseHelper.setEnabled(alarmId, false)
+            }
         } else {
             databaseHelper.setEnabled(alarmId, false)
         }
@@ -214,6 +230,6 @@ class AutoAlarmService : Service() {
     }
 
     private companion object {
-        private const val AUTO_STOP_DURATION_MS = 30_000L
+        private const val TAG = "AutoAlarmService"
     }
 }

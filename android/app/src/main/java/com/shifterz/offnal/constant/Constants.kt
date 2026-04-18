@@ -11,4 +11,7 @@ object Constants {
     const val AUTO_ALARM_EXTRA_ALARM_ID = "com.shifterz.offnal.extra.AUTO_ALARM_ID"
     const val AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS = "com.shifterz.offnal.extra.AUTO_ALARM_TRIGGER_AT_MILLIS"
     const val AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT = "com.shifterz.offnal.extra.AUTO_ALARM_SNOOZE_REMAINING_COUNT"
+
+    const val AUTO_STOP_DURATION_MS = 30_000L
+
 }

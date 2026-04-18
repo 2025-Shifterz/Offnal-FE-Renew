@@ -56,22 +56,28 @@ export class HolidayDao {
   ): Promise<void> {
     const db = await openDatabase()
     const now = Date.now()
+    const statements: Array<[string, unknown[]]> = [
+      ['DELETE FROM holiday_items WHERE year = ?;', [year]],
+      [
+        `INSERT OR REPLACE INTO holiday_cache_meta (year, totalCount, fetchedAt) VALUES (?, ?, ?);`,
+        [year, totalCount, now],
+      ],
+      ...items.map<[string, unknown[]]>(item => [
+        `INSERT INTO holiday_items (year, dateName, locdate) VALUES (?, ?, ?);`,
+        [year, item.dateName, item.locdate],
+      ]),
+    ]
+
+    await db.executeSql('BEGIN TRANSACTION;')
 
     try {
-      const statements: Array<[string, unknown[]]> = [
-        ['DELETE FROM holiday_items WHERE year = ?;', [year]],
-        [
-          `INSERT OR REPLACE INTO holiday_cache_meta (year, totalCount, fetchedAt) VALUES (?, ?, ?);`,
-          [year, totalCount, now],
-        ],
-        ...items.map(item => [
-          `INSERT INTO holiday_items (year, dateName, locdate) VALUES (?, ?, ?);`,
-          [year, item.dateName, item.locdate],
-        ]),
-      ]
+      for (const [statement, params] of statements) {
+        await db.executeSql(statement, params)
+      }
 
-      await db.sqlBatch(statements)
+      await db.executeSql('COMMIT;')
     } catch (error) {
+      await db.executeSql('ROLLBACK;')
       throw error
     }
   }

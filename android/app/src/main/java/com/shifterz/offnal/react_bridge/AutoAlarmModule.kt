@@ -8,11 +8,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.shifterz.offnal.model.AutoAlarmSyncItem
 import com.shifterz.offnal.module.alarm.AutoAlarmHelper
-
+import com.shifterz.offnal.utils.runNativeOperation
 
 class AutoAlarmModule(
     private val reactContext: ReactApplicationContext
-): ReactContextBaseJavaModule(reactContext) {
+) : ReactContextBaseJavaModule(reactContext) {
     private val autoAlarmHelper by lazy { AutoAlarmHelper(reactContext) }
 
     companion object {
@@ -23,35 +23,23 @@ class AutoAlarmModule(
 
     @ReactMethod
     fun scheduleAlarm(alarmId: Double, nextTriggerAtMillis: Double, promise: Promise) {
-        runCatching {
+        runNativeOperation(promise) {
             autoAlarmHelper.scheduleAlarm(alarmId.toInt(), nextTriggerAtMillis.toLong())
-        }.onSuccess {
-            promise.resolve(null)
-        }.onFailure { exception ->
-            promise.reject("AUTO_ALARM_SCHEDULE_FAILED", exception)
         }
     }
 
     @ReactMethod
     fun cancelAlarm(alarmId: Double, promise: Promise) {
-        runCatching {
+        runNativeOperation(promise) {
             autoAlarmHelper.cancelAlarm(alarmId.toInt())
-        }.onSuccess {
-            promise.resolve(null)
-        }.onFailure { exception ->
-            promise.reject("AUTO_ALARM_CANCEL_FAILED", exception)
         }
     }
 
     @ReactMethod
     fun syncEnabledAutoAlarms(alarms: ReadableArray, promise: Promise) {
-        runCatching {
+        runNativeOperation(promise) {
             val syncItems = buildSyncItems(alarms)
             autoAlarmHelper.syncEnabledAutoAlarms(syncItems)
-        }.onSuccess {
-            promise.resolve(null)
-        }.onFailure { exception ->
-            promise.reject("AUTO_ALARM_SYNC_FAILED", exception)
         }
     }
 

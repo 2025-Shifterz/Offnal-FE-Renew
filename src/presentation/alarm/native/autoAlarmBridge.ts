@@ -7,12 +7,9 @@ export interface AutoAlarmSyncItem {
 }
 
 type AutoAlarmNativeModule = {
-  scheduleAlarm: (
-    alarmId: number,
-    nextTriggerAtMillis: number
-  ) => Promise<void> | void
-  cancelAlarm: (alarmId: number) => Promise<void> | void
-  syncEnabledAutoAlarms: (alarms: AutoAlarmSyncItem[]) => Promise<void> | void
+  scheduleAlarm: (alarmId: number, nextTriggerAtMillis: number) => Promise<void>
+  cancelAlarm: (alarmId: number) => Promise<void>
+  syncEnabledAutoAlarms: (alarms: AutoAlarmSyncItem[]) => Promise<void>
 }
 
 const MODULE_NAME = 'AutoAlarmModule'

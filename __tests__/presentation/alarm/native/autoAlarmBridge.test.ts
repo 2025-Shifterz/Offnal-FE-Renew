@@ -40,12 +40,15 @@ describe('autoAlarmBridge', () => {
   beforeEach(() => {
     jest.resetModules()
     jest.clearAllMocks()
+    scheduleAlarm.mockResolvedValue(undefined)
+    cancelAlarm.mockResolvedValue(undefined)
+    syncEnabledAutoAlarms.mockResolvedValue(undefined)
   })
 
   it('passes schedule requests to the android native module', async () => {
     const { scheduleAutoAlarm } = loadBridge('android')
 
-    await scheduleAutoAlarm(7, 123456789)
+    await expect(scheduleAutoAlarm(7, 123456789)).resolves.toBeUndefined()
 
     expect(scheduleAlarm).toHaveBeenCalledWith(7, 123456789)
     expect(cancelAlarm).not.toHaveBeenCalled()
@@ -55,7 +58,7 @@ describe('autoAlarmBridge', () => {
   it('passes cancel requests to the android native module', async () => {
     const { cancelAutoAlarm } = loadBridge('android')
 
-    await cancelAutoAlarm(12)
+    await expect(cancelAutoAlarm(12)).resolves.toBeUndefined()
 
     expect(cancelAlarm).toHaveBeenCalledWith(12)
     expect(scheduleAlarm).not.toHaveBeenCalled()
@@ -74,11 +77,19 @@ describe('autoAlarmBridge', () => {
       },
     ]
 
-    await syncEnabledAutoAlarmsBridge(payload)
+    await expect(syncEnabledAutoAlarmsBridge(payload)).resolves.toBeUndefined()
 
     expect(syncEnabledAutoAlarms).toHaveBeenCalledWith(payload)
     expect(scheduleAlarm).not.toHaveBeenCalled()
     expect(cancelAlarm).not.toHaveBeenCalled()
+  })
+
+  it('propagates native rejections', async () => {
+    scheduleAlarm.mockRejectedValueOnce(new Error('native failure'))
+
+    const { scheduleAutoAlarm } = loadBridge('android')
+
+    await expect(scheduleAutoAlarm(3, 100)).rejects.toThrow('native failure')
   })
 
   it('does nothing on non-android platforms', async () => {
@@ -88,15 +99,17 @@ describe('autoAlarmBridge', () => {
       syncEnabledAutoAlarms: syncEnabledAutoAlarmsBridge,
     } = loadBridge('ios')
 
-    await scheduleAutoAlarm(1, 111)
-    await cancelAutoAlarm(1)
-    await syncEnabledAutoAlarmsBridge([
-      {
-        alarmId: 1,
-        nextTriggerAtMillis: 111,
-        isEnabled: true,
-      },
-    ])
+    await expect(scheduleAutoAlarm(1, 111)).resolves.toBeUndefined()
+    await expect(cancelAutoAlarm(1)).resolves.toBeUndefined()
+    await expect(
+      syncEnabledAutoAlarmsBridge([
+        {
+          alarmId: 1,
+          nextTriggerAtMillis: 111,
+          isEnabled: true,
+        },
+      ])
+    ).resolves.toBeUndefined()
 
     expect(scheduleAlarm).not.toHaveBeenCalled()
     expect(cancelAlarm).not.toHaveBeenCalled()

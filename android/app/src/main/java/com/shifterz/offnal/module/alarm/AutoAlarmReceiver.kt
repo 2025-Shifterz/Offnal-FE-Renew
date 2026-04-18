@@ -21,7 +21,7 @@ class AutoAlarmReceiver : BroadcastReceiver() {
         val safeContext = context ?: return
         if (intent?.action != Constants.AUTO_ALARM_ACTION_START) return
 
-        val alarmId = intent?.getIntExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, -1) ?: -1
+        val alarmId = intent.getIntExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, -1)
         if (alarmId <= 0) return
 
         val alarmForegroundService = Intent(safeContext, AutoAlarmService::class.java).apply {
@@ -29,9 +29,9 @@ class AutoAlarmReceiver : BroadcastReceiver() {
             putExtra(Constants.AUTO_ALARM_EXTRA_ALARM_ID, alarmId)
             putExtra(
                 Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS,
-                intent?.getLongExtra(Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS, -1L) ?: -1L
+                intent.getLongExtra(Constants.AUTO_ALARM_EXTRA_TRIGGER_AT_MILLIS, -1L)
             )
-            if (intent?.hasExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT) == true) {
+            if (intent.hasExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT)) {
                 putExtra(
                     Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT,
                     intent.getIntExtra(Constants.AUTO_ALARM_EXTRA_SNOOZE_REMAINING_COUNT, -1)

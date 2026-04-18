@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.shifterz.offnal.constant.Constants
+import com.shifterz.offnal.exceptions.AutoAlarmOperationException
 import com.shifterz.offnal.model.AutoAlarmSyncItem
 
 class AutoAlarmHelper(private val context: Context) {
@@ -18,40 +19,87 @@ class AutoAlarmHelper(private val context: Context) {
         triggerAtMillis: Long,
         snoozeRemainingCount: Int? = null
     ) {
-        require(alarmId > 0) { "alarmId must be a positive integer." }
-        require(triggerAtMillis > 0L) { "triggerAtMillis must be a positive timestamp." }
+        if (alarmId <= 0) {
+            throw AutoAlarmOperationException(
+                code = "invalid_alarm_id",
+                message = "alarmId must be a positive integer."
+            )
+        }
 
-        val manager = requireAlarmManager()
-        ensureExactAlarmCapability(manager)
+        if (triggerAtMillis <= 0L) {
+            throw AutoAlarmOperationException(
+                code = "invalid_trigger_at_millis",
+                message = "triggerAtMillis must be a positive timestamp."
+            )
+        }
 
-        val pendingIntent = buildBroadcastPendingIntent(
-            alarmId = alarmId,
-            triggerAtMillis = triggerAtMillis,
-            snoozeRemainingCount = snoozeRemainingCount
+        val manager = alarmManager ?: throw AutoAlarmOperationException(
+            code = "alarm_manager_unavailable",
+            message = "AlarmManager is not available on this device."
         )
 
-        manager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            triggerAtMillis,
-            pendingIntent
-        )
+        if (!canScheduleExactAlarms(manager)) {
+            throw AutoAlarmOperationException(
+                code = "exact_alarm_permission_required",
+                message = "Exact alarm permission is required to schedule auto alarms on Android 12+."
+            )
+        }
+
+        runCatching {
+            val pendingIntent = buildBroadcastPendingIntent(
+                alarmId = alarmId,
+                triggerAtMillis = triggerAtMillis,
+                snoozeRemainingCount = snoozeRemainingCount
+            )
+
+            manager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerAtMillis,
+                pendingIntent
+            )
+        }.getOrElse { exception ->
+            throw AutoAlarmOperationException(
+                code = "schedule_failed",
+                message = exception.message ?: "Failed to schedule auto alarm."
+            )
+        }
     }
 
     fun cancelAlarm(alarmId: Int) {
-        require(alarmId > 0) { "alarmId must be a positive integer." }
+        if (alarmId <= 0) {
+            throw AutoAlarmOperationException(
+                code = "invalid_alarm_id",
+                message = "alarmId must be a positive integer."
+            )
+        }
 
-        val manager = requireAlarmManager()
-        val pendingIntent = buildBroadcastPendingIntent(
-            alarmId = alarmId,
-            triggerAtMillis = System.currentTimeMillis(),
-            snoozeRemainingCount = null
+        val manager = alarmManager ?: throw AutoAlarmOperationException(
+            code = "alarm_manager_unavailable",
+            message = "AlarmManager is not available on this device."
         )
 
-        manager.cancel(pendingIntent)
-        pendingIntent.cancel()
+        runCatching {
+            val pendingIntent = buildBroadcastPendingIntent(
+                alarmId = alarmId,
+                triggerAtMillis = System.currentTimeMillis(),
+                snoozeRemainingCount = null
+            )
+
+            manager.cancel(pendingIntent)
+            pendingIntent.cancel()
+        }.getOrElse { exception ->
+            throw AutoAlarmOperationException(
+                code = "cancel_failed",
+                message = exception.message ?: "Failed to cancel auto alarm."
+            )
+        }
     }
 
     fun syncEnabledAutoAlarms(alarms: List<AutoAlarmSyncItem>) {
+        if (alarms.isEmpty()) {
+            return
+        }
+
         alarms.forEach { alarm ->
             if (alarm.isEnabled) {
                 scheduleAlarm(alarm.id, alarm.nextTriggerAtMillis)
@@ -61,17 +109,8 @@ class AutoAlarmHelper(private val context: Context) {
         }
     }
 
-    private fun requireAlarmManager(): AlarmManager {
-        return alarmManager
-            ?: throw IllegalStateException("AlarmManager is not available on this device.")
-    }
-
-    private fun ensureExactAlarmCapability(alarmManager: AlarmManager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            throw IllegalStateException(
-                "Exact alarm permission is required to schedule auto alarms on Android 12+."
-            )
-        }
+    private fun canScheduleExactAlarms(alarmManager: AlarmManager): Boolean {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
     }
 
     private fun buildBroadcastPendingIntent(
