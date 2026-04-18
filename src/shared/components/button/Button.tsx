@@ -35,7 +35,10 @@ const EmphasizedButton = ({
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={`${className} items-center rounded-radius-xl bg-surface-inverse py-[13px] active:bg-surface-inverse-subtle`}
+      accessibilityState={disabled ? { disabled: true } : undefined}
+      className={`${className} items-center rounded-radius-xl bg-surface-inverse py-[13px] ${
+        disabled ? 'opacity-50' : 'active:bg-surface-inverse-subtle'
+      }`}
     >
       {content}
     </Pressable>

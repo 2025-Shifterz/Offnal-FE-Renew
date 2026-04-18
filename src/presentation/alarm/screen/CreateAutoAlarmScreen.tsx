@@ -55,12 +55,17 @@ const CreateAutoAlarmScreen = () => {
     initialTime.setHours(9, 0, 0, 0)
     return initialTime
   })
-  const { previewText } = useAutoAlarmNextTriggerPreview({
-    alarmTime,
-    selectedDays,
-    selectedWorkType,
-    isHolidayAlarmOff,
-  })
+  const { previewText, nextTriggerAtMillis, isCalculating } =
+    useAutoAlarmNextTriggerPreview({
+      alarmTime,
+      selectedDays,
+      selectedWorkType,
+      isHolidayAlarmOff,
+    })
+  const isSaveDisabled =
+    isSaving || isCalculating || nextTriggerAtMillis === null
+  const alarmConditionText =
+    selectedDays.length === 0 ? '근무' : '근무 이면서 요일'
 
   const toggleSelectedDay = (day: AlarmWeekdayLabel) => {
     setSelectedDays(prev =>
@@ -221,7 +226,7 @@ const CreateAutoAlarmScreen = () => {
                 알람 조건
               </GlobalText>
               <GlobalText className="font-pretSemiBold text-text-subtle label-xxs">
-                근무 이면서 요일
+                {alarmConditionText}
               </GlobalText>
             </View>
 
@@ -262,7 +267,7 @@ const CreateAutoAlarmScreen = () => {
           onPress={() => {
             handleSavePress()
           }}
-          disabled={isSaving}
+          disabled={isSaveDisabled}
           content={
             <GlobalText className="font-pretMedium text-text-bolder-inverse body-m">
               저장하기
