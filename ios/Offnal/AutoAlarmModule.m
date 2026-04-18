@@ -289,10 +289,12 @@ RCT_EXPORT_METHOD(syncEnabledAutoAlarms:(NSArray *)alarms
       case UNAuthorizationStatusProvisional:
       case UNAuthorizationStatusEphemeral:
 #endif
+      {
         completion(YES, nil);
         return;
+      }
 
-      case UNAuthorizationStatusNotDetermined:
+      case UNAuthorizationStatusNotDetermined: {
         [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge)
                               completionHandler:^(BOOL granted, NSError *_Nullable error) {
           if (error != nil) {
@@ -303,11 +305,13 @@ RCT_EXPORT_METHOD(syncEnabledAutoAlarms:(NSArray *)alarms
           completion(granted, nil);
         }];
         return;
+      }
 
       case UNAuthorizationStatusDenied:
-      default:
+      default: {
         completion(NO, nil);
         return;
+      }
     }
   }];
 }
