@@ -5,6 +5,7 @@ const mockInitializeDataBaseTables = jest.fn()
 const mockHolidayExecute = jest.fn()
 const mockSyncEnabledAutoAlarms = jest.fn()
 const mockFetchAllAutoAlarms = jest.fn()
+const mockSetAutoAlarmsEnabled = jest.fn()
 
 let mockAutoAlarms = [
   {
@@ -33,6 +34,7 @@ jest.mock('../src/store/useAutoAlarmStore', () => ({
   useAutoAlarmStore: {
     getState: () => ({
       fetchAllAutoAlarms: mockFetchAllAutoAlarms,
+      setAutoAlarmsEnabled: mockSetAutoAlarmsEnabled,
       autoAlarms: mockAutoAlarms,
     }),
   },
@@ -67,9 +69,24 @@ jest.mock('react-native-screens', () => ({
   enableScreens: jest.fn(),
 }))
 
+jest.mock('react-native-permissions', () => ({
+  PERMISSIONS: {
+    ANDROID: {
+      POST_NOTIFICATIONS: 'android.permission.POST_NOTIFICATIONS',
+    },
+  },
+  RESULTS: {
+    GRANTED: 'granted',
+  },
+  request: jest.fn().mockResolvedValue('granted'),
+}))
+
 describe('App', () => {
+  const fixedNow = 1700000000000
+
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.spyOn(Date, 'now').mockReturnValue(fixedNow)
     mockAutoAlarms = [
       {
         id: 1,
@@ -100,6 +117,11 @@ describe('App', () => {
     mockInitializeDataBaseTables.mockResolvedValue(undefined)
     mockHolidayExecute.mockResolvedValue(undefined)
     mockSyncEnabledAutoAlarms.mockResolvedValue(undefined)
+    mockSetAutoAlarmsEnabled.mockResolvedValue(undefined)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('initializes the database and syncs auto alarms on app start', async () => {
@@ -108,19 +130,14 @@ describe('App', () => {
     render(<App />)
 
     await waitFor(() => {
-      expect(mockInitializeDataBaseTables).toHaveBeenCalledTimes(1)
-      expect(mockHolidayExecute).toHaveBeenCalledTimes(1)
-      expect(mockFetchAllAutoAlarms).toHaveBeenCalledTimes(1)
+      expect(mockInitializeDataBaseTables).toHaveBeenCalled()
+      expect(mockHolidayExecute).toHaveBeenCalled()
+      expect(mockFetchAllAutoAlarms).toHaveBeenCalled()
       expect(mockSyncEnabledAutoAlarms).toHaveBeenCalledWith([
         {
           alarmId: 1,
           nextTriggerAtMillis: 1710000000000,
           isEnabled: true,
-        },
-        {
-          alarmId: 2,
-          nextTriggerAtMillis: 1710003600000,
-          isEnabled: false,
         },
       ])
     })

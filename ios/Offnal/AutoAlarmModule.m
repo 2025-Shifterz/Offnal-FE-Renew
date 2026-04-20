@@ -1,9 +1,17 @@
 #import <React/RCTBridgeModule.h>
 #import <UserNotifications/UserNotifications.h>
+#import <sqlite3.h>
 
 static NSString *const AutoAlarmModuleErrorDomain = @"com.shifterz.offnal.AutoAlarmModule";
 static NSString *const AutoAlarmNotificationIdentifierPrefix = @"offnal.auto-alarm.";
 static NSString *const AutoAlarmNotificationCategoryIdentifier = @"offnal.auto-alarm.category";
+static NSString *const AutoAlarmNotificationSoundName = @"auto_alarm.caf";
+static NSString *const AutoAlarmDatabaseName = @"myDatabase.db";
+static NSString *const AutoAlarmUserInfoAlarmIdKey = @"alarmId";
+static NSString *const AutoAlarmUserInfoSnoozeEnabledKey = @"isSnoozeEnabled";
+static NSString *const AutoAlarmUserInfoSnoozeIntervalMinutesKey = @"snoozeIntervalMinutes";
+static NSString *const AutoAlarmUserInfoSnoozeRepeatCountKey = @"snoozeRepeatCount";
+static NSString *const AutoAlarmUserInfoSnoozeRemainingCountKey = @"snoozeRemainingCount";
 
 @interface AutoAlarmModule : NSObject <RCTBridgeModule>
 @end
@@ -262,11 +270,13 @@ RCT_EXPORT_METHOD(syncEnabledAutoAlarms:(NSArray *)alarms
   components.timeZone = [NSTimeZone localTimeZone];
 
   UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-  content.title = @"Offnal";
-  content.body = @"알람이 울립니다.";
-  content.sound = [UNNotificationSound defaultSound];
+  content.title = @"알람";
+  content.body = @"일어날 시간이에요.";
+  content.sound = [UNNotificationSound soundNamed:AutoAlarmNotificationSoundName];
   content.categoryIdentifier = AutoAlarmNotificationCategoryIdentifier;
   content.threadIdentifier = AutoAlarmNotificationCategoryIdentifier;
+  content.interruptionLevel = UNNotificationInterruptionLevelTimeSensitive;
+  content.userInfo = [self notificationUserInfoForAlarmId:alarmId];
 
   UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:NO];
   UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
@@ -358,6 +368,81 @@ RCT_EXPORT_METHOD(syncEnabledAutoAlarms:(NSArray *)alarms
 - (NSString *)notificationIdentifierForAlarmId:(NSNumber *)alarmId
 {
   return [NSString stringWithFormat:@"%@%@", AutoAlarmNotificationIdentifierPrefix, alarmId.stringValue];
+}
+
+- (NSDictionary<NSString *, id> *)notificationUserInfoForAlarmId:(NSNumber *)alarmId
+{
+  NSDictionary<NSString *, NSNumber *> *runtimeConfig = [self loadRuntimeConfigForAlarmId:alarmId];
+  BOOL isSnoozeEnabled = runtimeConfig[AutoAlarmUserInfoSnoozeEnabledKey] != nil
+    ? runtimeConfig[AutoAlarmUserInfoSnoozeEnabledKey].boolValue
+    : NO;
+  NSInteger snoozeIntervalMinutes = runtimeConfig[AutoAlarmUserInfoSnoozeIntervalMinutesKey] != nil
+    ? runtimeConfig[AutoAlarmUserInfoSnoozeIntervalMinutesKey].integerValue
+    : 0;
+  NSInteger snoozeRepeatCount = runtimeConfig[AutoAlarmUserInfoSnoozeRepeatCountKey] != nil
+    ? runtimeConfig[AutoAlarmUserInfoSnoozeRepeatCountKey].integerValue
+    : 0;
+  NSInteger snoozeRemainingCount = isSnoozeEnabled
+    ? (snoozeRepeatCount == 0 ? -1 : snoozeRepeatCount)
+    : 0;
+
+  return @{
+    AutoAlarmUserInfoAlarmIdKey: alarmId,
+    AutoAlarmUserInfoSnoozeEnabledKey: @(isSnoozeEnabled),
+    AutoAlarmUserInfoSnoozeIntervalMinutesKey: @(snoozeIntervalMinutes),
+    AutoAlarmUserInfoSnoozeRepeatCountKey: @(snoozeRepeatCount),
+    AutoAlarmUserInfoSnoozeRemainingCountKey: @(snoozeRemainingCount),
+  };
+}
+
+- (NSDictionary<NSString *, NSNumber *> *)loadRuntimeConfigForAlarmId:(NSNumber *)alarmId
+{
+  NSString *databasePath = [self databasePath];
+  if (databasePath == nil) {
+    return nil;
+  }
+
+  sqlite3 *database = NULL;
+  if (sqlite3_open_v2(databasePath.UTF8String, &database, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+    if (database != NULL) {
+      sqlite3_close(database);
+    }
+    return nil;
+  }
+
+  const char *sql = "SELECT isSnoozeEnabled, snoozeIntervalMinutes, snoozeRepeatCount FROM auto_alarms WHERE id = ? LIMIT 1;";
+  sqlite3_stmt *statement = NULL;
+  if (sqlite3_prepare_v2(database, sql, -1, &statement, NULL) != SQLITE_OK) {
+    sqlite3_close(database);
+    return nil;
+  }
+
+  sqlite3_bind_int(statement, 1, alarmId.intValue);
+
+  NSDictionary<NSString *, NSNumber *> *runtimeConfig = nil;
+  if (sqlite3_step(statement) == SQLITE_ROW) {
+    runtimeConfig = @{
+      AutoAlarmUserInfoSnoozeEnabledKey: @(sqlite3_column_int(statement, 0) == 1),
+      AutoAlarmUserInfoSnoozeIntervalMinutesKey: @(sqlite3_column_int(statement, 1)),
+      AutoAlarmUserInfoSnoozeRepeatCountKey: @(sqlite3_column_int(statement, 2)),
+    };
+  }
+
+  sqlite3_finalize(statement);
+  sqlite3_close(database);
+
+  return runtimeConfig;
+}
+
+- (NSString *)databasePath
+{
+  NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsPath = paths.firstObject;
+  if (documentsPath == nil) {
+    return nil;
+  }
+
+  return [documentsPath stringByAppendingPathComponent:AutoAlarmDatabaseName];
 }
 
 @end
