@@ -5,7 +5,7 @@
 static NSString *const AutoAlarmModuleErrorDomain = @"com.shifterz.offnal.AutoAlarmModule";
 static NSString *const AutoAlarmNotificationIdentifierPrefix = @"offnal.auto-alarm.";
 static NSString *const AutoAlarmNotificationCategoryIdentifier = @"offnal.auto-alarm.category";
-static NSString *const AutoAlarmNotificationSoundName = @"auto_alarm.caf";
+static NSString *const AutoAlarmNotificationSoundName = @"auto_alarm_v2.caf";
 static NSString *const AutoAlarmDatabaseName = @"myDatabase.db";
 static NSString *const AutoAlarmUserInfoAlarmIdKey = @"alarmId";
 static NSString *const AutoAlarmUserInfoSnoozeEnabledKey = @"isSnoozeEnabled";

@@ -10,7 +10,7 @@ private let autoAlarmNotificationCategoryId = "offnal.auto-alarm.category"
 private let autoAlarmSnoozeActionId = "offnal.auto-alarm.snooze"
 private let autoAlarmDismissActionId = "offnal.auto-alarm.dismiss"
 private let autoAlarmDatabaseName = "myDatabase.db"
-private let autoAlarmNotificationSoundName = "auto_alarm.caf"
+private let autoAlarmNotificationSoundName = "auto_alarm_v2.caf"
 private let autoAlarmNotificationSoundDirectoryName = "Sounds"
 private let autoAlarmNotificationTitle = "알람"
 private let autoAlarmNotificationBody = "일어날 시간이에요."
@@ -145,20 +145,24 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     completionHandler: @escaping () -> Void
   ) {
     let identifier = response.notification.request.identifier
+    NSLog("AutoAlarm snooze received for identifier=%@", identifier)
     center.removePendingNotificationRequests(withIdentifiers: [identifier])
     center.removeDeliveredNotifications(withIdentifiers: [identifier])
 
     guard let alarmId = alarmId(from: identifier) else {
+      NSLog("AutoAlarm snooze skipped because alarmId could not be parsed from identifier=%@", identifier)
       completionHandler()
       return
     }
 
     guard let runtimeConfig = loadRuntimeConfig(for: alarmId) else {
+      NSLog("AutoAlarm snooze skipped because runtime config could not be loaded for alarmId=%d", alarmId)
       completionHandler()
       return
     }
 
     guard runtimeConfig.isSnoozeEnabled else {
+      NSLog("AutoAlarm snooze skipped because snooze is disabled for alarmId=%d", alarmId)
       updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
       completionHandler()
       return
@@ -175,6 +179,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     guard shouldRepeatSnooze else {
+      NSLog("AutoAlarm snooze stopped because repeat count was exhausted for alarmId=%d", alarmId)
       updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
       completionHandler()
       return
@@ -189,6 +194,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     )
     let enabledUpdated = updateAutoAlarmEnabledState(alarmId: alarmId, isEnabled: true)
     guard updatedTrigger, enabledUpdated else {
+      NSLog("AutoAlarm snooze failed to persist next trigger for alarmId=%d", alarmId)
       updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
       completionHandler()
       return
@@ -207,7 +213,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     scheduleSnoozedNotification(
       alarmId: alarmId,
       runtimeConfig: runtimeConfig,
-      nextTriggerAtMillis: nextTriggerAtMillis,
       remainingCount: nextRemainingCount
     ) { success in
       if !success {
@@ -218,6 +223,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
         backgroundTaskIdentifier = .invalid
       }
+      NSLog("AutoAlarm snooze scheduling finished for alarmId=%d success=%d", alarmId, success ? 1 : 0)
       completionHandler()
     }
   }
@@ -265,18 +271,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
   private func scheduleSnoozedNotification(
     alarmId: Int,
     runtimeConfig: AutoAlarmRuntimeConfig,
-    nextTriggerAtMillis: Int64,
     remainingCount: Int?,
     completion: @escaping (Bool) -> Void
   ) {
-    let date = Date(timeIntervalSince1970: TimeInterval(nextTriggerAtMillis) / 1000.0)
-
-    let calendar = Calendar.current
-    var components = calendar.dateComponents(
-      [.year, .month, .day, .hour, .minute, .second],
-      from: date
-    )
-    components.timeZone = .current
+    let intervalSeconds = max(1, runtimeConfig.snoozeIntervalMinutes * 60)
 
     let content = UNMutableNotificationContent()
     content.title = autoAlarmNotificationTitle
@@ -291,7 +289,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
       remainingCount: remainingCount
     )
 
-    let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+    let trigger = UNTimeIntervalNotificationTrigger(
+      timeInterval: TimeInterval(intervalSeconds),
+      repeats: false
+    )
     let request = UNNotificationRequest(
       identifier: notificationIdentifier(for: alarmId),
       content: content,
@@ -300,10 +301,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
     let center = UNUserNotificationCenter.current()
     let snoozedNotificationIdentifier = notificationIdentifier(for: alarmId)
-    center.removePendingNotificationRequests(withIdentifiers: [snoozedNotificationIdentifier])
-    center.removeDeliveredNotifications(withIdentifiers: [snoozedNotificationIdentifier])
-    center.add(request) { error in
-      completion(error == nil)
+    DispatchQueue.main.async {
+      center.removePendingNotificationRequests(withIdentifiers: [snoozedNotificationIdentifier])
+      center.removeDeliveredNotifications(withIdentifiers: [snoozedNotificationIdentifier])
+      center.add(request) { error in
+        if let error {
+          NSLog("Failed to schedule snoozed auto alarm for alarmId=%d: %@", alarmId, error.localizedDescription)
+        }
+        completion(error == nil)
+      }
     }
   }
 
@@ -482,11 +488,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     let destinationURL = soundsDirectoryURL.appendingPathComponent(autoAlarmNotificationSoundName)
-    if fileManager.fileExists(atPath: destinationURL.path) {
-      return
-    }
-
     do {
+      // Refresh the cached sound so upgraded installs do not keep an older duration.
+      if fileManager.fileExists(atPath: destinationURL.path) {
+        try fileManager.removeItem(at: destinationURL)
+      }
       try fileManager.copyItem(at: sourceURL, to: destinationURL)
     } catch {
       return
