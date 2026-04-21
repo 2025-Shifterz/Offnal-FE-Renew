@@ -468,7 +468,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
   private func installAutoAlarmSoundIfNeeded() {
     let fileManager = FileManager.default
     guard
-      let sourceURL = Bundle.main.url(forResource: "auto_alarm", withExtension: "caf"),
+      let sourceURL = Bundle.main.url(forResource: "auto_alarm_v2", withExtension: "caf"),
       let libraryURL = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first
     else {
       return
