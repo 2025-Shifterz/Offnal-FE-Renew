@@ -15,7 +15,7 @@ type AutoAlarmNativeModule = {
 const MODULE_NAME = 'AutoAlarmModule'
 
 const getAutoAlarmNativeModule = (): AutoAlarmNativeModule | null => {
-  if (Platform.OS !== 'android') {
+  if (Platform.OS !== 'android' && Platform.OS !== 'ios') {
     return null
   }
 
@@ -25,7 +25,7 @@ const getAutoAlarmNativeModule = (): AutoAlarmNativeModule | null => {
 
   if (!nativeModule) {
     throw new Error(
-      'AutoAlarmModule is not linked. Make sure the Android native module is registered.'
+      'AutoAlarmModule is not linked. Make sure the Android or iOS native module is registered.'
     )
   }
 
