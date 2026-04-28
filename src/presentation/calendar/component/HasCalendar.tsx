@@ -9,8 +9,8 @@ import React, {
 import PlusIcon from '../../../assets/icons/w-plus.svg'
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import dayjs from 'dayjs'
-import ToDoCard from '../../main/components/ToDoCard'
-import MemoCard from '../../main/components/MemoCard'
+import ToDoCard from '../../../shared/components/card/ToDoCard'
+import MemoCard from '../../../shared/components/card/MemoCard'
 import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
 import TCalendarViewer from '../../../shared/components/calendar/team/TCalendarViewer'
 import CalendarViewer from '../../../shared/components/calendar/personal/CalendarViewer'
@@ -142,9 +142,9 @@ const HasCalendar = ({
             )}
           </View>
           <BottomSheetScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-            <ToDoCard.Container todos={todos} selectedDate={selectedDate} />
+            <ToDoCard todos={todos} selectedDate={selectedDate} />
             <View className="mt-[-20px]">
-              <MemoCard.Container memos={memos} selectedDate={selectedDate} />
+              <MemoCard memos={memos} selectedDate={selectedDate} />
             </View>
           </BottomSheetScrollView>
         </View>

@@ -1,11 +1,10 @@
+import React from 'react'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { View, Text } from 'react-native'
-
-import TitleSection from './TitleSection'
+import TitleSection from '../../../presentation/main/components/TitleSection'
 import CheckListIcon from '../../../assets/icons/ic_checklist_24.svg'
 import CheckIcon from '../../../assets/icons/checked.svg'
-import { useNavigation } from '@react-navigation/native'
-import React from 'react'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { Todo } from '../../../domain/models/Todo'
 import dayjs from 'dayjs'
@@ -21,7 +20,7 @@ interface TodoItemProps {
   isLast: boolean
 }
 
-const Container = ({ todos, selectedDate }: TodoCardProps) => {
+const ToDoCard = ({ todos, selectedDate }: TodoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasTodos = todos && todos.length > 0
@@ -93,4 +92,4 @@ const Item = ({ todo, isFirst, isLast }: TodoItemProps) => {
   )
 }
 
-export default { Nothing, Container }
+export default ToDoCard

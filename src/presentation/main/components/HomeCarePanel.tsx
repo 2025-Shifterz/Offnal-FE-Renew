@@ -16,7 +16,7 @@ import useHealthData from '../../../shared/hooks/useHealthData'
 import { Routine } from '../../../domain/models/Routine'
 import { Schedule } from '../../../domain/models/Schedule'
 import { useUserStore } from '../../../store/useUserStore'
-import { STEP_GOAL } from '../constants/constants'
+import { STEP_GOAL } from '../constants/stepGoal'
 
 interface HomeCarePanelProps {
   routine?: Routine

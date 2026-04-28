@@ -1,6 +1,5 @@
 import { View, Text } from 'react-native'
-
-import TitleSection from './TitleSection'
+import TitleSection from '../../../presentation/main/components/TitleSection'
 import NoteIcon from '../../../assets/icons/ic_note_24.svg'
 import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
@@ -19,7 +18,7 @@ interface MemoItemProps {
   isLast: boolean
 }
 
-const Container = ({ memos, selectedDate }: MemoCardProps) => {
+const MemoCard = ({ memos, selectedDate }: MemoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasMemos = memos && memos.length > 0
@@ -81,4 +80,4 @@ const Item = ({ memo, isFirst, isLast }: MemoItemProps) => {
   )
 }
 
-export default { Nothing, Container }
+export default MemoCard
