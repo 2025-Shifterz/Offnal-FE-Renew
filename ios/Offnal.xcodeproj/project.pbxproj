@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1187CBAD127B363DA72DEB1C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		2A55E41D7A2945B19D4B0D11 /* AlarmPlatformModuleBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A55E41C7A2945B19D4B0D11 /* AlarmPlatformModuleBridge.m */; };
+		2A55E41F7A2945B19D4B0D11 /* AlarmPlatformModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A55E41E7A2945B19D4B0D11 /* AlarmPlatformModule.swift */; };
 		A3B7C9014A1B4F0D8E71C004 /* auto_alarm_v2.caf in Resources */ = {isa = PBXBuildFile; fileRef = A3B7C9014A1B4F0D8E71C003 /* auto_alarm_v2.caf */; };
 		A3B7C9014A1B4F0D8E71C002 /* AutoAlarmModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B7C9014A1B4F0D8E71C001 /* AutoAlarmModule.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -31,6 +33,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Offnal/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Offnal/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Offnal/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		2A55E41C7A2945B19D4B0D11 /* AlarmPlatformModuleBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlarmPlatformModuleBridge.m; path = Offnal/AlarmPlatformModuleBridge.m; sourceTree = "<group>"; };
+		2A55E41E7A2945B19D4B0D11 /* AlarmPlatformModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AlarmPlatformModule.swift; path = Offnal/AlarmPlatformModule.swift; sourceTree = "<group>"; };
 		A3B7C9014A1B4F0D8E71C003 /* auto_alarm_v2.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; name = auto_alarm_v2.caf; path = Offnal/auto_alarm_v2.caf; sourceTree = "<group>"; };
 		A3B7C9014A1B4F0D8E71C001 /* AutoAlarmModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AutoAlarmModule.m; path = Offnal/AutoAlarmModule.m; sourceTree = "<group>"; };
 		1C8DA99B2DD34185B31B3B8D /* Pretendard-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Regular.ttf"; path = "../src/assets/fonts/Pretendard-Regular.ttf"; sourceTree = "<group>"; };
@@ -66,6 +70,8 @@
 		13B07FAE1A68108700A75B9A /* Offnal */ = {
 			isa = PBXGroup;
 			children = (
+				2A55E41E7A2945B19D4B0D11 /* AlarmPlatformModule.swift */,
+				2A55E41C7A2945B19D4B0D11 /* AlarmPlatformModuleBridge.m */,
 				A3B7C9014A1B4F0D8E71C003 /* auto_alarm_v2.caf */,
 				A3B7C9014A1B4F0D8E71C001 /* AutoAlarmModule.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -311,6 +317,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A55E41F7A2945B19D4B0D11 /* AlarmPlatformModule.swift in Sources */,
+				2A55E41D7A2945B19D4B0D11 /* AlarmPlatformModuleBridge.m in Sources */,
 				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
 				A3B7C9014A1B4F0D8E71C002 /* AutoAlarmModule.m in Sources */,
 			);

@@ -13,7 +13,8 @@ import { PERMISSIONS, RESULTS, request } from 'react-native-permissions'
 import { Platform } from 'react-native'
 import { getHolidayDateSetUseCase } from './src/infrastructure/di/Dependencies'
 import { useAutoAlarmStore } from './src/store/useAutoAlarmStore'
-import { syncEnabledAutoAlarms } from './src/presentation/alarm/native/autoAlarmBridge'
+import { alarmSchedulerFacade } from './src/application/alarm/AlarmSchedulerFacade'
+import { toAlarmSyncItem } from './src/application/alarm/AlarmDomainService'
 
 enableScreens()
 
@@ -40,6 +41,7 @@ const requestNotificationPermission = async (): Promise<void> => {
 }
 
 const syncAutoAlarmsOnAppStart = async (): Promise<void> => {
+  await alarmSchedulerFacade.processPendingPlatformEvents()
   await useAutoAlarmStore.getState().fetchAllAutoAlarms()
 
   const now = Date.now()
@@ -52,17 +54,13 @@ const syncAutoAlarmsOnAppStart = async (): Promise<void> => {
     await autoAlarmStore.setAutoAlarmsEnabled(staleAlarmIds, false)
   }
 
-  await syncEnabledAutoAlarms(
+  await alarmSchedulerFacade.syncAutoAlarms(
     useAutoAlarmStore
       .getState()
       .autoAlarms.filter(
         autoAlarm => autoAlarm.isEnabled && autoAlarm.nextTriggerAtMillis > now
       )
-      .map(autoAlarm => ({
-        alarmId: autoAlarm.id,
-        nextTriggerAtMillis: autoAlarm.nextTriggerAtMillis,
-        isEnabled: autoAlarm.isEnabled,
-      }))
+      .map(autoAlarm => toAlarmSyncItem(autoAlarm))
   )
 }
 

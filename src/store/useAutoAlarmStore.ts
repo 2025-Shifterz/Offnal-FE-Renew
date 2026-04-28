@@ -1,30 +1,20 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { AutoAlarm } from '../domain/models/AutoAlarm'
-import {
-  autoAlarmRepository,
-  getHolidayDateSetUseCase,
-} from '../infrastructure/di/Dependencies'
+import { autoAlarmRepository } from '../infrastructure/di/Dependencies'
+import { alarmSchedulerFacade } from '../application/alarm/AlarmSchedulerFacade'
 import {
   toCreateAutoAlarmInput,
   toUpdateAutoAlarmInput,
 } from '../presentation/alarm/mappers/alarmDraftMapper'
 import {
-  cancelAutoAlarm,
-  scheduleAutoAlarm,
-  syncEnabledAutoAlarms,
-  type AutoAlarmSyncItem as NativeAutoAlarmSyncItem,
-} from '../presentation/alarm/native/autoAlarmBridge'
+  resolveNextTriggerAtMillisForDraft,
+  toAlarmSyncItem,
+} from '../application/alarm/AlarmDomainService'
 import {
-  AlarmDraft,
   CreateAutoAlarmDraft,
   UpdateAutoAlarmDraft,
 } from '../presentation/alarm/types/alarmDraft'
-import { useCalendarStore } from './useCalendarStore'
-import { useScheduleInfoStore } from './useScheduleInfoStore'
-import { useTeamCalendarStore } from './useTeamCalendarStore'
-import { createWorkTypeResolver } from '../shared/utils/alarm/workTypeResolver'
-import { resolveAutoAlarmNextTriggerAtMillis } from '../shared/utils/alarm/resolveAutoAlarmNextTriggerAtMillis'
 
 type AutoAlarmSortMode = 'workType' | 'remainingTime'
 
@@ -69,39 +59,6 @@ const getErrorMessage = (error: unknown): string => {
 
 const getWorkTypeOrder = (workTypeTitle: string): number => {
   return workTypeSortOrder[workTypeTitle] ?? Number.MAX_SAFE_INTEGER
-}
-
-const resolveNextTriggerAtMillisForDraft = async (
-  draft: AlarmDraft
-): Promise<number> => {
-  const calendarData = useCalendarStore.getState().calendarData
-  const teamCalendarData = useTeamCalendarStore.getState().teamCalendarData
-  const currentTeam =
-    useScheduleInfoStore.getState().workGroup ||
-    useTeamCalendarStore.getState().myTeam
-
-  const resolveWorkTypeForDate = createWorkTypeResolver({
-    calendarData,
-    teamCalendarData,
-    currentTeam,
-  })
-
-  const nextTriggerAtMillis = await resolveAutoAlarmNextTriggerAtMillis({
-    alarmTime: draft.alarmTime,
-    selectedDays: draft.selectedDays,
-    selectedWorkType: draft.selectedWorkType,
-    isHolidayAlarmOff: draft.isHolidayAlarmOff,
-    getHolidayDateSet: year => getHolidayDateSetUseCase.execute(year),
-    resolveWorkTypeForDate,
-  })
-
-  if (nextTriggerAtMillis === null) {
-    throw new Error(
-      '조건을 만족하는 다음 알람 시간을 찾을 수 없습니다. 근무 일정, 요일, 공휴일 조건을 확인해 주세요.'
-    )
-  }
-
-  return nextTriggerAtMillis
 }
 
 const sortAutoAlarms = (
@@ -161,24 +118,8 @@ const loadAutoAlarms = async (
   return sortAutoAlarms(autoAlarms, sortMode)
 }
 
-const toNativeSyncItem = (
-  autoAlarm: Pick<AutoAlarm, 'id' | 'nextTriggerAtMillis' | 'isEnabled'>
-): NativeAutoAlarmSyncItem => ({
-  alarmId: autoAlarm.id,
-  nextTriggerAtMillis: autoAlarm.nextTriggerAtMillis,
-  isEnabled: autoAlarm.isEnabled,
-})
-
-const syncSingleAutoAlarm = async (
-  autoAlarm: Pick<AutoAlarm, 'id' | 'nextTriggerAtMillis' | 'isEnabled'>
-): Promise<void> => {
-  if (autoAlarm.isEnabled) {
-    await scheduleAutoAlarm(autoAlarm.id, autoAlarm.nextTriggerAtMillis)
-    return
-  }
-
-  await cancelAutoAlarm(autoAlarm.id)
-}
+const syncSingleAutoAlarm = async (autoAlarm: AutoAlarm): Promise<void> =>
+  alarmSchedulerFacade.scheduleAutoAlarm(autoAlarm)
 
 const syncAutoAlarmsById = async (
   ids: number[],
@@ -195,16 +136,17 @@ const syncAutoAlarmsById = async (
   )
   const syncItems = autoAlarms
     .filter((autoAlarm): autoAlarm is AutoAlarm => autoAlarm !== undefined)
-    .map(autoAlarm => ({
-      ...toNativeSyncItem(autoAlarm),
-      isEnabled,
-    }))
+    .map(autoAlarm =>
+      toAlarmSyncItem(autoAlarm, {
+        isEnabled,
+      })
+    )
 
   if (syncItems.length === 0) {
     return
   }
 
-  await syncEnabledAutoAlarms(syncItems)
+  await alarmSchedulerFacade.syncAutoAlarms(syncItems)
 }
 
 export const useAutoAlarmStore = create<AutoAlarmState>()(
@@ -333,7 +275,9 @@ export const useAutoAlarmStore = create<AutoAlarmState>()(
           )
         })
 
-        await Promise.all(targetIds.map(async id => cancelAutoAlarm(id)))
+        await Promise.all(
+          targetIds.map(async id => alarmSchedulerFacade.cancelAutoAlarm(id))
+        )
       } catch (error) {
         const autoAlarms = await loadAutoAlarms(get().sortMode)
         set({ error: getErrorMessage(error) })
