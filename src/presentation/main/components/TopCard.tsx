@@ -4,7 +4,6 @@ import BackGroundDawn from '../../../assets/cards/bg_dawn.svg'
 import BackGroundMorning from '../../../assets/cards/bg_morning.svg'
 import BackGroundAfternoon from '../../../assets/cards/bg_afternoon.svg'
 import BackGroundEvening from '../../../assets/cards/bg_evening.svg'
-// import BackGroundNight from '../../../assets/cards/bg_night.svg';
 import BackGroundMidnight from '../../../assets/cards/bg_midnight.svg'
 import AppCharacter from '../../../assets/icons/ic_app_character.svg'
 import SpeechBubble from '../../../assets/icons/ic_speech_bubble.svg'
