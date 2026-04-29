@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import HomeWorkTypeChip from './HomeWorkTypeChip'
+import ShiftStatusAlarmCard from './ShiftStatusAlarmCard'
 import SealImg from '../../../assets/images/seal-character.svg'
 import BellIcon from '../../../assets/icons/ic_home_bell_24.svg'
 import { Schedule } from '../../../domain/models/Schedule'
@@ -18,11 +18,11 @@ const TopBanner = ({ schdule }: TopBannerProps) => {
     if (!type) return '미등록'
     switch (type) {
       case 'DAY':
-        return '주간'
+        return '주간 근무'
       case 'EVENING':
-        return '오후'
+        return '오후 근무'
       case 'NIGHT':
-        return '야간'
+        return '야간 근무'
       case 'OFF':
         return '휴일'
       default:
@@ -64,7 +64,7 @@ const TopBanner = ({ schdule }: TopBannerProps) => {
         </View>
       </View>
       <View className="">
-        <HomeWorkTypeChip
+        <ShiftStatusAlarmCard
           workType={
             schdule && schdule.todayType
               ? translateWorkType(schdule.todayType)
