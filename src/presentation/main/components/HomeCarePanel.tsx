@@ -1,5 +1,6 @@
 import React from 'react'
 import { ScrollView, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import BedIcon from '../../../assets/icons/ic_bed_24.svg'
 import TablewareIcon from '../../../assets/icons/ic_tableware.svg'
 import DishesIcon from '../../../assets/icons/ic_dishes_24.svg'
@@ -19,6 +20,7 @@ import GoalStatusCard from './GoalStatusCard'
 import RoutineCardView, { RoutineCardProps } from './RoutineCard'
 import SectionTitle from './SectionTitle'
 import RecommendHealthContentCard from './RecommendHealthContent'
+import { rootNavigation } from '../../../navigation/types/StackTypes'
 
 interface HomeCarePanelProps {
   routine?: Routine
@@ -34,6 +36,7 @@ const getWeightStatus = (bmi: number) => {
 }
 
 const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
+  const navigation = useNavigation<rootNavigation>()
   const { healthData } = useHealthData()
   const userName = useUserStore(state => state.user?.memberName)
 
@@ -135,6 +138,9 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
               title={card.title}
               status={card.status}
               items={card.items}
+              onPress={() =>
+                navigation.navigate('DailyRoutine', { day: 'today' })
+              }
             />
           ))}
         </ScrollView>

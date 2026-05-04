@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { View } from 'react-native'
+import { Pressable, View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import Pill from '../../../shared/components/Pill'
@@ -9,6 +9,7 @@ export interface RoutineCardProps {
   title: string
   status: RoutineStatus
   items: RoutineItemProps[]
+  onPress?: () => void
 }
 
 export interface RoutineItemProps {
@@ -106,9 +107,19 @@ const RoutineItemRow = ({ item }: { item: RoutineItemProps }) => {
   )
 }
 
-const RoutineCardView = ({ title, status, items }: RoutineCardProps) => {
+const RoutineCardView = ({
+  title,
+  status,
+  items,
+  onPress,
+}: RoutineCardProps) => {
+  const Container = onPress ? Pressable : View
+
   return (
-    <View className="w-[320px] rounded-radius-xl bg-surface-white p-number-6">
+    <Container
+      className="w-[320px] rounded-radius-xl bg-surface-white p-number-6"
+      onPress={onPress}
+    >
       <View className="mb-[16px] flex-row items-center justify-between gap-[8px]">
         <Pill>{title}</Pill>
         <View className="min-w-0 flex-1 border-t border-dashed border-gray-20" />
@@ -121,7 +132,7 @@ const RoutineCardView = ({ title, status, items }: RoutineCardProps) => {
           {index < items.length - 1 && <RoutineConnector />}
         </React.Fragment>
       ))}
-    </View>
+    </Container>
   )
 }
 
