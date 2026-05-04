@@ -9,7 +9,6 @@ import DishesIcon from '../../../assets/icons/ic_dishes_24.svg'
 import MoonIcon from '../../../assets/icons/ic_moon_28.svg'
 import SneakersIcon from '../../../assets/icons/ic_sneakers_61.svg'
 import WeightIcon from '../../../assets/icons/ic_weight_50.svg'
-import CheckIcon from '../../../assets/icons/ic_checked.svg'
 import RiceIcon from '../../../assets/icons/ic_rice_28.svg'
 import BowlIcon from '../../../assets/icons/ic_bowl_28.svg'
 import useHealthData from '../../../shared/hooks/useHealthData'
@@ -17,6 +16,8 @@ import { Routine } from '../../../domain/models/Routine'
 import { Schedule } from '../../../domain/models/Schedule'
 import { useUserStore } from '../../../store/useUserStore'
 import { STEP_GOAL } from '../constants/stepGoal'
+import HealthMetricCard from './HealthMetricCard'
+import GoalStatusCard, { GoalStatusIcon } from './GoalStatusCard'
 
 interface HomeCarePanelProps {
   routine?: Routine
@@ -180,66 +181,6 @@ const RoutineCardView = ({ card }: { card: RoutineCard }) => (
   </View>
 )
 
-const HealthMetricCard = ({
-  title,
-  value,
-  label,
-  caption,
-  Icon,
-}: {
-  title: string
-  value: string
-  label?: string | null
-  caption?: string
-  Icon: FC<SvgProps>
-}) => (
-  <View className="min-h-[141px] flex-1 justify-between rounded-radius-xl bg-surface-white p-number-6">
-    <View className="gap-[5px]">
-      <Text className="text-surface-disabled-inverse heading-xxxxs">
-        {title}
-      </Text>
-      <View className="flex-row items-start gap-[5px]">
-        <Text className="text-text-subtle heading-s">{value}</Text>
-        {label && (
-          <View className="h-[20px] justify-center rounded-[12px] bg-primary-5 px-[6px]">
-            <Text className="text-right text-text-primary heading-xxxxs">
-              {label}
-            </Text>
-          </View>
-        )}
-      </View>
-      {caption && (
-        <Text className="text-text-disabled label-xxs">{caption}</Text>
-      )}
-    </View>
-    <View className="items-end">
-      <Icon
-        width={title === '걸음 수' ? 61 : 50}
-        height={title === '걸음 수' ? 61 : 50}
-      />
-    </View>
-  </View>
-)
-
-const GoalCheck = ({ state }: { state: 'missed' | 'streak' | 'done' }) => {
-  if (state === 'missed') {
-    return (
-      <View className="h-[32px] w-[32px] rounded-radius-max border border-alpha-inverse10 bg-surface-gray-subtle1" />
-    )
-  }
-
-  return (
-    <View
-      className={`h-[32px] w-[32px] items-center justify-center rounded-[18px] ${
-        state === 'streak' ? 'mb-[11px]' : ''
-      }`}
-      style={{ backgroundColor: '#96E5ED' }}
-    >
-      <CheckIcon width={15} height={13} />
-    </View>
-  )
-}
-
 const ContentCard = ({
   imageType,
   title,
@@ -355,7 +296,7 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
   ]
 
   return (
-    <View className="flex-1 gap-[32px] rounded-t-radius-xl bg-background-gray-subtle1 p-number-7">
+    <View className="flex-1 gap-[16px] rounded-t-radius-xl bg-background-gray-subtle1 p-number-9">
       <View className="gap-[12px]">
         <SectionTitle
           title={`${userName || '예진'}님을 위한`}
@@ -393,30 +334,7 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
 
       <View className="gap-[12px]">
         <SectionTitle title="금주 나의 목표 달성 확인" />
-        <View className="rounded-radius-xl bg-surface-white px-number-6 py-number-5">
-          <View className="gap-[8px] px-[10px]">
-            <View className="flex-row justify-between">
-              {weekDays.map(day => (
-                <View
-                  key={day.format('YYYY-MM-DD')}
-                  className="w-[32px] items-center gap-[4px]"
-                >
-                  <Text className="text-gray-60 heading-xxxxs">
-                    {['일', '월', '화', '수', '목', '금', '토'][day.day()]}
-                  </Text>
-                  <Text className="text-gray-80 heading-xxxs">
-                    {day.date()}
-                  </Text>
-                </View>
-              ))}
-            </View>
-            <View className="h-[43px] flex-row items-end justify-between">
-              {goalStates.map((state, index) => (
-                <GoalCheck key={`${state}-${index}`} state={state} />
-              ))}
-            </View>
-          </View>
-        </View>
+        <GoalStatusCard states={goalStates} />
       </View>
 
       <View className="gap-[12px]">
