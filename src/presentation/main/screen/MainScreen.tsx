@@ -35,15 +35,25 @@ export default function MainScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      try {
-        setLoading(true)
+      let isActive = true
 
-        fetchRoutine()
-        fetchSchedule()
-      } finally {
-        setLoading(false)
+      const loadMainData = async () => {
+        try {
+          setLoading(true)
+
+          await Promise.all([fetchRoutine(), fetchSchedule()])
+        } finally {
+          if (isActive) {
+            setLoading(false)
+          }
+        }
       }
-      return () => {}
+
+      loadMainData()
+
+      return () => {
+        isActive = false
+      }
     }, [])
   )
 

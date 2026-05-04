@@ -1,6 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { ScrollView, View } from 'react-native'
 import BedIcon from '../../../assets/icons/ic_bed_24.svg'
 import TablewareIcon from '../../../assets/icons/ic_tableware.svg'
 import DishesIcon from '../../../assets/icons/ic_dishes_24.svg'
@@ -9,11 +8,12 @@ import SneakersIcon from '../../../assets/icons/ic_sneakers_61.svg'
 import WeightIcon from '../../../assets/icons/ic_weight_50.svg'
 import RiceIcon from '../../../assets/icons/ic_rice_28.svg'
 import BowlIcon from '../../../assets/icons/ic_bowl_28.svg'
+import { getWorkTypeLabel } from '../../../shared/constants/workType'
 import useHealthData from '../../../shared/hooks/useHealthData'
 import { Routine } from '../../../domain/models/Routine'
 import { Schedule } from '../../../domain/models/Schedule'
 import { useUserStore } from '../../../store/useUserStore'
-import { STEP_GOAL } from '../constants/stepGoal'
+import { STEP_GOAL } from '../../../shared/constants/stepGoal'
 import HealthMetricCard from './HealthMetricCard'
 import GoalStatusCard from './GoalStatusCard'
 import RoutineCardView, { RoutineCardProps } from './RoutineCard'
@@ -23,13 +23,6 @@ import RecommendHealthContentCard from './RecommendHealthContent'
 interface HomeCarePanelProps {
   routine?: Routine
   schedule?: Schedule
-}
-
-const workTypeName: Record<string, string> = {
-  DAY: '주간 근무',
-  EVENING: '오후 근무',
-  NIGHT: '야간 근무',
-  OFF: '휴일',
 }
 
 const getWeightStatus = (bmi: number) => {
@@ -50,9 +43,7 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
     routine?.health?.sleepGuide?.join(' ') || '5시간 수면 채운 후 기상'
   const sleepTime = routine?.health?.sleepSchedule || '15:00 ~ 20:00'
   const fastingTime = routine?.health?.fastingSchedule || '01:00 이전'
-  const workType = schedule?.todayType
-    ? workTypeName[schedule.todayType] || '근무'
-    : '근무'
+  const workType = getWorkTypeLabel(schedule?.todayType)
 
   const routineCards: RoutineCardProps[] = [
     {

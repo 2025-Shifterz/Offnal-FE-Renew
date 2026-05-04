@@ -5,19 +5,7 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import CheckIcon from '../../../assets/icons/ic_checked.svg'
 import CheckStreakIcon from '../../../assets/icons/ic_goal_streak.svg'
 
-const STEP_GOAL = 9000
-
 type GoalState = 'missed' | 'streak' | 'done'
-
-const goalStates: Array<GoalState> = [
-  'missed',
-  'streak',
-  'streak',
-  'streak',
-  'missed',
-  'done',
-  'missed',
-]
 
 interface GoalStatusCardProps {
   states: GoalState[]
@@ -35,7 +23,7 @@ export const GoalStatusIcon = ({ state }: GoalStatusIconProps) => {
       )
     case 'streak':
       return (
-        <View className="rounded-[18px] h-[43px] w-[32px] items-center justify-center">
+        <View className="h-[43px] w-[32px] items-center justify-center rounded-[18px]">
           <CheckStreakIcon />
         </View>
       )
