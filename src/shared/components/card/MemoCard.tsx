@@ -1,11 +1,12 @@
-import { View, Text } from 'react-native'
-import TitleSection from '../../../presentation/main/components/TitleSection'
+import { View, Text, TouchableOpacity } from 'react-native'
 import NoteIcon from '../../../assets/icons/ic_note_24.svg'
 import { useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Memo } from '../../../domain/models/Memo'
 import dayjs from 'dayjs'
+import GlobalText from '../text/GlobalText'
+import AddIcon from '../../../assets/icons/ic_add_16.svg'
 
 interface MemoCardProps {
   memos: Memo[]
@@ -25,29 +26,55 @@ const MemoCard = ({ memos, selectedDate }: MemoCardProps) => {
 
   return (
     <View className="my-number-8 flex-col justify-start gap-y-number-7 rounded-lg bg-background-white p-number-6">
-      <View className="mb-number-3 flex-row items-center justify-start">
-        <NoteIcon />
-        <TitleSection.WithAddableBtn
-          title="메모"
-          btnContent="메모 추가"
-          onPressIcon={() => navigation.navigate('Memo', { selectedDate })}
-        />
-      </View>
+      <MemoCardHeader
+        title="메모"
+        btnContent="메모 추가"
+        onPressIcon={() => navigation.navigate('Memo', { selectedDate })}
+      />
       {hasMemos ? (
         <View className="flex-col">
-          {/* 메모 아이템들을 담을 View */}
           {memos.map((memo, index) => (
             <Item
-              key={memo.id} // 고유한 key prop 사용
+              key={memo.id}
               memo={memo}
-              isFirst={index === 0} // 첫 번째 아이템인지 확인
-              isLast={index === memos.length - 1} // 마지막 아이템인지 확인
+              isFirst={index === 0}
+              isLast={index === memos.length - 1}
             />
           ))}
         </View>
       ) : (
         <Nothing />
       )}
+    </View>
+  )
+}
+
+const MemoCardHeader = ({
+  title,
+  btnContent,
+  onPressIcon,
+}: {
+  title: string
+  btnContent: string
+  onPressIcon: () => void
+}) => {
+  return (
+    <View className="mb-number-3 flex-row items-center justify-start">
+      <NoteIcon />
+
+      <View className="flex-1">
+        <View className="flex-row items-center justify-between gap-g-2">
+          <GlobalText className="text-black heading-xxs">{title}</GlobalText>
+          <TouchableOpacity onPress={onPressIcon}>
+            <View className="flex-row items-center gap-g-2">
+              <GlobalText className="text-text-subtle-inverse heading-xxxxs">
+                {btnContent}
+              </GlobalText>
+              <AddIcon />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   )
 }

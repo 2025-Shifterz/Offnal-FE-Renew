@@ -1,13 +1,14 @@
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { View, Text } from 'react-native'
-import TitleSection from '../../../presentation/main/components/TitleSection'
+import { View, Text, TouchableOpacity } from 'react-native'
 import CheckListIcon from '../../../assets/icons/ic_checklist_24.svg'
 import CheckIcon from '../../../assets/icons/checked.svg'
 import { RootStackParamList } from '../../../navigation/types/StackTypes'
 import { Todo } from '../../../domain/models/Todo'
+import AddIcon from '../../../assets/icons/ic_add_16.svg'
 import dayjs from 'dayjs'
+import GlobalText from '../text/GlobalText'
 
 interface TodoCardProps {
   todos: Todo[]
@@ -27,14 +28,11 @@ const ToDoCard = ({ todos, selectedDate }: TodoCardProps) => {
 
   return (
     <View className="my-number-8 flex-col justify-start gap-y-number-7 rounded-lg bg-background-white p-number-6">
-      <View className="mb-number-3 flex-row items-center justify-start">
-        <CheckListIcon />
-        <TitleSection.WithAddableBtn
-          title="할 일"
-          btnContent="할 일 추가"
-          onPressIcon={() => navigation.navigate('Todo', { selectedDate })}
-        />
-      </View>
+      <ToDoCardHeader
+        title="할 일"
+        btnContent="할 일 추가"
+        onPressIcon={() => navigation.navigate('Todo', { selectedDate })}
+      />
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
@@ -51,6 +49,36 @@ const ToDoCard = ({ todos, selectedDate }: TodoCardProps) => {
       ) : (
         <Nothing />
       )}
+    </View>
+  )
+}
+
+const ToDoCardHeader = ({
+  title,
+  btnContent,
+  onPressIcon,
+}: {
+  title: string
+  btnContent: string
+  onPressIcon: () => void
+}) => {
+  return (
+    <View className="mb-number-3 flex-row items-center justify-start">
+      <CheckListIcon />
+
+      <View className="flex-1">
+        <View className="flex-row items-center justify-between gap-g-2">
+          <GlobalText className="text-black heading-xxs">{title}</GlobalText>
+          <TouchableOpacity onPress={onPressIcon}>
+            <View className="flex-row items-center gap-g-2">
+              <GlobalText className="text-text-subtle-inverse heading-xxxxs">
+                {btnContent}
+              </GlobalText>
+              <AddIcon />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   )
 }

@@ -24,7 +24,7 @@ const ShiftStatusAlarmCard = ({ workType }: ShiftStatusAlarmCardProps) => {
       </View>
       <View className="h-[30px] w-[1px] bg-[#C8D1A9]" />
       <View className="flex-1 items-center justify-center">
-        <AlarmStatusContent title="다음 알람 예정 시간" content="오후 2시" />
+        <AlarmStatusContent title="다음 알람 예정 시간" content="미정" />
       </View>
     </View>
   )
