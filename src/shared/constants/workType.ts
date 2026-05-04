@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 import type { SvgProps } from 'react-native-svg'
 
-import DayWorkIcon from '../../assets/icons/ic_today_work_24 copy.svg'
+import DayWorkIcon from '../../assets/icons/ic_today_work_24.svg'
 import NightWorkIcon from '../../assets/icons/ic_night-work.svg'
 
 export const WORK_TYPE_CODES = ['DAY', 'EVENING', 'NIGHT', 'OFF'] as const

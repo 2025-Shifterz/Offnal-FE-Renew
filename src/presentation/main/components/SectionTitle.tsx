@@ -10,8 +10,7 @@ const SectionTitle = ({
 }) => {
   return (
     <View className="w-full flex-row items-center px-number-9">
-      <View className="h-[20px] w-[6px]" />
-      <GlobalText className="flex-1 text-text-basic heading-xxs">
+      <GlobalText className="ml-[6px] flex-1 text-text-basic heading-xxs">
         {title}
         {highlight && (
           <GlobalText className="text-text-primary">{highlight}</GlobalText>
