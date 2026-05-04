@@ -35,7 +35,7 @@ export const GoalStatusIcon = ({ state }: GoalStatusIconProps) => {
       )
     case 'streak':
       return (
-        <View className="rounded-[18px h-[43px] w-[32px] items-center justify-center">
+        <View className="rounded-[18px] h-[43px] w-[32px] items-center justify-center">
           <CheckStreakIcon />
         </View>
       )
