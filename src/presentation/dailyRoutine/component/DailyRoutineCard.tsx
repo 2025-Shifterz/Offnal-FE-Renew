@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { View } from 'react-native'
 import { SvgProps } from 'react-native-svg'
-import CheckIcon from '../../../assets/routine/check.svg'
+import CheckIcon from '../../../assets/icons/ic_routine_check.svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
 
 export type DailyRoutineState = 'done' | 'todo'
