@@ -1,6 +1,6 @@
 import { HealthRepository } from '../../domain/repositories/HealthRepository'
 import { HealthDataSource } from '../../infrastructure/dataSource/interface/HealthDataSource'
-import { STEP_GOAL } from '../../presentation/main/constants/stepGoal'
+import { STEP_GOAL } from '../../shared/constants/stepGoal'
 import { HealthData } from '../../shared/types/Health'
 
 export class HealthRepositoryImpl implements HealthRepository {

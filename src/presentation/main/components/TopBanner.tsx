@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import HomeWorkTypeChip from './HomeWorkTypeChip'
+import ShiftStatusAlarmCard from './ShiftStatusAlarmCard'
 import SealImg from '../../../assets/images/seal-character.svg'
 import BellIcon from '../../../assets/icons/ic_home_bell_24.svg'
 import { Schedule } from '../../../domain/models/Schedule'
@@ -13,22 +13,6 @@ interface TopBannerProps {
 const TopBanner = ({ schdule }: TopBannerProps) => {
   const today = new Date()
   const formattedDate = `${today.getMonth() + 1}월 ${today.getDate()}일 (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`
-
-  const translateWorkType = (type?: string): string => {
-    if (!type) return '미등록'
-    switch (type) {
-      case 'DAY':
-        return '주간'
-      case 'EVENING':
-        return '오후'
-      case 'NIGHT':
-        return '야간'
-      case 'OFF':
-        return '휴일'
-      default:
-        return '미등록'
-    }
-  }
   return (
     <View className="mx-[20px] flex-col bg-surface-disabled-inverse pb-[20px]">
       <View className="h-[50px] justify-center">
@@ -64,13 +48,7 @@ const TopBanner = ({ schdule }: TopBannerProps) => {
         </View>
       </View>
       <View className="">
-        <HomeWorkTypeChip
-          workType={
-            schdule && schdule.todayType
-              ? translateWorkType(schdule.todayType)
-              : '미등록'
-          }
-        />
+        <ShiftStatusAlarmCard workTypeCode={schdule?.todayType} />
       </View>
     </View>
   )
