@@ -96,6 +96,9 @@ const DailyRoutineCard = ({
   const isHighlighted = item.highlighted === true
   const isPressable = typeof onPress === 'function' && !disabled
   const Container = isPressable ? Pressable : View
+  const accessibilityLabel = `${item.title}, ${item.time}, ${
+    item.state === 'done' ? '완료됨' : '미완료'
+  }`
 
   return (
     <Container
@@ -105,9 +108,17 @@ const DailyRoutineCard = ({
         ? {
             onPress,
             accessibilityRole: 'button' as const,
+            accessibilityLabel,
+            accessibilityHint: '루틴 완료 상태를 변경합니다.',
             accessibilityState: { disabled: false },
           }
         : {
+            accessible: disabled,
+            accessibilityRole: disabled ? ('button' as const) : undefined,
+            accessibilityLabel,
+            accessibilityHint: disabled
+              ? '지난 시간대라 상태를 변경할 수 없습니다.'
+              : undefined,
             accessibilityState: disabled ? { disabled: true } : undefined,
           })}
     >

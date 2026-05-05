@@ -86,7 +86,6 @@ export default function MainScreen() {
         )}
 
         <ScrollView className="flex-1" bounces={false}>
-          {/* <TopCard /> */}
           <TopBanner schdule={schedule ?? null} />
 
           <HomeCarePanel routine={routine} schedule={schedule} />
