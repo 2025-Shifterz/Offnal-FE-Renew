@@ -2,15 +2,11 @@ import React from 'react'
 import { View } from 'react-native'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import DailyRoutineCard, { DailyRoutineCardItem } from './DailyRoutineCard'
+import type { DailyRoutineSectionContent } from '../../../shared/components/routine/routineContent'
 
-export type DailyRoutineSectionStatus = 'done' | 'current' | 'ready'
+export type DailyRoutineSectionData = DailyRoutineSectionContent
 
-export interface DailyRoutineSectionData {
-  title: string
-  highlight: string
-  status: DailyRoutineSectionStatus
-  items: DailyRoutineCardItem[]
-}
+export type DailyRoutineSectionStatus = DailyRoutineSectionContent['status']
 
 const statusConfig: Record<
   DailyRoutineSectionStatus,
@@ -54,8 +50,12 @@ const ProgressTag = ({ status }: { status: DailyRoutineSectionStatus }) => {
 
 const DailyRoutineSection = ({
   section,
+  onPressItem,
+  isItemDisabled,
 }: {
   section: DailyRoutineSectionData
+  onPressItem?: (item: DailyRoutineCardItem) => void
+  isItemDisabled?: (item: DailyRoutineCardItem) => boolean
 }) => {
   return (
     <View className="gap-[16px]">
@@ -74,8 +74,10 @@ const DailyRoutineSection = ({
       <View className="gap-[12px] px-[20px]">
         {section.items.map(item => (
           <DailyRoutineCard
-            key={`${section.highlight}-${item.title}`}
+            key={item.id}
             item={item}
+            onPress={onPressItem ? () => onPressItem(item) : undefined}
+            disabled={isItemDisabled?.(item) ?? false}
           />
         ))}
       </View>

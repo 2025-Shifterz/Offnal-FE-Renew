@@ -1,27 +1,26 @@
-import React, { FC } from 'react'
-import { View } from 'react-native'
-import { SvgProps } from 'react-native-svg'
-import CheckIcon from '../../../assets/icons/ic_routine_check.svg'
+import React from 'react'
+import { Pressable, View } from 'react-native'
+import CheckIcon from '../../../assets/icons/ic_checked.svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
+import {
+  RoutineIllustration,
+  RoutineIllustrationName,
+  routineIllustrationBackgroundColors,
+} from '../../../shared/components/routine/RoutineIllustration'
+import type {
+  DailyRoutineCardContentItem,
+  DailyRoutineDescriptionContent,
+  DailyRoutineState,
+} from '../../../shared/components/routine/routineContent'
 
-export type DailyRoutineState = 'done' | 'todo'
+export type DailyRoutineDescription = DailyRoutineDescriptionContent
 
-export interface DailyRoutineDescription {
-  prefix?: string
-  emphasis?: string
-  suffix?: string
-}
+export type DailyRoutineCardItem = DailyRoutineCardContentItem
 
-export interface DailyRoutineCardItem {
-  title: string
-  time: string
-  Icon: FC<SvgProps>
-  iconBackgroundColor: string
-  descriptions: DailyRoutineDescription[]
-  state?: DailyRoutineState
-  highlighted?: boolean
-  faded?: boolean
-  compact?: boolean
+interface DailyRoutineCardProps {
+  item: DailyRoutineCardItem
+  onPress?: () => void
+  disabled?: boolean
 }
 
 const cardShadow = {
@@ -33,32 +32,38 @@ const cardShadow = {
 }
 
 const RoutineIcon = ({
-  Icon,
+  illustration,
   backgroundColor,
 }: {
-  Icon: FC<SvgProps>
-  backgroundColor: string
-}) => (
-  <View
-    className="h-[40px] w-[40px] items-center justify-center rounded-radius-max border-[0.5px] border-dashed border-border-gray"
-    style={{ backgroundColor }}
-  >
-    <Icon width={28} height={28} />
-  </View>
-)
-
-const GoalCheck = ({ state = 'done' }: { state?: DailyRoutineState }) => {
-  if (state === 'todo') {
-    return (
-      <View className="h-[32px] w-[32px] rounded-radius-max border border-alpha-inverse10 bg-surface-gray-subtle1" />
-    )
-  }
-
+  illustration: RoutineIllustrationName
+  backgroundColor?: string
+}) => {
   return (
-    <View className="h-[32px] w-[32px] items-center justify-center rounded-[18px] bg-primary-30">
-      <CheckIcon width={10} height={10} />
+    <View
+      className="h-[40px] w-[40px] shrink-0 items-center justify-center overflow-hidden rounded-radius-max border-[0.5px] border-border-gray"
+      style={{
+        backgroundColor:
+          backgroundColor ?? routineIllustrationBackgroundColors[illustration],
+      }}
+    >
+      <RoutineIllustration illustration={illustration} />
     </View>
   )
+}
+
+const GoalCheck = ({ state = 'todo' }: { state?: DailyRoutineState }) => {
+  switch (state) {
+    case 'done':
+      return (
+        <View className="h-[32px] w-[32px] items-center justify-center rounded-[18px] bg-[#96E5ED]">
+          <CheckIcon width={15} height={13} />
+        </View>
+      )
+    case 'todo':
+      return (
+        <View className="h-[32px] w-[32px] rounded-radius-max border border-alpha-inverse10 bg-surface-gray-subtle1" />
+      )
+  }
 }
 
 const DescriptionLine = ({
@@ -83,23 +88,32 @@ const DescriptionLine = ({
   </View>
 )
 
-const DailyRoutineCard = ({ item }: { item: DailyRoutineCardItem }) => {
+const DailyRoutineCard = ({
+  item,
+  onPress,
+  disabled = false,
+}: DailyRoutineCardProps) => {
   const isHighlighted = item.highlighted === true
+  const isPressable = typeof onPress === 'function' && !disabled
+  const Container = isPressable ? Pressable : View
 
   return (
-    <View
-      className={`w-full flex-row items-center gap-[16px] rounded-radius-xl px-[16px] ${
-        item.compact ? 'py-[12px]' : 'py-[16px]'
-      } ${
-        isHighlighted
-          ? 'border border-border-primary bg-surface-primary-light'
-          : 'bg-surface-white'
-      } ${item.faded ? 'opacity-50' : ''}`}
+    <Container
+      className={`w-full flex-row items-center gap-[16px] rounded-radius-xl px-[16px] ${item.compact ? 'py-[12px]' : 'py-[16px]'} ${isHighlighted ? 'border border-border-primary bg-surface-primary-light' : 'bg-surface-white'} ${item.faded ? 'opacity-50' : ''}`}
       style={cardShadow}
+      {...(isPressable
+        ? {
+            onPress,
+            accessibilityRole: 'button' as const,
+            accessibilityState: { disabled: false },
+          }
+        : {
+            accessibilityState: disabled ? { disabled: true } : undefined,
+          })}
     >
       <RoutineIcon
-        Icon={item.Icon}
-        backgroundColor={item.iconBackgroundColor}
+        illustration={item.illustration}
+        backgroundColor={item.backgroundColor}
       />
 
       <View className="min-w-0 flex-1 gap-[8px]">
@@ -123,7 +137,7 @@ const DailyRoutineCard = ({ item }: { item: DailyRoutineCardItem }) => {
       </View>
 
       <GoalCheck state={item.state} />
-    </View>
+    </Container>
   )
 }
 

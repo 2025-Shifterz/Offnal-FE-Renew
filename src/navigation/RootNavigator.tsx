@@ -68,7 +68,21 @@ const RootNavigator = () => {
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
 
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
-        <RootStack.Screen name="DailyRoutine" component={DailyRoutineScreen} />
+        <RootStack.Screen
+          name="DailyRoutine"
+          component={DailyRoutineScreen}
+          options={() => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={null}
+                title={null}
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
         <RootStack.Screen
           name="Todo"
           component={TodoScreen}

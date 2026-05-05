@@ -1,26 +1,23 @@
-import { FC } from 'react'
 import { Pressable, View } from 'react-native'
-import { SvgProps } from 'react-native-svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import Pill from '../../../shared/components/Pill'
 import React from 'react'
+import {
+  RoutineIllustration,
+  RoutineIllustrationName,
+  routineIllustrationBackgroundColors,
+} from '../../../shared/components/routine/RoutineIllustration'
+import type {
+  RoutineCardContent,
+  RoutineCardContentItem,
+  RoutineStatus,
+} from '../../../shared/components/routine/routineContent'
 
-export interface RoutineCardProps {
-  title: string
-  status: RoutineStatus
-  items: RoutineItemProps[]
+export type RoutineItemProps = RoutineCardContentItem
+
+export type RoutineCardProps = RoutineCardContent & {
   onPress?: () => void
 }
-
-export interface RoutineItemProps {
-  title: string
-  time: string
-  description: string
-  icon: FC<SvgProps>
-  backgroundColor: string
-}
-
-export type RoutineStatus = 'done' | 'current' | 'ready'
 
 const RoutineStatusMap: Record<
   RoutineStatus,
@@ -44,17 +41,20 @@ const RoutineStatusMap: Record<
 }
 
 const RoutineIcon = ({
-  Icon,
+  illustration,
   backgroundColor,
 }: {
-  Icon: FC<SvgProps>
-  backgroundColor: string
+  illustration: RoutineIllustrationName
+  backgroundColor?: string
 }) => (
   <View
     className="h-[40px] w-[40px] items-center justify-center rounded-radius-max border border-dashed border-gray-20"
-    style={{ backgroundColor }}
+    style={{
+      backgroundColor:
+        backgroundColor ?? routineIllustrationBackgroundColors[illustration],
+    }}
   >
-    <Icon width={24} height={24} />
+    <RoutineIllustration illustration={illustration} size={28} />
   </View>
 )
 
@@ -86,7 +86,10 @@ const RoutineStatusPill = ({ status }: { status: RoutineStatus }) => {
 const RoutineItemRow = ({ item }: { item: RoutineItemProps }) => {
   return (
     <View className="h-[44px] w-full flex-row items-center gap-[12px] py-[2px]">
-      <RoutineIcon Icon={item.icon} backgroundColor={item.backgroundColor} />
+      <RoutineIcon
+        illustration={item.illustration}
+        backgroundColor={item.backgroundColor}
+      />
       <View className="min-w-0 flex-1 gap-[2px]">
         <View className="w-full flex-row items-center justify-between gap-[8px]">
           <GlobalText className="text-text-bolder heading-xxxs">
@@ -118,7 +121,7 @@ const RoutineCardView = ({
   return (
     <Container
       className="w-[320px] rounded-radius-xl bg-surface-white p-number-6"
-      onPress={onPress}
+      {...(onPress ? { onPress, accessibilityRole: 'button' as const } : {})}
     >
       <View className="mb-[16px] flex-row items-center justify-between gap-[8px]">
         <Pill>{title}</Pill>
@@ -127,7 +130,7 @@ const RoutineCardView = ({
       </View>
 
       {items.map((item, index) => (
-        <React.Fragment key={`${title}-${item.title}`}>
+        <React.Fragment key={item.id}>
           <RoutineItemRow item={item} />
           {index < items.length - 1 && <RoutineConnector />}
         </React.Fragment>

@@ -1,14 +1,8 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { ScrollView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import BedIcon from '../../../assets/icons/ic_bed_24.svg'
-import TablewareIcon from '../../../assets/icons/ic_tableware.svg'
-import DishesIcon from '../../../assets/icons/ic_dishes_24.svg'
-import MoonIcon from '../../../assets/icons/ic_moon_28.svg'
 import SneakersIcon from '../../../assets/icons/ic_sneakers_61.svg'
 import WeightIcon from '../../../assets/icons/ic_weight_50.svg'
-import RiceIcon from '../../../assets/icons/ic_rice_28.svg'
-import BowlIcon from '../../../assets/icons/ic_bowl_28.svg'
 import { getWorkTypeLabel } from '../../../shared/constants/workType'
 import useHealthData from '../../../shared/hooks/useHealthData'
 import { Routine } from '../../../domain/models/Routine'
@@ -21,6 +15,7 @@ import RoutineCardView, { RoutineCardProps } from './RoutineCard'
 import SectionTitle from './SectionTitle'
 import RecommendHealthContentCard from './RecommendHealthContent'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { buildMainRoutineCards } from '../../../shared/components/routine/routineContent'
 
 interface HomeCarePanelProps {
   routine?: Routine
@@ -39,75 +34,16 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
   const navigation = useNavigation<rootNavigation>()
   const { healthData } = useHealthData()
   const userName = useUserStore(state => state.user?.memberName)
-
-  const meal = routine?.meals?.[0]
-  const secondMeal = routine?.meals?.[1]
-  const sleepGuide =
-    routine?.health?.sleepGuide?.join(' ') || '5시간 수면 채운 후 기상'
-  const sleepTime = routine?.health?.sleepSchedule || '15:00 ~ 20:00'
-  const fastingTime = routine?.health?.fastingSchedule || '01:00 이전'
   const workType = getWorkTypeLabel(schedule?.todayType)
 
-  const routineCards: RoutineCardProps[] = [
-    {
-      title: '근무 전 루틴',
-      status: 'done',
-      items: [
-        {
-          title: '낮잠',
-          time: sleepTime,
-          description: sleepGuide,
-          icon: BedIcon,
-          backgroundColor: '#F6F3FF',
-        },
-        {
-          title: meal?.label || '식사',
-          time: meal?.time || '20:00 ~ 21:00',
-          description: meal
-            ? `추천 메뉴: ${meal.items.join(', ')}`
-            : '추천 메뉴: 현미밥, 생선구이, 채소',
-          icon: TablewareIcon,
-          backgroundColor: '#FFFAF2',
-        },
-        {
-          title: '출근 준비',
-          time: '21:00 ~ 22:30',
-          description: '샤워와 스트레칭하기',
-          icon: MoonIcon,
-          backgroundColor: '#FFFFF3',
-        },
-      ],
-    },
-    {
-      title: '근무 중 루틴',
-      status: 'current',
-      items: [
-        {
-          title: '근무 집중 구간',
-          time: '21:00 ~ 22:30',
-          description: `카페인은 ${fastingTime}까지만`,
-          icon: DishesIcon,
-          backgroundColor: '#F4F5F6',
-        },
-        {
-          title: secondMeal?.label || '간식',
-          time: secondMeal?.time || '01:00 ~ 02:00',
-          description: secondMeal
-            ? `추천메뉴: ${secondMeal.items.join(', ')}`
-            : '추천메뉴: 연두부, 물',
-          icon: BowlIcon,
-          backgroundColor: '#EEFFF2',
-        },
-        {
-          title: '수분 보충',
-          time: '03:00 ~ 04:00',
-          description: '물 한 잔과 가벼운 움직임',
-          icon: RiceIcon,
-          backgroundColor: '#F0FFFC',
-        },
-      ],
-    },
-  ]
+  const routineCards: RoutineCardProps[] = useMemo(
+    () => buildMainRoutineCards(routine),
+    [routine]
+  )
+
+  const handleRoutinePress = useCallback(() => {
+    navigation.navigate('DailyRoutine', { day: 'today' })
+  }, [navigation])
 
   const stepPercentage = healthData.stepPercentage || 0
   const goalStates: Array<'missed' | 'streak' | 'done'> = [
@@ -134,13 +70,11 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
         >
           {routineCards.map(card => (
             <RoutineCardView
-              key={card.title}
+              key={card.id}
               title={card.title}
               status={card.status}
               items={card.items}
-              onPress={() =>
-                navigation.navigate('DailyRoutine', { day: 'today' })
-              }
+              onPress={handleRoutinePress}
             />
           ))}
         </ScrollView>
