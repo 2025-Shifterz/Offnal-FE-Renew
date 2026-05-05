@@ -17,9 +17,9 @@ import EmphasizedButton from '../../../shared/components/button/Button'
 import { useCurrentTimeTick } from '../../../shared/hooks/useCurrentTimeTick'
 import {
   buildDailyRoutineSections,
-  RoutineCompletionMap,
   RoutineDay,
 } from '../../../shared/components/routine/routineContent'
+import { useRoutineStore } from '../../../store/useRoutineStore'
 
 type FloatingRoutineActionButtonProps = {
   onPress: () => void
@@ -66,19 +66,17 @@ const DailyRoutineScreen = () => {
   const [routineDay, setRoutineDay] = useState<RoutineDay>(
     route.params?.day ?? 'today'
   )
-  const [completionByDay, setCompletionByDay] = useState<
-    Record<RoutineDay, RoutineCompletionMap>
-  >({
-    today: {},
-    tomorrow: {},
-  })
   const currentTimeMillis = useCurrentTimeTick()
+  const completionByDay = useRoutineStore(state => state.completionByDay)
+  const toggleRoutineCompletion = useRoutineStore(
+    state => state.toggleRoutineCompletion
+  )
   const isTomorrow = routineDay === 'tomorrow'
   const dailySections = useMemo(
     () =>
       buildDailyRoutineSections({
         routineDay,
-        completedById: completionByDay[routineDay],
+        completionByDay,
         nowMillis: currentTimeMillis,
       }),
     [completionByDay, currentTimeMillis, routineDay]
@@ -92,19 +90,9 @@ const DailyRoutineScreen = () => {
 
   const handleToggleCompletion = useCallback(
     (itemId: string) => {
-      setCompletionByDay(prev => {
-        const currentDayCompletion = prev[routineDay] || {}
-
-        return {
-          ...prev,
-          [routineDay]: {
-            ...currentDayCompletion,
-            [itemId]: !currentDayCompletion[itemId],
-          },
-        }
-      })
+      toggleRoutineCompletion(routineDay, itemId)
     },
-    [routineDay]
+    [routineDay, toggleRoutineCompletion]
   )
 
   const isItemDisabled = useCallback(
