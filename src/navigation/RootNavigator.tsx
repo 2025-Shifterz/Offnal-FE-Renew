@@ -12,6 +12,7 @@ import TodoScreen from '../presentation/note/screens/TodoScreen'
 import MemoScreen from '../presentation/note/screens/MemoScreen'
 import AutoAlarm from '../presentation/alarm/screen/AutoAlarmScreen'
 import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
+import DailyRoutineScreen from '../presentation/dailyRoutine/screen/DailyRoutineScreen'
 
 // Migrate from CalendarNavigator.tsx
 import CalendarEditScreen from '../presentation/calenderEditMode/screen/CalendarEditScreen'
@@ -67,6 +68,21 @@ const RootNavigator = () => {
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
 
         {/* Migrate from MainNavigator.tsx - Flattened for Tab Bar Hiding */}
+        <RootStack.Screen
+          name="DailyRoutine"
+          component={DailyRoutineScreen}
+          options={() => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={null}
+                title={null}
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
         <RootStack.Screen
           name="Todo"
           component={TodoScreen}

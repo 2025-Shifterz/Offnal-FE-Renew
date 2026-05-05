@@ -1,6 +1,6 @@
 import '../../../../global.css'
-import React, { useCallback, useState } from 'react'
-import { ScrollView, View, Text } from 'react-native'
+import React, { useCallback, useRef, useState } from 'react'
+import { ActivityIndicator, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from '@react-navigation/native'
 import { homeRepository } from '../../../infrastructure/di/Dependencies'
@@ -10,7 +10,9 @@ import { Schedule } from '../../../domain/models/Schedule'
 import HomeCarePanel from '../components/HomeCarePanel'
 
 export default function MainScreen() {
+  const isFirstLoad = useRef(true)
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
   const [routine, setRoutine] = useState<Routine>()
   const [schedule, setSchedule] = useState<Schedule>()
@@ -39,12 +41,18 @@ export default function MainScreen() {
 
       const loadMainData = async () => {
         try {
-          setLoading(true)
+          if (isFirstLoad.current) {
+            setLoading(true)
+          } else {
+            setRefreshing(true)
+          }
 
           await Promise.all([fetchRoutine(), fetchSchedule()])
         } finally {
           if (isActive) {
+            isFirstLoad.current = false
             setLoading(false)
+            setRefreshing(false)
           }
         }
       }
@@ -60,7 +68,7 @@ export default function MainScreen() {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-black">
-        <Text style={{ color: 'white' }}>로딩 중...</Text>
+        <ActivityIndicator size="large" color="#ffffff" />
       </View>
     )
   }
@@ -70,12 +78,19 @@ export default function MainScreen() {
       className="flex-1 bg-surface-disabled-inverse"
       edges={['left', 'right', 'top']}
     >
-      <ScrollView className="flex-1" bounces={false}>
-        {/* <TopCard /> */}
-        <TopBanner schdule={schedule ?? null} />
+      <View className="flex-1">
+        {refreshing && (
+          <View className="bg-surface-white/80 absolute right-[20px] top-[12px] z-10 h-[28px] w-[28px] items-center justify-center rounded-radius-max">
+            <ActivityIndicator size="small" color="#111111" />
+          </View>
+        )}
 
-        <HomeCarePanel routine={routine} schedule={schedule} />
-      </ScrollView>
+        <ScrollView className="flex-1" bounces={false}>
+          <TopBanner schdule={schedule ?? null} />
+
+          <HomeCarePanel routine={routine} schedule={schedule} />
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
