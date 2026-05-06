@@ -36,53 +36,6 @@ const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>()
   const [slideTime] = useState(4)
   const loginWithApple = useAuthStore(state => state.loginWithApple)
-  const loginWithKakao = useAuthStore(state => state.loginWithKakao)
-  const [isKakaoLoading, setIsKakaoLoading] = useState(false)
-
-  const navigateAfterSocialLogin = (isNewMember: boolean) => {
-    navigation.getParent<rootNavigation>()?.reset({
-      index: 0,
-      routes: isNewMember
-        ? [
-            {
-              name: 'OnboardingMethodScreen',
-              params: { createScheduleButtonClick: false },
-            },
-          ]
-        : [{ name: 'Tabs' }],
-    })
-  }
-
-  const isKakaoLoginCancelled = (error: unknown) => {
-    if (!error || typeof error !== 'object') return false
-
-    return (
-      'code' in error &&
-      (error as { code?: string }).code === 'E_CANCELLED_OPERATION'
-    )
-  }
-
-  const getKakaoLoginErrorMessage = (error: unknown) => {
-    if (!error || typeof error !== 'object') {
-      return '카카오 로그인에 실패했습니다. 다시 시도해주세요.'
-    }
-
-    const kakaoError = error as {
-      error_code?: string
-      error_description?: string
-      message?: string
-    }
-
-    if (kakaoError.error_code === 'KOE009') {
-      return 'Android keyHash 검증에 실패했습니다. Kakao Developers에 등록된 keyHash를 확인해주세요.'
-    }
-
-    return (
-      kakaoError.error_description ??
-      kakaoError.message ??
-      '카카오 로그인에 실패했습니다. 다시 시도해주세요.'
-    )
-  }
 
   return (
     <SafeAreaView className="w-full flex-1 items-center bg-background-white">
@@ -134,25 +87,7 @@ const LoginScreen = () => {
       </View>
 
       <View className="mt-[15px] flex-col items-center">
-        <KaKaoLoginBtn
-          loading={isKakaoLoading}
-          onPress={async () => {
-            try {
-              setIsKakaoLoading(true)
-              const isNewMember = await loginWithKakao()
-              setIsKakaoLoading(false)
-              navigateAfterSocialLogin(isNewMember)
-            } catch (error: unknown) {
-              setIsKakaoLoading(false)
-
-              if (isKakaoLoginCancelled(error)) {
-                return
-              }
-
-              Alert.alert('로그인 실패', getKakaoLoginErrorMessage(error))
-            }
-          }}
-        />
+        <KaKaoLoginBtn />
 
         {Platform.OS === 'ios' && (
           <AppleButton
@@ -162,16 +97,25 @@ const LoginScreen = () => {
             onPress={async () => {
               try {
                 const isNewMember = await loginWithApple()
-                navigateAfterSocialLogin(isNewMember)
-              } catch (error: unknown) {
-                if (
-                  typeof error === 'object' &&
-                  error !== null &&
-                  'code' in error &&
-                  (error as { code?: string }).code === appleAuth.Error.CANCELED
-                ) {
-                  return
+
+                if (isNewMember) {
+                  navigation.getParent<rootNavigation>()?.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: 'OnboardingMethodScreen',
+                        params: { createScheduleButtonClick: false },
+                      },
+                    ],
+                  })
+                } else {
+                  navigation.getParent<rootNavigation>()?.reset({
+                    index: 0,
+                    routes: [{ name: 'Tabs' }],
+                  })
                 }
+              } catch (error: any) {
+                if (error?.code === appleAuth.Error.CANCELED) return
 
                 Alert.alert(
                   '로그인 실패',

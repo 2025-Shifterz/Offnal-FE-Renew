@@ -5,11 +5,6 @@ import { User } from '../shared/types/User'
 import EncryptedStorage from 'react-native-encrypted-storage'
 import { authService } from '../infrastructure/di/Dependencies'
 import { appleAuth } from '@invertase/react-native-apple-authentication'
-import {
-  login as kakaoNativeLogin,
-  loginWithKakaoAccount,
-  type KakaoOAuthToken,
-} from '@react-native-seoul/kakao-login'
 
 interface AuthState {
   accessToken: string | null
@@ -17,9 +12,7 @@ interface AuthState {
 
   isLoggedIn: () => Promise<boolean>
   login: (user: User, accessToken: string, refreshToken: string) => void
-
   loginWithApple: () => Promise<boolean>
-  loginWithKakao: () => Promise<boolean>
 
   setAccessToken: (token: string) => void
   setRefreshToken: (token: string) => void
@@ -53,48 +46,6 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      loginWithKakao: async () => {
-        try {
-          let kakaoToken: KakaoOAuthToken
-
-          try {
-            kakaoToken = await kakaoNativeLogin()
-          } catch (error: unknown) {
-            if (
-              typeof error === 'object' &&
-              error !== null &&
-              'code' in error &&
-              (error as { code?: string }).code === 'E_KAKAOTALK_NOT_INSTALLED'
-            ) {
-              kakaoToken = await loginWithKakaoAccount()
-            } else {
-              throw error
-            }
-          }
-
-          const res = await authService.loginWithKakao({
-            accessToken: kakaoToken.accessToken,
-          })
-
-          const { setUser } = useUserStore.getState()
-          setUser({
-            memberName: res.memberName,
-            email: res.email,
-            phoneNumber: '',
-            profileImageUrl: res.profileImageKey ?? '',
-          })
-
-          set({
-            accessToken: res.accessToken,
-            refreshToken: res.refreshToken,
-          })
-
-          return res.newMember
-        } catch (error) {
-          throw error
-        }
-      },
-
       loginWithApple: async () => {
         try {
           const appleAuthRequestResponse = await appleAuth.performRequest({
@@ -124,8 +75,8 @@ export const useAuthStore = create<AuthState>()(
           setUser({
             memberName: res.memberName,
             email: res.email,
-            phoneNumber: res.phoneNumber ?? '',
-            profileImageUrl: res.profileImageKey ?? '',
+            phoneNumber: res.phoneNumber,
+            profileImageUrl: res.profileImageKey,
           })
 
           set({

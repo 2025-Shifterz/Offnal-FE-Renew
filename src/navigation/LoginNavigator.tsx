@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from '../presentation/login/screen/LoginScreen'
+import KakaoLoginWebView from '../presentation/login/screen/KakaoLoginWebView'
 import { LoginStackParamList } from './types/StackTypes'
 import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 
@@ -14,6 +15,7 @@ const LoginNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="KakaoWebView" component={KakaoLoginWebView} />
       <Stack.Screen name="TermsWebViewScreen" component={TermsWebViewScreen} />
     </Stack.Navigator>
   )

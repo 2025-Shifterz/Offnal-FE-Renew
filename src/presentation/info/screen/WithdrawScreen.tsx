@@ -7,14 +7,10 @@ import { useState } from 'react'
 import { memberRepository } from '../../../infrastructure/di/Dependencies'
 import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
 import EmphasizedButton from '../../../shared/components/button/Button'
-import Dialog from '../../../shared/components/dialog/Dialog'
 
 const WithdrawScreen = () => {
   const navigation = useNavigation<rootNavigation>()
   const [isLoading, setIsLoading] = useState(false)
-  const [isWithdrawDialogVisible, setIsWithdrawDialogVisible] = useState(false)
-  const [isWithdrawErrorDialogVisible, setIsWithdrawErrorDialogVisible] =
-    useState(false)
   const { resetAll } = useResetAllStore()
 
   const handleWithdraw = async () => {
@@ -23,9 +19,23 @@ const WithdrawScreen = () => {
     try {
       await memberRepository.withDrawMember()
       await resetAll()
-      setIsWithdrawDialogVisible(true)
+
+      Alert.alert('알림', '회원 탈퇴가 완료되었습니다.', [
+        {
+          text: '확인',
+          onPress: () => {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'LoginScreens' }],
+              })
+            )
+          },
+          style: 'destructive',
+        },
+      ])
     } catch {
-      setIsWithdrawErrorDialogVisible(true)
+      Alert.alert('오류', '회원 탈퇴에 실패했습니다.\n다시 시도해주세요.')
     } finally {
       setIsLoading(false)
     }
@@ -67,31 +77,6 @@ const WithdrawScreen = () => {
           </View>
         </View>
       </SafeAreaView>
-
-      <Dialog
-        visible={isWithdrawErrorDialogVisible}
-        title="알림"
-        description="회원 탈퇴에 실패했습니다."
-        onConfirm={() => {
-          setIsWithdrawErrorDialogVisible(false)
-        }}
-      />
-
-      <Dialog
-        visible={isWithdrawDialogVisible}
-        title="알림"
-        description="회원 탈퇴가 완료되었습니다."
-        onConfirm={() => {
-          setIsWithdrawDialogVisible(false)
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'LoginScreens' }],
-            })
-          )
-        }}
-      />
-
       {isLoading && (
         <View className="absolute inset-0 items-center justify-center bg-black bg-opacity-50">
           <ActivityIndicator size="large" color="#ffffff" />

@@ -14,7 +14,6 @@ import { useNavigation } from '@react-navigation/native'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import RatingChip from '../../../shared/components/chip/RatingChip'
 import EmphasizedButton from '../../../shared/components/button/Button'
-import Dialog from '../../../shared/components/dialog/Dialog'
 
 const MAX_FEEDBACK_LENGTH = 100
 
@@ -23,7 +22,17 @@ const FeedBackScreen = () => {
 
   const [rating, setRating] = useState(1)
   const [feedback, setFeedback] = useState('')
-  const [isFeedbackDialogVisible, setIsFeedbackDialogVisible] = useState(false)
+
+  const handleFeedbackSubmit = () => {
+    Alert.alert('피드백이 제출되었습니다.', '소중한 의견 감사합니다.', [
+      {
+        text: '확인',
+        onPress: () => {
+          navigation.pop()
+        },
+      },
+    ])
+  }
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
@@ -73,21 +82,11 @@ const FeedBackScreen = () => {
                   제출하기
                 </GlobalText>
               }
-              onPress={() => setIsFeedbackDialogVisible(true)}
+              onPress={handleFeedbackSubmit}
             />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
-
-      <Dialog
-        visible={isFeedbackDialogVisible}
-        title="알림"
-        description={`피드백이 제출되었습니다.${'\n'}소중한 의견 감사합니다.`}
-        onConfirm={() => {
-          setIsFeedbackDialogVisible(false)
-          navigation.pop()
-        }}
-      />
     </View>
   )
 }

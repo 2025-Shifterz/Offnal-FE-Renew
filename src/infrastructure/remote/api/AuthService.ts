@@ -1,7 +1,5 @@
 import { PostLoginWithAppleRequest } from '../request/PostLoginWithAppleRequest'
 import { PostLoginWithAppleResponse } from '../response/PostLoginWithAppleResponse'
-import { PostLoginWithKakaoRequest } from '../request/PostLoginWithKakaoRequest'
-import { PostLoginWithKakaoResponse } from '../response/PostLoginWithKakaoResponse'
 import { baseAxiosClient } from '../axios/createBaseAxiosClient'
 import { apiAxiosClient } from '../axios/createApiAxiosClient'
 
@@ -27,18 +25,6 @@ export class AuthService {
     }
   }
 
-  loginWithKakao = async (requestDto: PostLoginWithKakaoRequest) => {
-    try {
-      const response = await apiAxiosClient.post<PostLoginWithKakaoResponse>(
-        '/login/kakao',
-        requestDto
-      )
-      return response.data.data
-    } catch (error) {
-      throw error
-    }
-  }
-
   // private
   private tokenReissueHelper = async (
     axiosInstance: typeof apiAxiosClient,
@@ -51,12 +37,11 @@ export class AuthService {
       })
       console.log(`/tokens/reissue (${instanceName}) 응답:`, response.data)
       return response.data.data
-    } catch (error: unknown) {
-      const responseError = error as { response?: { data?: unknown } }
+    } catch (error: any) {
       console.error(`/tokens/reissue (${instanceName}) API 요청 실패:`, error)
       console.log(
         `/tokens/reissue (${instanceName}) 응답:`,
-        responseError.response?.data
+        error.response?.data
       )
       throw error
     }

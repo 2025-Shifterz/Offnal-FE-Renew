@@ -4,7 +4,6 @@ import SQLite3
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
-import kakao_login
 
 private let autoAlarmNotificationCategoryId = "offnal.auto-alarm.category"
 private let autoAlarmSnoozeActionId = "offnal.auto-alarm.snooze"
@@ -73,18 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     )
 
     return true
-  }
-
-  func application(
-    _ application: UIApplication,
-    open url: URL,
-    options: [UIApplication.OpenURLOptionsKey: Any] = [:]
-  ) -> Bool {
-    if kakao_login.RNKakaoLogins.isKakaoTalkLoginUrl(url) {
-      return kakao_login.RNKakaoLogins.handleOpen(url)
-    }
-
-    return false
   }
 }
 

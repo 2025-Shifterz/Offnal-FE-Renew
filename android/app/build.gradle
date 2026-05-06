@@ -28,8 +28,6 @@ project.ext.envConfigFiles = [
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
-def kakaoNativeAppKey = project.env.get("KAKAO_NATIVE_APP_KEY") ?: ""
-def kakaoScheme = kakaoNativeAppKey ? "kakao${kakaoNativeAppKey}" : "kakao"
 def versionConfigFile = rootProject.file("../version.json")
 
 if (!versionConfigFile.exists()) {
@@ -66,7 +64,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode
         versionName appVersionName
-        resValue "string", "kakao_app_key", kakaoNativeAppKey
     }
 
     signingConfigs {
@@ -89,20 +86,14 @@ android {
         debug {
             signingConfig signingConfigs.debug
             resValue "string", "app_name", "[Dev] Offnal"
-            manifestPlaceholders = [
-                usesCleartextTraffic: "true",
-                kakaoScheme: kakaoScheme,
-            ]
+            manifestPlaceholders = [usesCleartextTraffic: "true"]
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "app_name", "Offnal"
-            manifestPlaceholders = [
-                usesCleartextTraffic: "false",
-                kakaoScheme: kakaoScheme,
-            ]
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
     }
     flavorDimensions "version"

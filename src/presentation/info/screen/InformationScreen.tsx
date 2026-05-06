@@ -1,10 +1,10 @@
 import { Alert, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MyInformationCard from '../components/MyInformationCard'
+import MyInformationCard from '../component/MyInformationCard'
 import InformationMenuContainer, {
   MenuItemProps,
-} from '../components/InformationMenuContainer'
-import { useCallback, useMemo, useState } from 'react'
+} from '../component/InformationMenuContainer'
+import { useCallback, useMemo } from 'react'
 import { rootNavigation } from '../../../navigation/types/StackTypes'
 import {
   CommonActions,
@@ -15,7 +15,6 @@ import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'
 import { useUserStore } from '../../../store/useUserStore'
 import { authService } from '../../../infrastructure/di/Dependencies'
 import { useResetAllStore } from '../../../shared/hooks/useResetAllStore'
-import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
 import { appVersionLabel } from '../../../shared/config/appVersion'
 
 const InformationScreen = () => {
@@ -23,7 +22,6 @@ const InformationScreen = () => {
 
   const user = useUserStore(state => state.user)
   const fetchProfile = useUserStore(state => state.fetchProfile)
-  const [isDialogVisible, setIsDialogVisible] = useState(false)
   const { resetAll } = useResetAllStore()
 
   useFocusEffect(
@@ -31,6 +29,27 @@ const InformationScreen = () => {
       fetchProfile()
     }, [fetchProfile])
   )
+
+  const handleLogOut = useCallback(() => {
+    Alert.alert('로그아웃', '정말로 로그아웃 하시겠습니까?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '로그아웃',
+        onPress: async () => {
+          await authService.tokenLogOut()
+          await resetAll()
+
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: 'LoginScreens' }],
+            })
+          )
+        },
+        style: 'destructive',
+      },
+    ])
+  }, [resetAll, navigation])
 
   const informationMenus: MenuItemProps[] = useMemo(() => {
     return [
@@ -96,10 +115,10 @@ const InformationScreen = () => {
       {
         id: 'logout',
         title: '로그아웃',
-        onPress: () => setIsDialogVisible(true),
+        onPress: () => handleLogOut(),
       },
     ]
-  }, [navigation])
+  }, [navigation, handleLogOut])
 
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
@@ -125,28 +144,6 @@ const InformationScreen = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-
-      <ConfirmDialog
-        visible={isDialogVisible}
-        title="로그아웃"
-        description="정말로 로그아웃 하시겠습니까?"
-        onConfirm={async () => {
-          setIsDialogVisible(false)
-
-          await authService.tokenLogOut()
-          await resetAll()
-
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: 'LoginScreens' }],
-            })
-          )
-        }}
-        onCancel={() => {
-          setIsDialogVisible(false)
-        }}
-      />
     </View>
   )
 }
