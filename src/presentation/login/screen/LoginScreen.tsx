@@ -88,7 +88,7 @@ const LoginScreen = () => {
 
       <View className="mt-[15px] flex-col items-center">
         <KaKaoLoginBtn />
-
+        {/* 
         {Platform.OS === 'ios' && (
           <AppleButton
             buttonStyle={AppleButton.Style.BLACK}
@@ -124,7 +124,8 @@ const LoginScreen = () => {
               }
             }}
           />
-        )}
+        )} 
+         */}
 
         <View className="mt-[16px] flex-row justify-center">
           <TouchableOpacity
