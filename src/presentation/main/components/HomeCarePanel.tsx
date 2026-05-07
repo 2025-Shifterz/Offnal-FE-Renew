@@ -45,6 +45,16 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
     navigation.navigate('DailyRoutine', { day: 'today' })
   }, [navigation])
 
+  const handleRecommendContentPress = useCallback(
+    (title: string) => {
+      navigation.navigate('RecommendHealthContentDetail', {
+        title,
+        author: '팀 오프날',
+      })
+    },
+    [navigation]
+  )
+
   const stepPercentage = healthData.stepPercentage || 0
   const goalStates: Array<'missed' | 'streak' | 'done'> = [
     'missed',
@@ -71,6 +81,7 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
           {routineCards.map(card => (
             <RoutineCardView
               key={card.id}
+              id={card.id}
               title={card.title}
               status={card.status}
               items={card.items}
@@ -113,8 +124,22 @@ const HomeCarePanel = ({ routine, schedule }: HomeCarePanelProps) => {
           showsHorizontalScrollIndicator={false}
           contentContainerClassName="gap-[8px] px-number-9"
         >
-          <RecommendHealthContentCard title="[간호사 공구] 사원증 목걸이 녹음기 공구 시작" />
-          <RecommendHealthContentCard title="[혈당관리식] 단백질이 풍부한 식사 준비하기" />
+          <RecommendHealthContentCard
+            title="[간호사 공구] 사원증 목걸이 녹음기 공구 시작"
+            onPress={() =>
+              handleRecommendContentPress(
+                '[간호사 공구] 사원증 목걸이 녹음기 공구 시작'
+              )
+            }
+          />
+          <RecommendHealthContentCard
+            title="[혈당관리식] 단백질이 풍부한 식사 준비하기"
+            onPress={() =>
+              handleRecommendContentPress(
+                '[혈당관리식] 단백질이 풍부한 식사 준비하기'
+              )
+            }
+          />
         </ScrollView>
       </View>
     </View>

@@ -26,6 +26,15 @@ export type RootStackParamList = {
   // Migrate from MainNavigator.tsx
   AutoAlarm: undefined
   DailyRoutine: { day?: 'today' | 'tomorrow' } | undefined
+  RecommendHealthContentDetail:
+    | {
+        title?: string
+        author?: string
+        body?: string
+        imageUrl?: string
+        authorProfileImageUrl?: string
+      }
+    | undefined
   Todo: { selectedDate: dayjs.Dayjs | null }
   Memo: { selectedDate: dayjs.Dayjs | null }
   AddMemo: { memo?: Memo; date?: string } | undefined
