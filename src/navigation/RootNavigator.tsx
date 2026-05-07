@@ -13,6 +13,7 @@ import MemoScreen from '../presentation/note/screens/MemoScreen'
 import AutoAlarm from '../presentation/alarm/screen/AutoAlarmScreen'
 import AddMemoScreen from '../presentation/note/screens/AddMemoScreen'
 import DailyRoutineScreen from '../presentation/dailyRoutine/screen/DailyRoutineScreen'
+import RecommendHealthContentDetailScreen from '../presentation/main/screen/RecommendHealthContentDetailScreen'
 
 // Migrate from CalendarNavigator.tsx
 import CalendarEditScreen from '../presentation/calenderEditMode/screen/CalendarEditScreen'
@@ -34,6 +35,7 @@ import EditAutoAlarmScreen from '../presentation/alarm/screen/EditAutoAlarmScree
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../shared/components/button/TopAppBarBackButton'
 import GlobalText from '../shared/components/text/GlobalText'
+import MoreIcon from '../assets/icons/alarm_three-dot_24.svg'
 
 // Onboarding Navigation Error Screen
 const RootStack = createNativeStackNavigator<RootStackParamList>()
@@ -76,6 +78,27 @@ const RootNavigator = () => {
               <CenterAlignedTopAppBar
                 navigationIcon={null}
                 title={null}
+                applySafeArea={true}
+              />
+            ),
+            headerShown: true,
+            headerShadowVisible: false,
+          })}
+        />
+        <RootStack.Screen
+          name="RecommendHealthContentDetail"
+          component={RecommendHealthContentDetailScreen}
+          options={({ navigation }) => ({
+            header: () => (
+              <CenterAlignedTopAppBar
+                navigationIcon={
+                  <TopAppBarBackButton onPress={navigation.goBack} />
+                }
+                title={
+                  <GlobalText className="font-pretSemiBold text-heading-xs">
+                    추천 건강 콘텐츠
+                  </GlobalText>
+                }
                 applySafeArea={true}
               />
             ),
