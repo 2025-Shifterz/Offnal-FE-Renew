@@ -1,5 +1,12 @@
 import '../../../../global.css'
-import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import type { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { ScrollView, View } from 'react-native'
@@ -20,6 +27,9 @@ import {
   RoutineDay,
 } from '../../../shared/components/routine/routineContent'
 import { useRoutineStore } from '../../../store/useRoutineStore'
+import DailyRoutineCompletionBottomSheet, {
+  DailyRoutineCompletionBottomSheetMethods,
+} from '../component/DailyRoutineCompletionBottomSheet'
 
 type FloatingRoutineActionButtonProps = {
   onPress: () => void
@@ -67,6 +77,12 @@ const DailyRoutineScreen = () => {
     route.params?.day ?? 'today'
   )
   const currentTimeMillis = useCurrentTimeTick()
+  const completionBottomSheetRef =
+    useRef<DailyRoutineCompletionBottomSheetMethods>(null)
+  const hasShownCompletionSheetRef = useRef(false)
+  const shouldShowCompletionSheetAfterToggleRef = useRef(false)
+  const [isCompletionBottomSheetOpen, setIsCompletionBottomSheetOpen] =
+    useState(false)
   const completionByDay = useRoutineStore(state => state.completionByDay)
   const toggleRoutineCompletion = useRoutineStore(
     state => state.toggleRoutineCompletion
@@ -90,6 +106,7 @@ const DailyRoutineScreen = () => {
 
   const handleToggleCompletion = useCallback(
     (itemId: string) => {
+      shouldShowCompletionSheetAfterToggleRef.current = routineDay === 'today'
       toggleRoutineCompletion(routineDay, itemId)
     },
     [routineDay, toggleRoutineCompletion]
@@ -102,9 +119,47 @@ const DailyRoutineScreen = () => {
     []
   )
 
+  const handleCompletionBottomSheetChange = useCallback((index: number) => {
+    setIsCompletionBottomSheetOpen(index >= 0)
+  }, [])
+
   useLayoutEffect(() => {
     navigation.setOptions({ header: DailyRoutineHeader })
   }, [navigation])
+
+  const isTodayRoutineCompleted = useMemo(() => {
+    if (routineDay !== 'today') {
+      return false
+    }
+
+    const routineItems = dailySections.flatMap(section => section.items)
+
+    return (
+      routineItems.length > 0 &&
+      routineItems.every(item => item.state === 'done')
+    )
+  }, [dailySections, routineDay])
+
+  useEffect(() => {
+    if (!isTodayRoutineCompleted) {
+      hasShownCompletionSheetRef.current = false
+      shouldShowCompletionSheetAfterToggleRef.current = false
+      setIsCompletionBottomSheetOpen(false)
+      return
+    }
+
+    if (
+      hasShownCompletionSheetRef.current ||
+      !shouldShowCompletionSheetAfterToggleRef.current
+    ) {
+      return
+    }
+
+    hasShownCompletionSheetRef.current = true
+    shouldShowCompletionSheetAfterToggleRef.current = false
+    setIsCompletionBottomSheetOpen(true)
+    completionBottomSheetRef.current?.open()
+  }, [isTodayRoutineCompleted])
 
   return (
     <View className="flex-1 bg-background-white">
@@ -124,13 +179,20 @@ const DailyRoutineScreen = () => {
         ))}
       </ScrollView>
 
-      <FloatingRoutineActionButton
-        onPress={handleToggleRoutineDay}
-        content={
-          <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
-            {isTomorrow ? '오늘 루틴 확인하기' : '내일 루틴 확인하기'}
-          </GlobalText>
-        }
+      {!isCompletionBottomSheetOpen && (
+        <FloatingRoutineActionButton
+          onPress={handleToggleRoutineDay}
+          content={
+            <GlobalText className="font-pretMedium text-body-m text-text-bolder-inverse">
+              {isTomorrow ? '오늘 루틴 확인하기' : '내일 루틴 확인하기'}
+            </GlobalText>
+          }
+        />
+      )}
+
+      <DailyRoutineCompletionBottomSheet
+        ref={completionBottomSheetRef}
+        onChange={handleCompletionBottomSheetChange}
       />
     </View>
   )
