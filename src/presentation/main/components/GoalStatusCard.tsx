@@ -5,7 +5,7 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import CheckIcon from '../../../assets/icons/ic_checked.svg'
 import CheckStreakIcon from '../../../assets/icons/ic_goal_streak.svg'
 
-type GoalState = 'missed' | 'streak' | 'done'
+export type GoalState = 'missed' | 'streak' | 'done'
 
 interface GoalStatusCardProps {
   states: GoalState[]
