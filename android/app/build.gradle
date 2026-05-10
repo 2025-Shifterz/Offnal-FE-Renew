@@ -28,7 +28,42 @@ project.ext.envConfigFiles = [
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
-def kakaoNativeAppKey = project.env.get("KAKAO_NATIVE_APP_KEY") ?: ""
+def requiredEnvKeys = [
+    "API_URL",
+    "OPEN_API_URL",
+    "OPEN_API_SERVICE_KEY",
+    "KAKAO_NATIVE_APP_KEY",
+    "KAKAO_REDIRECT_URI",
+    "TERMS_OF_USE_URL",
+    "PRIVACY_POLICY_URL",
+]
+def missingEnvKeys = requiredEnvKeys.findAll { key ->
+    !project.env.get(key)?.toString()?.trim()
+}
+
+if (!missingEnvKeys.isEmpty()) {
+    throw new GradleException("Missing required env keys: ${missingEnvKeys.join(', ')}")
+}
+
+def requestedGradleTasks = gradle.startParameter.taskNames.collect { it.toLowerCase() }
+def isReleaseSigningRequired = requestedGradleTasks.any { task ->
+    task.contains("productrelease") || task.contains("releas")
+}
+def requiredReleaseSigningProperties = [
+    "OFFNAL_UPLOAD_STORE_FILE",
+    "OFFNAL_UPLOAD_STORE_PASSWORD",
+    "OFFNAL_UPLOAD_KEY_ALIAS",
+    "OFFNAL_UPLOAD_KEY_PASSWORD",
+]
+def missingReleaseSigningProperties = requiredReleaseSigningProperties.findAll { key ->
+    !project.findProperty(key)?.toString()?.trim()
+}
+
+if (isReleaseSigningRequired && !missingReleaseSigningProperties.isEmpty()) {
+    throw new GradleException("Missing release signing properties: ${missingReleaseSigningProperties.join(', ')}")
+}
+
+def kakaoNativeAppKey = project.env.get("KAKAO_NATIVE_APP_KEY")
 def kakaoScheme = kakaoNativeAppKey ? "kakao${kakaoNativeAppKey}" : "kakao"
 def versionConfigFile = rootProject.file("../version.json")
 
@@ -77,7 +112,7 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('OFFNAL_UPLOAD_STORE_FILE')) {
+            if (missingReleaseSigningProperties.isEmpty()) {
                 storeFile file(OFFNAL_UPLOAD_STORE_FILE)
                 storePassword OFFNAL_UPLOAD_STORE_PASSWORD
                 keyAlias OFFNAL_UPLOAD_KEY_ALIAS
