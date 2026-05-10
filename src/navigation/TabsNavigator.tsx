@@ -1,17 +1,24 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import BottomNavigationBar from '../presentation/main/components/BottomNavigationBar'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { createBottomTabScreenOptions } from '../presentation/main/components/BottomNavigationBar'
 import MainScreen from '../presentation/main/screen/MainScreen'
 import CalendarScreen from '../presentation/calendar/screen/CalendarScreen'
 import InformationScreen from '../presentation/info/screen/InformationScreen'
 import CenterAlignedTopAppBar from '../shared/components/appbar/CenterAlignedTopAppBar'
 import GlobalText from '../shared/components/text/GlobalText'
 import AutoAlarmScreen from '../presentation/alarm/screen/AutoAlarmScreen'
+import { TabParamList } from './types/TabParamList'
 
-const Tab = createBottomTabNavigator()
+const Tab = createBottomTabNavigator<TabParamList>()
 
 const TabsNavigator = () => {
+  const insets = useSafeAreaInsets()
+
   return (
-    <BottomNavigationBar>
+    <Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={createBottomTabScreenOptions(insets)}
+    >
       <Tab.Screen name="Home" component={MainScreen} />
       <Tab.Screen
         name="AutoAlarm"
@@ -47,7 +54,7 @@ const TabsNavigator = () => {
           headerShadowVisible: false,
         }}
       />
-    </BottomNavigationBar>
+    </Tab.Navigator>
   )
 }
 export default TabsNavigator

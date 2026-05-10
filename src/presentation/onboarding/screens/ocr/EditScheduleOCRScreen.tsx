@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, InteractionManager } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
-import { OnboardingStackParamList } from '../../../../navigation/types/StackTypes'
+import { OnboardingStackParamList } from '../../../../navigation/types/OnboardingStackParamList'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import {
   convertOCRResultToPersonalSchduleData,

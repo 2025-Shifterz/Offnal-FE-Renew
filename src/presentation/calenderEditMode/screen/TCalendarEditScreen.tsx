@@ -7,10 +7,8 @@ import SuccessIcon from '../../../assets/icons/g-success.svg'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import { WorkType } from '../../../shared/types/Calendar'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'

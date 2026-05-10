@@ -24,7 +24,7 @@ import { useTodoStore } from '../../../store/useTodoStore'
 import ChangeTodoDateBottomSheet, {
   ChangeTodoDateBottomSheetMethods,
 } from '../components/sheet/ChangeTodoDateBottomSheet'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useShallow } from 'zustand/shallow'

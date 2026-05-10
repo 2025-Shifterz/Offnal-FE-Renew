@@ -6,7 +6,7 @@ import CheckIcon from '../../../assets/icons/checked.svg'
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import { Todo } from '../../../domain/models/Todo'
 import dayjs from 'dayjs'
 

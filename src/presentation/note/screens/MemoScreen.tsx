@@ -17,10 +17,8 @@ import {
 import { useEffect } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { useMemoStore } from '../../../store/useMemoStore'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import AddOneTouchableChip from '../../../shared/components/chip/AddOneTouchableChip'
 
 const MemoScreen = () => {

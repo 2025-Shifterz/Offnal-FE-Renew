@@ -1,11 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from '../presentation/login/screen/LoginScreen'
-import { LoginStackParamList } from './types/StackTypes'
+import { LoginStackParamList } from './types/LoginStackParamList'
 import TermsWebViewScreen from '../presentation/info/screen/TermsWebViewScreen'
 
 const Stack = createNativeStackNavigator<LoginStackParamList>()
-
-// + 로그인 화면들
 
 const LoginNavigator = () => {
   return (
