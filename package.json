@@ -5,8 +5,8 @@
   "scripts": {
     "android:dev": "ENVFILE=env/.env.development react-native run-android --mode=developdebug",
     "android:prod": "ENVFILE=env/.env.production react-native run-android --mode=productrelease",
-    "ios:dev": "ENVFILE=env/.env.development react-native run-ios --scheme Development",
-    "ios:prod": "ENVFILE=env/.env.production react-native run-ios --scheme Production",
+    "ios:dev": "bash scripts/ios-device-run.sh Development Debug env/.env.development",
+    "ios:prod": "bash scripts/ios-device-run.sh Production Release env/.env.production",
     "lint": "eslint .",
     "version:check": "node scripts/version.js check",
     "version:sync": "node scripts/version.js sync",
