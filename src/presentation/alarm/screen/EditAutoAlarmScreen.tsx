@@ -11,10 +11,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import RightArrow from '../../../assets/icons/black-arrow-r.svg'
 import AlarmIcon from '../../../assets/icons/ic_clock.svg'
 import TrashIcon from '../../../assets/icons/alarm_trash_24.svg'
-import {
-  RootStackParamList,
-  rootNavigation,
-} from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'

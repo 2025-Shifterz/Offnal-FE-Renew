@@ -12,10 +12,8 @@ import GlobalText from '../../../shared/components/text/GlobalText'
 import { useLayoutEffect, useState } from 'react'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import dayjs from 'dayjs'
 import { useMemoStore } from '../../../store/useMemoStore'
 

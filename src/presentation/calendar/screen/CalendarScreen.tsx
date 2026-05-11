@@ -6,7 +6,7 @@ import { View } from 'react-native'
 import PlusEdit from '../component/PlusEdit'
 import { useFocusEffect, useRoute, RouteProp } from '@react-navigation/native'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
-import { TabParamList } from '../../../navigation/types/StackTypes'
+import { TabParamList } from '../../../navigation/types/TabParamList'
 import dayjs from 'dayjs'
 
 const CalendarScreen = () => {

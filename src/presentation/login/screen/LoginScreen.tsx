@@ -16,7 +16,7 @@ import { onboardingList } from '../constants/OnboardingList'
 import {
   loginNavigation,
   rootNavigation,
-} from '../../../navigation/types/StackTypes'
+} from '../../../navigation/types/NavigationProps'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import { TERMS_OF_USE_URL, PRIVACY_POLICY_URL } from '@env'

@@ -1,9 +1,9 @@
 import { useAuthStore } from '../../../store/useAuthStore'
 import { authService } from '../../di/Dependencies'
 import { resetAllStore } from '../../../shared/utils/store/resetAllStore'
-import { openApiAxiosClient } from './createOpenApiAxiosClient'
 import axios from 'axios'
 import { API_URL } from '@env'
+import { redactBodyForLog, redactNetworkRecord } from './debugLog'
 
 export const apiAxiosClient = axios.create({
   baseURL: API_URL,
@@ -18,15 +18,17 @@ apiAxiosClient.interceptors.request.use(config => {
 
   console.log('🧑🏻‍💻 Request Interceptor | Request URL:', config.url)
   console.log(
-    '🧑🏻‍💻 Request Interceptor | Authorization: ',
-    config.headers.Authorization
+    '🧑🏻‍💻 Request Interceptor | Headers:',
+    redactNetworkRecord(config.headers)
   )
   console.log(
-    '🧑🏻‍💻 Request Interceptor | Content-Type: ',
-    config.headers['Content-Type']
+    '🧑🏻‍💻 Request Interceptor | Request params:',
+    redactNetworkRecord(config.params)
   )
-  console.log('🧑🏻‍💻 Request Interceptor | Request params:', config.params)
-  console.log('🧑🏻‍💻 Request Interceptor | Request body:', config.data)
+  console.log(
+    '🧑🏻‍💻 Request Interceptor | Request body:',
+    redactBodyForLog(config.data)
+  )
 
   return config
 })
@@ -38,18 +40,17 @@ apiAxiosClient.interceptors.response.use(response => {
 
   console.log('🧑🏻‍💻 Response Interceptor | Response URL:', response.config.url)
   console.log(
-    '🧑🏻‍💻 Response Interceptor | Authorization: ',
-    response.config.headers.Authorization
-  )
-  console.log(
-    '🧑🏻‍💻 Response Interceptor | Content-Type: ',
-    response.config.headers['Content-Type']
+    '🧑🏻‍💻 Response Interceptor | Headers:',
+    redactNetworkRecord(response.config.headers)
   )
   console.log(
     '🧑🏻‍💻 Response Interceptor | Response params:',
-    response.config.params
+    redactNetworkRecord(response.config.params)
   )
-  console.log('🧑🏻‍💻 Response Interceptor | Response body:', response.data)
+  console.log(
+    '🧑🏻‍💻 Response Interceptor | Response body:',
+    redactBodyForLog(response.data)
+  )
 
   return response
 })

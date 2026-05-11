@@ -18,7 +18,7 @@ import SnoozeBottomSheet, {
 } from '../components/SnoozeBottomSheet'
 import { WorkType } from '../../../domain/models/Calendar'
 import { AlarmWeekdayLabel, CreateAutoAlarmDraft } from '../types/alarmDraft'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
 import GlobalText from '../../../shared/components/text/GlobalText'
