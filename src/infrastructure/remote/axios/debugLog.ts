@@ -35,7 +35,7 @@ export const redactNetworkRecord = (
   return Object.fromEntries(
     Object.entries(record).map(([key, entryValue]) => [
       key,
-      SENSITIVE_KEYS.has(key) || SENSITIVE_KEYS.has(key.toLowerCase())
+      SENSITIVE_KEYS.has(key.toLowerCase())
         ? REDACTED
         : entryValue,
     ])
