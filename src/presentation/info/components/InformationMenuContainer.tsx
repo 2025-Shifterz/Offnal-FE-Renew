@@ -1,4 +1,5 @@
 import { TouchableOpacity, View } from 'react-native'
+import ChevronRightIcon from '../../../assets/icons/ic_chervon_right.svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
 
 interface MenuProps {
@@ -8,7 +9,7 @@ interface MenuProps {
 
 const InformationMenuContainer = ({ menuTitle, menuItems }: MenuProps) => {
   return (
-    <View className="rounded-3xl bg-white py-number-3">
+    <View className="overflow-hidden rounded-radius-xl bg-surface-white py-number-5">
       <InformationMenuTitle title={menuTitle} />
       {menuItems.map(item => (
         <InformationMenuItem
@@ -30,7 +31,7 @@ type InformationMenuTitleProps = {
 const InformationMenuTitle = ({ title }: InformationMenuTitleProps) => {
   return (
     title && (
-      <GlobalText className="w-full px-number-8 py-[9px] font-pretMedium text-body-xxs">
+      <GlobalText className="w-full px-number-8 py-[9px] font-pretSemiBold text-heading-xxxs text-text-subtle">
         {title}
       </GlobalText>
     )
@@ -44,22 +45,22 @@ export interface MenuItemProps {
   onPress: () => void
 }
 
-const InformationMenuItem = ({
-  id: _id,
-  title,
-  caption,
-  onPress,
-}: MenuItemProps) => {
+const InformationMenuItem = ({ title, caption, onPress }: MenuItemProps) => {
   return (
     <TouchableOpacity
-      onPress={() => onPress()}
-      className="flex-row justify-between px-number-8 py-[9px]"
+      onPress={onPress}
+      activeOpacity={0.8}
+      className="flex-row items-center justify-between px-number-8 py-[10px]"
     >
-      <GlobalText className="font-pretMedium text-body-xs">{title}</GlobalText>
-      {caption && (
-        <GlobalText className="font-pretMedium text-body-xxs text-text-disabled">
+      <GlobalText className="font-pretMedium text-body-xxs text-text-subtle">
+        {title}
+      </GlobalText>
+      {caption ? (
+        <GlobalText className="font-pretRegular text-label-xxs text-text-disabled">
           {caption}
         </GlobalText>
+      ) : (
+        <ChevronRightIcon width={20} height={20} />
       )}
     </TouchableOpacity>
   )
