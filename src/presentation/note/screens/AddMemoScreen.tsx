@@ -1,5 +1,4 @@
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   TextInput,
@@ -16,6 +15,7 @@ import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import dayjs from 'dayjs'
 import { useMemoStore } from '../../../store/useMemoStore'
+import Dialog from '../../../shared/components/dialog/Dialog'
 
 const AddMemoScreenTopAppBar = ({
   onBack,
@@ -57,12 +57,25 @@ const AddMemoScreen = () => {
 
   const [title, setTitle] = useState(memoToUpdate?.title || '')
   const [content, setContent] = useState(memoToUpdate?.content || '')
+  const [dialogState, setDialogState] = useState({
+    visible: false,
+    title: '',
+    description: '',
+  })
 
   const isDisabled = !title.trim()
 
+  const openDialog = (dialogTitle: string, description: string) => {
+    setDialogState({
+      visible: true,
+      title: dialogTitle,
+      description,
+    })
+  }
+
   const handleSave = async () => {
     if (isDisabled) {
-      Alert.alert('알림', '제목을 모두 입력해주세요.')
+      openDialog('알림', '제목을 모두 입력해주세요.')
       return
     }
 
@@ -81,7 +94,7 @@ const AddMemoScreen = () => {
       }
     } catch (error) {
       console.error('Error saving memo:', error)
-      Alert.alert('오류', '메모 생성에 실패했습니다.')
+      openDialog('오류', '메모 생성에 실패했습니다.')
     }
   }
 
@@ -127,6 +140,18 @@ const AddMemoScreen = () => {
             textAlignVertical="top"
           />
         </KeyboardAvoidingView>
+
+        <Dialog
+          visible={dialogState.visible}
+          title={dialogState.title}
+          description={dialogState.description}
+          onConfirm={() => {
+            setDialogState(prevState => ({
+              ...prevState,
+              visible: false,
+            }))
+          }}
+        />
       </SafeAreaView>
     </View>
   )
