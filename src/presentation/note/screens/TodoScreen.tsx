@@ -324,7 +324,7 @@ const TodoScreen = () => {
       <Dialog
         visible={isTodoDialogVisible}
         title="알림"
-        description="할 일 내용을 압력해주세요"
+        description="할 일 내용을 입력해주세요"
         onConfirm={() => {
           setIsTodoDialogVisible(false)
         }}
