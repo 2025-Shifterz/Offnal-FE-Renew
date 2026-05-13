@@ -1,4 +1,5 @@
 import { Image, TouchableOpacity, View } from 'react-native'
+import ChevronRightIcon from '../../../assets/icons/ic_chervon_right.svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
 
 type MyInformationCardProps = {
@@ -13,18 +14,24 @@ const MyInformationCard = ({
   onPressEditProfile,
 }: MyInformationCardProps) => {
   return (
-    <View className="flex-row items-center justify-between rounded-3xl bg-white px-number-6 py-number-6">
+    <TouchableOpacity
+      onPress={onPressEditProfile}
+      activeOpacity={0.8}
+      className="w-full flex-row items-center py-[10px]"
+    >
       <MyInformationImage profileImgUrl={profileImgUrl} />
-      <GlobalText className="flex-1 font-pretMedium text-body-s">
-        {profileName}
-      </GlobalText>
 
-      <TouchableOpacity onPress={onPressEditProfile}>
-        <GlobalText className="font-pretMedium text-body-xxs text-text-disabled">
+      <View className="flex-1">
+        <GlobalText className="font-pretMedium text-body-s text-text-basic">
+          {profileName}
+        </GlobalText>
+        <GlobalText className="mt-[2px] font-pretRegular text-label-xxs text-text-disabled">
           프로필 수정
         </GlobalText>
-      </TouchableOpacity>
-    </View>
+      </View>
+
+      <ChevronRightIcon width={20} height={20} />
+    </TouchableOpacity>
   )
 }
 
@@ -34,7 +41,7 @@ type MyInformationImageProps = {
 
 const MyInformationImage = ({ profileImgUrl }: MyInformationImageProps) => {
   return (
-    <View className="mr-3 h-number-12 w-number-12 items-center justify-center rounded-full bg-surface-gray-subtle2">
+    <View className="mr-[12px] h-number-12 w-number-12 items-center justify-center rounded-full bg-surface-gray-subtle2">
       <Image
         source={
           profileImgUrl
