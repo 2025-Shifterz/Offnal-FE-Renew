@@ -50,7 +50,7 @@ const InformationMenuItem = ({ title, caption, onPress }: MenuItemProps) => {
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
-      className="flex-row items-center justify-between px-number-8 py-[10px]"
+      className="flex-row items-center justify-between px-number-8 py-number-6"
     >
       <GlobalText className="font-pretMedium text-body-xxs text-text-subtle">
         {title}

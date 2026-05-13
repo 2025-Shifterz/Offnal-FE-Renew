@@ -106,7 +106,7 @@ const InformationScreen = () => {
       <SafeAreaView className="flex-1" edges={['bottom']}>
         <ScrollView
           className="flex-1"
-          contentContainerClassName="px-p-7 pb-[32px] pt-[8px]"
+          contentContainerClassName="px-p-7"
           showsVerticalScrollIndicator={false}
         >
           <View className="flex-col gap-g-3">
