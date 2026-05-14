@@ -145,8 +145,14 @@ const MemoScreen = () => {
         }}
         onConfirm={async () => {
           if (memoToDeleteId === null) return
-          await deleteMemo(memoToDeleteId)
-          setMemoToDeleteId(null)
+
+          try {
+            await deleteMemo(memoToDeleteId)
+          } catch (error) {
+            console.error('Error deleting memo: ', error)
+          } finally {
+            setMemoToDeleteId(null)
+          }
         }}
       />
     </View>

@@ -172,13 +172,13 @@ const EditProfileScreen = () => {
         title={dialogState.title}
         description={dialogState.description}
         onConfirm={() => {
-          const onConfirm = dialogState.onConfirm
+          const confirmDialogAction = dialogState.onConfirm
           setDialogState(prevState => ({
             ...prevState,
             visible: false,
             onConfirm: undefined,
           }))
-          onConfirm?.()
+          confirmDialogAction?.()
         }}
       />
     </View>
