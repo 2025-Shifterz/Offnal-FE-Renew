@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ActivityIndicator, Alert, View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import { CommonActions, useNavigation } from '@react-navigation/native'
