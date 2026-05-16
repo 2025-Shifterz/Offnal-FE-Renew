@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import EmptyCalendarScrim from '../component/EmptyCalendarScrim'
 import CalendarContainer from '../component/CalendarContainer'
-import { View } from 'react-native'
+import { Keyboard, Platform, TextInput, View } from 'react-native'
 import {
   useFocusEffect,
   useRoute,
@@ -38,6 +38,8 @@ import {
   MemoRowItems,
 } from '../component/CalendarNotesContainer'
 
+type ActiveNoteInput = 'todo' | 'memo'
+
 const CalendarScreen = () => {
   const route = useRoute<RouteProp<TabParamList, 'Calendar'>>()
   const navigation = useNavigation<rootNavigation>()
@@ -45,6 +47,12 @@ const CalendarScreen = () => {
 
   const [isScheduleEmpty, setIsScheduleEmpty] = useState<boolean | null>(null)
   const [showActionMenuOverlay, setShowActionMenuOverlay] = useState(false)
+  const [activeNoteInput, setActiveNoteInput] =
+    useState<ActiveNoteInput | null>(null)
+  const [todoDraft, setTodoDraft] = useState('')
+  const [memoDraft, setMemoDraft] = useState('')
+  const [isSubmittingNote, setIsSubmittingNote] = useState(false)
+  const [imeHeight, setImeHeight] = useState(0)
   const [isTeamView, setIsTeamView] = useState(
     () => route.params?.isTeamView ?? false
   )
@@ -61,9 +69,11 @@ const CalendarScreen = () => {
 
   const todos = useTodoStore(state => state.todos)
   const fetchTodosByDate = useTodoStore(state => state.getTodosByDate)
+  const addTodo = useTodoStore(state => state.addTodo)
 
   const memos = useMemoStore(state => state.memos)
   const fetchMemosByDate = useMemoStore(state => state.fetchMemosByDate)
+  const addMemo = useMemoStore(state => state.addMemo)
 
   const workTimes = useScheduleInfoStore(state => state.workTimes)
   const fetchOrganization = useScheduleInfoStore(
@@ -75,9 +85,109 @@ const CalendarScreen = () => {
 
   // 탭 재진입 시 현재 달로 복귀 (탭 화면은 언마운트되지 않으므로 useRef로 첫 포커스 추적)
   const isFirstFocus = useRef(true)
+  const scrollViewRef = useRef<ScrollView>(null)
+  const todoInputRef = useRef<TextInput>(null)
+  const memoInputRef = useRef<TextInput>(null)
+  const isSubmittingNoteRef = useRef(false)
 
   const topPadding = insets.top
   const height = 50 + topPadding
+  const scrollViewBottomPadding = insets.bottom + 144 + imeHeight
+
+  const scrollToNoteInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true })
+
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true })
+      }, 120)
+    })
+  }, [])
+
+  const closeNoteInput = useCallback((inputType: ActiveNoteInput) => {
+    if (inputType === 'todo') {
+      setTodoDraft('')
+    } else {
+      setMemoDraft('')
+    }
+
+    setActiveNoteInput(current => (current === inputType ? null : current))
+  }, [])
+
+  const submitNoteInput = useCallback(
+    async (inputType: ActiveNoteInput) => {
+      if (isSubmittingNoteRef.current) {
+        return
+      }
+
+      const draft = inputType === 'todo' ? todoDraft.trim() : memoDraft.trim()
+
+      if (!draft) {
+        closeNoteInput(inputType)
+        return
+      }
+
+      isSubmittingNoteRef.current = true
+      setIsSubmittingNote(true)
+
+      try {
+        if (inputType === 'todo') {
+          await addTodo(draft, currentDate)
+          setTodoDraft('')
+        } else {
+          await addMemo(draft, '', currentDate)
+          setMemoDraft('')
+        }
+
+        setActiveNoteInput(current => (current === inputType ? null : current))
+      } catch (error) {
+        console.error('Error submitting calendar note input', error)
+      } finally {
+        isSubmittingNoteRef.current = false
+        setIsSubmittingNote(false)
+      }
+    },
+    [addMemo, addTodo, closeNoteInput, currentDate, memoDraft, todoDraft]
+  )
+
+  const startNoteInput = useCallback(
+    async (inputType: ActiveNoteInput) => {
+      if (isSubmittingNote) {
+        return
+      }
+
+      if (activeNoteInput === inputType) {
+        scrollToNoteInput()
+        return
+      }
+
+      if (activeNoteInput === 'todo' && todoDraft.trim()) {
+        await submitNoteInput('todo')
+      }
+
+      if (activeNoteInput === 'memo' && memoDraft.trim()) {
+        await submitNoteInput('memo')
+      }
+
+      if (activeNoteInput === 'todo' && !todoDraft.trim()) {
+        setTodoDraft('')
+      }
+
+      if (activeNoteInput === 'memo' && !memoDraft.trim()) {
+        setMemoDraft('')
+      }
+
+      setActiveNoteInput(inputType)
+    },
+    [
+      activeNoteInput,
+      isSubmittingNote,
+      memoDraft,
+      scrollToNoteInput,
+      submitNoteInput,
+      todoDraft,
+    ]
+  )
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -97,7 +207,45 @@ const CalendarScreen = () => {
       ),
       headerShown: true,
     })
-  }, [navigation])
+  }, [currentDate, height, navigation, topPadding])
+
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
+
+    const showSubscription = Keyboard.addListener(showEvent, event => {
+      const keyboardHeight = event.endCoordinates.height
+      setImeHeight(Math.max(0, keyboardHeight - insets.bottom))
+      scrollToNoteInput()
+    })
+
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setImeHeight(0)
+    })
+
+    return () => {
+      showSubscription.remove()
+      hideSubscription.remove()
+    }
+  }, [insets.bottom, scrollToNoteInput])
+
+  useEffect(() => {
+    if (activeNoteInput === null) {
+      return
+    }
+
+    requestAnimationFrame(() => {
+      if (activeNoteInput === 'todo') {
+        todoInputRef.current?.focus()
+      } else {
+        memoInputRef.current?.focus()
+      }
+
+      scrollToNoteInput()
+    })
+  }, [activeNoteInput, scrollToNoteInput])
 
   useFocusEffect(
     useCallback(() => {
@@ -155,9 +303,15 @@ const CalendarScreen = () => {
       )}
 
       <ScrollView
+        ref={scrollViewRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 144 }}
+        contentContainerStyle={{ paddingBottom: scrollViewBottomPadding }}
+        onContentSizeChange={() => {
+          if (activeNoteInput !== null) {
+            scrollToNoteInput()
+          }
+        }}
       >
         <CalendarContainer
           isTeamView={isTeamView}
@@ -171,20 +325,44 @@ const CalendarScreen = () => {
               icon={<CheckListIcon />}
               title="할 일"
               onAddIconPress={() => {
-                navigation.navigate('Todo', { selectedDate: currentDate })
+                startNoteInput('todo')
               }}
             >
-              <TodoRowItems todos={todos} />
+              <TodoRowItems
+                todos={todos}
+                showInput={activeNoteInput === 'todo'}
+                value={todoDraft}
+                onChangeText={setTodoDraft}
+                onSubmit={() => {
+                  submitNoteInput('todo')
+                }}
+                onBlur={() => {
+                  submitNoteInput('todo')
+                }}
+                inputRef={todoInputRef}
+              />
             </NoteContainer>
 
             <NoteContainer
               icon={<NoteIcon />}
               title="메모"
               onAddIconPress={() => {
-                navigation.navigate('Memo', { selectedDate: currentDate })
+                startNoteInput('memo')
               }}
             >
-              <MemoRowItems memos={memos} />
+              <MemoRowItems
+                memos={memos}
+                showInput={activeNoteInput === 'memo'}
+                value={memoDraft}
+                onChangeText={setMemoDraft}
+                onSubmit={() => {
+                  submitNoteInput('memo')
+                }}
+                onBlur={() => {
+                  submitNoteInput('memo')
+                }}
+                inputRef={memoInputRef}
+              />
             </NoteContainer>
           </View>
         </View>

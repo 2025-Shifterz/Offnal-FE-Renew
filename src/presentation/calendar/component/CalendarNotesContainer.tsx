@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { TextInput, TouchableOpacity, View } from 'react-native'
 import GlobalText from '../../../shared/components/text/GlobalText'
 
 import { Todo } from '../../../domain/models/Todo'
@@ -7,6 +7,15 @@ import { Memo } from '../../../domain/models/Memo'
 
 import AddIcon from '../../../assets/icons/ic_add_white_16.svg'
 import CheckedIcon from '../../../assets/icons/checked.svg'
+
+type InlineNoteInputProps = {
+  showInput?: boolean
+  value?: string
+  onChangeText?: (text: string) => void
+  onSubmit?: () => void
+  onBlur?: () => void
+  inputRef?: React.Ref<TextInput>
+}
 
 type NoteRowGroupProps = {
   icon: React.ReactNode
@@ -55,8 +64,16 @@ const NoteHeader = ({ icon, title, onAddIconPress }: NoteHeaderProps) => {
   )
 }
 
-const TodoRowItems = ({ todos }: { todos: Todo[] }) => {
-  if (todos.length === 0) {
+const TodoRowItems = ({
+  todos,
+  showInput = false,
+  value = '',
+  onChangeText,
+  onSubmit,
+  onBlur,
+  inputRef,
+}: { todos: Todo[] } & InlineNoteInputProps) => {
+  if (todos.length === 0 && !showInput) {
     return null
   }
 
@@ -71,18 +88,49 @@ const TodoRowItems = ({ todos }: { todos: Todo[] }) => {
               <View className="h-[11px] w-[11px] rounded-[2px] border border-alpha-inverse10 bg-surface-gray-subtle2" />
             )}
 
-            <GlobalText className="font-pretMedium text-body-xxs text-text-subtle">
+            <GlobalText
+              className="flex-1 font-pretMedium text-body-xxs text-text-subtle"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {todo.content}
             </GlobalText>
           </View>
         </View>
       ))}
+
+      {showInput && (
+        <View className="flex-row items-center gap-[8px] py-[8px] pl-[4px]">
+          <View className="h-[11px] w-[11px] rounded-[2px] border border-alpha-inverse10 bg-surface-gray-subtle2" />
+          <TextInput
+            ref={inputRef}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder="할 일 입력"
+            placeholderTextColor="#6d7882"
+            className="flex-1 py-0 font-pretMedium text-body-xxs text-text-basic"
+            returnKeyType="done"
+            blurOnSubmit={true}
+            onSubmitEditing={onSubmit}
+            onBlur={onBlur}
+            numberOfLines={1}
+          />
+        </View>
+      )}
     </View>
   )
 }
 
-const MemoRowItems = ({ memos }: { memos: Memo[] }) => {
-  if (memos.length === 0) {
+const MemoRowItems = ({
+  memos,
+  showInput = false,
+  value = '',
+  onChangeText,
+  onSubmit,
+  onBlur,
+  inputRef,
+}: { memos: Memo[] } & InlineNoteInputProps) => {
+  if (memos.length === 0 && !showInput) {
     return null
   }
 
@@ -91,12 +139,34 @@ const MemoRowItems = ({ memos }: { memos: Memo[] }) => {
       {memos.map(memo => (
         <View key={memo.id}>
           <View className="py-[8px] pl-[4px]">
-            <GlobalText className="font-pretMedium text-text-subtle body-xxs">
-              {memo.content}
+            <GlobalText
+              className="font-pretMedium text-body-xxs text-text-subtle"
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {memo.title}
             </GlobalText>
           </View>
         </View>
       ))}
+
+      {showInput && (
+        <View className="py-[8px] pl-[4px]">
+          <TextInput
+            ref={inputRef}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder="메모 입력"
+            placeholderTextColor="#6d7882"
+            className="py-0 font-pretMedium text-body-xxs text-text-basic"
+            returnKeyType="done"
+            blurOnSubmit={true}
+            onSubmitEditing={onSubmit}
+            onBlur={onBlur}
+            numberOfLines={1}
+          />
+        </View>
+      )}
     </View>
   )
 }
