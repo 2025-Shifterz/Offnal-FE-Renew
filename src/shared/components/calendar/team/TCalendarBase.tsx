@@ -83,7 +83,7 @@ const TCalendarBase = ({
                   style={{ overflow: 'hidden' }}
                   className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max  ${
                     isSelected
-                      ? 'bg-border-primary'
+                      ? 'bg-surface-inverse'
                       : isToday
                         ? 'bg-surface-gray-subtle1'
                         : ''
@@ -93,7 +93,7 @@ const TCalendarBase = ({
                     className={`heading-xxxs`}
                     style={[
                       { color: textColor },
-                      isSelected && { color: 'white' },
+                      isSelected && { color: '#FFFFFF' },
                     ]}
                   >
                     {dayCounter}

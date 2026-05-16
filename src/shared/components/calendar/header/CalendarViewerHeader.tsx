@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import {
+  FlatList,
   Modal,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  FlatList,
 } from 'react-native'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 import TeamVersion from '../../../../assets/icons/users-profiles-01.svg'
 import ArrowDown from '../../../../assets/icons/chevron-down.svg'
+
+dayjs.locale('ko')
 
 interface CalendarViewerHeaderProps {
   selectedDate: Date
@@ -40,13 +44,13 @@ const CalendarViewerHeader = ({
   }
 
   return (
-    <View className="flex-row justify-between bg-white py-[12px]">
+    <View className="h-[50px] flex-row items-center justify-between ">
       <TouchableOpacity
-        className="flex-row items-center gap-[4px]"
+        className="flex-row items-center gap-[10px]"
         onPress={() => setVisible(true)}
       >
         <Text className="text-text-basic heading-xs">
-          {tempYear}년 {tempMonth}월
+          {dayjs(selectedDate).format('YYYY. M. D (dd)')}
         </Text>
         <ArrowDown />
       </TouchableOpacity>
@@ -104,7 +108,7 @@ const CalendarViewerHeader = ({
         </TouchableWithoutFeedback>
       </Modal>
 
-      <View className="flex-row gap-[10px]">
+      <View className="flex-row items-center gap-[10px]">
         <TouchableOpacity onPress={onPressTeamIcon}>
           <TeamVersion />
         </TouchableOpacity>
