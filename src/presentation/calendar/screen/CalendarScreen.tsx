@@ -317,6 +317,9 @@ const CalendarScreen = () => {
           isTeamView={isTeamView}
           currentDate={currentDate}
           selectedYearMonth={selectedYearMonth}
+          onDateSelected={date => {
+            setCurrentDate(date)
+          }}
         />
 
         <View className="mt-[12px] rounded-tl-radius-xl rounded-tr-radius-xl bg-surface-white pt-[10px]">

@@ -8,12 +8,14 @@ interface CalendarContainerProps {
   isTeamView: boolean
   currentDate: dayjs.Dayjs
   selectedYearMonth: { year: number; month: number }
+  onDateSelected: (date: dayjs.Dayjs) => void
 }
 
 const CalendarContainer = ({
   isTeamView,
   currentDate,
   selectedYearMonth,
+  onDateSelected,
 }: CalendarContainerProps) => {
   const [selectedDate, setSelectedDate] = useState(currentDate)
 
@@ -31,7 +33,9 @@ const CalendarContainer = ({
           setSelectedDate={() => {
             setSelectedDate(currentDate)
           }}
-          // onDateSelected={() => { setSelectedDate(currentDate) }}
+          onDateSelected={date => {
+            onDateSelected(date)
+          }}
         />
       ) : (
         <CalendarViewer
@@ -41,7 +45,9 @@ const CalendarContainer = ({
           setSelectedDate={() => {
             setSelectedDate(currentDate)
           }}
-          // onDateSelected={() => { setSelectedDate(currentDate) }}
+          onDateSelected={date => {
+            onDateSelected(date)
+          }}
         />
       )}
     </View>
