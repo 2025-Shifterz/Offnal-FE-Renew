@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import {
-  FlatList,
-  Modal,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native'
+import React, { useState } from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import TeamVersion from '../../../../assets/icons/users-profiles-01.svg'
 import ArrowDown from '../../../../assets/icons/chevron-down.svg'
+import CalendarYearMonthPickerModal from './CalendarYearMonthPickerModal'
 
 dayjs.locale('ko')
 
@@ -20,34 +14,27 @@ interface CalendarViewerHeaderProps {
   onPressTeamIcon?: () => void
 }
 
-const years = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() + i)
-const months = Array.from({ length: 12 }, (_, i) => i + 1)
-
 const CalendarViewerHeader = ({
   selectedDate,
   onChange,
   onPressTeamIcon,
 }: CalendarViewerHeaderProps) => {
   const [visible, setVisible] = useState(false)
-  const [tempYear, setTempYear] = useState(selectedDate.getFullYear())
-  const [tempMonth, setTempMonth] = useState(selectedDate.getMonth() + 1)
 
-  // 외부에서 selectedDate가 변경될 때(navigation.reset 복귀 등) 헤더 텍스트 동기화
-  useEffect(() => {
-    setTempYear(selectedDate.getFullYear())
-    setTempMonth(selectedDate.getMonth() + 1)
-  }, [selectedDate])
+  const handleOpen = () => {
+    setVisible(true)
+  }
 
-  const handleConfirm = () => {
+  const handleConfirm = (year: number, month: number) => {
     setVisible(false)
-    onChange(new Date(tempYear, tempMonth - 1))
+    onChange(new Date(year, month - 1, 1))
   }
 
   return (
     <View className="h-[50px] flex-row items-center justify-between ">
       <TouchableOpacity
         className="flex-row items-center gap-[10px]"
-        onPress={() => setVisible(true)}
+        onPress={handleOpen}
       >
         <Text className="text-text-basic heading-xs">
           {dayjs(selectedDate).format('YYYY. M. D (dd)')}
@@ -55,58 +42,13 @@ const CalendarViewerHeader = ({
         <ArrowDown />
       </TouchableOpacity>
 
-      <Modal transparent visible={visible} animationType="fade">
-        <TouchableWithoutFeedback onPress={handleConfirm}>
-          <View className="flex-1 items-center justify-center bg-black/30">
-            <View
-              onStartShouldSetResponder={() => true}
-              className="h-[120px] w-[180px] rounded-md bg-white p-[12px]"
-            >
-              <View className="flex-row justify-between">
-                {/* 년도 리스트 */}
-                <FlatList
-                  data={years}
-                  keyExtractor={item => item.toString()}
-                  showsVerticalScrollIndicator={false}
-                  style={{ width: '48%' }}
-                  renderItem={({ item }) => {
-                    const isSelected = item === tempYear
-                    return (
-                      <TouchableOpacity onPress={() => setTempYear(item)}>
-                        <Text
-                          className={`py-1 text-center ${isSelected ? 'bg-gray-200' : ''}`}
-                        >
-                          {item}년
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  }}
-                />
-
-                {/* 월 리스트 */}
-                <FlatList
-                  data={months}
-                  keyExtractor={item => item.toString()}
-                  showsVerticalScrollIndicator={false}
-                  style={{ width: '48%' }}
-                  renderItem={({ item }) => {
-                    const isSelected = item === tempMonth
-                    return (
-                      <TouchableOpacity onPress={() => setTempMonth(item)}>
-                        <Text
-                          className={`py-1 text-center ${isSelected ? 'bg-gray-200' : ''}`}
-                        >
-                          {item}월
-                        </Text>
-                      </TouchableOpacity>
-                    )
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+      <CalendarYearMonthPickerModal
+        visible={visible}
+        year={selectedDate.getFullYear()}
+        month={selectedDate.getMonth() + 1}
+        onCancel={() => setVisible(false)}
+        onConfirm={handleConfirm}
+      />
 
       <View className="flex-row items-center gap-[10px]">
         <TouchableOpacity onPress={onPressTeamIcon}>
