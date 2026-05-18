@@ -70,6 +70,7 @@ const CalendarScreen = () => {
   const todos = useTodoStore(state => state.todos)
   const fetchTodosByDate = useTodoStore(state => state.getTodosByDate)
   const addTodo = useTodoStore(state => state.addTodo)
+  const updateTodoCompleted = useTodoStore(state => state.updateTodoCompleted)
 
   const memos = useMemoStore(state => state.memos)
   const fetchMemosByDate = useMemoStore(state => state.fetchMemosByDate)
@@ -187,6 +188,17 @@ const CalendarScreen = () => {
       submitNoteInput,
       todoDraft,
     ]
+  )
+
+  const handleToggleTodoCompleted = useCallback(
+    async (todoId: number, nextCompleted: boolean) => {
+      try {
+        await updateTodoCompleted(todoId, nextCompleted, currentDate)
+      } catch (error) {
+        console.error('Error updating calendar todo completed state', error)
+      }
+    },
+    [currentDate, updateTodoCompleted]
   )
 
   useLayoutEffect(() => {
@@ -343,6 +355,9 @@ const CalendarScreen = () => {
                   submitNoteInput('todo')
                 }}
                 inputRef={todoInputRef}
+                onToggleTodoCompleted={todo => {
+                  handleToggleTodoCompleted(todo.id, !todo.isCompleted)
+                }}
               />
             </NoteContainer>
 

@@ -6,7 +6,7 @@ import { Todo } from '../../../domain/models/Todo'
 import { Memo } from '../../../domain/models/Memo'
 
 import AddIcon from '../../../assets/icons/ic_add_white_16.svg'
-import CheckedIcon from '../../../assets/icons/checked.svg'
+import Checkbox from '../../../shared/components/Checkbox'
 
 type InlineNoteInputProps = {
   showInput?: boolean
@@ -16,6 +16,11 @@ type InlineNoteInputProps = {
   onBlur?: () => void
   inputRef?: React.Ref<TextInput>
 }
+
+type TodoRowItemsProps = {
+  todos: Todo[]
+  onToggleTodoCompleted: (todo: Todo) => void
+} & InlineNoteInputProps
 
 type NoteRowGroupProps = {
   icon: React.ReactNode
@@ -72,7 +77,8 @@ const TodoRowItems = ({
   onSubmit,
   onBlur,
   inputRef,
-}: { todos: Todo[] } & InlineNoteInputProps) => {
+  onToggleTodoCompleted,
+}: TodoRowItemsProps) => {
   if (todos.length === 0 && !showInput) {
     return null
   }
@@ -81,12 +87,15 @@ const TodoRowItems = ({
     <View>
       {todos.map(todo => (
         <View key={todo.id}>
-          <View className="flex-row items-center gap-[8px] py-[8px] pl-[4px]">
-            {todo.isCompleted ? (
-              <CheckedIcon />
-            ) : (
-              <View className="h-[11px] w-[11px] rounded-[2px] border border-alpha-inverse10 bg-surface-gray-subtle2" />
-            )}
+          <TouchableOpacity
+            testID={`calendar-todo-row-${todo.id}`}
+            className="flex-row items-center gap-[8px] py-[8px] pl-[4px]"
+            activeOpacity={0.7}
+            onPress={() => {
+              onToggleTodoCompleted(todo)
+            }}
+          >
+            <Checkbox checked={todo.isCompleted} size={13} />
 
             <GlobalText
               className="flex-1 font-pretMedium text-body-xxs text-text-subtle"
@@ -95,13 +104,13 @@ const TodoRowItems = ({
             >
               {todo.content}
             </GlobalText>
-          </View>
+          </TouchableOpacity>
         </View>
       ))}
 
       {showInput && (
         <View className="flex-row items-center gap-[8px] py-[8px] pl-[4px]">
-          <View className="h-[11px] w-[11px] rounded-[2px] border border-alpha-inverse10 bg-surface-gray-subtle2" />
+          <Checkbox checked={false} size={13} />
           <TextInput
             ref={inputRef}
             value={value}
