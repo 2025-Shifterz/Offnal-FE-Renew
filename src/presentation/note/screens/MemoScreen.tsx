@@ -1,5 +1,5 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { View, TouchableOpacity, Alert, ScrollView } from 'react-native'
+import { View, TouchableOpacity, ScrollView } from 'react-native'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import DayBoxHeader from '../components/DayBoxHeader'
 import dayjs from 'dayjs'
@@ -20,6 +20,7 @@ import { useMemoStore } from '../../../store/useMemoStore'
 import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import AddOneTouchableChip from '../../../shared/components/chip/AddOneTouchableChip'
+import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
 
 const MemoScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -38,6 +39,7 @@ const MemoScreen = () => {
   )
 
   const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
+  const [memoToDeleteId, setMemoToDeleteId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchMemosByDate(currentDate)
@@ -50,14 +52,7 @@ const MemoScreen = () => {
   )
 
   const handleDelete = (id: number) => {
-    Alert.alert('메모 삭제', '정말로 이 메모를 삭제하시겠습니까?', [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        onPress: () => deleteMemo(id),
-        style: 'destructive',
-      },
-    ])
+    setMemoToDeleteId(id)
   }
 
   return (
@@ -138,6 +133,28 @@ const MemoScreen = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      <ConfirmDialog
+        visible={memoToDeleteId !== null}
+        title="메모 삭제"
+        description="정말로 이 메모를 삭제하시겠습니까?"
+        cancelText="취소"
+        confirmText="삭제"
+        onCancel={() => {
+          setMemoToDeleteId(null)
+        }}
+        onConfirm={async () => {
+          if (memoToDeleteId === null) return
+
+          try {
+            await deleteMemo(memoToDeleteId)
+          } catch (error) {
+            console.error('Error deleting memo: ', error)
+          } finally {
+            setMemoToDeleteId(null)
+          }
+        }}
+      />
     </View>
   )
 }
