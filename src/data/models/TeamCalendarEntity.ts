@@ -1,4 +1,4 @@
-import { WorkType } from '../../shared/types/Calendar'
+import { ShiftType } from '../../shared/types/Calendar'
 
 export interface TeamCalendarEntity {
   myTeam: string
@@ -7,12 +7,12 @@ export interface TeamCalendarEntity {
 
 export interface GetTeamWorkCalendarTeamsArray {
   team: string
-  workInstances: GetTeamWorkCalendarWorkInstancesArray[]
+  shiftInstances: GetTeamWorkCalendarShiftInstancesArray[]
 }
 
-export interface GetTeamWorkCalendarWorkInstancesArray {
+export interface GetTeamWorkCalendarShiftInstancesArray {
   date: string
-  workTypeName: WorkType
+  shiftTypeName: ShiftType
   startTime: string
   endTime: string
 }

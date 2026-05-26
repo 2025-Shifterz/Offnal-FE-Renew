@@ -24,6 +24,7 @@ import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 import GlobalText from '../../../../shared/components/text/GlobalText'
 import EmphasizedButton from '../../../../shared/components/button/Button'
+import { DateAndShiftTypeRecord } from '../../../../shared/types/Calendar'
 
 type ScheduleTypeRouteProp = RouteProp<
   OnboardingStackParamList,
@@ -73,13 +74,10 @@ const EditScheduleOCRScreen = () => {
             ocrResult
           )
 
-          const calendarRecord: Record<
-            string,
-            { workTypeName: string; startTime?: string; endTime?: string }
-          > = {}
+          const calendarRecord: DateAndShiftTypeRecord = {}
 
-          scheduleData.forEach((workType, dateString) => {
-            calendarRecord[dateString] = { workTypeName: workType }
+          scheduleData.forEach((shiftTypeName, dateString) => {
+            calendarRecord[dateString] = { shiftTypeName }
           })
 
           setNewCalendarData(calendarRecord)
@@ -94,10 +92,10 @@ const EditScheduleOCRScreen = () => {
           )
 
           const formattedData = teamScheduleData.map(
-            ({ team, date, workType }) => ({
+            ({ team, date, shiftType }) => ({
               team,
               date,
-              workTypeName: workType,
+              shiftTypeName: shiftType,
               startTime: '',
               endTime: '',
             })

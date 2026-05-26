@@ -90,7 +90,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
     updateNewTeamCalendarDay({
       team,
       date,
-      workTypeName: type,
+      shiftTypeName: type,
     })
   }
 
@@ -121,7 +121,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
     postData: async () => {
       // 입력 데이터 검증
       const hasAnyWorkData = allTeamCalendarData.some(
-        teamRecord => Object.keys(teamRecord.workInstances).length > 0
+        teamRecord => Object.keys(teamRecord.shiftInstances).length > 0
       )
       if (!hasAnyWorkData) {
         setIsValidationDialogVisible(true)
@@ -132,9 +132,11 @@ const TCalendarEditor: ForwardRefRenderFunction<
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           allTeamCalendarData.map(teamRecord => {
             const shifts: Record<string, string> = {}
-            Object.entries(teamRecord.workInstances).forEach(([date, work]) => {
-              shifts[date] = fromShiftType(work.workTypeName)
-            })
+            Object.entries(teamRecord.shiftInstances).forEach(
+              ([date, work]) => {
+                shifts[date] = fromShiftType(work.shiftTypeName)
+              }
+            )
 
             return {
               organizationName,
@@ -153,9 +155,9 @@ const TCalendarEditor: ForwardRefRenderFunction<
           calendars: allTeamCalendarData.map(cal => ({
             team: cal.team,
             shifts: Object.fromEntries(
-              Object.entries(cal.workInstances).map(([date, work]) => [
+              Object.entries(cal.shiftInstances).map(([date, work]) => [
                 date,
-                fromShiftType(work.workTypeName), // string으로 변환
+                fromShiftType(work.shiftTypeName), // string으로 변환
               ])
             ),
           })),

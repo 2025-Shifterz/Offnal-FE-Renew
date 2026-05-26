@@ -16,7 +16,7 @@ import SnoozeBottomSheet, {
   SnoozeSetting,
   getRepeatText,
 } from '../components/SnoozeBottomSheet'
-import { WorkType } from '../../../domain/models/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
 import { AlarmWeekdayLabel, CreateAutoAlarmDraft } from '../types/alarmDraft'
 import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
@@ -27,7 +27,7 @@ import EmphasizedButton from '../../../shared/components/button/Button'
 import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
 import { useAutoAlarmNextTriggerPreview } from '../hooks/useAutoAlarmNextTriggerPreview'
 
-const workTypes: WorkType[] = ['주간', '오후', '야간', '휴일']
+const workTypes: ShiftType[] = ['주간', '오후', '야간', '휴일']
 const weekDays: AlarmWeekdayLabel[] = ['일', '월', '화', '수', '목', '금', '토']
 
 const CreateAutoAlarmScreen = () => {
@@ -36,7 +36,7 @@ const CreateAutoAlarmScreen = () => {
   const createAutoAlarm = useAutoAlarmStore(state => state.createAutoAlarm)
   const snoozeBottomSheetRef = useRef<SnoozeBottomSheetMethods>(null)
   const isHeaderBackRequestedRef = useRef(false)
-  const [selectedWorkType, setSelectedWorkType] = useState<WorkType>('휴일')
+  const [selectedWorkType, setSelectedWorkType] = useState<ShiftType>('휴일')
   const [selectedDays, setSelectedDays] = useState<AlarmWeekdayLabel[]>([
     '목',
     '금',

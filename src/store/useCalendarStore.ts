@@ -2,42 +2,69 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import {
-  WorkType,
-  DateAndWorkType,
-  DateAndWorkTypeRecord,
+  ShiftType,
+  DateAndShiftType,
+  DateAndShiftTypeRecord,
 } from '../shared/types/Calendar'
 import dayjs from 'dayjs'
 import { calendarRepository } from '../infrastructure/di/Dependencies'
 import { useScheduleInfoStore } from './useScheduleInfoStore'
 
-/*
-<---- calendarData 형태 ----> 
-
-const calendarData: DateAndWorkTypeRecord = {
-  "2025-09-01": { workTypeName: "오후" },
-  "2025-09-02": { workTypeName: "휴일" },
-}
-*/
-
+/**
+ * ### CalendarState
+ *
+ * 이 인터페이스는 한 달의 근무 일정 상태를 나타냅니다.
+ *
+ * @property calendarData - "YYYY-MM-DD" 형식의 날짜 문자열을 키로 하고, `ShiftTypeInfo` 객체를 값으로 가지는 매핑 객체입니다.
+ * @property selectedDate - 선택된 날짜를 나타내는 `dayjs.Dayjs` 객체입니다.
+ * @property isLoading - 캘린더 데이터 로딩 상태를 나타내는 불리언 값입니다.
+ * @property newCalendarData - 편집용 캘린더 데이터입니다.
+ *
+ * @remarks
+ * 이 인터페이스는 `CalendarEditor` 컴포넌트와 `Calendar` 컴포넌트에서 사용됩니다.
+ *
+ * @example
+ * ```
+ * const calendarState: CalendarState = {
+ *  calendarData: <DateAndShiftTypeRecord> {
+ *    "2025-09-01": { shiftTypeName: "오후" },
+ *    "2025-09-02": { shiftTypeName: "휴일" },
+ *  },
+ *  selectedDate: dayjs("2025-09-01"),
+ *  isLoading: false,
+ *  newCalendarData: {},
+ *  setCalendarData: () => {},
+ *  setSelectedDate: () => {},
+ *  updateCalendarDay: () => {},
+ *  clearCalendarData: () => {},
+ *  setLoading: () => {},
+ *  setNewCalendarData: () => {},
+ *  updateNewCalendarDay: () => {},
+ *  clearNewCalendarData: () => {},
+ *  fetchCalendarData: () => Promise.resolve(),
+ * }
+ * ```
+ *
+ */
 interface CalendarState {
-  calendarData: DateAndWorkTypeRecord
+  calendarData: DateAndShiftTypeRecord
   selectedDate: dayjs.Dayjs | null
 
   isLoading: boolean
 
   // 편집용
-  newCalendarData: DateAndWorkTypeRecord
+  newCalendarData: DateAndShiftTypeRecord
 
   // setter
-  setCalendarData: (data: DateAndWorkType[]) => void
+  setCalendarData: (data: DateAndShiftType[]) => void
   setSelectedDate: (date: dayjs.Dayjs | null) => void
-  updateCalendarDay: (date: string, workTypeName: WorkType) => void
+  updateCalendarDay: (date: string, shiftType: ShiftType) => void
   clearCalendarData: () => void
   setLoading: (loading: boolean) => void
 
   // 온보딩 캘린더 편집용 - CalendarEditor 에서 쓰임
-  setNewCalendarData: (data: DateAndWorkTypeRecord) => void
-  updateNewCalendarDay: (date: string, workTypeName: WorkType) => void
+  setNewCalendarData: (data: DateAndShiftTypeRecord) => void
+  updateNewCalendarDay: (date: string, shiftType: ShiftType) => void
   clearNewCalendarData: () => void
 
   // fetch
@@ -69,10 +96,10 @@ export const useCalendarStore = create<CalendarState>()(
 
     setCalendarData: data =>
       set(() => {
-        const mapped: DateAndWorkTypeRecord = {}
+        const mapped: DateAndShiftTypeRecord = {}
         data.forEach(item => {
           mapped[item.date] = {
-            workTypeName: item.workTypeName,
+            shiftTypeName: item.shiftTypeName,
             startTime: item.startTime,
             endTime: item.endTime,
           }
@@ -82,22 +109,22 @@ export const useCalendarStore = create<CalendarState>()(
     setNewCalendarData: data => set({ newCalendarData: data }),
 
     // 특정 날짜의 근무 형태 수정
-    updateCalendarDay: (date, workTypeName) =>
+    updateCalendarDay: (date, shiftType) =>
       set(state => {
-        const existing = state.calendarData[date]?.workTypeName
-        if (existing === workTypeName) {
+        const existing = state.calendarData[date]?.shiftTypeName
+        if (existing === shiftType) {
           delete state.calendarData[date]
         } else {
-          state.calendarData[date] = { workTypeName }
+          state.calendarData[date] = { shiftTypeName: shiftType }
         }
       }),
-    updateNewCalendarDay: (date, workTypeName) =>
+    updateNewCalendarDay: (date, shiftType) =>
       set(state => {
-        const existing = state.newCalendarData[date]?.workTypeName
-        if (existing === workTypeName) {
+        const existing = state.newCalendarData[date]?.shiftTypeName
+        if (existing === shiftType) {
           delete state.newCalendarData[date]
         } else {
-          state.newCalendarData[date] = { workTypeName }
+          state.newCalendarData[date] = { shiftTypeName: shiftType }
         }
       }),
 

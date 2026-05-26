@@ -5,7 +5,7 @@ import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
-import { WorkType } from '../../../shared/types/Calendar'
+import { ShiftType } from '../../../shared/types/Calendar'
 import SelectGroupBox from './SelectGroupBox'
 import { WorkTime } from '../../../domain/models/WorkTime'
 
@@ -15,7 +15,7 @@ interface TEditBottomSheetProps {
   selectedGroup: number
   setSelectedGroup: (group: number) => void
   selectedDate: dayjs.Dayjs | null
-  handleTypeSelect: (type: WorkType) => void
+  handleTypeSelect: (type: ShiftType) => void
   handleCancel: () => void
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
@@ -23,7 +23,12 @@ interface TEditBottomSheetProps {
   bottomInset?: number
 }
 
-const TEditBottomSheet = forwardRef<BottomSheet, TEditBottomSheetProps>(
+export interface TEditBottomSheetRef {
+  expand: () => void
+  close: () => void
+}
+
+const TEditBottomSheet = forwardRef<TEditBottomSheetRef, TEditBottomSheetProps>(
   (
     {
       selectedGroup,

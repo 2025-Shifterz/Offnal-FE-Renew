@@ -4,15 +4,16 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
-import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { teamCalendarRepository } from '../../../infrastructure/di/Dependencies'
 import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
-import { WorkType } from '../../../shared/types/Calendar'
+import { ShiftType } from '../../../shared/types/Calendar'
 import { useTeamCalendarStore } from '../../../store/useTeamCalendarStore'
 import TCalendarInteractive from '../../../shared/components/calendar/team/TCalendarInteractive'
-import TEditBottomSheet from '../components/TEditBottomSheet'
+import TEditBottomSheet, {
+  TEditBottomSheetRef,
+} from '../components/TEditBottomSheet'
 import { toUpdateTeamShiftRecord } from '../mapper/UpdateTeamShiftMapper'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 
@@ -43,20 +44,28 @@ const TCalendarEditScreen = () => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
   const [backupTypeByGroup, setBackupTypeByGroup] = useState<
-    Record<number, WorkType | null>
+    Record<number, ShiftType | null>
   >({
     1: null,
     2: null,
     3: null,
     4: null,
   })
+  const [noWorkSelectedByGroup, setNoWorkSelectedByGroup] = useState<
+    Record<number, boolean>
+  >({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+  })
 
   const [selectedGroup, setSelectedGroup] = useState(1)
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
-  const sheetRef = useRef<BottomSheet>(null)
+  const sheetRef = useRef<TEditBottomSheetRef>(null)
 
-  const shiftTypeToId = (type: WorkType | null): number => {
+  const shiftTypeToId = (type: ShiftType | null): number => {
     switch (type) {
       case '주간':
         return 1
@@ -66,6 +75,8 @@ const TCalendarEditScreen = () => {
         return 3
       case '휴일':
         return 4
+      case '근무 없음':
+        return 5
       default:
         return 0 // 기본값 없음
     }
@@ -73,26 +84,31 @@ const TCalendarEditScreen = () => {
 
   const getSelectedBoxId = () => {
     if (!selectedDate) return 0
+    if (noWorkSelectedByGroup[selectedGroup]) return 5
 
     const key = selectedDate.format('YYYY-MM-DD')
     const teamRecord = teamCalendarData.find(
       t => t.team === `${selectedGroup}조`
     )
 
-    const workType = teamRecord?.workInstances[key]?.workTypeName ?? null
+    const workType = teamRecord?.shiftInstances[key]?.shiftTypeName ?? null
     return shiftTypeToId(workType)
   }
 
   // 근무 형태 캘린더에 넣기
-  const handleTypeSelect = (type: WorkType) => {
+  const handleTypeSelect = (type: ShiftType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
+    setNoWorkSelectedByGroup(prev => ({
+      ...prev,
+      [selectedGroup]: type === '근무 없음',
+    }))
 
     // 상태 업데이트
     updateTeamCalendarDay({
       team: `${selectedGroup}조`, // 선택된 조 추가
       date: key,
-      workTypeName: type,
+      shiftTypeName: type,
     })
   }
 
@@ -104,9 +120,15 @@ const TCalendarEditScreen = () => {
       t => t.team === `${selectedGroup}조`
     )
 
-    const currentShift = teamRecord?.workInstances[key]?.workTypeName || null
+    const currentShift = teamRecord?.shiftInstances[key]?.shiftTypeName || null
 
     setSelectedDate(date)
+    setNoWorkSelectedByGroup({
+      1: false,
+      2: false,
+      3: false,
+      4: false,
+    })
     setBackupTypeByGroup(prev => ({
       ...prev,
       [selectedGroup]: currentShift,
@@ -126,20 +148,28 @@ const TCalendarEditScreen = () => {
       updateTeamCalendarDay({
         team: teamName,
         date: key,
-        workTypeName: backupType,
+        shiftTypeName: backupType,
       })
     } else {
       updateTeamCalendarDay({
         team: teamName,
         date: key,
-        workTypeName: '',
+        shiftTypeName: '근무 없음',
       })
     }
 
+    setNoWorkSelectedByGroup(prev => ({
+      ...prev,
+      [selectedGroup]: false,
+    }))
     sheetRef.current?.close()
   }
 
   const handleConfirmSelection = () => {
+    setNoWorkSelectedByGroup(prev => ({
+      ...prev,
+      [selectedGroup]: false,
+    }))
     sheetRef.current?.close() // 바텀시트만 닫기
   }
 

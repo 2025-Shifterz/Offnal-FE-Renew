@@ -1,14 +1,14 @@
-import { WorkType, WorkTypeInfo } from './Calendar'
+import { ShiftType, ShiftTypeInfo } from './Calendar'
 
 export interface TeamCalendarRecord {
   team: string
-  workInstances: Record<string, WorkTypeInfo>
+  shiftInstances: Record<string, ShiftTypeInfo>
 }
 
 // teamCalendarData 형식으로 저장하기 위한 원시 데이터 형태
-export interface TeamDateAndWorkType {
+export interface TeamDateAndShiftType {
   date: string // "YYYY-MM-DD"
-  workTypeName: WorkType
+  shiftTypeName: ShiftType
   startTime: string
   endTime: string
 }

@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import TimeFrame from '../TimeFrame'
 import { TeamCalendarRecord } from '../../../types/TeamCalendar'
 import { twMerge } from 'tailwind-merge'
+import { ShiftType } from '../../../types/Calendar'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
@@ -59,11 +60,11 @@ const TCalendarBase = ({
 
           const dateKey = date.format('YYYY-MM-DD')
           // const time = calendarData?.[date.format('YYYY-MM-DD')]
-          const time: Record<string, string> = {}
+          const time: Record<string, ShiftType> = {}
           teamCalendarData.forEach(teamRecord => {
-            const work = teamRecord.workInstances[dateKey]
+            const work = teamRecord.shiftInstances[dateKey]
             if (work) {
-              time[teamRecord.team] = work.workTypeName
+              time[teamRecord.team] = work.shiftTypeName
             }
           })
 
@@ -133,8 +134,7 @@ const TCalendarBase = ({
                 />
                 <View className="flex h-[130px] gap-1 ">
                   {['1조', '2조', '3조', '4조'].map(team => {
-                    const teamTime = time?.[team]
-                    // const isMyTeam = team === '3조'
+                    const teamTime = time?.[team] ?? '근무 없음'
                     return (
                       <View
                         key={team}
@@ -142,7 +142,7 @@ const TCalendarBase = ({
                           minHeight: 26, // 빈 View도 높이 유지하려면 필요
                         }}
                       >
-                        {teamTime ? <TimeFrame text={teamTime} /> : <View />}
+                        <TimeFrame text={teamTime} />
                       </View>
                     )
                   })}

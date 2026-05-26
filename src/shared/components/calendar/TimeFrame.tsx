@@ -1,20 +1,18 @@
-// 주간, 오후, 야간, 휴일 - 박스들
-
-import { Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { WorkType } from '../../types/Calendar'
+import { ShiftType } from '../../types/Calendar'
 
 // TimeFrameChildren을 ShiftType과 동일하게 정의
-export type TimeFrameChildren = WorkType
+export type TimeFrameChildren = ShiftType
 
 interface TimeFrameProps {
-  text: WorkType
+  text: ShiftType
   onPress?: () => void
 }
 
 const stylesMap: Record<
-  WorkType,
-  { backgroundColor: string; textColor: string }
+  ShiftType,
+  { backgroundColor: string; textColor?: string }
 > = {
   주간: {
     backgroundColor: 'bg-surface-secondary-subtle',
@@ -32,6 +30,9 @@ const stylesMap: Record<
     backgroundColor: 'bg-surface-danger-subtle',
     textColor: 'text-text-danger',
   },
+  '근무 없음': {
+    backgroundColor: 'bg-surface-gray-subtle1',
+  },
 } as const
 
 const TimeFrame: React.FC<TimeFrameProps> = ({
@@ -43,6 +44,17 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
   if (!currentStyle) {
     console.warn(`Unknown WorkType: ${text}`)
     return null // 렌더링 안함
+  }
+
+  if (text === '근무 없음') {
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        disabled={!onPress}
+        className={`h-[24px] w-[29px] rounded-[6px] ${currentStyle.backgroundColor}`}
+        style={styles.noWorkChip}
+      />
+    )
   }
 
   // onPress를 호출하는 것은, 위에서 받은 handleTypeSelect('주간')을 그대로 실행하는 것이다.
@@ -57,3 +69,11 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
 }
 
 export default TimeFrame
+
+const styles = StyleSheet.create({
+  noWorkChip: {
+    borderColor: '#cdd1d5',
+    borderStyle: 'dashed',
+    borderWidth: 0.5,
+  },
+})
