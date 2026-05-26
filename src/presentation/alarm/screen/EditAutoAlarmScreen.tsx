@@ -26,7 +26,7 @@ import SnoozeBottomSheet, {
 import ConfirmDialog from '../../../shared/components/dialog/ConfirmDialog'
 import EmphasizedButton from '../../../shared/components/button/Button'
 import { RouteProp } from '@react-navigation/native'
-import { WorkType } from '../../../domain/models/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
 import {
   AlarmWeekdayLabel,
   AlarmSnoozeIntervalMinutes,
@@ -36,7 +36,7 @@ import {
 import { useAutoAlarmStore } from '../../../store/useAutoAlarmStore'
 import { useAutoAlarmNextTriggerPreview } from '../hooks/useAutoAlarmNextTriggerPreview'
 
-const workTypes: WorkType[] = ['주간', '오후', '야간', '휴일']
+const workTypes: ShiftType[] = ['주간', '오후', '야간', '휴일']
 const weekDays: AlarmWeekdayLabel[] = ['일', '월', '화', '수', '목', '금', '토']
 
 const normalizeSnoozeIntervalMinutes = (
@@ -79,7 +79,7 @@ const EditAutoAlarmScreen = () => {
   const snoozeBottomSheetRef = useRef<SnoozeBottomSheetMethods>(null)
   const isHeaderBackRequestedRef = useRef(false)
   const hasHydratedDraftRef = useRef(false)
-  const [selectedWorkType, setSelectedWorkType] = useState<WorkType>('휴일')
+  const [selectedWorkType, setSelectedWorkType] = useState<ShiftType>('휴일')
   const [selectedDays, setSelectedDays] = useState<AlarmWeekdayLabel[]>([
     '목',
     '금',

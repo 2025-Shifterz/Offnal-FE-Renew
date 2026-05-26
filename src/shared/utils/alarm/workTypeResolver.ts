@@ -1,9 +1,9 @@
-import { WorkType } from '../../../domain/models/Calendar'
-import { DateAndWorkTypeRecord } from '../../types/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
+import { DateAndShiftTypeRecord } from '../../types/Calendar'
 import { TeamCalendarRecord } from '../../types/TeamCalendar'
 
 export interface WorkTypeResolverInput {
-  calendarData: DateAndWorkTypeRecord
+  calendarData: DateAndShiftTypeRecord
   teamCalendarData: TeamCalendarRecord[]
   currentTeam: string
 }
@@ -17,13 +17,14 @@ export const createWorkTypeResolver = ({
     item => item.team === currentTeam
   )
 
-  return (dateKey: string): WorkType | null => {
-    const personalWorkType = calendarData[dateKey]?.workTypeName
+  return (dateKey: string): ShiftType | null => {
+    const personalWorkType = calendarData[dateKey]?.shiftTypeName
     if (personalWorkType) {
       return personalWorkType
     }
 
-    const teamWorkType = currentTeamRecord?.workInstances[dateKey]?.workTypeName
+    const teamWorkType =
+      currentTeamRecord?.shiftInstances[dateKey]?.shiftTypeName
 
     return teamWorkType ?? null
   }

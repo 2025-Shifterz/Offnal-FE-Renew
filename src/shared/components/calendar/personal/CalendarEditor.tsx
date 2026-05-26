@@ -13,7 +13,7 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
-import { WorkType } from '../../../types/Calendar'
+import { ShiftType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
 import { View } from 'react-native'
 import TypeSelect from './TypeSelect'
@@ -89,7 +89,7 @@ const CalendarEditor: ForwardRefRenderFunction<
   }
 
   // 근무 형태 추가
-  const handleTypeSelect = (type: WorkType) => {
+  const handleTypeSelect = (type: ShiftType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
 
@@ -129,7 +129,7 @@ const CalendarEditor: ForwardRefRenderFunction<
         // 새 캘린더 데이터 생성
         const shifts: Record<string, string> = {}
         Object.entries(allCalendarData).forEach(([date, value]) => {
-          shifts[date] = fromShiftType(value.workTypeName)
+          shifts[date] = fromShiftType(value.shiftTypeName)
         })
 
         newCalendars = [

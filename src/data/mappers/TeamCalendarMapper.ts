@@ -9,9 +9,9 @@ export const toTeamCalendarDomain = (
     myTeam: response.myTeam,
     teams: response.teams.map(team => ({
       team: team.team,
-      workInstances: team.workInstances.map(wi => ({
+      shiftInstances: team.workInstances.map(wi => ({
         date: wi.date,
-        workTypeName: wi.workType,
+        shiftTypeName: wi.workType,
         startTime: wi.startTime ?? '',
         endTime: convertDurationToEndTime(wi.startTime, wi.duration) ?? '',
       })),

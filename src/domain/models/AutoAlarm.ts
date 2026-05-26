@@ -1,9 +1,9 @@
-import { WorkType } from './Calendar'
+import { ShiftType } from './Calendar'
 
 export interface AutoAlarm {
   id: number
   time: AlarmTime
-  workTypeTitle: WorkType
+  workTypeTitle: ShiftType
   weekdays: number[]
   isEnabled: boolean
   isHolidayDisabled: boolean

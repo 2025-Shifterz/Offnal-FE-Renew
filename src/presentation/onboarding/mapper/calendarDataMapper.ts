@@ -1,6 +1,6 @@
 import { toShiftType } from '../../../data/mappers/ShiftTypeMapper'
 import dayjs from 'dayjs'
-import { WorkType } from '../../../shared/types/Calendar'
+import { ShiftType } from '../../../shared/types/Calendar'
 import { OcrResult } from '../../../domain/models/OcrResult'
 
 function normalizeTeamValue(team: string) {
@@ -79,8 +79,8 @@ export function convertOCRResultToPersonalSchduleData(
   month: number,
   workGroupString: string,
   ocrResult: OcrResult | undefined
-): Map<string, WorkType> {
-  const personalCalendarData = new Map<string, WorkType>()
+): Map<string, ShiftType> {
+  const personalCalendarData = new Map<string, ShiftType>()
   const cleanWorkGroup = normalizeTeamValue(workGroupString)
 
   if (!ocrResult) {
@@ -136,9 +136,12 @@ export function convertOCRResultToTeamScheduleData(
   year: number,
   month: number,
   ocrResult: OcrResult | undefined
-): { team: string; date: string; workType: WorkType }[] {
-  const teamScheduleData: { team: string; date: string; workType: WorkType }[] =
-    []
+): { team: string; date: string; shiftType: ShiftType }[] {
+  const teamScheduleData: {
+    team: string
+    date: string
+    shiftType: ShiftType
+  }[] = []
 
   if (!ocrResult) {
     return teamScheduleData
@@ -180,7 +183,7 @@ export function convertOCRResultToTeamScheduleData(
         teamScheduleData.push({
           team,
           date: fullDate.format('YYYY-MM-DD'),
-          workType: shiftCode,
+          shiftType: shiftCode,
         })
       }
     }

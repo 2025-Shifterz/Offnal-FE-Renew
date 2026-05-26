@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 import TimeFrame from '../../../../shared/components/calendar/TimeFrame'
-import { DateAndWorkTypeRecord } from '../../../../shared/types/Calendar'
+import { DateAndShiftTypeRecord } from '../../../../shared/types/Calendar'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
@@ -13,7 +13,7 @@ const textDanger = '#BD2C0F'
 interface CalendarBasicProps {
   selectedDate?: dayjs.Dayjs | null
   onDatePress?: (date: dayjs.Dayjs) => void
-  calendarData: DateAndWorkTypeRecord
+  calendarData: DateAndShiftTypeRecord
   currentDate: dayjs.Dayjs
 }
 
@@ -46,7 +46,7 @@ const CalendarBasic = ({
       else if (weekDay === 6) textColor = textInformation
 
       const key = date.format('YYYY-MM-DD') // string 형식
-      const time = calendarData?.[key]?.workTypeName // string 전달
+      const time = calendarData?.[key]?.shiftTypeName
 
       days.push(
         <TouchableOpacity

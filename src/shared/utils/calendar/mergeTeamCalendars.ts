@@ -1,4 +1,5 @@
-import { TeamCalendarRecord, WorkTypeInfo } from '../../types/TeamCalendar'
+import { ShiftTypeInfo } from '../../types/Calendar'
+import { TeamCalendarRecord } from '../../types/TeamCalendar'
 
 export const mergeTeamCalendars = (
   original: TeamCalendarRecord[],
@@ -8,16 +9,16 @@ export const mergeTeamCalendars = (
     const updatedTeam = updates.find(up => up.team === orig.team)
     if (!updatedTeam) return orig
 
-    const mergedWorkInstances: Record<string, WorkTypeInfo> = {
-      ...orig.workInstances,
+    const mergedShiftInstances: Record<string, ShiftTypeInfo> = {
+      ...orig.shiftInstances,
     }
 
-    Object.entries(updatedTeam.workInstances).forEach(([date, workInfo]) => {
-      mergedWorkInstances[date] = workInfo
+    Object.entries(updatedTeam.shiftInstances).forEach(([date, shiftInfo]) => {
+      mergedShiftInstances[date] = shiftInfo
     })
     return {
       ...orig,
-      workInstances: mergedWorkInstances,
+      shiftInstances: mergedShiftInstances,
     }
   })
 

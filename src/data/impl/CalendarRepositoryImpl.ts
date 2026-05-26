@@ -46,7 +46,7 @@ export class CalendarRepositoryImpl implements CalendarRepository {
       // DTO -> Entity 변환
       const entities: CalendarEntity[] = response.map(item => ({
         date: item.date,
-        workTypeName: item.workTypeName,
+        shiftTypeName: item.workTypeName,
         startTime: item.startTime,
         endTime: convertDurationToEndTime(item.startTime, item.duration),
       }))

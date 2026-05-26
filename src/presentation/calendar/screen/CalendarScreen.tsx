@@ -1,29 +1,61 @@
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useCallback, useMemo, useRef, useState } from 'react'
-import NoCalendar from '../component/NoCalendar'
-import HasCalendar from '../component/HasCalendar'
-import { View } from 'react-native'
-import PlusEdit from '../component/PlusEdit'
-import { useFocusEffect, useRoute, RouteProp } from '@react-navigation/native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import EmptyCalendarScrim from '../component/EmptyCalendarScrim'
+import CalendarContainer from '../component/CalendarContainer'
+import { Keyboard, Platform, TextInput, View } from 'react-native'
+import {
+  useFocusEffect,
+  useRoute,
+  RouteProp,
+  useNavigation,
+} from '@react-navigation/native'
 import { useScheduleInfoStore } from '../../../store/useScheduleInfoStore'
 import { TabParamList } from '../../../navigation/types/TabParamList'
 import dayjs from 'dayjs'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import CalendarViewerHeader from '../../../shared/components/calendar/header/CalendarViewerHeader'
+import CalendarFloatingActionButton from '../component/CalendarFloatingActionButton'
+import CalendarActionMenuOverlay from '../component/CalendarActionMenuOverlay'
+import { useOnboardingStore } from '../../../store/useOnboardingStore'
+import { ScrollView } from 'react-native-gesture-handler'
+
+import CheckListIcon from '../../../assets/icons/ic_checklist_24.svg'
+import NoteIcon from '../../../assets/icons/ic_note_24.svg'
+
+import { useTodoStore } from '../../../store/useTodoStore'
+import { useMemoStore } from '../../../store/useMemoStore'
+
+import {
+  NoteContainer,
+  TodoRowItems,
+  MemoRowItems,
+} from '../component/CalendarNotesContainer'
+
+type ActiveNoteInput = 'todo' | 'memo'
 
 const CalendarScreen = () => {
   const route = useRoute<RouteProp<TabParamList, 'Calendar'>>()
-  const [noCalendar, setNoCalendar] = useState(false) // 있다고 가정
-  const [showPlus, setShowPlus] = useState(false)
+  const navigation = useNavigation<rootNavigation>()
   const insets = useSafeAreaInsets()
 
-  // 캘린더 탭에서 팀 캘린더인 상태면 -> 근무표 수정 모드에서도 팀 캘린더 뷰
+  const [isScheduleEmpty, setIsScheduleEmpty] = useState<boolean | null>(null)
+  const [showActionMenuOverlay, setShowActionMenuOverlay] = useState(false)
+  const [activeNoteInput, setActiveNoteInput] =
+    useState<ActiveNoteInput | null>(null)
+  const [todoDraft, setTodoDraft] = useState('')
+  const [memoDraft, setMemoDraft] = useState('')
+  const [isSubmittingNote, setIsSubmittingNote] = useState(false)
+  const [imeHeight, setImeHeight] = useState(0)
   const [isTeamView, setIsTeamView] = useState(
     () => route.params?.isTeamView ?? false
   )
-  const fetchOrganization = useScheduleInfoStore(
-    state => state.fetchOrganization
-  )
-
-  // navigation.reset으로 진입 시 새로 마운트되므로 lazy init으로 한 번만 읽음
   const [currentDate, setCurrentDate] = useState(() =>
     route.params?.selectedDate ? dayjs(route.params.selectedDate) : dayjs()
   )
@@ -35,27 +67,213 @@ const CalendarScreen = () => {
     [currentDate]
   )
 
+  const todos = useTodoStore(state => state.todos)
+  const fetchTodosByDate = useTodoStore(state => state.getTodosByDate)
+  const addTodo = useTodoStore(state => state.addTodo)
+  const updateTodoCompleted = useTodoStore(state => state.updateTodoCompleted)
+
+  const memos = useMemoStore(state => state.memos)
+  const fetchMemosByDate = useMemoStore(state => state.fetchMemosByDate)
+  const addMemo = useMemoStore(state => state.addMemo)
+
+  const workTimes = useScheduleInfoStore(state => state.workTimes)
+  const fetchOrganization = useScheduleInfoStore(
+    state => state.fetchOrganization
+  )
+  const setOnboardingMethod = useOnboardingStore(
+    state => state.setOnboardingMethod
+  )
+
   // 탭 재진입 시 현재 달로 복귀 (탭 화면은 언마운트되지 않으므로 useRef로 첫 포커스 추적)
   const isFirstFocus = useRef(true)
+  const scrollViewRef = useRef<ScrollView>(null)
+  const todoInputRef = useRef<TextInput>(null)
+  const memoInputRef = useRef<TextInput>(null)
+  const isSubmittingNoteRef = useRef(false)
 
-  // 캘린더 탭에 포커스 될 때마다 실행
+  const topPadding = insets.top
+  const height = 50 + topPadding
+  const scrollViewBottomPadding = insets.bottom + 144 + imeHeight
+
+  const scrollToNoteInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true })
+
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true })
+      }, 120)
+    })
+  }, [])
+
+  const closeNoteInput = useCallback((inputType: ActiveNoteInput) => {
+    if (inputType === 'todo') {
+      setTodoDraft('')
+    } else {
+      setMemoDraft('')
+    }
+
+    setActiveNoteInput(current => (current === inputType ? null : current))
+  }, [])
+
+  const submitNoteInput = useCallback(
+    async (inputType: ActiveNoteInput) => {
+      if (isSubmittingNoteRef.current) {
+        return
+      }
+
+      const draft = inputType === 'todo' ? todoDraft.trim() : memoDraft.trim()
+
+      if (!draft) {
+        closeNoteInput(inputType)
+        return
+      }
+
+      isSubmittingNoteRef.current = true
+      setIsSubmittingNote(true)
+
+      try {
+        if (inputType === 'todo') {
+          await addTodo(draft, currentDate)
+          setTodoDraft('')
+        } else {
+          await addMemo(draft, '', currentDate)
+          setMemoDraft('')
+        }
+
+        setActiveNoteInput(current => (current === inputType ? null : current))
+      } catch (error) {
+        console.error('Error submitting calendar note input', error)
+      } finally {
+        isSubmittingNoteRef.current = false
+        setIsSubmittingNote(false)
+      }
+    },
+    [addMemo, addTodo, closeNoteInput, currentDate, memoDraft, todoDraft]
+  )
+
+  const startNoteInput = useCallback(
+    async (inputType: ActiveNoteInput) => {
+      if (isSubmittingNote) {
+        return
+      }
+
+      if (activeNoteInput === inputType) {
+        scrollToNoteInput()
+        return
+      }
+
+      if (activeNoteInput === 'todo' && todoDraft.trim()) {
+        await submitNoteInput('todo')
+      }
+
+      if (activeNoteInput === 'memo' && memoDraft.trim()) {
+        await submitNoteInput('memo')
+      }
+
+      if (activeNoteInput === 'todo' && !todoDraft.trim()) {
+        setTodoDraft('')
+      }
+
+      if (activeNoteInput === 'memo' && !memoDraft.trim()) {
+        setMemoDraft('')
+      }
+
+      setActiveNoteInput(inputType)
+    },
+    [
+      activeNoteInput,
+      isSubmittingNote,
+      memoDraft,
+      scrollToNoteInput,
+      submitNoteInput,
+      todoDraft,
+    ]
+  )
+
+  const handleToggleTodoCompleted = useCallback(
+    async (todoId: number, nextCompleted: boolean) => {
+      try {
+        await updateTodoCompleted(todoId, nextCompleted, currentDate)
+      } catch (error) {
+        console.error('Error updating calendar todo completed state', error)
+      }
+    },
+    [currentDate, updateTodoCompleted]
+  )
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      header: () => (
+        <View
+          style={{ paddingTop: topPadding, height: height }}
+          className="bg-surface-white px-[20px]"
+        >
+          <CalendarViewerHeader
+            selectedDate={currentDate.toDate()}
+            onPressTeamIcon={() => {
+              setIsTeamView(prev => !prev)
+            }}
+            onChange={newDate => setCurrentDate(dayjs(newDate))}
+          />
+        </View>
+      ),
+      headerShown: true,
+    })
+  }, [currentDate, height, navigation, topPadding])
+
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow'
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide'
+
+    const showSubscription = Keyboard.addListener(showEvent, event => {
+      const keyboardHeight = event.endCoordinates.height
+      setImeHeight(Math.max(0, keyboardHeight - insets.bottom))
+      scrollToNoteInput()
+    })
+
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setImeHeight(0)
+    })
+
+    return () => {
+      showSubscription.remove()
+      hideSubscription.remove()
+    }
+  }, [insets.bottom, scrollToNoteInput])
+
+  useEffect(() => {
+    if (activeNoteInput === null) {
+      return
+    }
+
+    requestAnimationFrame(() => {
+      if (activeNoteInput === 'todo') {
+        todoInputRef.current?.focus()
+      } else {
+        memoInputRef.current?.focus()
+      }
+
+      scrollToNoteInput()
+    })
+  }, [activeNoteInput, scrollToNoteInput])
+
   useFocusEffect(
     useCallback(() => {
       if (isFirstFocus.current) {
         isFirstFocus.current = false
       } else {
-        // 이후 포커스: 현재 달로 복귀
         setCurrentDate(dayjs())
       }
 
-      // NoCalendar(캘린더가 없다고 보여주는 화면)가 보이는지 여부
-      // 전체 조직 조회: 하나라도 있으면 캘린더가 있다고 판단
       const fetchData = async () => {
         try {
           const res = await fetchOrganization()
-          if (Object.keys(res).length === 0) setNoCalendar(true)
+          setIsScheduleEmpty(Object.keys(res).length === 0)
         } catch (error) {
           console.log('조직 조회 실패:', error)
+          setIsScheduleEmpty(false)
         }
       }
 
@@ -63,34 +281,140 @@ const CalendarScreen = () => {
     }, [fetchOrganization])
   )
 
-  if (noCalendar === null) {
-    // 로딩 중이거나 판단 전이면 아무것도 보여주지 않거나 로딩 컴포넌트
+  useEffect(() => {
+    const initializeTodosAndMemos = async () => {
+      try {
+        await Promise.all([
+          fetchTodosByDate(currentDate),
+          fetchMemosByDate(currentDate),
+        ])
+      } catch (error) {
+        console.error('Error initializing todos and memos', error)
+      }
+    }
+
+    initializeTodosAndMemos()
+  }, [currentDate, fetchTodosByDate, fetchMemosByDate])
+
+  if (isScheduleEmpty === null) {
     return <View className="flex-1 bg-surface-white" />
   }
 
+  const noteSectionSpacing = 'gap-[12px]'
+
   return (
-    <View className="flex-1">
-      {noCalendar && <NoCalendar />}
-      <SafeAreaView
-        edges={['top']}
-        className="relative h-full flex-1 bg-surface-white"
-      >
-        {/* 등록된 캘린더가 있고, 팀 캘린더인지 */}
-        <HasCalendar
-          setShowPlus={setShowPlus}
-          isTeamView={isTeamView}
-          setIsTeamView={setIsTeamView}
-          currentDate={currentDate}
-          setCurrentDate={setCurrentDate}
-          selectedYearMonth={selectedYearMonth}
-          bottomInset={insets.bottom}
+    <View className="flex-1 bg-surface-white">
+      {isScheduleEmpty && (
+        <EmptyCalendarScrim
+          onCreateScheduleClick={() => {
+            navigation.navigate('OnboardingMethodScreen', {
+              createScheduleButtonClick: true,
+            })
+          }}
         />
-      </SafeAreaView>
-      {showPlus && (
-        <PlusEdit
-          setShowPlus={setShowPlus}
+      )}
+
+      <ScrollView
+        ref={scrollViewRef}
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: scrollViewBottomPadding }}
+        onContentSizeChange={() => {
+          if (activeNoteInput !== null) {
+            scrollToNoteInput()
+          }
+        }}
+      >
+        <CalendarContainer
           isTeamView={isTeamView}
           currentDate={currentDate}
+          selectedYearMonth={selectedYearMonth}
+          onDateSelected={date => {
+            setCurrentDate(date)
+          }}
+        />
+
+        <View className="mt-[12px] rounded-tl-radius-xl rounded-tr-radius-xl bg-surface-white pt-[10px]">
+          <View className={`pb-[20px] ${noteSectionSpacing}`}>
+            <NoteContainer
+              icon={<CheckListIcon />}
+              title="할 일"
+              onAddIconPress={() => {
+                startNoteInput('todo')
+              }}
+            >
+              <TodoRowItems
+                todos={todos}
+                showInput={activeNoteInput === 'todo'}
+                value={todoDraft}
+                onChangeText={setTodoDraft}
+                onSubmit={() => {
+                  submitNoteInput('todo')
+                }}
+                onBlur={() => {
+                  submitNoteInput('todo')
+                }}
+                inputRef={todoInputRef}
+                onToggleTodoCompleted={todo => {
+                  handleToggleTodoCompleted(todo.id, !todo.isCompleted)
+                }}
+              />
+            </NoteContainer>
+
+            <NoteContainer
+              icon={<NoteIcon />}
+              title="메모"
+              onAddIconPress={() => {
+                startNoteInput('memo')
+              }}
+            >
+              <MemoRowItems
+                memos={memos}
+                showInput={activeNoteInput === 'memo'}
+                value={memoDraft}
+                onChangeText={setMemoDraft}
+                onSubmit={() => {
+                  submitNoteInput('memo')
+                }}
+                onBlur={() => {
+                  submitNoteInput('memo')
+                }}
+                inputRef={memoInputRef}
+              />
+            </NoteContainer>
+          </View>
+        </View>
+      </ScrollView>
+
+      <CalendarFloatingActionButton
+        onPress={() => {
+          setShowActionMenuOverlay(prev => !prev)
+        }}
+      />
+      {showActionMenuOverlay && (
+        <CalendarActionMenuOverlay
+          setShowActionMenuOverlay={() => {
+            setShowActionMenuOverlay(prev => !prev)
+          }}
+          onPressEditBtn={() => {
+            if (isTeamView) {
+              navigation.navigate('TeamEditCalendar', {
+                workTimes: workTimes,
+                selectedDate: currentDate.toISOString(),
+              })
+            } else {
+              navigation.navigate('EditCalendar', {
+                workTimes: workTimes,
+                selectedDate: currentDate.toISOString(),
+              })
+            }
+          }}
+          onPressOCRBtn={() => {
+            navigation.navigate('OnboardingSchedules', {
+              screen: 'SelectScheduleScope',
+            })
+            setOnboardingMethod('EXISTING_OCR')
+          }}
         />
       )}
     </View>
