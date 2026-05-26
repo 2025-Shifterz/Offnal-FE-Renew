@@ -1,5 +1,6 @@
 import UIKit
 import UserNotifications
+import SQLite3
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
@@ -8,43 +9,21 @@ import kakao_login
 private let autoAlarmNotificationCategoryId = "offnal.auto-alarm.category"
 private let autoAlarmSnoozeActionId = "offnal.auto-alarm.snooze"
 private let autoAlarmDismissActionId = "offnal.auto-alarm.dismiss"
+private let autoAlarmDatabaseName = "myDatabase.db"
+private let autoAlarmNotificationSoundName = "auto_alarm_v2.caf"
+private let autoAlarmNotificationSoundDirectoryName = "Sounds"
+private let autoAlarmNotificationTitle = "알람"
+private let autoAlarmNotificationBody = "일어날 시간이에요."
 private let autoAlarmNotificationUserInfoAlarmIdKey = "alarmId"
-private let autoAlarmNotificationUserInfoSnoozeKey = "snooze"
-private let autoAlarmNotificationUserInfoSnoozeEnabledKey = "enabled"
-private let autoAlarmNotificationUserInfoSnoozeIntervalMinutesKey = "intervalMinutes"
-private let autoAlarmNotificationUserInfoSnoozeRepeatCountKey = "repeatCount"
-private let autoAlarmNotificationUserInfoSnoozeRemainingCountKey = "remainingCount"
-private let autoAlarmPendingEventsDefaultsKey = "offnal.auto-alarm.pending-events"
+private let autoAlarmNotificationUserInfoSnoozeEnabledKey = "isSnoozeEnabled"
+private let autoAlarmNotificationUserInfoSnoozeIntervalMinutesKey = "snoozeIntervalMinutes"
+private let autoAlarmNotificationUserInfoSnoozeRepeatCountKey = "snoozeRepeatCount"
+private let autoAlarmNotificationUserInfoSnoozeRemainingCountKey = "snoozeRemainingCount"
 
 private struct AutoAlarmRuntimeConfig {
   let isSnoozeEnabled: Bool
   let snoozeIntervalMinutes: Int
   let snoozeRepeatCount: Int
-  let snoozeRemainingCount: Int?
-
-  init?(userInfo: [AnyHashable: Any]) {
-    guard
-      let snooze = userInfo[autoAlarmNotificationUserInfoSnoozeKey] as? [String: Any]
-    else {
-      return nil
-    }
-
-    isSnoozeEnabled = (snooze[autoAlarmNotificationUserInfoSnoozeEnabledKey] as? NSNumber)?.boolValue ?? false
-    snoozeIntervalMinutes = (snooze[autoAlarmNotificationUserInfoSnoozeIntervalMinutesKey] as? NSNumber)?.intValue ?? 0
-    snoozeRepeatCount = (snooze[autoAlarmNotificationUserInfoSnoozeRepeatCountKey] as? NSNumber)?.intValue ?? 0
-
-    if let remaining = snooze[autoAlarmNotificationUserInfoSnoozeRemainingCountKey] as? NSNumber {
-      let value = remaining.intValue
-      snoozeRemainingCount = value < 0 ? nil : value
-    } else {
-      snoozeRemainingCount = nil
-    }
-  }
-}
-
-private enum AutoAlarmPlatformEventType: String {
-  case dismissed
-  case snoozed
 }
 
 @main
@@ -66,6 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     reactNativeFactory = factory
 
     window = UIWindow(frame: UIScreen.main.bounds)
+    installAutoAlarmSoundIfNeeded()
 
     let dismissAction = UNNotificationAction(
       identifier: autoAlarmDismissActionId,
@@ -75,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let snoozeAction = UNNotificationAction(
       identifier: autoAlarmSnoozeActionId,
       title: "다시 울리기",
-      options: [.foreground]
+      options: []
     )
     let autoAlarmCategory = UNNotificationCategory(
       identifier: autoAlarmNotificationCategoryId,
@@ -142,137 +122,110 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
   ) {
     switch response.actionIdentifier {
     case autoAlarmSnoozeActionId:
-      handleAutoAlarmSnooze(center: center, response: response)
+      handleAutoAlarmSnooze(center: center, response: response, completionHandler: completionHandler)
     case autoAlarmDismissActionId:
       handleAutoAlarmDismiss(center: center, response: response)
+      completionHandler()
     default:
-      break
+      completionHandler()
+      return
     }
-
-    completionHandler()
   }
 
-  private func handleAutoAlarmDismiss(
-    center: UNUserNotificationCenter,
-    response: UNNotificationResponse
-  ) {
+  private func handleAutoAlarmDismiss(center: UNUserNotificationCenter, response: UNNotificationResponse) {
     let identifier = response.notification.request.identifier
     center.removePendingNotificationRequests(withIdentifiers: [identifier])
     center.removeDeliveredNotifications(withIdentifiers: [identifier])
-
-    guard let alarmId = alarmId(from: identifier) else {
-      NSLog("AutoAlarm dismiss skipped because alarmId could not be parsed from identifier=%@", identifier)
-      return
-    }
-
-    enqueueAutoAlarmPlatformEvent(
-      type: .dismissed,
-      alarmId: alarmId,
-      nextTriggerAtMillis: nil,
-      snoozeRemainingCount: nil,
-      sessionState: "dismissed"
-    )
+    updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
   }
 
   private func handleAutoAlarmSnooze(
     center: UNUserNotificationCenter,
-    response: UNNotificationResponse
+    response: UNNotificationResponse,
+    completionHandler: @escaping () -> Void
   ) {
     let identifier = response.notification.request.identifier
+    NSLog("AutoAlarm snooze received for identifier=%@", identifier)
     center.removePendingNotificationRequests(withIdentifiers: [identifier])
     center.removeDeliveredNotifications(withIdentifiers: [identifier])
 
     guard let alarmId = alarmId(from: identifier) else {
       NSLog("AutoAlarm snooze skipped because alarmId could not be parsed from identifier=%@", identifier)
+      completionHandler()
       return
     }
 
-    guard let runtimeConfig = AutoAlarmRuntimeConfig(userInfo: response.notification.request.content.userInfo) else {
-      NSLog("AutoAlarm snooze skipped because runtime config was missing for alarmId=%d", alarmId)
-      enqueueAutoAlarmPlatformEvent(
-        type: .dismissed,
-        alarmId: alarmId,
-        nextTriggerAtMillis: nil,
-        snoozeRemainingCount: nil,
-        sessionState: "failed"
-      )
+    guard let runtimeConfig = loadRuntimeConfig(for: alarmId) else {
+      NSLog("AutoAlarm snooze skipped because runtime config could not be loaded for alarmId=%d", alarmId)
+      completionHandler()
       return
     }
 
-    guard runtimeConfig.isSnoozeEnabled, runtimeConfig.snoozeIntervalMinutes > 0 else {
-      enqueueAutoAlarmPlatformEvent(
-        type: .dismissed,
-        alarmId: alarmId,
-        nextTriggerAtMillis: nil,
-        snoozeRemainingCount: nil,
-        sessionState: "dismissed"
-      )
+    guard runtimeConfig.isSnoozeEnabled else {
+      NSLog("AutoAlarm snooze skipped because snooze is disabled for alarmId=%d", alarmId)
+      updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
+      completionHandler()
       return
     }
 
-    if let remaining = runtimeConfig.snoozeRemainingCount, remaining <= 0 {
-      enqueueAutoAlarmPlatformEvent(
-        type: .dismissed,
-        alarmId: alarmId,
-        nextTriggerAtMillis: nil,
-        snoozeRemainingCount: 0,
-        sessionState: "expired"
-      )
-      return
-    }
+    let currentUserInfo = response.notification.request.content.userInfo
+    let currentRemainingCount = snoozeRemainingCount(from: currentUserInfo) ?? defaultSnoozeRemainingCount(for: runtimeConfig)
 
-    let nextRemainingCount: Int?
-    if let remaining = runtimeConfig.snoozeRemainingCount {
-      nextRemainingCount = max(remaining - 1, 0)
-    } else if runtimeConfig.snoozeRepeatCount == 0 {
-      nextRemainingCount = nil
+    let shouldRepeatSnooze: Bool
+    if currentRemainingCount == nil {
+      shouldRepeatSnooze = true
     } else {
-      nextRemainingCount = max(runtimeConfig.snoozeRepeatCount - 1, 0)
+      shouldRepeatSnooze = currentRemainingCount! > 0
     }
 
-    let nextTriggerAtMillis =
-      Int64(Date().timeIntervalSince1970 * 1000) +
-      Int64(runtimeConfig.snoozeIntervalMinutes * 60_000)
+    guard shouldRepeatSnooze else {
+      NSLog("AutoAlarm snooze stopped because repeat count was exhausted for alarmId=%d", alarmId)
+      updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
+      completionHandler()
+      return
+    }
 
-    enqueueAutoAlarmPlatformEvent(
-      type: .snoozed,
+    let nextRemainingCount = nextSnoozeRemainingCount(from: currentRemainingCount)
+    let nextTriggerAtMillis = Int64(Date().timeIntervalSince1970 * 1000) + Int64(runtimeConfig.snoozeIntervalMinutes * 60_000)
+
+    let updatedTrigger = updateAutoAlarmNextTriggerAtMillis(
       alarmId: alarmId,
-      nextTriggerAtMillis: nextTriggerAtMillis,
-      snoozeRemainingCount: nextRemainingCount,
-      sessionState: "snoozed"
+      nextTriggerAtMillis: nextTriggerAtMillis
     )
-  }
-
-  private func enqueueAutoAlarmPlatformEvent(
-    type: AutoAlarmPlatformEventType,
-    alarmId: Int,
-    nextTriggerAtMillis: Int64?,
-    snoozeRemainingCount: Int?,
-    sessionState: String
-  ) {
-    var pendingEvents = UserDefaults.standard.array(forKey: autoAlarmPendingEventsDefaultsKey) as? [[String: Any]] ?? []
-    var payload: [String: Any] = [
-      "eventId": UUID().uuidString,
-      "type": type.rawValue,
-      "alarmId": alarmId,
-      "occurredAtMillis": Int64(Date().timeIntervalSince1970 * 1000),
-      "sessionState": sessionState,
-      "source": "legacyNotificationAction",
-    ]
-
-    if let nextTriggerAtMillis {
-      payload["nextTriggerAtMillis"] = nextTriggerAtMillis
+    let enabledUpdated = updateAutoAlarmEnabledState(alarmId: alarmId, isEnabled: true)
+    guard updatedTrigger, enabledUpdated else {
+      NSLog("AutoAlarm snooze failed to persist next trigger for alarmId=%d", alarmId)
+      updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
+      completionHandler()
+      return
     }
 
-    if let snoozeRemainingCount {
-      payload["snoozeRemainingCount"] = snoozeRemainingCount
-    } else {
-      payload["snoozeRemainingCount"] = NSNull()
+    var backgroundTaskIdentifier = UIBackgroundTaskIdentifier.invalid
+    backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(
+      withName: "autoAlarmSnooze"
+    ) {
+      if backgroundTaskIdentifier != .invalid {
+        UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
+        backgroundTaskIdentifier = .invalid
+      }
     }
 
-    pendingEvents.append(payload)
-    UserDefaults.standard.set(pendingEvents, forKey: autoAlarmPendingEventsDefaultsKey)
-    UserDefaults.standard.synchronize()
+    scheduleSnoozedNotification(
+      alarmId: alarmId,
+      runtimeConfig: runtimeConfig,
+      remainingCount: nextRemainingCount
+    ) { success in
+      if !success {
+        self.updateAutoAlarmEnabledState(alarmIdentifier: identifier, isEnabled: false)
+      }
+
+      if backgroundTaskIdentifier != .invalid {
+        UIApplication.shared.endBackgroundTask(backgroundTaskIdentifier)
+        backgroundTaskIdentifier = .invalid
+      }
+      NSLog("AutoAlarm snooze scheduling finished for alarmId=%d success=%d", alarmId, success ? 1 : 0)
+      completionHandler()
+    }
   }
 
   private func alarmId(from notificationIdentifier: String) -> Int? {
@@ -284,5 +237,265 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 
     return alarmId
+  }
+
+  private func defaultSnoozeRemainingCount(for runtimeConfig: AutoAlarmRuntimeConfig) -> Int? {
+    guard runtimeConfig.isSnoozeEnabled else {
+      return 0
+    }
+
+    return runtimeConfig.snoozeRepeatCount == 0 ? nil : runtimeConfig.snoozeRepeatCount
+  }
+
+  private func snoozeRemainingCount(from userInfo: [AnyHashable: Any]) -> Int? {
+    guard let remainingCount = userInfo[autoAlarmNotificationUserInfoSnoozeRemainingCountKey] as? NSNumber else {
+      return nil
+    }
+
+    let value = remainingCount.intValue
+    return value < 0 ? nil : value
+  }
+
+  private func nextSnoozeRemainingCount(from currentRemainingCount: Int?) -> Int? {
+    guard let currentRemainingCount, currentRemainingCount >= 0 else {
+      return nil
+    }
+
+    guard currentRemainingCount > 0 else {
+      return 0
+    }
+
+    return currentRemainingCount - 1
+  }
+
+  private func scheduleSnoozedNotification(
+    alarmId: Int,
+    runtimeConfig: AutoAlarmRuntimeConfig,
+    remainingCount: Int?,
+    completion: @escaping (Bool) -> Void
+  ) {
+    let intervalSeconds = max(1, runtimeConfig.snoozeIntervalMinutes * 60)
+
+    let content = UNMutableNotificationContent()
+    content.title = autoAlarmNotificationTitle
+    content.body = autoAlarmNotificationBody
+    content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: autoAlarmNotificationSoundName))
+    content.categoryIdentifier = autoAlarmNotificationCategoryId
+    content.threadIdentifier = autoAlarmNotificationCategoryId
+    content.interruptionLevel = .timeSensitive
+    content.userInfo = notificationUserInfo(
+      alarmId: alarmId,
+      runtimeConfig: runtimeConfig,
+      remainingCount: remainingCount
+    )
+
+    let trigger = UNTimeIntervalNotificationTrigger(
+      timeInterval: TimeInterval(intervalSeconds),
+      repeats: false
+    )
+    let request = UNNotificationRequest(
+      identifier: notificationIdentifier(for: alarmId),
+      content: content,
+      trigger: trigger
+    )
+
+    let center = UNUserNotificationCenter.current()
+    let snoozedNotificationIdentifier = notificationIdentifier(for: alarmId)
+    DispatchQueue.main.async {
+      center.removePendingNotificationRequests(withIdentifiers: [snoozedNotificationIdentifier])
+      center.removeDeliveredNotifications(withIdentifiers: [snoozedNotificationIdentifier])
+      center.add(request) { error in
+        if let error {
+          NSLog("Failed to schedule snoozed auto alarm for alarmId=%d: %@", alarmId, error.localizedDescription)
+        }
+        completion(error == nil)
+      }
+    }
+  }
+
+  private func notificationUserInfo(
+    alarmId: Int,
+    runtimeConfig: AutoAlarmRuntimeConfig,
+    remainingCount: Int?
+  ) -> [AnyHashable: Any] {
+    [
+      autoAlarmNotificationUserInfoAlarmIdKey: alarmId,
+      autoAlarmNotificationUserInfoSnoozeEnabledKey: runtimeConfig.isSnoozeEnabled,
+      autoAlarmNotificationUserInfoSnoozeIntervalMinutesKey: runtimeConfig.snoozeIntervalMinutes,
+      autoAlarmNotificationUserInfoSnoozeRepeatCountKey: runtimeConfig.snoozeRepeatCount,
+      autoAlarmNotificationUserInfoSnoozeRemainingCountKey: remainingCount ?? -1,
+    ]
+  }
+
+  private func notificationIdentifier(for alarmId: Int) -> String {
+    "offnal.auto-alarm.\(alarmId)"
+  }
+
+  private func loadRuntimeConfig(for alarmId: Int) -> AutoAlarmRuntimeConfig? {
+    guard
+      let databaseURL = databaseURL()
+    else {
+      return nil
+    }
+
+    var database: OpaquePointer?
+    let openResult = databaseURL.path.withCString {
+      sqlite3_open_v2($0, &database, SQLITE_OPEN_READWRITE, nil)
+    }
+    guard openResult == SQLITE_OK, let database else {
+      if database != nil {
+        sqlite3_close(database)
+      }
+      return nil
+    }
+
+    defer {
+      sqlite3_close(database)
+    }
+
+    let querySQL = "SELECT isSnoozeEnabled, snoozeIntervalMinutes, snoozeRepeatCount FROM auto_alarms WHERE id = ? LIMIT 1;"
+    var statement: OpaquePointer?
+    guard sqlite3_prepare_v2(database, querySQL, -1, &statement, nil) == SQLITE_OK, let statement else {
+      return nil
+    }
+
+    defer {
+      sqlite3_finalize(statement)
+    }
+
+    sqlite3_bind_int(statement, 1, Int32(alarmId))
+
+    guard sqlite3_step(statement) == SQLITE_ROW else {
+      return nil
+    }
+
+    return AutoAlarmRuntimeConfig(
+      isSnoozeEnabled: sqlite3_column_int(statement, 0) == 1,
+      snoozeIntervalMinutes: Int(sqlite3_column_int(statement, 1)),
+      snoozeRepeatCount: Int(sqlite3_column_int(statement, 2))
+    )
+  }
+
+  private func updateAutoAlarmEnabledState(alarmIdentifier: String, isEnabled: Bool) {
+    guard let alarmId = alarmId(from: alarmIdentifier) else {
+      return
+    }
+
+    updateAutoAlarmEnabledState(alarmId: alarmId, isEnabled: isEnabled)
+  }
+
+  @discardableResult
+  private func updateAutoAlarmEnabledState(alarmId: Int, isEnabled: Bool) -> Bool {
+    guard let databaseURL = databaseURL() else {
+      return false
+    }
+
+    var database: OpaquePointer?
+    let openResult = databaseURL.path.withCString {
+      sqlite3_open_v2($0, &database, SQLITE_OPEN_READWRITE, nil)
+    }
+    guard openResult == SQLITE_OK, let database else {
+      if database != nil {
+        sqlite3_close(database)
+      }
+      return false
+    }
+
+    defer {
+      sqlite3_close(database)
+    }
+
+    let updateSQL = "UPDATE auto_alarms SET isEnabled = ? WHERE id = ?;"
+    var statement: OpaquePointer?
+    guard sqlite3_prepare_v2(database, updateSQL, -1, &statement, nil) == SQLITE_OK, let statement else {
+      return false
+    }
+
+    defer {
+      sqlite3_finalize(statement)
+    }
+
+    sqlite3_bind_int(statement, 1, isEnabled ? 1 : 0)
+    sqlite3_bind_int(statement, 2, Int32(alarmId))
+
+    return sqlite3_step(statement) == SQLITE_DONE
+  }
+
+  @discardableResult
+  private func updateAutoAlarmNextTriggerAtMillis(alarmId: Int, nextTriggerAtMillis: Int64) -> Bool {
+    guard let databaseURL = databaseURL() else {
+      return false
+    }
+
+    var database: OpaquePointer?
+    let openResult = databaseURL.path.withCString {
+      sqlite3_open_v2($0, &database, SQLITE_OPEN_READWRITE, nil)
+    }
+    guard openResult == SQLITE_OK, let database else {
+      if database != nil {
+        sqlite3_close(database)
+      }
+      return false
+    }
+
+    defer {
+      sqlite3_close(database)
+    }
+
+    let updateSQL = "UPDATE auto_alarms SET nextTriggerAtMillis = ? WHERE id = ?;"
+    var statement: OpaquePointer?
+    guard sqlite3_prepare_v2(database, updateSQL, -1, &statement, nil) == SQLITE_OK, let statement else {
+      return false
+    }
+
+    defer {
+      sqlite3_finalize(statement)
+    }
+
+    sqlite3_bind_int64(statement, 1, nextTriggerAtMillis)
+    sqlite3_bind_int(statement, 2, Int32(alarmId))
+
+    return sqlite3_step(statement) == SQLITE_DONE
+  }
+
+  private func databaseURL() -> URL? {
+    FileManager.default.urls(
+      for: .documentDirectory,
+      in: .userDomainMask
+    ).first?.appendingPathComponent(autoAlarmDatabaseName)
+  }
+
+  private func installAutoAlarmSoundIfNeeded() {
+    let fileManager = FileManager.default
+    guard
+      let sourceURL = Bundle.main.url(forResource: "auto_alarm_v2", withExtension: "caf"),
+      let libraryURL = fileManager.urls(for: .libraryDirectory, in: .userDomainMask).first
+    else {
+      return
+    }
+
+    let soundsDirectoryURL = libraryURL.appendingPathComponent(autoAlarmNotificationSoundDirectoryName, isDirectory: true)
+    if !fileManager.fileExists(atPath: soundsDirectoryURL.path) {
+      do {
+        try fileManager.createDirectory(
+          at: soundsDirectoryURL,
+          withIntermediateDirectories: true,
+          attributes: nil
+        )
+      } catch {
+        return
+      }
+    }
+
+    let destinationURL = soundsDirectoryURL.appendingPathComponent(autoAlarmNotificationSoundName)
+    do {
+      // Refresh the cached sound so upgraded installs do not keep an older duration.
+      if fileManager.fileExists(atPath: destinationURL.path) {
+        try fileManager.removeItem(at: destinationURL)
+      }
+      try fileManager.copyItem(at: sourceURL, to: destinationURL)
+    } catch {
+      return
+    }
   }
 }

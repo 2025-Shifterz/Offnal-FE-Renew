@@ -5,14 +5,14 @@ import SelectShiftBox from './SelectShiftBox'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import BottomSheetWrapper from '../../../shared/components/sheet/BottomSheetWrapper'
-import { WorkType } from '../../../shared/types/Calendar'
+import { ShiftType } from '../../../shared/types/Calendar'
 import { WorkTime } from '../../../domain/models/WorkTime'
 
 dayjs.locale('ko') // 한글 locale 적용
 
 interface EditBottomSheetProps {
   selectedDate: dayjs.Dayjs | null
-  handleTypeSelect: (type: WorkType) => void
+  handleTypeSelect: (type: ShiftType) => void
   handleCancel: () => void
   handleSave: () => void // handleSave prop 추가
   selectedBoxId: number
@@ -20,7 +20,12 @@ interface EditBottomSheetProps {
   bottomInset?: number
 }
 
-const EditBottomSheet = forwardRef<BottomSheet, EditBottomSheetProps>(
+export interface EditBottomSheetRef {
+  expand: () => void
+  close: () => void
+}
+
+const EditBottomSheet = forwardRef<EditBottomSheetRef, EditBottomSheetProps>(
   (
     {
       selectedDate,

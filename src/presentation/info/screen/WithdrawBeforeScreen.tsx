@@ -1,5 +1,4 @@
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -10,10 +9,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import CheckBoxMenuItem from '../components/CheckBoxMenuItem'
 import CheckBoxWithTextInput from '../components/CheckBoxWithTextInput'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import EmphasizedButton from '../../../shared/components/button/Button'
+import Dialog from '../../../shared/components/dialog/Dialog'
 
 const WithdrawBeforeScreen = () => {
   const navigation = useNavigation<rootNavigation>()
@@ -25,6 +25,7 @@ const WithdrawBeforeScreen = () => {
     other: false,
   })
   const [otherReason, setOtherReason] = useState('')
+  const [isReasonDialogVisible, setIsReasonDialogVisible] = useState(false)
 
   const handleCheck = (key: keyof typeof checkedState) => {
     if (key === 'other' && checkedState.other) {
@@ -43,7 +44,7 @@ const WithdrawBeforeScreen = () => {
     if (isAnyChecked) {
       navigation.navigate('WithdrawScreen')
     } else {
-      Alert.alert('알림', '탈퇴 사유를 선택해주세요.')
+      setIsReasonDialogVisible(true)
     }
   }
 
@@ -114,6 +115,15 @@ const WithdrawBeforeScreen = () => {
             </View>
           </KeyboardAvoidingView>
         </SafeAreaView>
+
+        <Dialog
+          visible={isReasonDialogVisible}
+          title="알림"
+          description="탈퇴 사유를 선택해주세요."
+          onConfirm={() => {
+            setIsReasonDialogVisible(false)
+          }}
+        />
       </View>
     </TouchableWithoutFeedback>
   )

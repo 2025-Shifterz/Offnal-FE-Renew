@@ -1,4 +1,4 @@
-import { WorkType } from '../../../domain/models/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
 import { AlarmWeekdayLabel } from '../../../presentation/alarm/types/alarmDraft'
 import { resolveNextTriggerAtMillis } from './nextTriggerAtMillis'
 
@@ -30,10 +30,10 @@ export interface ResolveAutoAlarmNextTriggerAtMillisInput {
   now?: Date
   alarmTime: Date
   selectedDays: AlarmWeekdayLabel[]
-  selectedWorkType: WorkType
+  selectedWorkType: ShiftType
   isHolidayAlarmOff: boolean
   getHolidayDateSet: (year: string) => Promise<Set<string>>
-  resolveWorkTypeForDate: (dateKey: string) => WorkType | null
+  resolveWorkTypeForDate: (dateKey: string) => ShiftType | null
 }
 
 export const resolveAutoAlarmNextTriggerAtMillis = async ({

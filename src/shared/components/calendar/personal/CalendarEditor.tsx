@@ -13,15 +13,16 @@ dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 import { calendarRepository } from '../../../../infrastructure/di/Dependencies'
 import { CreateCalendarRequest } from '../../../../infrastructure/remote/request/CreateWorkCalendarRequest'
-import { WorkType } from '../../../types/Calendar'
+import { ShiftType } from '../../../types/Calendar'
 import { useCalendarStore } from '../../../../store/useCalendarStore'
-import { Alert, View } from 'react-native'
+import { View } from 'react-native'
 import TypeSelect from './TypeSelect'
 import { fromShiftType } from '../../../../data/mappers/ShiftTypeMapper'
 import { convertEndTimeToDuration } from '../../../utils/calendar/convertDuration'
 import { useScheduleInfoStore } from '../../../../store/useScheduleInfoStore'
 import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { useShallow } from 'zustand/shallow'
+import Dialog from '../../dialog/Dialog'
 
 export interface CalendarEditorRef {
   postData: () => Promise<boolean>
@@ -88,7 +89,7 @@ const CalendarEditor: ForwardRefRenderFunction<
   }
 
   // 근무 형태 추가
-  const handleTypeSelect = (type: WorkType) => {
+  const handleTypeSelect = (type: ShiftType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
 
@@ -101,6 +102,8 @@ const CalendarEditor: ForwardRefRenderFunction<
     E: { startTime: '16:00', duration: 'PT8H' },
     N: { startTime: '00:00', duration: 'PT8H' },
   })
+  const [isValidationDialogVisible, setIsValidationDialogVisible] =
+    useState(false)
 
   // workTimes 에서 endTime -> duration 변환
   useEffect(() => {
@@ -119,14 +122,14 @@ const CalendarEditor: ForwardRefRenderFunction<
       const hasAnyWorkData = Object.keys(allCalendarData).length > 0
 
       if (!hasAnyWorkData) {
-        Alert.alert('알림', '근무 형태를 하나 이상 입력해주세요.')
+        setIsValidationDialogVisible(true)
         return false
       }
       try {
         // 새 캘린더 데이터 생성
         const shifts: Record<string, string> = {}
         Object.entries(allCalendarData).forEach(([date, value]) => {
-          shifts[date] = fromShiftType(value.workTypeName)
+          shifts[date] = fromShiftType(value.shiftTypeName)
         })
 
         newCalendars = [
@@ -172,6 +175,14 @@ const CalendarEditor: ForwardRefRenderFunction<
         calendarData={allCalendarData}
       />
       <TypeSelect onPress={handleTypeSelect} />
+      <Dialog
+        visible={isValidationDialogVisible}
+        title="알림"
+        description="근무 형태를 하나 이상 입력해주세요."
+        onConfirm={() => {
+          setIsValidationDialogVisible(false)
+        }}
+      />
     </View>
   )
 }

@@ -1,3 +1,17 @@
+const fs = require('fs')
+
+const getEnvFile = () => {
+  if (process.env.ENVFILE) {
+    return process.env.ENVFILE
+  }
+
+  try {
+    return fs.readFileSync('/tmp/envfile', 'utf8').trim() || '.env'
+  } catch {
+    return '.env'
+  }
+}
+
 module.exports = {
   presets: ['module:@react-native/babel-preset', 'nativewind/babel'],
   plugins: [
@@ -5,7 +19,7 @@ module.exports = {
       'babel-plugin-dotenv-import',
       {
         moduleName: '@env',
-        path: '.env',
+        path: getEnvFile(),
         safe: false,
         allowUndefined: true,
       },

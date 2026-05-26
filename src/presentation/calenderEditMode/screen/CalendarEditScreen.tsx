@@ -3,16 +3,15 @@ import React, { useMemo, useRef, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import dayjs from 'dayjs'
 import EditScreenHeader from '../components/EditScreenMonthHeader'
-import EditBottomSheet from '../components/EditBottomSheet'
+import EditBottomSheet, {
+  EditBottomSheetRef,
+} from '../components/EditBottomSheet'
 import SuccessIcon from '../../../assets/icons/g-success.svg'
-import BottomSheet from '@gorhom/bottom-sheet'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { calendarRepository } from '../../../infrastructure/di/Dependencies'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
-import { WorkType } from '../../../shared/types/Calendar'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
+import { ShiftType } from '../../../shared/types/Calendar'
 import { useCalendarStore } from '../../../store/useCalendarStore'
 import { toUpdateShiftRecord } from '../mapper/UpdateShiftMapper'
 import CalendarInteractive from '../../../shared/components/calendar/personal/CalendarInteractive'
@@ -46,12 +45,13 @@ const CalendarEditScreen = () => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
 
   // 근무 형태를 눌렀지만 '취소'를 누르면 원래 상태로 되돌아감.
-  const [backupType, setBackupType] = useState<WorkType | null>(null)
+  const [backupType, setBackupType] = useState<ShiftType | null>(null)
+  const [isNoWorkSelected, setIsNoWorkSelected] = useState(false)
 
   // 이 ref가 .expend()를 호출할 수 있어야한다. // EditBottomSheet에게 ref 전달
-  const sheetRef = useRef<BottomSheet>(null)
+  const sheetRef = useRef<EditBottomSheetRef>(null)
 
-  const shiftTypeToId = (type: WorkType | null): number => {
+  const shiftTypeToId = (type: ShiftType | null): number => {
     switch (type) {
       case '주간':
         return 1
@@ -61,6 +61,8 @@ const CalendarEditScreen = () => {
         return 3
       case '휴일':
         return 4
+      case '근무 없음':
+        return 5
       default:
         return 0 // 기본값 없음
     }
@@ -68,29 +70,32 @@ const CalendarEditScreen = () => {
 
   const getSelectedBoxId = () => {
     if (!selectedDate) return 0
+    if (isNoWorkSelected) return 5
 
     const key = selectedDate.format('YYYY-MM-DD')
-    const workType = calendarData[key]?.workTypeName ?? null
+    const workType = calendarData[key]?.shiftTypeName ?? null
 
     return shiftTypeToId(workType)
   }
 
   // 근무 형태 캘린더에 넣기
-  const handleTypeSelect = (type: WorkType) => {
+  const handleTypeSelect = (type: ShiftType) => {
     if (!selectedDate) return
     const key = selectedDate.format('YYYY-MM-DD')
 
     // 상태 업데이트
+    setIsNoWorkSelected(type === '근무 없음')
     updateCalendarDay(key, type)
   }
 
   // 날짜 클릭 시 바텀시트 열기, 바텀시트 열기 전에 근무 형태를 백업
   const openBottomSheet = (date: dayjs.Dayjs) => {
     const key = date.format('YYYY-MM-DD')
-    const currentShift = calendarData[key]?.workTypeName
+    const currentShift = calendarData[key]?.shiftTypeName
 
     setSelectedDate(date)
     setBackupType(currentShift)
+    setIsNoWorkSelected(false)
     sheetRef.current?.expand() // 바텀 시트 열기
   }
   // 취소 시 롤백
@@ -103,16 +108,18 @@ const CalendarEditScreen = () => {
         updateCalendarDay(key, backupType)
       } else {
         // 이전에 근무 형태가 없었으면 삭제
-        const existing = calendarData[key]?.workTypeName
+        const existing = calendarData[key]?.shiftTypeName
         if (existing) {
           updateCalendarDay(key, existing)
         }
       }
     }
+    setIsNoWorkSelected(false)
     sheetRef.current?.close()
   }
 
   const handleConfirmSelection = () => {
+    setIsNoWorkSelected(false)
     sheetRef.current?.close() // 바텀시트만 닫기
   }
 

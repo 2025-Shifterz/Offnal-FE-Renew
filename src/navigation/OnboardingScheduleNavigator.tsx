@@ -2,7 +2,7 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack'
-import { OnboardingStackParamList } from './types/StackTypes'
+import { OnboardingStackParamList } from './types/OnboardingStackParamList'
 import SelectScheduleScope from '../presentation/onboarding/screens/SelectScheduleScopeScreen'
 import CompleteScheduleScreen from '../presentation/onboarding/screens/CompleteScheduleScreen'
 import InputScheduleScreen from '../presentation/onboarding/screens/InputScheduleScreen'

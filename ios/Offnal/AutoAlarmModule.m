@@ -1,16 +1,17 @@
 #import <React/RCTBridgeModule.h>
 #import <UserNotifications/UserNotifications.h>
+#import <sqlite3.h>
 
 static NSString *const AutoAlarmModuleErrorDomain = @"com.shifterz.offnal.AutoAlarmModule";
 static NSString *const AutoAlarmNotificationIdentifierPrefix = @"offnal.auto-alarm.";
 static NSString *const AutoAlarmNotificationCategoryIdentifier = @"offnal.auto-alarm.category";
-static NSString *const AutoAlarmPendingEventsDefaultsKey = @"offnal.auto-alarm.pending-events";
+static NSString *const AutoAlarmNotificationSoundName = @"auto_alarm_v2.caf";
+static NSString *const AutoAlarmDatabaseName = @"myDatabase.db";
 static NSString *const AutoAlarmUserInfoAlarmIdKey = @"alarmId";
-static NSString *const AutoAlarmUserInfoSnoozeKey = @"snooze";
-static NSString *const AutoAlarmUserInfoSnoozeEnabledKey = @"enabled";
-static NSString *const AutoAlarmUserInfoSnoozeIntervalMinutesKey = @"intervalMinutes";
-static NSString *const AutoAlarmUserInfoSnoozeRepeatCountKey = @"repeatCount";
-static NSString *const AutoAlarmUserInfoSnoozeRemainingCountKey = @"remainingCount";
+static NSString *const AutoAlarmUserInfoSnoozeEnabledKey = @"isSnoozeEnabled";
+static NSString *const AutoAlarmUserInfoSnoozeIntervalMinutesKey = @"snoozeIntervalMinutes";
+static NSString *const AutoAlarmUserInfoSnoozeRepeatCountKey = @"snoozeRepeatCount";
+static NSString *const AutoAlarmUserInfoSnoozeRemainingCountKey = @"snoozeRemainingCount";
 
 @interface AutoAlarmModule : NSObject <RCTBridgeModule>
 @end
@@ -29,28 +30,10 @@ RCT_EXPORT_METHOD(scheduleAlarm:(nonnull NSNumber *)alarmId
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  NSDictionary *item = @{
-    @"alarmId": alarmId,
-    @"nextTriggerAtMillis": nextTriggerAtMillis,
-    @"isEnabled": @YES,
-    AutoAlarmUserInfoSnoozeKey: @{
-      AutoAlarmUserInfoSnoozeEnabledKey: @NO,
-      AutoAlarmUserInfoSnoozeIntervalMinutesKey: @0,
-      AutoAlarmUserInfoSnoozeRepeatCountKey: @0,
-      AutoAlarmUserInfoSnoozeRemainingCountKey: @0,
-    },
-  };
-
-  [self scheduleAlarmItem:item resolver:resolve rejecter:reject];
-}
-
-RCT_EXPORT_METHOD(scheduleAlarmItem:(NSDictionary *)item
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-{
-  [self scheduleAlarmItem:item
- shouldCheckAuthorization:YES
-               completion:^(NSError *_Nullable error) {
+  [self scheduleAlarmWithAlarmId:alarmId
+             nextTriggerAtMillis:nextTriggerAtMillis
+           shouldCheckAuthorization:YES
+                       completion:^(NSError *_Nullable error) {
     if (error != nil) {
       reject([self rejectionCodeForError:error defaultCode:@"schedule_failed"], error.localizedDescription, error);
       return;
@@ -78,46 +61,22 @@ RCT_EXPORT_METHOD(syncEnabledAutoAlarms:(NSArray *)alarms
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  NSMutableArray<NSDictionary *> *items = [NSMutableArray arrayWithCapacity:alarms.count];
-  for (id item in alarms) {
-    if (![item isKindOfClass:[NSDictionary class]]) {
-      reject(@"invalid_arguments", @"alarms must be dictionaries.", nil);
-      return;
-    }
-
-    NSDictionary *alarm = (NSDictionary *)item;
-    [items addObject:@{
-      @"alarmId": alarm[@"alarmId"] ?: @0,
-      @"nextTriggerAtMillis": alarm[@"nextTriggerAtMillis"] ?: @0,
-      @"isEnabled": alarm[@"isEnabled"] ?: @NO,
-      AutoAlarmUserInfoSnoozeKey: @{
-        AutoAlarmUserInfoSnoozeEnabledKey: @NO,
-        AutoAlarmUserInfoSnoozeIntervalMinutesKey: @0,
-        AutoAlarmUserInfoSnoozeRepeatCountKey: @0,
-        AutoAlarmUserInfoSnoozeRemainingCountKey: @0,
-      },
-    }];
-  }
-
-  [self syncAlarmItems:items resolver:resolve rejecter:reject];
-}
-
-RCT_EXPORT_METHOD(syncAlarmItems:(NSArray *)items
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-{
-  if (![items isKindOfClass:[NSArray class]]) {
-    reject(@"invalid_arguments", @"items must be an array.", nil);
+  if (![alarms isKindOfClass:[NSArray class]]) {
+    reject(@"invalid_arguments", @"alarms must be an array.", nil);
     return;
   }
 
-  NSMutableArray<NSDictionary *> *validatedItems = [NSMutableArray arrayWithCapacity:items.count];
+  NSMutableArray<NSDictionary *> *validatedItems = [NSMutableArray arrayWithCapacity:alarms.count];
   BOOL requiresAuthorization = NO;
 
-  for (NSUInteger index = 0; index < items.count; index++) {
-    id item = items[index];
+  for (NSUInteger index = 0; index < alarms.count; index++) {
+    id item = alarms[index];
     if (![item isKindOfClass:[NSDictionary class]]) {
-      reject(@"invalid_arguments", [NSString stringWithFormat:@"Invalid alarm item at index %lu.", (unsigned long)index], nil);
+      reject(
+        @"invalid_arguments",
+        [NSString stringWithFormat:@"Invalid alarm item at index %lu.", (unsigned long)index],
+        nil
+      );
       return;
     }
 
@@ -127,25 +86,42 @@ RCT_EXPORT_METHOD(syncAlarmItems:(NSArray *)items
     id nextTriggerValue = alarm[@"nextTriggerAtMillis"];
 
     if (![alarmIdValue isKindOfClass:[NSNumber class]]) {
-      reject(@"invalid_arguments", [NSString stringWithFormat:@"alarmId must be a number at index %lu.", (unsigned long)index], nil);
+      reject(
+        @"invalid_arguments",
+        [NSString stringWithFormat:@"alarmId must be a number at index %lu.", (unsigned long)index],
+        nil
+      );
       return;
     }
 
     if (![isEnabledValue isKindOfClass:[NSNumber class]]) {
-      reject(@"invalid_arguments", [NSString stringWithFormat:@"isEnabled must be a boolean at index %lu.", (unsigned long)index], nil);
+      reject(
+        @"invalid_arguments",
+        [NSString stringWithFormat:@"isEnabled must be a boolean at index %lu.", (unsigned long)index],
+        nil
+      );
       return;
     }
 
     BOOL isEnabled = [isEnabledValue boolValue];
     if (isEnabled) {
       if (![nextTriggerValue isKindOfClass:[NSNumber class]]) {
-        reject(@"invalid_arguments", [NSString stringWithFormat:@"nextTriggerAtMillis must be a number at index %lu.", (unsigned long)index], nil);
+        reject(
+          @"invalid_arguments",
+          [NSString stringWithFormat:@"nextTriggerAtMillis must be a number at index %lu.", (unsigned long)index],
+          nil
+        );
         return;
       }
+
       requiresAuthorization = YES;
     }
 
-    [validatedItems addObject:alarm];
+    [validatedItems addObject:@{
+      @"alarmId": alarmIdValue,
+      @"isEnabled": isEnabledValue,
+      @"nextTriggerAtMillis": [nextTriggerValue isKindOfClass:[NSNumber class]] ? nextTriggerValue : @0,
+    }];
   }
 
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -162,25 +138,12 @@ RCT_EXPORT_METHOD(syncAlarmItems:(NSArray *)items
 
       if (!granted) {
         NSError *permissionError = [self permissionRequiredError];
-        reject([self rejectionCodeForError:permissionError defaultCode:@"sync_failed"], permissionError.localizedDescription, permissionError);
+        reject(permissionError.domain, permissionError.localizedDescription, permissionError);
         return;
       }
 
       [self processSyncItems:validatedItems index:0 resolve:resolve reject:reject];
     }];
-  });
-}
-
-RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject)
-{
-  dispatch_async(dispatch_get_main_queue(), ^{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *pendingEvents = [defaults arrayForKey:AutoAlarmPendingEventsDefaultsKey];
-    [defaults removeObjectForKey:AutoAlarmPendingEventsDefaultsKey];
-    [defaults synchronize];
-
-    resolve(pendingEvents ?: @[]);
   });
 }
 
@@ -196,12 +159,14 @@ RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
 
   NSDictionary *item = items[index];
   NSNumber *alarmId = item[@"alarmId"];
+  NSNumber *nextTriggerAtMillis = item[@"nextTriggerAtMillis"];
   BOOL isEnabled = [item[@"isEnabled"] boolValue];
 
   if (isEnabled) {
-    [self scheduleAlarmItem:item
-     shouldCheckAuthorization:NO
-                 completion:^(NSError *_Nullable error) {
+    [self scheduleAlarmWithAlarmId:alarmId
+                 nextTriggerAtMillis:nextTriggerAtMillis
+               shouldCheckAuthorization:NO
+                           completion:^(NSError *_Nullable error) {
       if (error != nil) {
         reject([self rejectionCodeForError:error defaultCode:@"sync_failed"], error.localizedDescription, error);
         return;
@@ -222,13 +187,11 @@ RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
   }];
 }
 
-- (void)scheduleAlarmItem:(NSDictionary *)item
- shouldCheckAuthorization:(BOOL)shouldCheckAuthorization
-               completion:(void (^)(NSError *_Nullable error))completion
+- (void)scheduleAlarmWithAlarmId:(NSNumber *)alarmId
+             nextTriggerAtMillis:(NSNumber *)nextTriggerAtMillis
+           shouldCheckAuthorization:(BOOL)shouldCheckAuthorization
+                       completion:(void (^)(NSError *_Nullable error))completion
 {
-  NSNumber *alarmId = item[@"alarmId"];
-  NSNumber *nextTriggerAtMillis = item[@"nextTriggerAtMillis"];
-
   if (![alarmId isKindOfClass:[NSNumber class]] || alarmId.integerValue <= 0) {
     completion([self invalidAlarmIdError]);
     return;
@@ -258,12 +221,16 @@ RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
           return;
         }
 
-        [self addNotificationForItem:item completion:completion];
+        [self addNotificationForAlarmId:alarmId
+                       nextTriggerAtMillis:nextTriggerAtMillis
+                               completion:completion];
       }];
       return;
     }
 
-    [self addNotificationForItem:item completion:completion];
+    [self addNotificationForAlarmId:alarmId
+                   nextTriggerAtMillis:nextTriggerAtMillis
+                           completion:completion];
   });
 }
 
@@ -284,11 +251,10 @@ RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
   });
 }
 
-- (void)addNotificationForItem:(NSDictionary *)item
-                    completion:(void (^)(NSError *_Nullable error))completion
+- (void)addNotificationForAlarmId:(NSNumber *)alarmId
+              nextTriggerAtMillis:(NSNumber *)nextTriggerAtMillis
+                      completion:(void (^)(NSError *_Nullable error))completion
 {
-  NSNumber *alarmId = item[@"alarmId"];
-  NSNumber *nextTriggerAtMillis = item[@"nextTriggerAtMillis"];
   NSString *identifier = [self notificationIdentifierForAlarmId:alarmId];
   NSDate *triggerDate = [NSDate dateWithTimeIntervalSince1970:nextTriggerAtMillis.doubleValue / 1000.0];
 
@@ -306,11 +272,11 @@ RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
   UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
   content.title = @"알람";
   content.body = @"일어날 시간이에요.";
-  content.sound = [UNNotificationSound defaultSound];
+  content.sound = [UNNotificationSound soundNamed:AutoAlarmNotificationSoundName];
   content.categoryIdentifier = AutoAlarmNotificationCategoryIdentifier;
   content.threadIdentifier = AutoAlarmNotificationCategoryIdentifier;
   content.interruptionLevel = UNNotificationInterruptionLevelTimeSensitive;
-  content.userInfo = [self notificationUserInfoForItem:item];
+  content.userInfo = [self notificationUserInfoForAlarmId:alarmId];
 
   UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:components repeats:NO];
   UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:trigger];
@@ -404,36 +370,79 @@ RCT_EXPORT_METHOD(consumePendingEvents:(RCTPromiseResolveBlock)resolve
   return [NSString stringWithFormat:@"%@%@", AutoAlarmNotificationIdentifierPrefix, alarmId.stringValue];
 }
 
-- (NSDictionary<NSString *, id> *)notificationUserInfoForItem:(NSDictionary *)item
+- (NSDictionary<NSString *, id> *)notificationUserInfoForAlarmId:(NSNumber *)alarmId
 {
-  NSNumber *alarmId = item[@"alarmId"];
-  NSDictionary *snooze = [item[AutoAlarmUserInfoSnoozeKey] isKindOfClass:[NSDictionary class]]
-    ? item[AutoAlarmUserInfoSnoozeKey]
-    : @{};
-
-  BOOL isSnoozeEnabled = [snooze[AutoAlarmUserInfoSnoozeEnabledKey] boolValue];
-  NSInteger snoozeIntervalMinutes = [snooze[AutoAlarmUserInfoSnoozeIntervalMinutesKey] integerValue];
-  NSInteger snoozeRepeatCount = [snooze[AutoAlarmUserInfoSnoozeRepeatCountKey] integerValue];
-  id remainingCountValue = snooze[AutoAlarmUserInfoSnoozeRemainingCountKey];
-
-  NSInteger snoozeRemainingCount;
-  if (!isSnoozeEnabled) {
-    snoozeRemainingCount = 0;
-  } else if (remainingCountValue == nil || remainingCountValue == [NSNull null]) {
-    snoozeRemainingCount = snoozeRepeatCount == 0 ? -1 : snoozeRepeatCount;
-  } else {
-    snoozeRemainingCount = [remainingCountValue integerValue];
-  }
+  NSDictionary<NSString *, NSNumber *> *runtimeConfig = [self loadRuntimeConfigForAlarmId:alarmId];
+  BOOL isSnoozeEnabled = runtimeConfig[AutoAlarmUserInfoSnoozeEnabledKey] != nil
+    ? runtimeConfig[AutoAlarmUserInfoSnoozeEnabledKey].boolValue
+    : NO;
+  NSInteger snoozeIntervalMinutes = runtimeConfig[AutoAlarmUserInfoSnoozeIntervalMinutesKey] != nil
+    ? runtimeConfig[AutoAlarmUserInfoSnoozeIntervalMinutesKey].integerValue
+    : 0;
+  NSInteger snoozeRepeatCount = runtimeConfig[AutoAlarmUserInfoSnoozeRepeatCountKey] != nil
+    ? runtimeConfig[AutoAlarmUserInfoSnoozeRepeatCountKey].integerValue
+    : 0;
+  NSInteger snoozeRemainingCount = isSnoozeEnabled
+    ? (snoozeRepeatCount == 0 ? -1 : snoozeRepeatCount)
+    : 0;
 
   return @{
     AutoAlarmUserInfoAlarmIdKey: alarmId,
-    AutoAlarmUserInfoSnoozeKey: @{
-      AutoAlarmUserInfoSnoozeEnabledKey: @(isSnoozeEnabled),
-      AutoAlarmUserInfoSnoozeIntervalMinutesKey: @(snoozeIntervalMinutes),
-      AutoAlarmUserInfoSnoozeRepeatCountKey: @(snoozeRepeatCount),
-      AutoAlarmUserInfoSnoozeRemainingCountKey: @(snoozeRemainingCount),
-    },
+    AutoAlarmUserInfoSnoozeEnabledKey: @(isSnoozeEnabled),
+    AutoAlarmUserInfoSnoozeIntervalMinutesKey: @(snoozeIntervalMinutes),
+    AutoAlarmUserInfoSnoozeRepeatCountKey: @(snoozeRepeatCount),
+    AutoAlarmUserInfoSnoozeRemainingCountKey: @(snoozeRemainingCount),
   };
+}
+
+- (NSDictionary<NSString *, NSNumber *> *)loadRuntimeConfigForAlarmId:(NSNumber *)alarmId
+{
+  NSString *databasePath = [self databasePath];
+  if (databasePath == nil) {
+    return nil;
+  }
+
+  sqlite3 *database = NULL;
+  if (sqlite3_open_v2(databasePath.UTF8String, &database, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+    if (database != NULL) {
+      sqlite3_close(database);
+    }
+    return nil;
+  }
+
+  const char *sql = "SELECT isSnoozeEnabled, snoozeIntervalMinutes, snoozeRepeatCount FROM auto_alarms WHERE id = ? LIMIT 1;";
+  sqlite3_stmt *statement = NULL;
+  if (sqlite3_prepare_v2(database, sql, -1, &statement, NULL) != SQLITE_OK) {
+    sqlite3_close(database);
+    return nil;
+  }
+
+  sqlite3_bind_int(statement, 1, alarmId.intValue);
+
+  NSDictionary<NSString *, NSNumber *> *runtimeConfig = nil;
+  if (sqlite3_step(statement) == SQLITE_ROW) {
+    runtimeConfig = @{
+      AutoAlarmUserInfoSnoozeEnabledKey: @(sqlite3_column_int(statement, 0) == 1),
+      AutoAlarmUserInfoSnoozeIntervalMinutesKey: @(sqlite3_column_int(statement, 1)),
+      AutoAlarmUserInfoSnoozeRepeatCountKey: @(sqlite3_column_int(statement, 2)),
+    };
+  }
+
+  sqlite3_finalize(statement);
+  sqlite3_close(database);
+
+  return runtimeConfig;
+}
+
+- (NSString *)databasePath
+{
+  NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsPath = paths.firstObject;
+  if (documentsPath == nil) {
+    return nil;
+  }
+
+  return [documentsPath stringByAppendingPathComponent:AutoAlarmDatabaseName];
 }
 
 @end

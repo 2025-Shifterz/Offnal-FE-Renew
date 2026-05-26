@@ -1,4 +1,4 @@
-import { TimeFrameChildren } from '../../../calenderType/components/TimeFrame'
+import { TimeFrameChildren } from '../../components/calendar/TimeFrame'
 
 // 근무표 정보 조회하기
 // rawData를 formatted 된 예시 데이터 형식으로.

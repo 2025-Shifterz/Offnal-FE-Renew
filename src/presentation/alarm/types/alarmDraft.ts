@@ -1,4 +1,4 @@
-import { WorkType } from '../../../domain/models/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
 
 export type AlarmSnoozeIntervalMinutes = 1 | 3 | 5 | 10 | 15
 export type AlarmSnoozeRepeatCount = 1 | 3 | 5 | 10 | 'infinite'
@@ -18,7 +18,7 @@ export interface AlarmSnoozeSetting {
 export interface AlarmDraft {
   id?: number
   alarmTime: Date
-  selectedWorkType: WorkType
+  selectedWorkType: ShiftType
   selectedDays: AlarmWeekdayLabel[]
   isHolidayAlarmOff: boolean
   snoozeSetting: AlarmSnoozeSetting

@@ -2,18 +2,18 @@ import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { twMerge } from 'tailwind-merge'
 import TimeFrame from '../../../shared/components/calendar/TimeFrame'
-import { WorkType } from '../../../shared/types/Calendar'
+import { ShiftType } from '../../../shared/types/Calendar'
 import { fromShiftType } from '../../../data/mappers/ShiftTypeMapper'
 import { WorkTime } from '../../../domain/models/WorkTime'
 
 interface SelectShiftBoxProps {
   selectedBoxId: number
-  handleTypeSelect: (type: WorkType) => void
+  handleTypeSelect: (type: ShiftType) => void
   workTimes: WorkTime
 }
 
 // 근무형태 선택 박스 map 데이터
-const shiftTypes: { id: number; text: WorkType }[] = [
+const shiftTypes: { id: number; text: ShiftType }[] = [
   { id: 1, text: '주간' },
   { id: 2, text: '오후' },
   { id: 3, text: '야간' },
@@ -29,7 +29,7 @@ const SelectShiftBox = ({
     <View className="gap-[7px]">
       {shiftTypes.map(({ id, text }) => {
         const key = fromShiftType(text)
-        const time = workTimes[key]
+        const time = key !== '' ? workTimes[key] : undefined
         const isSelected = selectedBoxId === id
         const selectedDivStyle = isSelected
           ? 'border-border-primary bg-surface-primary-light'

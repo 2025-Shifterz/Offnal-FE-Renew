@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { WorkType } from '../../../domain/models/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
 import { getHolidayDateSetUseCase } from '../../../infrastructure/di/Dependencies'
 import { useCurrentTimeTick } from '../../../shared/hooks/useCurrentTimeTick'
 import { useCalendarStore } from '../../../store/useCalendarStore'
@@ -13,7 +13,7 @@ import { resolveAutoAlarmNextTriggerAtMillis } from '../../../shared/utils/alarm
 interface UseAutoAlarmNextTriggerPreviewInput {
   alarmTime: Date
   selectedDays: AlarmWeekdayLabel[]
-  selectedWorkType: WorkType
+  selectedWorkType: ShiftType
   isHolidayAlarmOff: boolean
   isReady?: boolean
 }

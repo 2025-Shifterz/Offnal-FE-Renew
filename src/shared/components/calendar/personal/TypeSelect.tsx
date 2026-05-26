@@ -1,16 +1,14 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-
 import TimeFrame, { TimeFrameChildren } from '../TimeFrame'
 import DashedDivider from '../../divider/DashedDivider'
 
-const types: TimeFrameChildren[] = ['주간', '오후', '야간', '휴일']
+const types: TimeFrameChildren[] = ['주간', '오후', '야간', '휴일', '근무 없음']
 
 interface TypeSelectProps {
   onPress: (type: TimeFrameChildren) => void
 }
 
-// onPress('주간')을 호출하면 handleTypeSelect('주간')을 실행하게 된다.
 const TypeSelect = ({ onPress }: TypeSelectProps) => {
   return (
     <>

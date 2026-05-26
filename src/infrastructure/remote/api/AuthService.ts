@@ -49,15 +49,18 @@ export class AuthService {
       const response = await axiosInstance.post('/tokens/reissue', {
         refreshToken,
       })
-      console.log(`/tokens/reissue (${instanceName}) 응답:`, response.data)
+      if (__DEV__) {
+        console.log(
+          `/tokens/reissue (${instanceName}) status:`,
+          response.status
+        )
+      }
       return response.data.data
     } catch (error: unknown) {
-      const responseError = error as { response?: { data?: unknown } }
-      console.error(`/tokens/reissue (${instanceName}) API 요청 실패:`, error)
-      console.log(
-        `/tokens/reissue (${instanceName}) 응답:`,
-        responseError.response?.data
-      )
+      const responseError = error as { response?: { status?: number } }
+      console.error(`/tokens/reissue (${instanceName}) API 요청 실패:`, {
+        status: responseError.response?.status,
+      })
       throw error
     }
   }
