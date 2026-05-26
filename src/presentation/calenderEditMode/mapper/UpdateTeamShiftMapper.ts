@@ -9,9 +9,9 @@ export function toUpdateTeamShiftRecord(
     calendars: teamCalendarData.map(t => ({
       team: t.team,
       shifts: Object.fromEntries(
-        Object.entries(t.workInstances).map(([date, instance]) => [
+        Object.entries(t.shiftInstances).map(([date, instance]) => [
           date,
-          fromShiftType(instance.workTypeName),
+          fromShiftType(instance.shiftTypeName),
         ])
       ),
     })),

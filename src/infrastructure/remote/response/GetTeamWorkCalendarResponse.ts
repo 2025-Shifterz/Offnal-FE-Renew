@@ -1,4 +1,4 @@
-import { WorkType } from '../../../shared/types/Calendar'
+import { ShiftType } from '../../../shared/types/Calendar'
 
 export interface GetTeamWorkCalendarResponse {
   code: string
@@ -18,7 +18,7 @@ export interface GetTeamWorkCalendarTeamsArray {
 
 export interface GetTeamWorkCalendarWorkInstancesArray {
   date: string
-  workType: WorkType
+  workType: ShiftType
   startTime: string
   duration: string
 }

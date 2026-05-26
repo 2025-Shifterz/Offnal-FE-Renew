@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { View, Alert } from 'react-native'
+import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MonthPicker } from '../../component/MonthPicker'
 import { useNavigation } from '@react-navigation/native'
@@ -10,6 +10,7 @@ import { OnboardingStep } from '../../types/onboardingTypes'
 import { OnboardingRoute } from '../../../../navigation/types/OnboardingRoute'
 import GlobalText from '../../../../shared/components/text/GlobalText'
 import EmphasizedButton from '../../../../shared/components/button/Button'
+import Dialog from '../../../../shared/components/dialog/Dialog'
 
 const SelectMonthOCRScreen = () => {
   const navigation = useNavigation<{
@@ -21,6 +22,7 @@ const SelectMonthOCRScreen = () => {
     year: new Date().getFullYear(),
     month: null,
   })
+  const [isMonthDialogVisible, setIsMonthDialogVisible] = useState(false)
 
   const handleDateChange = useCallback((year: number, month: number | null) => {
     setDate({ year, month })
@@ -40,11 +42,7 @@ const SelectMonthOCRScreen = () => {
         },
       } as OnboardingRoute)
     } else {
-      Alert.alert(
-        '월을 선택해주세요',
-        '근무 월을 선택하지 않으면 다음 단계로 넘어갈 수 없습니다.',
-        [{ text: '확인', onPress: () => {} }]
-      )
+      setIsMonthDialogVisible(true)
     }
   }
 
@@ -66,6 +64,15 @@ const SelectMonthOCRScreen = () => {
             </GlobalText>
           }
           onPress={handleNext}
+        />
+
+        <Dialog
+          visible={isMonthDialogVisible}
+          title="월을 선택해주세요"
+          description="근무 월을 선택하지 않으면 다음 단계로 넘어갈 수 없습니다."
+          onConfirm={() => {
+            setIsMonthDialogVisible(false)
+          }}
         />
       </SafeAreaView>
     </View>

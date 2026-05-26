@@ -1,5 +1,4 @@
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,7 +10,7 @@ import { useState } from 'react'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import StarRating from '../../../shared/components/rating/StarRating'
 import { useNavigation } from '@react-navigation/native'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import RatingChip from '../../../shared/components/chip/RatingChip'
 import EmphasizedButton from '../../../shared/components/button/Button'
 import Dialog from '../../../shared/components/dialog/Dialog'

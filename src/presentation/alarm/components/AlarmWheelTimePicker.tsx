@@ -1,17 +1,10 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import {
-  FlatList,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  View,
-} from 'react-native'
-import GlobalText from '../../../shared/components/text/GlobalText'
+import { useMemo } from 'react'
+import { StyleSheet, View } from 'react-native'
 
-const ITEM_HEIGHT = 41
-const VISIBLE_ROWS = 5
-const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ROWS
-const SIDE_PADDING_ROWS = Math.floor(VISIBLE_ROWS / 2)
+import WheelPickerColumn, {
+  WHEEL_PICKER_ITEM_HEIGHT,
+  WHEEL_PICKER_PICKER_HEIGHT,
+} from '../../../shared/components/picker/WheelPickerColumn'
 
 const periods = ['오전', '오후'] as const
 const hours = Array.from({ length: 12 }, (_, index) => `${index + 1}`)
@@ -30,147 +23,8 @@ const to24Hour = (period: Period, hour12: number) => {
   if (period === '오전') {
     return hour12 === 12 ? 0 : hour12
   }
+
   return hour12 === 12 ? 12 : hour12 + 12
-}
-
-const clampIndex = (index: number, maxIndex: number) => {
-  if (index < 0) {
-    return 0
-  }
-  if (index > maxIndex) {
-    return maxIndex
-  }
-  return index
-}
-
-type WheelColumnProps = {
-  currentIndex: number
-  data: string[]
-  onIndexChange: (index: number) => void
-  textAlign: 'center' | 'left' | 'right'
-  width: number
-}
-
-const WheelColumn = ({
-  currentIndex,
-  data,
-  onIndexChange,
-  textAlign,
-  width,
-}: WheelColumnProps) => {
-  const listRef = useRef<FlatList<string>>(null)
-  const mountedRef = useRef(false)
-  const isDraggingRef = useRef(false)
-  const displayIndexRef = useRef(currentIndex)
-  const [displayIndex, setDisplayIndex] = useState(currentIndex)
-
-  const syncDisplayIndex = (nextIndex: number) => {
-    if (displayIndexRef.current === nextIndex) {
-      return
-    }
-    displayIndexRef.current = nextIndex
-    setDisplayIndex(nextIndex)
-  }
-
-  useLayoutEffect(() => {
-    const nextOffset = currentIndex * ITEM_HEIGHT
-
-    if (!mountedRef.current) {
-      mountedRef.current = true
-      displayIndexRef.current = currentIndex
-      setDisplayIndex(currentIndex)
-      listRef.current?.scrollToOffset({
-        animated: false,
-        offset: nextOffset,
-      })
-      return
-    }
-
-    if (isDraggingRef.current) {
-      return
-    }
-
-    if (displayIndexRef.current === currentIndex) {
-      return
-    }
-
-    displayIndexRef.current = currentIndex
-    setDisplayIndex(currentIndex)
-    listRef.current?.scrollToOffset({
-      animated: false,
-      offset: nextOffset,
-    })
-  }, [currentIndex])
-
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    if (!isDraggingRef.current) {
-      return
-    }
-
-    const rawIndex = Math.round(event.nativeEvent.contentOffset.y / ITEM_HEIGHT)
-    syncDisplayIndex(clampIndex(rawIndex, data.length - 1))
-  }
-
-  const onScrollBeginDrag = () => {
-    isDraggingRef.current = true
-  }
-
-  const onMomentumEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const rawIndex = Math.round(event.nativeEvent.contentOffset.y / ITEM_HEIGHT)
-    const nextIndex = clampIndex(rawIndex, data.length - 1)
-    isDraggingRef.current = false
-    syncDisplayIndex(nextIndex)
-
-    if (nextIndex === currentIndex) {
-      listRef.current?.scrollToOffset({
-        animated: false,
-        offset: nextIndex * ITEM_HEIGHT,
-      })
-      return
-    }
-
-    onIndexChange(nextIndex)
-  }
-
-  return (
-    <FlatList
-      ref={listRef}
-      bounces={false}
-      data={data}
-      decelerationRate="fast"
-      getItemLayout={(_, index) => ({
-        index,
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-      })}
-      keyExtractor={(item, index) => `${item}-${index}`}
-      onScroll={onScroll}
-      onScrollBeginDrag={onScrollBeginDrag}
-      onMomentumScrollEnd={onMomentumEnd}
-      scrollEventThrottle={16}
-      renderItem={({ item, index }) => {
-        const distance = Math.abs(index - displayIndex)
-        const opacity = distance === 0 ? 1 : distance === 1 ? 0.82 : 0.38
-        return (
-          <View style={styles.item}>
-            <GlobalText
-              className="font-pretSemiBold text-text-subtle heading-l"
-              style={{ opacity, textAlign }}
-            >
-              {item}
-            </GlobalText>
-          </View>
-        )
-      }}
-      showsVerticalScrollIndicator={false}
-      snapToAlignment="start"
-      snapToInterval={ITEM_HEIGHT}
-      style={{ width }}
-      contentContainerStyle={{
-        paddingVertical: SIDE_PADDING_ROWS * ITEM_HEIGHT,
-      }}
-    />
-  )
 }
 
 const AlarmWheelTimePicker = ({
@@ -181,6 +35,7 @@ const AlarmWheelTimePicker = ({
     const hour24 = value.getHours()
     const period: Period = hour24 < 12 ? '오전' : '오후'
     const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12
+
     return {
       hour12,
       minute: value.getMinutes(),
@@ -213,9 +68,9 @@ const AlarmWheelTimePicker = ({
 
       <View
         className="flex-row items-center justify-center px-[26px]"
-        style={styles.body}
+        style={{ height: WHEEL_PICKER_PICKER_HEIGHT }}
       >
-        <WheelColumn
+        <WheelPickerColumn
           currentIndex={timeState.period === '오전' ? 0 : 1}
           data={[...periods]}
           onIndexChange={nextPeriodIndex =>
@@ -228,7 +83,7 @@ const AlarmWheelTimePicker = ({
           textAlign="left"
           width={96}
         />
-        <WheelColumn
+        <WheelPickerColumn
           currentIndex={timeState.hour12 - 1}
           data={hours}
           onIndexChange={nextHourIndex =>
@@ -237,7 +92,7 @@ const AlarmWheelTimePicker = ({
           textAlign="center"
           width={64}
         />
-        <WheelColumn
+        <WheelPickerColumn
           currentIndex={timeState.minute}
           data={minutes}
           onIndexChange={nextMinute =>
@@ -254,32 +109,24 @@ const AlarmWheelTimePicker = ({
 export default AlarmWheelTimePicker
 
 const styles = StyleSheet.create({
-  body: {
-    height: PICKER_HEIGHT,
-  },
   centerBar: {
     height: 48,
-    top: (PICKER_HEIGHT - 48) / 2,
+    top: (WHEEL_PICKER_PICKER_HEIGHT - 48) / 2,
   },
   fadeBottom: {
-    backgroundColor: 'rgba(244,245,246,0.68)',
+    backgroundColor: 'rgba(244, 245, 246, 0.68)',
     bottom: 0,
-    height: ITEM_HEIGHT * 2,
+    height: WHEEL_PICKER_ITEM_HEIGHT * 2,
     left: 0,
     position: 'absolute',
     right: 0,
   },
   fadeTop: {
-    backgroundColor: 'rgba(244,245,246,0.68)',
-    height: ITEM_HEIGHT * 2,
+    backgroundColor: 'rgba(244, 245, 246, 0.68)',
+    height: WHEEL_PICKER_ITEM_HEIGHT * 2,
     left: 0,
     position: 'absolute',
     right: 0,
     top: 0,
-  },
-  item: {
-    alignItems: 'center',
-    height: ITEM_HEIGHT,
-    justifyContent: 'center',
   },
 })

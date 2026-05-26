@@ -3,7 +3,7 @@ import React from 'react'
 import dayjs from 'dayjs'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import TimeFrame from '../TimeFrame'
-import { DateAndWorkTypeRecord } from '../../../types/Calendar'
+import { DateAndShiftTypeRecord } from '../../../types/Calendar'
 
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토']
 const textInformation = '#096AB3'
@@ -12,7 +12,7 @@ const textDanger = '#BD2C0F'
 interface CalendarBaseProps {
   selectedDate: dayjs.Dayjs | null
   onDatePress: (date: dayjs.Dayjs) => void
-  calendarData: DateAndWorkTypeRecord
+  calendarData: DateAndShiftTypeRecord
   currentDate: dayjs.Dayjs
 }
 
@@ -54,7 +54,7 @@ const CalendarBase = ({
           else if (weekDay === 6) textColor = textInformation
 
           const key = date.format('YYYY-MM-DD')
-          const time = calendarData?.[key]?.workTypeName
+          const time = calendarData?.[key]?.shiftTypeName
 
           weekDays.push(
             <TouchableOpacity
@@ -68,7 +68,7 @@ const CalendarBase = ({
                   style={{ overflow: 'hidden' }}
                   className={`h-[30px] w-[30px] items-center justify-center rounded-radius-max ${
                     isSelected
-                      ? 'bg-border-primary'
+                      ? 'bg-surface-inverse'
                       : isToday
                         ? 'bg-surface-gray-subtle1'
                         : ''
@@ -78,14 +78,14 @@ const CalendarBase = ({
                     className={`text-text-danger heading-xxxs`}
                     style={[
                       { color: textColor },
-                      isSelected && { color: 'white' },
+                      isSelected && { color: '#FFFFFF' },
                     ]}
                   >
                     {dayCounter}
                   </Text>
                 </View>
-                <View className="h-[30px]">
-                  {time && <TimeFrame text={time} />}
+                <View className="h-[30px] items-center justify-center">
+                  <TimeFrame text={time ?? '근무 없음'} />
                 </View>
               </View>
             </TouchableOpacity>

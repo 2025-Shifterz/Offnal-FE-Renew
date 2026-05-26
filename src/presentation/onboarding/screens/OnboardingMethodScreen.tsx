@@ -4,10 +4,8 @@ import CalendarYellow from '../../../assets/icons/calendar_yellow.svg'
 import CalendarBlue from '../../../assets/icons/calendar_blue.svg'
 import RegMethod from '../component/RegMethod'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import {
-  rootNavigation,
-  RootStackParamList,
-} from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import GlobalText from '../../../shared/components/text/GlobalText'
 import { OnboardingMethod } from '../types/onboardingTypes'

@@ -1,5 +1,3 @@
-import { WorkTypeEn } from '../../../shared/types/Calendar'
-
 export interface InputWorkTimeDetail {
   startTime: string
   endTime: string

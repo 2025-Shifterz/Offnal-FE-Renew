@@ -7,7 +7,7 @@ interface TypeSelectProps {
   onPressSelect: (team: string, type: TimeFrameChildren) => void
 }
 
-const types: TimeFrameChildren[] = ['주간', '오후', '야간', '휴일']
+const types: TimeFrameChildren[] = ['주간', '오후', '야간', '휴일', '근무 없음']
 const teams = ['1조', '2조', '3조', '4조']
 
 // onPressSelect('1조','주간')을 호출

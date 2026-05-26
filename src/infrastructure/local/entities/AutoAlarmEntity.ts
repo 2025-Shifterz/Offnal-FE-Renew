@@ -1,4 +1,4 @@
-import { WorkType } from '../../../domain/models/Calendar'
+import { ShiftType } from '../../../domain/models/Calendar'
 
 /**
  * ## AutoAlarmEntity
@@ -10,7 +10,7 @@ import { WorkType } from '../../../domain/models/Calendar'
  * @property {number} id - 알람 고유 ID
  * @property {number} hour - 알람 시간 (시)
  * @property {number} minute - 알람 시간 (분)
- * @property {WorkType} workTypeTitle - 근무 유형
+ * @property {ShiftType} workTypeTitle - 근무 유형
  * @property {number[]} weekdays - 반복 요일 (0: 일요일, 1: 월요일, ...)
  * @property {boolean} isEnabled - 알람 활성화 여부
  * @property {boolean} isHolidayDisabled - 휴일 알람 비활성화 여부
@@ -25,7 +25,7 @@ export interface AutoAlarmEntity {
   id: number
   hour: number
   minute: number
-  workTypeTitle: WorkType
+  workTypeTitle: ShiftType
   weekdays: number[]
   isEnabled: boolean
   isHolidayDisabled: boolean

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import NoteIcon from '../../../assets/icons/ic_note_24.svg'
 import { useNavigation } from '@react-navigation/native'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Memo } from '../../../domain/models/Memo'
 import dayjs from 'dayjs'

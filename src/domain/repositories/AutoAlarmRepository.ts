@@ -1,10 +1,10 @@
-import { WorkType } from '../models/Calendar'
+import { ShiftType } from '../models/Calendar'
 import { AutoAlarm } from '../models/AutoAlarm'
 
 export interface CreateAutoAlarmInput {
   hour: number
   minute: number
-  workTypeTitle: WorkType
+  workTypeTitle: ShiftType
   weekdays: number[]
   isEnabled: boolean
   isHolidayDisabled: boolean

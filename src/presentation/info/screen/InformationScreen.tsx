@@ -1,11 +1,11 @@
-import { Alert, ScrollView, View } from 'react-native'
+import { ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MyInformationCard from '../components/MyInformationCard'
 import InformationMenuContainer, {
   MenuItemProps,
 } from '../components/InformationMenuContainer'
 import { useCallback, useMemo, useState } from 'react'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import { rootNavigation } from '../../../navigation/types/NavigationProps'
 import {
   CommonActions,
   useFocusEffect,
@@ -104,8 +104,12 @@ const InformationScreen = () => {
   return (
     <View className="flex-1 bg-surface-gray-subtle1">
       <SafeAreaView className="flex-1" edges={['bottom']}>
-        <ScrollView className="flex-1 px-p-7">
-          <View className="flex-col gap-g-2">
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="px-p-7"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="flex-col gap-g-3">
             <MyInformationCard
               profileName={user?.memberName ?? ''}
               profileImgUrl={user?.profileImageUrl ?? ''}
@@ -118,7 +122,7 @@ const InformationScreen = () => {
               menuItems={informationMenus}
             />
             <InformationMenuContainer
-              menuTitle="운영 방침"
+              menuTitle="운영방침"
               menuItems={termsOfUseMenus}
             />
             <InformationMenuContainer menuTitle="기타" menuItems={otherMenus} />

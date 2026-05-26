@@ -5,7 +5,7 @@ import React, {
   ForwardRefRenderFunction,
   forwardRef,
 } from 'react'
-import { Alert, View } from 'react-native'
+import { View } from 'react-native'
 import dayjs from 'dayjs'
 import TCalendarBase from './TCalendarBase'
 import TeamTypeSelect from './TeamTypeSelect'
@@ -23,6 +23,7 @@ import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
 import { UpdateTeamShiftsRequest } from '../../../../infrastructure/remote/request/PatchTeamWorkCalendarRequest'
 import { useShallow } from 'zustand/shallow'
+import Dialog from '../../dialog/Dialog'
 
 export interface TCalendarEditorRef {
   postData: () => Promise<boolean>
@@ -36,6 +37,8 @@ const TCalendarEditor: ForwardRefRenderFunction<
   }
 > = ({ currentDate, myTeam }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
+  const [isValidationDialogVisible, setIsValidationDialogVisible] =
+    useState(false)
 
   const {
     teamCalendarData,
@@ -87,7 +90,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
     updateNewTeamCalendarDay({
       team,
       date,
-      workTypeName: type,
+      shiftTypeName: type,
     })
   }
 
@@ -118,10 +121,10 @@ const TCalendarEditor: ForwardRefRenderFunction<
     postData: async () => {
       // 입력 데이터 검증
       const hasAnyWorkData = allTeamCalendarData.some(
-        teamRecord => Object.keys(teamRecord.workInstances).length > 0
+        teamRecord => Object.keys(teamRecord.shiftInstances).length > 0
       )
       if (!hasAnyWorkData) {
-        Alert.alert('알림', '근무 형태를 하나 이상 입력해주세요.')
+        setIsValidationDialogVisible(true)
         return false
       }
       try {
@@ -129,9 +132,11 @@ const TCalendarEditor: ForwardRefRenderFunction<
         const newTeamCalendars: CreateCalendarRequest['calendars'] =
           allTeamCalendarData.map(teamRecord => {
             const shifts: Record<string, string> = {}
-            Object.entries(teamRecord.workInstances).forEach(([date, work]) => {
-              shifts[date] = fromShiftType(work.workTypeName)
-            })
+            Object.entries(teamRecord.shiftInstances).forEach(
+              ([date, work]) => {
+                shifts[date] = fromShiftType(work.shiftTypeName)
+              }
+            )
 
             return {
               organizationName,
@@ -150,9 +155,9 @@ const TCalendarEditor: ForwardRefRenderFunction<
           calendars: allTeamCalendarData.map(cal => ({
             team: cal.team,
             shifts: Object.fromEntries(
-              Object.entries(cal.workInstances).map(([date, work]) => [
+              Object.entries(cal.shiftInstances).map(([date, work]) => [
                 date,
-                fromShiftType(work.workTypeName), // string으로 변환
+                fromShiftType(work.shiftTypeName), // string으로 변환
               ])
             ),
           })),
@@ -188,6 +193,14 @@ const TCalendarEditor: ForwardRefRenderFunction<
         myTeam={myTeam}
       />
       <TeamTypeSelect onPressSelect={handleTypeSelect} />
+      <Dialog
+        visible={isValidationDialogVisible}
+        title="알림"
+        description="근무 형태를 하나 이상 입력해주세요."
+        onConfirm={() => {
+          setIsValidationDialogVisible(false)
+        }}
+      />
     </View>
   )
 }

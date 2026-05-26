@@ -99,17 +99,17 @@
   --color-success-90: #122b18;
   --color-success-95: #0e2012;
 
-  --color-warning-5: '#fff3db';
-  --color-warning-10: '#ffe0a3';
-  --color-warning-20: '#ffc95c';
-  --color-warning-30: '#ffb114';
-  --color-warning-40: '#c78500';
-  --color-warning-50: '#9e6a00';
-  --color-warning-60: '#8a5c00';
-  --color-warning-70: '#614100';
-  --color-warning-80: '#422c00';
-  --color-warning-90: '#2e1f00';
-  --color-warning-95: '#241800';
+  --color-warning-5: #fff3db;
+  --color-warning-10: #ffe0a3;
+  --color-warning-20: #ffc95c;
+  --color-warning-30: #ffb114;
+  --color-warning-40: #c78500;
+  --color-warning-50: #9e6a00;
+  --color-warning-60: #8a5c00;
+  --color-warning-70: #614100;
+  --color-warning-80: #422c00;
+  --color-warning-90: #2e1f00;
+  --color-warning-95: #241800;
 
   /* Light Mode Colors */
   --color-action-disabled: #cdd1d5;
@@ -196,7 +196,7 @@
   --color-surface-primary-light: #eefbfc;
   --color-surface-primary-light-2: #dcf6f9;
   --color-surface-primary-light-3: #b9edf3;
-  --color-surface-primary-light-4: '#96e5ed';
+  --color-surface-primary-light-4: #96e5ed;
   --color-surface-primary-subtle: #eefbfc;
   --color-surface-secondary-subtle: #faf6c7;
   --color-surface-success-subtle: #eaf6ec;
@@ -304,30 +304,30 @@
   --letter-spacing-05: -0.5px;
   --letter-spacing-1: 1px;
 
-  /* Line Height (비율) */
-  --line-height-heading-xxxxs: 1.2;
-  --line-height-heading-xxxs: 1.2;
-  --line-height-heading-xxs: 1.2;
-  --line-height-heading-xs: 1.2;
-  --line-height-heading-s: 1.2;
-  --line-height-heading-m: 1.4;
-  --line-height-heading-l: 1.5;
-  --line-height-heading-xl: 1.5;
+  /* Line Height */
+  --line-height-heading-xxxxs: 14.4px;
+  --line-height-heading-xxxs: 16.8px;
+  --line-height-heading-xxs: 19.2px;
+  --line-height-heading-xs: 21.6px;
+  --line-height-heading-s: 24px;
+  --line-height-heading-m: 30.8px;
+  --line-height-heading-l: 36px;
+  --line-height-heading-xl: 42px;
 
-  --line-height-body-xxxs: 1;
-  --line-height-body-xxs: 1;
-  --line-height-body-xs: 1.2;
-  --line-height-body-s: 1.2;
-  --line-height-body-m: 1.2;
-  --line-height-body-l: 1.5;
-  --line-height-body-xl: 1.5;
+  --line-height-body-xxxs: 10px;
+  --line-height-body-xxs: 12px;
+  --line-height-body-xs: 16.8px;
+  --line-height-body-s: 19.2px;
+  --line-height-body-m: 21.6px;
+  --line-height-body-l: 30px;
+  --line-height-body-xl: 36px;
 
-  --line-height-label-xxxs: 1;
-  --line-height-label-xxs: 1;
-  --line-height-label-xs: 1.2;
-  --line-height-label-s: 1.2;
-  --line-height-label-m: 1.2;
-  --line-height-label-l: 1.2;
+  --line-height-label-xxxs: 10px;
+  --line-height-label-xxs: 12px;
+  --line-height-label-xs: 16.8px;
+  --line-height-label-s: 19.2px;
+  --line-height-label-m: 21.6px;
+  --line-height-label-l: 24px;
 
   /* Border Radius */
   --border-radius-xs: 10px;
@@ -338,6 +338,11 @@
   --border-radius-max: 1000px;
 
   /* Font Sizes */
+
+  --font-size-display-xs: 24px;
+  --font-size-display-s: 28px;
+  --font-size-display-m: 32px;
+  --font-size-display-l: 44px;
 
   --font-size-heading-xxxxs: 12px;
   --font-size-heading-xxxs: 14px;

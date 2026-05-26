@@ -1,14 +1,14 @@
-import React from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
+
+import TitleSection from './TitleSection'
 import CheckListIcon from '../../../assets/icons/ic_checklist_24.svg'
 import CheckIcon from '../../../assets/icons/checked.svg'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import { useNavigation } from '@react-navigation/native'
+import React from 'react'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import { Todo } from '../../../domain/models/Todo'
-import AddIcon from '../../../assets/icons/ic_add_16.svg'
 import dayjs from 'dayjs'
-import GlobalText from '../text/GlobalText'
 
 interface TodoCardProps {
   todos: Todo[]
@@ -21,18 +21,21 @@ interface TodoItemProps {
   isLast: boolean
 }
 
-const ToDoCard = ({ todos, selectedDate }: TodoCardProps) => {
+const Container = ({ todos, selectedDate }: TodoCardProps) => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>()
   const hasTodos = todos && todos.length > 0
 
   return (
     <View className="my-number-8 flex-col justify-start gap-y-number-7 rounded-lg bg-background-white p-number-6">
-      <ToDoCardHeader
-        title="할 일"
-        btnContent="할 일 추가"
-        onPressIcon={() => navigation.navigate('Todo', { selectedDate })}
-      />
+      <View className="mb-number-3 flex-row items-center justify-start">
+        <CheckListIcon />
+        <TitleSection.WithAddableBtn
+          title="할 일"
+          btnContent="할 일 추가"
+          onPressIcon={() => navigation.navigate('Todo', { selectedDate })}
+        />
+      </View>
       {hasTodos ? (
         <View className="flex-col">
           {/* 메모 아이템들을 담을 View */}
@@ -49,36 +52,6 @@ const ToDoCard = ({ todos, selectedDate }: TodoCardProps) => {
       ) : (
         <Nothing />
       )}
-    </View>
-  )
-}
-
-const ToDoCardHeader = ({
-  title,
-  btnContent,
-  onPressIcon,
-}: {
-  title: string
-  btnContent: string
-  onPressIcon: () => void
-}) => {
-  return (
-    <View className="mb-number-3 flex-row items-center justify-start">
-      <CheckListIcon />
-
-      <View className="flex-1">
-        <View className="flex-row items-center justify-between gap-g-2">
-          <GlobalText className="text-black heading-xxs">{title}</GlobalText>
-          <TouchableOpacity onPress={onPressIcon}>
-            <View className="flex-row items-center gap-g-2">
-              <GlobalText className="text-text-subtle-inverse heading-xxxxs">
-                {btnContent}
-              </GlobalText>
-              <AddIcon />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   )
 }
@@ -120,4 +93,4 @@ const Item = ({ todo, isFirst, isLast }: TodoItemProps) => {
   )
 }
 
-export default ToDoCard
+export default { Nothing, Container }
