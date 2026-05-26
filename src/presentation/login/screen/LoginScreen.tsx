@@ -1,6 +1,12 @@
 import { useState } from 'react'
 import Swiper from 'react-native-swiper'
-import { View, Dimensions, TouchableOpacity, Platform } from 'react-native'
+import {
+  View,
+  Dimensions,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from 'react-native'
 import {
   useNavigation,
   CompositeNavigationProp,
@@ -18,7 +24,6 @@ import appleAuth, {
   AppleButton,
 } from '@invertase/react-native-apple-authentication'
 import { useAuthStore } from '../../../store/useAuthStore'
-import Dialog from '../../../shared/components/dialog/Dialog'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -33,7 +38,6 @@ const LoginScreen = () => {
   const loginWithApple = useAuthStore(state => state.loginWithApple)
   const loginWithKakao = useAuthStore(state => state.loginWithKakao)
   const [isKakaoLoading, setIsKakaoLoading] = useState(false)
-  const [loginErrorMessage, setLoginErrorMessage] = useState('')
 
   const navigateAfterSocialLogin = (isNewMember: boolean) => {
     navigation.getParent<rootNavigation>()?.reset({
@@ -145,7 +149,7 @@ const LoginScreen = () => {
                 return
               }
 
-              setLoginErrorMessage(getKakaoLoginErrorMessage(error))
+              Alert.alert('로그인 실패', getKakaoLoginErrorMessage(error))
             }
           }}
         />
@@ -169,7 +173,8 @@ const LoginScreen = () => {
                   return
                 }
 
-                setLoginErrorMessage(
+                Alert.alert(
+                  '로그인 실패',
                   '로그인에 실패했습니다. 다시 시도해주세요.'
                 )
               }
@@ -210,15 +215,6 @@ const LoginScreen = () => {
           </GlobalText>
         </View>
       </View>
-
-      <Dialog
-        visible={Boolean(loginErrorMessage)}
-        title="로그인 실패"
-        description={loginErrorMessage}
-        onConfirm={() => {
-          setLoginErrorMessage('')
-        }}
-      />
     </SafeAreaView>
   )
 }

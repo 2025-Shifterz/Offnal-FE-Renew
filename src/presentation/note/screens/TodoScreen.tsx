@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -27,7 +28,6 @@ import { RootStackParamList } from '../../../navigation/types/RootStackParamList
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useShallow } from 'zustand/shallow'
-import Dialog from '../../../shared/components/dialog/Dialog'
 
 const TodoScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Todo'>>()
@@ -57,7 +57,6 @@ const TodoScreen = () => {
   const [todo, setTodo] = useState('')
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null)
   const [showInput, setShowInput] = useState(false)
-  const [isTodoDialogVisible, setIsTodoDialogVisible] = useState(false)
 
   const [currentDate, setCurrentDate] = useState(selectedDate ?? dayjs())
 
@@ -94,7 +93,7 @@ const TodoScreen = () => {
 
   const handleAddTodo = async () => {
     if (!todo.trim()) {
-      setIsTodoDialogVisible(true)
+      Alert.alert('알림', '할 일 내용을 압력해주세요')
       return
     }
 
@@ -318,15 +317,6 @@ const TodoScreen = () => {
 
           await scheduleByDate(selectedTodo, targetDate, currentDate)
           changeTodoDateBottomSheetRef.current?.close()
-        }}
-      />
-
-      <Dialog
-        visible={isTodoDialogVisible}
-        title="알림"
-        description="할 일 내용을 입력해주세요"
-        onConfirm={() => {
-          setIsTodoDialogVisible(false)
         }}
       />
     </View>

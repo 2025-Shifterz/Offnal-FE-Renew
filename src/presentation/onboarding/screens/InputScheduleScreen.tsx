@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import React, { useEffect } from 'react'
+import { Alert, View } from 'react-native'
 import TimeInput from '../component/TimeInput'
 import TeamInput from '../component/TeamInput'
 import ScheduleNameInput from '../component/ScheduleNameInput'
@@ -14,14 +14,12 @@ import { OnboardingRoute } from '../../../navigation/types/OnboardingRoute'
 import { useShallow } from 'zustand/shallow'
 import EmphasizedButton from '../../../shared/components/button/Button'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import Dialog from '../../../shared/components/dialog/Dialog'
 
 const InputScheduleScreen = () => {
   const navigation = useNavigation<{
     navigate: (route: OnboardingRoute) => void
   }>()
   const onboardingMethod = useOnboardingStore(state => state.onboardingMethod)
-  const [isNameDialogVisible, setIsNameDialogVisible] = useState(false)
   const {
     organizationName = '',
     setOrganizationName,
@@ -40,7 +38,7 @@ const InputScheduleScreen = () => {
 
   const handleNext = async () => {
     if (organizationName.trim() === '') {
-      setIsNameDialogVisible(true)
+      Alert.alert('근무표 이름을 입력해주세요.')
       return
     }
 
@@ -77,15 +75,6 @@ const InputScheduleScreen = () => {
           </GlobalText>
         }
         onPress={handleNext}
-      />
-
-      <Dialog
-        visible={isNameDialogVisible}
-        title="알림"
-        description="근무표 이름을 입력해주세요."
-        onConfirm={() => {
-          setIsNameDialogVisible(false)
-        }}
       />
     </SafeAreaView>
   )

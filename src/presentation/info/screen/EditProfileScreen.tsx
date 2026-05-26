@@ -1,6 +1,13 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  Alert,
+} from 'react-native'
 import GalleryIcon from '../../../assets/icons/ic_gallery_16_white.svg'
 import { useUserStore } from '../../../store/useUserStore'
 import { useNavigation } from '@react-navigation/native'
@@ -9,7 +16,6 @@ import { Asset, launchImageLibrary } from 'react-native-image-picker'
 import CenterAlignedTopAppBar from '../../../shared/components/appbar/CenterAlignedTopAppBar'
 import TopAppBarBackButton from '../../../shared/components/button/TopAppBarBackButton'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import Dialog from '../../../shared/components/dialog/Dialog'
 
 const MAX_NAME_LENGTH = 10
 
@@ -22,29 +28,6 @@ const EditProfileScreen = () => {
   const [displayImgUrl, setDisplayImgUrl] = useState<string | null>(
     user?.profileImageUrl ?? null
   )
-  const [dialogState, setDialogState] = useState<{
-    visible: boolean
-    title: string
-    description: string
-    onConfirm?: () => void
-  }>({
-    visible: false,
-    title: '',
-    description: '',
-  })
-
-  const openDialog = (
-    title: string,
-    description: string,
-    onConfirm?: () => void
-  ) => {
-    setDialogState({
-      visible: true,
-      title,
-      description,
-      onConfirm,
-    })
-  }
 
   const handleChoosePhoto = async () => {
     launchImageLibrary({ mediaType: 'photo', quality: 1 }, response => {
@@ -52,7 +35,7 @@ const EditProfileScreen = () => {
         console.log('User cancelled image picker')
       } else if (response.errorCode) {
         console.log('ImagePicker Error: ', response.errorCode)
-        openDialog('오류', '이미지를 가져오는 데 실패했습니다.')
+        Alert.alert('오류', '이미지를 가져오는 데 실패했습니다.')
       } else if (response.assets && response.assets.length > 0) {
         const imageAsset = response.assets[0]
         setNewImage(imageAsset)
@@ -70,12 +53,12 @@ const EditProfileScreen = () => {
 
   const handleUpdateProfile = async () => {
     if (!user) {
-      openDialog('오류', '사용자 정보를 불러올 수 없습니다.')
+      Alert.alert('오류', '사용자 정보를 불러올 수 없습니다.')
       return
     }
 
     if (name.trim().length === 0) {
-      openDialog('오류', '이름을 입력해주세요.')
+      Alert.alert('오류', '이름을 입력해주세요.')
       return
     }
 
@@ -91,12 +74,17 @@ const EditProfileScreen = () => {
           : null
       )
 
-      openDialog('성공', '프로필이 수정되었습니다.', () => {
-        navigation.goBack()
-      })
+      Alert.alert('성공', '프로필이 수정되었습니다.', [
+        {
+          text: '확인',
+          onPress: () => {
+            navigation.goBack()
+          },
+        },
+      ])
     } catch (error) {
       console.error(error)
-      openDialog('오류', '프로필 수정에 실패했습니다.')
+      Alert.alert('오류', '프로필 수정에 실패했습니다.')
     }
   }
 
@@ -166,21 +154,6 @@ const EditProfileScreen = () => {
           </View>
         </View>
       </SafeAreaView>
-
-      <Dialog
-        visible={dialogState.visible}
-        title={dialogState.title}
-        description={dialogState.description}
-        onConfirm={() => {
-          const confirmDialogAction = dialogState.onConfirm
-          setDialogState(prevState => ({
-            ...prevState,
-            visible: false,
-            onConfirm: undefined,
-          }))
-          confirmDialogAction?.()
-        }}
-      />
     </View>
   )
 }

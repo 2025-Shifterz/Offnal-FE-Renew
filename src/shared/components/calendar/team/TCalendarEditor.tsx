@@ -5,7 +5,7 @@ import React, {
   ForwardRefRenderFunction,
   forwardRef,
 } from 'react'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import dayjs from 'dayjs'
 import TCalendarBase from './TCalendarBase'
 import TeamTypeSelect from './TeamTypeSelect'
@@ -23,7 +23,6 @@ import { useOnboardingStore } from '../../../../store/useOnboardingStore'
 import { mergeTeamCalendars } from '../../../utils/calendar/mergeTeamCalendars'
 import { UpdateTeamShiftsRequest } from '../../../../infrastructure/remote/request/PatchTeamWorkCalendarRequest'
 import { useShallow } from 'zustand/shallow'
-import Dialog from '../../dialog/Dialog'
 
 export interface TCalendarEditorRef {
   postData: () => Promise<boolean>
@@ -37,8 +36,6 @@ const TCalendarEditor: ForwardRefRenderFunction<
   }
 > = ({ currentDate, myTeam }, ref) => {
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null)
-  const [isValidationDialogVisible, setIsValidationDialogVisible] =
-    useState(false)
 
   const {
     teamCalendarData,
@@ -124,7 +121,7 @@ const TCalendarEditor: ForwardRefRenderFunction<
         teamRecord => Object.keys(teamRecord.shiftInstances).length > 0
       )
       if (!hasAnyWorkData) {
-        setIsValidationDialogVisible(true)
+        Alert.alert('알림', '근무 형태를 하나 이상 입력해주세요.')
         return false
       }
       try {
@@ -193,14 +190,6 @@ const TCalendarEditor: ForwardRefRenderFunction<
         myTeam={myTeam}
       />
       <TeamTypeSelect onPressSelect={handleTypeSelect} />
-      <Dialog
-        visible={isValidationDialogVisible}
-        title="알림"
-        description="근무 형태를 하나 이상 입력해주세요."
-        onConfirm={() => {
-          setIsValidationDialogVisible(false)
-        }}
-      />
     </View>
   )
 }
