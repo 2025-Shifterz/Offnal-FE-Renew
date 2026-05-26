@@ -10,6 +10,8 @@ export function toShiftType(code: string): ShiftType {
       return '야간'
     case '-':
       return '휴일'
+    case '':
+      return '근무 없음'
     default:
       return '휴일'
   }

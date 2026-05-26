@@ -198,10 +198,10 @@ export const useTeamCalendarStore = create<TeamCalendarState>()(
         // 서버 workType → 내부 WorkType 필드에 맞게 매핑 필요하면 fromShiftType 사용
         const flattened: (TeamDateAndShiftType & { team: string })[] =
           response.teams.flatMap(teamRecord =>
-            teamRecord.workInstances.map(wi => ({
+            teamRecord.shiftInstances.map(wi => ({
               team: teamRecord.team,
               date: wi.date,
-              shiftTypeName: wi.workTypeName,
+              shiftTypeName: wi.shiftTypeName,
               startTime: wi.startTime,
               endTime: wi.endTime,
             }))

@@ -7,12 +7,12 @@ export interface TeamCalendar {
 
 export interface GetTeamWorkCalendarTeamsArray {
   team: string
-  workInstances: GetTeamWorkCalendarWorkInstancesArray[]
+  shiftInstances: GetTeamWorkCalendarShiftInstancesArray[]
 }
 
-export interface GetTeamWorkCalendarWorkInstancesArray {
+export interface GetTeamWorkCalendarShiftInstancesArray {
   date: string
-  workTypeName: ShiftType
+  shiftTypeName: ShiftType
   startTime: string
   endTime: string
 }
