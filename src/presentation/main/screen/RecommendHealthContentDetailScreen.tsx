@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Image, ImageSourcePropType, ScrollView, View } from 'react-native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { RootStackParamList } from '../../../navigation/types/StackTypes'
+import type { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import AppLogo from '../../../assets/icons/app_logo.svg'
 import GlobalText from '../../../shared/components/text/GlobalText'
 

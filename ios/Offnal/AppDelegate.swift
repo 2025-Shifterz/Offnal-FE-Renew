@@ -210,6 +210,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
       }
     }
 
+    
     scheduleSnoozedNotification(
       alarmId: alarmId,
       runtimeConfig: runtimeConfig,

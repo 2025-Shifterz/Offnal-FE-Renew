@@ -14,7 +14,7 @@ import GoalStatusCard from './GoalStatusCard'
 import RoutineCardView, { RoutineCardProps } from './RoutineCard'
 import SectionTitle from './SectionTitle'
 import RecommendHealthContentCard from './RecommendHealthContent'
-import { rootNavigation } from '../../../navigation/types/StackTypes'
+import type { rootNavigation } from '../../../navigation/types/NavigationProps'
 import { buildMainRoutineCards } from '../../../shared/components/routine/routineContent'
 
 interface HomeCarePanelProps {

@@ -11,10 +11,8 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import type { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { ScrollView, View } from 'react-native'
 import GlobalText from '../../../shared/components/text/GlobalText'
-import {
-  RootStackParamList,
-  rootNavigation,
-} from '../../../navigation/types/StackTypes'
+import type { rootNavigation } from '../../../navigation/types/NavigationProps'
+import type { RootStackParamList } from '../../../navigation/types/RootStackParamList'
 import DailyRoutineSection, {
   DailyRoutineSectionData,
 } from '../component/DailyRoutineSection'

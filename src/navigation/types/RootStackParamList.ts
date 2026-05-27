@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native'
 import dayjs from 'dayjs'
 import { Memo } from '../../domain/models/Memo'
+import type { RoutineDay } from '../../shared/components/routine/routineContent'
 import { LoginStackParamList } from './LoginStackParamList'
 import { OnboardingStackParamList } from './OnboardingStackParamList'
 import { TabParamList } from './TabParamList'
@@ -20,6 +21,16 @@ export type RootStackParamList = {
   }
   OnboardingSchedules:
     | NavigatorScreenParams<OnboardingStackParamList>
+    | undefined
+  DailyRoutine: { day?: RoutineDay } | undefined
+  RecommendHealthContentDetail:
+    | {
+        title: string
+        author: string
+        body?: string | null
+        imageUrl?: string | null
+        authorProfileImageUrl?: string | null
+      }
     | undefined
   AutoAlarm: undefined
   Todo: { selectedDate: dayjs.Dayjs | null }

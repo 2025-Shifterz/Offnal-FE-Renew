@@ -24,6 +24,8 @@ import WithdrawScreen from '../presentation/info/screen/WithdrawScreen'
 import OnboardingMethodScreen from '../presentation/onboarding/screens/OnboardingMethodScreen'
 import CreateAutoAlarmScreen from '../presentation/alarm/screen/CreateAutoAlarmScreen'
 import EditAutoAlarmScreen from '../presentation/alarm/screen/EditAutoAlarmScreen'
+import DailyRoutineScreen from '../presentation/dailyRoutine/screen/DailyRoutineScreen'
+import RecommendHealthContentDetailScreen from '../presentation/main/screen/RecommendHealthContentDetailScreen'
 
 const RootStack = createNativeStackNavigator<RootStackParamList>()
 
@@ -47,6 +49,22 @@ const RootNavigator = () => {
         />
 
         <RootStack.Screen name="Tabs" component={TabsNavigator} />
+
+        <RootStack.Screen
+          name="DailyRoutine"
+          component={DailyRoutineScreen}
+          options={emptyHeaderOptions}
+        />
+
+        <RootStack.Screen
+          name="RecommendHealthContentDetail"
+          component={RecommendHealthContentDetailScreen}
+          options={({ navigation }) =>
+            makeBackHeaderOptions(null)({
+              navigation,
+            })
+          }
+        />
 
         <RootStack.Screen
           name="Todo"
