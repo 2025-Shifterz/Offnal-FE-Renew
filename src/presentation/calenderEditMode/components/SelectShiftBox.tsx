@@ -42,6 +42,7 @@ const SelectShiftBox = ({
             onPress={() => {
               handleTypeSelect(text)
             }}
+            activeOpacity={1}
             className={twMerge(
               'flex-row items-center justify-between rounded-radius-l border-[0.5px] border-border-gray-light px-p-6 py-p-4',
               selectedDivStyle

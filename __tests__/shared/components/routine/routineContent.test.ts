@@ -46,9 +46,12 @@ describe('routineContent', () => {
     const sections = buildDailyRoutineSections({
       routineDay: 'today',
       nowMillis,
-      completedById: {
-        'daily-before-work-meal': true,
-        'daily-during-work-focus': true,
+      completionByDay: {
+        today: {
+          'daily-before-work-meal': true,
+          'daily-during-work-focus': true,
+        },
+        tomorrow: {},
       },
     })
 
@@ -80,12 +83,39 @@ describe('routineContent', () => {
       faded: false,
       timePosition: 'current',
     })
+    expect(sections[1].items[1]).toMatchObject({
+      id: 'daily-during-work-snack',
+      state: 'todo',
+      highlighted: false,
+      faded: false,
+      timePosition: 'future',
+    })
     expect(sections[2].items[0]).toMatchObject({
       id: 'daily-after-work-meal',
       state: 'todo',
       highlighted: false,
       faded: false,
       timePosition: 'future',
+    })
+  })
+
+  it('builds daily routine sections with current snack highlight when the current window matches', () => {
+    const nowMillis = new Date(2025, 0, 2, 1, 30).getTime()
+    const sections = buildDailyRoutineSections({
+      routineDay: 'today',
+      nowMillis,
+      completionByDay: {
+        today: {},
+        tomorrow: {},
+      },
+    })
+
+    expect(sections[1].items[1]).toMatchObject({
+      id: 'daily-during-work-snack',
+      state: 'todo',
+      highlighted: true,
+      faded: false,
+      timePosition: 'current',
     })
   })
 
@@ -113,7 +143,7 @@ describe('routineContent', () => {
       },
     })
 
-    expect(cards).toHaveLength(2)
+    expect(cards).toHaveLength(3)
     expect(cards[0]).toMatchObject({
       id: 'main-before-work',
       title: '근무 전 루틴',
@@ -126,6 +156,11 @@ describe('routineContent', () => {
     expect(cards[1].items[1]).toMatchObject({
       id: 'main-during-work-snack',
       illustration: 'snack',
+    })
+    expect(cards[2]).toMatchObject({
+      id: 'main-after-work',
+      title: '퇴근 후 루틴',
+      status: 'ready',
     })
   })
 })

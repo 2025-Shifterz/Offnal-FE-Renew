@@ -50,6 +50,7 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
     return (
       <TouchableOpacity
         onPress={onPress}
+        activeOpacity={1}
         disabled={!onPress}
         className={`h-[24px] w-[29px] rounded-[6px] ${currentStyle.backgroundColor}`}
         style={styles.noWorkChip}
@@ -61,6 +62,7 @@ const TimeFrame: React.FC<TimeFrameProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
+      activeOpacity={1}
       className={`flex h-[26px] w-[30px] items-center justify-center rounded-radius-xs ${currentStyle.backgroundColor}`}
     >
       <Text className={`heading-xxxxs ${currentStyle.textColor}`}>{text}</Text>

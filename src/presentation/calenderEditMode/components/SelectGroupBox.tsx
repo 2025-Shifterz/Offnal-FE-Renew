@@ -19,6 +19,7 @@ const SelectGroupBox = ({
           <TouchableOpacity
             key={group}
             onPress={() => setSelectedGroup(group)}
+            activeOpacity={1}
             className={`rounded border px-4 py-3 ${
               isSelected
                 ? 'border-border-primary bg-surface-primary-light'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import { Text, View } from 'react-native'
 import TimeFrame, { TimeFrameChildren } from '../TimeFrame'
 import DashedDivider from '../../divider/DashedDivider'
 
@@ -13,14 +13,14 @@ const TypeSelect = ({ onPress }: TypeSelectProps) => {
   return (
     <>
       <DashedDivider />
-      <TouchableOpacity className="flex-col gap-[9px] rounded-b-radius-xl bg-surface-white p-[11px]">
+      <View className="flex-col gap-[9px] rounded-b-radius-xl bg-surface-white p-[11px]">
         <Text className="text-text-subtle body-xs">근무 형태 입력</Text>
         <View className="flex-row gap-[6px]">
           {types.map(type => (
             <TimeFrame key={type} text={type} onPress={() => onPress(type)} />
           ))}
         </View>
-      </TouchableOpacity>
+      </View>
     </>
   )
 }

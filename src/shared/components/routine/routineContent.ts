@@ -343,7 +343,6 @@ export const ROUTINE_ITEM_TEMPLATES = {
         },
         { prefix: '고지방·고당류 음식은 피하기' },
       ],
-      highlighted: true,
     },
   },
   duringWorkHydration: {
@@ -478,10 +477,14 @@ const resolveRoutineValue = <T>(
   value: RoutineTextResolver<T>,
   routine?: Routine
 ): T => {
-  return typeof value === 'function' ? value(routine) : value
+  if (typeof value === 'function') {
+    return (value as (routine?: Routine) => T)(routine)
+  }
+
+  return value
 }
 
-const resolveRoutineItemTemplate = (key: RoutineItemKey) =>
+const resolveRoutineItemTemplate = (key: RoutineItemKey): RoutineItemTemplate =>
   ROUTINE_ITEM_TEMPLATES[key]
 
 const resolveMainRoutineItems = (
